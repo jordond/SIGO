@@ -1,0 +1,146 @@
+#!/bin/bash
+
+# This script is a wrapper around the various scripts in the scripts folder.
+
+# Explode on errors 💥
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
+print_usage() {
+    echo "Usage:"
+    echo "    $0 <command> [args]"
+    echo " "
+    echo "Commands:"
+    echo "    help                                              Show this help message"
+    echo "    init <command> [arguments]                        Initialize a project component"
+    echo "          secrets|s [--empty]                         Generate the secrets.properties file, pass --empty to use 'empty' for all secrets"
+    echo "          ktlint|k [arguments]                        Install ktlint and integrate it with the project"
+    echo "          hooks|h [--output]                          Install the git hooks, pass --output to display the contents of the hooks"
+    echo "    gradle <command>                                  Run any gradle command"
+    echo "    clean                                             Cleans all the build files"
+    echo "    lint --all | --staged [args]                      Lint the codebase using ktlint"
+    echo "    fix [--all] [--staged]                            Fixes only staged files if --all is not passed"
+    echo "    commit|c [options]                                Stage changes, run fix, and commit"
+}
+
+check_directory() {
+    local current_dir
+    current_dir="$(pwd)"
+
+    if [ "$ROOT" != "$current_dir" ]; then
+        echo "Error: This script must be run from the directory containing the 'sigot' script."
+        echo "Please navigate to $ROOT and try again."
+        exit 1
+    fi
+}
+
+# If no arguments are passed, show the help message
+if [ "$#" -eq 0 ]; then
+    print_usage
+    exit 0
+fi
+
+case "$1" in
+help)
+    print_usage
+    exit 0
+    ;;
+init)
+    shift
+    if [ "$#" -eq 0 ]; then
+        echo "Please specify an init command: node, path, ktlint, hooks, or secrets"
+        echo "Run 'beans help' for more information"
+        exit 1
+    fi
+    subcommand=$1
+    shift
+
+    case "$subcommand" in
+    ktlint | lint | k)
+        "$ROOT"/scripts/init-ktlint.sh "$@"
+        ;;
+    hooks | hook | h)
+        "$ROOT"/scripts/init-hooks.sh "$@"
+        ;;
+    secrets | secret | s)
+        "$ROOT"/scripts/init-secrets.sh "$@"
+        ;;
+    *)
+        echo "The command '$subcommand' is not a valid 'init' command. Use 'ktlint', 'secrets', or 'hooks'."
+        exit 1
+        ;;
+    esac
+    ;;
+encrypt)
+   shift
+    "$ROOT"/scripts/crypt.sh encrypt "$@"
+    ;;
+gradle | g)
+    shift
+    "$ROOT"/gradlew "$@"
+    ;;
+clean)
+    "$ROOT"/scripts/cleanup
+    ;;
+lint | l)
+    shift
+    "$ROOT"/scripts/ktlint "$@"
+    ;;
+fix | f)
+    if [[ "$2" == "--all" ]]; then
+        set +e
+        echo "Linting and fixing all kotlin files"
+        "$ROOT"/scripts/ktlint --all -F
+
+        echo "Formatting all shell scripts"
+        shfmt -w -i 4 "$ROOT"/scripts/
+    else
+        "$ROOT"/scripts/hooks/pre-commit -F
+    fi
+    ;;
+commit | c)
+    shift # Remove the 'commit' command from arguments
+
+    echo "📦 Staging all changes..."
+    git add --all
+
+    echo "🔍 Running fix on staged files..."
+    # Suppress output except for errors
+    if ! "$ROOT"/scripts/hooks/pre-commit -F; then
+        echo "❌ Error running pre-commit hook"
+        exit 1
+    fi
+
+    echo "📦 Re-staging all changes..."
+    git add --all
+
+    echo "💾 Committing changes..."
+    # Check if any arguments were provided
+    if [ $# -eq 0 ]; then
+        git commit
+    # Check if -m flag is present
+    elif [[ "$1" == "-m" ]]; then
+        shift # Remove -m flag
+        commit_msg="$*"
+        git commit -m "$commit_msg"
+    else
+        # Pass all arguments directly to git commit
+        git commit "$@"
+    fi
+    ;;
+xcode)
+    echo "Opening Xcode workspace"
+    open "$ROOT/ios/iosApp.xcworkspace"
+    ;;
+generate-image-sizes)
+    shift
+    node "$ROOT"/scripts/image-resource.js "$@"
+    ;;
+*)
+    echo "Unknown command: $1"
+    echo ""
+    print_usage
+    exit 1
+    ;;
+esac

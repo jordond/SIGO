@@ -37,3 +37,7 @@ ios/iosApp.xcodeproj/*
 !ios/iosApp.xcodeproj/
 *.podspec
 app/build
+*.aab
+*.apk
+.app
+*.key

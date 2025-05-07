@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Explode on errors 💥
+set -euo pipefail
+
+# Setup paths
+CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+ROOT="$(cd "$CWD"/../.. >/dev/null 2>&1 && pwd)"
+KTLINT="$ROOT/scripts"
+
+echo "Running pre-commit hook"
+
+# Check for changed files in ROOT/scripts, excluding .js and .json files
+script_files=$(git diff --cached --name-only --diff-filter=ACM | grep "^scripts/" | grep -v "\.js$" | grep -v "\.json$" || true)
+if [ -n "$script_files" ]; then
+    echo "Checking shell scripts..."
+    for file in $script_files; do
+        if ! shfmt -i 4 -l -w "$file"; then
+            echo "Error: Failed to format $file"
+            exit 1
+        fi
+        echo "Formatted $file"
+        git add "$file"
+    done
+    echo "Shell scripts checked and formatted."
+fi
+
+# Run ktlint.sh script on staged files
+echo "Running ktlint"
+"$KTLINT"/ktlint.sh --staged "$@"
