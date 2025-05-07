@@ -1,3 +1,5 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "SIGOT"
 
 pluginManagement {
@@ -13,6 +15,8 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
+
+    includeBuild("buildLogic")
 }
 
 dependencyResolutionManagement {
@@ -33,5 +37,5 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention").version("0.10.0")
 }
 
-include(":composeApp")
-
+include(":core:app")
+include(":core:resources")
