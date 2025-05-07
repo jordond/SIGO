@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Should I go outside today?</string>
+    <string name="app_name_short">SIGOT</string>
+
+    <string name="cyclone">Cyclone</string>
+    <string name="open_github">Open NOTHING</string>
+    <string name="run">Run</string>
+    <string name="stop">Stop</string>
+    <string name="theme">Theme</string>
+</resources>
