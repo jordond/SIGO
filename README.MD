@@ -1,9 +1,25 @@
 # Compose Multiplatform Application
 
-## Before running!
- - check your system with [KDoctor](https://github.com/Kotlin/kdoctor)
- - install JDK 17 or higher on your machine
- - add `local.properties` file to the project root and set a path to Android SDK there
+## Setup
+
+Clone the repository:
+
+```shell
+git clone git@github.com:jordond/sigot
+cd sigot
+```
+
+Now run the init scripts:
+
+```shell
+./sigot init ktlint
+./sigot init hooks
+
+# The secrets require the env variable SIGOT_DECRYPT_KEY, or the key to be passed in
+./sigot init secrets
+```
+
+You are now ready to start developing.
 
 ### Android
 To run the application on android device/emulator:  
@@ -32,4 +48,3 @@ Run browser UI tests: `./gradlew :composeApp:jsBrowserTest`
 ### Wasm Browser (Alpha)
 Run the browser application: `./gradlew :composeApp:wasmJsBrowserDevelopmentRun --continue`
 Run browser UI tests: `./gradlew :composeApp:wasmJsBrowserTest`
-
