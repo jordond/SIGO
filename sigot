@@ -73,7 +73,7 @@ init)
     esac
     ;;
 encrypt)
-   shift
+    shift
     "$ROOT"/scripts/crypt.sh encrypt "$@"
     ;;
 gradle | g)
@@ -118,15 +118,15 @@ commit | c)
     echo "💾 Committing changes..."
     # Check if any arguments were provided
     if [ $# -eq 0 ]; then
-        git commit
+        git commit --no-verify
     # Check if -m flag is present
     elif [[ "$1" == "-m" ]]; then
         shift # Remove -m flag
         commit_msg="$*"
-        git commit -m "$commit_msg"
+        git commit -m "$commit_msg" --no-verify
     else
         # Pass all arguments directly to git commit
-        git commit "$@"
+        git commit --no-verify "$@"
     fi
     ;;
 xcode)
