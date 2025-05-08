@@ -1,4 +1,4 @@
-package app.sigot.core.ui.components.components.progressindicators
+package app.sigot.core.ui.components.progressindicators
 
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateFloat
@@ -23,7 +23,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import app.sigot.core.ui.components.AppTheme2
+import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.abs
 
@@ -197,10 +198,10 @@ private fun DrawScope.drawLinearIndicatorTrack(
 @Suppress("ConstPropertyName")
 public object LinearProgressIndicatorDefaults {
     public val Color: Color
-        @Composable get() = AppTheme2.colors.primary
+        @Composable get() = AppTheme.colors.primary
 
     public val TrackColor: Color
-        @Composable get() = AppTheme2.colors.transparent
+        @Composable get() = AppTheme.colors.transparent
 
     public val TrackHeight: Dp = 4.dp
     public val StrokeStyle: StrokeCap = StrokeCap.Round
@@ -225,16 +226,22 @@ public object LinearProgressIndicatorDefaults {
 @Composable
 @Preview
 internal fun LinearProgressIndicatorPreview() {
-    AppTheme2 {
+    AppPreview {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(16.dp),
         ) {
-            BasicText(text = "Determinate Progress", style = AppTheme2.typography.body1)
+            BasicText(
+                text = "Determinate Progress",
+                style = AppTheme.typography.body1,
+            )
             LinearProgressIndicator(progress = 0.7f)
 
-            BasicText(text = "Indeterminate Progress", style = AppTheme2.typography.body1)
+            BasicText(
+                text = "Indeterminate Progress",
+                style = AppTheme.typography.body1,
+            )
             LinearProgressIndicator()
         }
     }

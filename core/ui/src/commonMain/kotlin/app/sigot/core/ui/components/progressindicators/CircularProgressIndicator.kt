@@ -1,4 +1,4 @@
-package app.sigot.core.ui.components.components.progressindicators
+package app.sigot.core.ui.components.progressindicators
 
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.LinearEasing
@@ -28,7 +28,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.sigot.core.ui.components.AppTheme2
+import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.PI
 import kotlin.math.abs
@@ -215,10 +216,10 @@ private fun DrawScope.drawIndeterminateCircularIndicator(
 @Suppress("ConstPropertyName")
 public object CircularProgressIndicatorDefaults {
     public val Color: Color
-        @Composable get() = AppTheme2.colors.primary
+        @Composable get() = AppTheme.colors.primary
 
     public val TrackColor: Color
-        @Composable get() = AppTheme2.colors.transparent
+        @Composable get() = AppTheme.colors.transparent
 
     private val Size = 48.dp
     private val ActiveIndicatorWidth = 2.dp
@@ -243,16 +244,22 @@ public object CircularProgressIndicatorDefaults {
 @Composable
 @Preview
 internal fun CircularProgressIndicatorPreview() {
-    AppTheme2 {
+    AppPreview {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(16.dp),
         ) {
-            BasicText(text = "Determinate Progress", style = AppTheme2.typography.body1)
+            BasicText(
+                text = "Determinate Progress",
+                style = AppTheme.typography.body1,
+            )
             CircularProgressIndicator(progress = 0.7f)
 
-            BasicText(text = "Indeterminate Progress", style = AppTheme2.typography.body1)
+            BasicText(
+                text = "Indeterminate Progress",
+                style = AppTheme.typography.body1,
+            )
             CircularProgressIndicator()
         }
     }

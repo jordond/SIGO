@@ -1,4 +1,4 @@
-package app.sigot.core.ui.components.foundation
+package app.sigot.core.ui.foundation
 
 import androidx.compose.foundation.IndicationNodeFactory
 import androidx.compose.foundation.interaction.InteractionSource
@@ -18,8 +18,8 @@ import androidx.compose.ui.node.ObserverModifierNode
 import androidx.compose.ui.node.currentValueOf
 import androidx.compose.ui.node.observeReads
 import androidx.compose.ui.unit.Dp
-import app.sigot.core.ui.components.LocalContentColor
-import app.sigot.core.ui.components.foundation.RippleDefaults.RippleAlpha
+import app.sigot.core.ui.LocalContentColor
+import app.sigot.core.ui.foundation.RippleDefaults.RippleAlpha
 
 @Stable
 public fun ripple(

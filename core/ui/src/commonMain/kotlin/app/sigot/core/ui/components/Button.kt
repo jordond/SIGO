@@ -1,4 +1,4 @@
-package app.sigot.core.ui.components.components
+package app.sigot.core.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -24,19 +24,22 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import app.sigot.core.ui.components.AppTheme2
-import app.sigot.core.ui.components.LocalContentColor
-import app.sigot.core.ui.components.components.progressindicators.CircularProgressIndicator
-import app.sigot.core.ui.components.foundation.ButtonElevation
+import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalContentColor
+import app.sigot.core.ui.components.progressindicators.CircularProgressIndicator
+import app.sigot.core.ui.foundation.ButtonElevation
+import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 public fun Button(
     modifier: Modifier = Modifier,
     text: String? = null,
+    textStyle: TextStyle = AppTheme.typography.button,
     enabled: Boolean = true,
     loading: Boolean = false,
     loadingContent: (@Composable () -> Unit)? = @Composable {
@@ -75,6 +78,7 @@ internal fun ButtonComponent(
     loading: Boolean = false,
     loadingContent: (@Composable () -> Unit)? = null,
     style: ButtonStyle,
+    textStyle: TextStyle = AppTheme.typography.button,
     onClick: () -> Unit,
     contentPadding: PaddingValues = ButtonDefaults.contentPadding,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -114,6 +118,7 @@ internal fun ButtonComponent(
     ) {
         DefaultButtonContent(
             text = text,
+            textStyle = textStyle,
             loading = loading,
             loadingContent = loadingContent,
             contentColor = contentColor,
@@ -127,6 +132,7 @@ internal fun ButtonComponent(
 private fun DefaultButtonContent(
     modifier: Modifier = Modifier,
     text: String? = null,
+    textStyle: TextStyle = AppTheme.typography.button,
     loading: Boolean,
     contentColor: Color,
     loadingContent: (@Composable () -> Unit)?,
@@ -144,7 +150,7 @@ private fun DefaultButtonContent(
                 Text(
                     text = AnnotatedString(text = text),
                     textAlign = TextAlign.Center,
-                    style = AppTheme2.typography.button,
+                    style = textStyle,
                     overflow = TextOverflow.Clip,
                     color = contentColor,
                 )
@@ -169,6 +175,10 @@ public enum class ButtonVariant {
     SecondaryOutlined,
     SecondaryElevated,
     SecondaryGhost,
+    Tertiary,
+    TertiaryOutlined,
+    TertiaryElevated,
+    TertiaryGhost,
     Destructive,
     DestructiveOutlined,
     DestructiveElevated,
@@ -187,6 +197,10 @@ internal fun buttonStyleFor(variant: ButtonVariant): ButtonStyle =
         ButtonVariant.SecondaryOutlined -> ButtonDefaults.secondaryOutlined()
         ButtonVariant.SecondaryElevated -> ButtonDefaults.secondaryElevated()
         ButtonVariant.SecondaryGhost -> ButtonDefaults.secondaryGhost()
+        ButtonVariant.Tertiary -> ButtonDefaults.tertiaryFilled()
+        ButtonVariant.TertiaryOutlined -> ButtonDefaults.tertiaryOutlined()
+        ButtonVariant.TertiaryElevated -> ButtonDefaults.tertiaryElevated()
+        ButtonVariant.TertiaryGhost -> ButtonDefaults.tertiaryGhost()
         ButtonVariant.Destructive -> ButtonDefaults.destructiveFilled()
         ButtonVariant.DestructiveOutlined -> ButtonDefaults.destructiveOutlined()
         ButtonVariant.DestructiveElevated -> ButtonDefaults.destructiveElevated()
@@ -228,10 +242,10 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.primary,
-                    contentColor = AppTheme2.colors.onPrimary,
-                    disabledContainerColor = AppTheme2.colors.disabled,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
+                    containerColor = AppTheme.colors.primary,
+                    contentColor = AppTheme.colors.onPrimary,
+                    disabledContainerColor = AppTheme.colors.disabled,
+                    disabledContentColor = AppTheme.colors.onDisabled,
                 ),
             shape = filledShape,
             elevation = null,
@@ -243,10 +257,10 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.primary,
-                    contentColor = AppTheme2.colors.onPrimary,
-                    disabledContainerColor = AppTheme2.colors.disabled,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
+                    containerColor = AppTheme.colors.primary,
+                    contentColor = AppTheme.colors.onPrimary,
+                    disabledContainerColor = AppTheme.colors.disabled,
+                    disabledContentColor = AppTheme.colors.onDisabled,
                 ),
             shape = elevatedShape,
             elevation = buttonElevation(),
@@ -258,12 +272,12 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.transparent,
-                    contentColor = AppTheme2.colors.primary,
-                    borderColor = AppTheme2.colors.primary,
-                    disabledContainerColor = AppTheme2.colors.transparent,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
-                    disabledBorderColor = AppTheme2.colors.disabled,
+                    containerColor = AppTheme.colors.transparent,
+                    contentColor = AppTheme.colors.primary,
+                    borderColor = AppTheme.colors.primary,
+                    disabledContainerColor = AppTheme.colors.transparent,
+                    disabledContentColor = AppTheme.colors.onDisabled,
+                    disabledBorderColor = AppTheme.colors.disabled,
                 ),
             shape = outlinedShape,
             elevation = null,
@@ -275,12 +289,12 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.transparent,
-                    contentColor = AppTheme2.colors.primary,
-                    borderColor = AppTheme2.colors.transparent,
-                    disabledContainerColor = AppTheme2.colors.transparent,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
-                    disabledBorderColor = AppTheme2.colors.transparent,
+                    containerColor = AppTheme.colors.transparent,
+                    contentColor = AppTheme.colors.primary,
+                    borderColor = AppTheme.colors.transparent,
+                    disabledContainerColor = AppTheme.colors.transparent,
+                    disabledContentColor = AppTheme.colors.onDisabled,
+                    disabledBorderColor = AppTheme.colors.transparent,
                 ),
             shape = filledShape,
             elevation = null,
@@ -292,10 +306,10 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.secondary,
-                    contentColor = AppTheme2.colors.onSecondary,
-                    disabledContainerColor = AppTheme2.colors.disabled,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
+                    containerColor = AppTheme.colors.secondary,
+                    contentColor = AppTheme.colors.onSecondary,
+                    disabledContainerColor = AppTheme.colors.disabled,
+                    disabledContentColor = AppTheme.colors.onDisabled,
                 ),
             shape = filledShape,
             elevation = null,
@@ -307,10 +321,10 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.secondary,
-                    contentColor = AppTheme2.colors.onSecondary,
-                    disabledContainerColor = AppTheme2.colors.disabled,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
+                    containerColor = AppTheme.colors.secondary,
+                    contentColor = AppTheme.colors.onSecondary,
+                    disabledContainerColor = AppTheme.colors.disabled,
+                    disabledContentColor = AppTheme.colors.onDisabled,
                 ),
             shape = elevatedShape,
             elevation = buttonElevation(),
@@ -322,12 +336,12 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.transparent,
-                    contentColor = AppTheme2.colors.secondary,
-                    borderColor = AppTheme2.colors.secondary,
-                    disabledContainerColor = AppTheme2.colors.transparent,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
-                    disabledBorderColor = AppTheme2.colors.disabled,
+                    containerColor = AppTheme.colors.transparent,
+                    contentColor = AppTheme.colors.secondary,
+                    borderColor = AppTheme.colors.secondary,
+                    disabledContainerColor = AppTheme.colors.transparent,
+                    disabledContentColor = AppTheme.colors.onDisabled,
+                    disabledBorderColor = AppTheme.colors.disabled,
                 ),
             shape = outlinedShape,
             elevation = null,
@@ -339,12 +353,76 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.transparent,
-                    contentColor = AppTheme2.colors.secondary,
-                    borderColor = AppTheme2.colors.transparent,
-                    disabledContainerColor = AppTheme2.colors.transparent,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
-                    disabledBorderColor = AppTheme2.colors.transparent,
+                    containerColor = AppTheme.colors.transparent,
+                    contentColor = AppTheme.colors.secondary,
+                    borderColor = AppTheme.colors.transparent,
+                    disabledContainerColor = AppTheme.colors.transparent,
+                    disabledContentColor = AppTheme.colors.onDisabled,
+                    disabledBorderColor = AppTheme.colors.transparent,
+                ),
+            shape = filledShape,
+            elevation = null,
+            contentPadding = contentPadding,
+        )
+
+    @Composable
+    fun tertiaryFilled() =
+        ButtonStyle(
+            colors =
+                ButtonColors(
+                    containerColor = AppTheme.colors.tertiary,
+                    contentColor = AppTheme.colors.onTertiary,
+                    disabledContainerColor = AppTheme.colors.disabled,
+                    disabledContentColor = AppTheme.colors.onDisabled,
+                ),
+            shape = filledShape,
+            elevation = null,
+            contentPadding = contentPadding,
+        )
+
+    @Composable
+    fun tertiaryElevated() =
+        ButtonStyle(
+            colors =
+                ButtonColors(
+                    containerColor = AppTheme.colors.tertiary,
+                    contentColor = AppTheme.colors.onTertiary,
+                    disabledContainerColor = AppTheme.colors.disabled,
+                    disabledContentColor = AppTheme.colors.onDisabled,
+                ),
+            shape = elevatedShape,
+            elevation = buttonElevation(),
+            contentPadding = contentPadding,
+        )
+
+    @Composable
+    fun tertiaryOutlined() =
+        ButtonStyle(
+            colors =
+                ButtonColors(
+                    containerColor = AppTheme.colors.transparent,
+                    contentColor = AppTheme.colors.tertiary,
+                    borderColor = AppTheme.colors.tertiary,
+                    disabledContainerColor = AppTheme.colors.transparent,
+                    disabledContentColor = AppTheme.colors.onDisabled,
+                    disabledBorderColor = AppTheme.colors.disabled,
+                ),
+            shape = outlinedShape,
+            elevation = null,
+            contentPadding = contentPadding,
+        )
+
+    @Composable
+    fun tertiaryGhost() =
+        ButtonStyle(
+            colors =
+                ButtonColors(
+                    containerColor = AppTheme.colors.transparent,
+                    contentColor = AppTheme.colors.tertiary,
+                    borderColor = AppTheme.colors.transparent,
+                    disabledContainerColor = AppTheme.colors.transparent,
+                    disabledContentColor = AppTheme.colors.onDisabled,
+                    disabledBorderColor = AppTheme.colors.transparent,
                 ),
             shape = filledShape,
             elevation = null,
@@ -356,10 +434,10 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.error,
-                    contentColor = AppTheme2.colors.onError,
-                    disabledContainerColor = AppTheme2.colors.disabled,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
+                    containerColor = AppTheme.colors.error,
+                    contentColor = AppTheme.colors.onError,
+                    disabledContainerColor = AppTheme.colors.disabled,
+                    disabledContentColor = AppTheme.colors.onDisabled,
                 ),
             shape = filledShape,
             elevation = null,
@@ -371,10 +449,10 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.error,
-                    contentColor = AppTheme2.colors.onError,
-                    disabledContainerColor = AppTheme2.colors.disabled,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
+                    containerColor = AppTheme.colors.error,
+                    contentColor = AppTheme.colors.onError,
+                    disabledContainerColor = AppTheme.colors.disabled,
+                    disabledContentColor = AppTheme.colors.onDisabled,
                 ),
             shape = elevatedShape,
             elevation = buttonElevation(),
@@ -386,12 +464,12 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.transparent,
-                    contentColor = AppTheme2.colors.error,
-                    borderColor = AppTheme2.colors.error,
-                    disabledContainerColor = AppTheme2.colors.transparent,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
-                    disabledBorderColor = AppTheme2.colors.disabled,
+                    containerColor = AppTheme.colors.transparent,
+                    contentColor = AppTheme.colors.error,
+                    borderColor = AppTheme.colors.error,
+                    disabledContainerColor = AppTheme.colors.transparent,
+                    disabledContentColor = AppTheme.colors.onDisabled,
+                    disabledBorderColor = AppTheme.colors.disabled,
                 ),
             shape = outlinedShape,
             elevation = null,
@@ -403,12 +481,12 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.transparent,
-                    contentColor = AppTheme2.colors.error,
-                    borderColor = AppTheme2.colors.transparent,
-                    disabledContainerColor = AppTheme2.colors.transparent,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
-                    disabledBorderColor = AppTheme2.colors.transparent,
+                    containerColor = AppTheme.colors.transparent,
+                    contentColor = AppTheme.colors.error,
+                    borderColor = AppTheme.colors.transparent,
+                    disabledContainerColor = AppTheme.colors.transparent,
+                    disabledContentColor = AppTheme.colors.onDisabled,
+                    disabledBorderColor = AppTheme.colors.transparent,
                 ),
             shape = filledShape,
             elevation = null,
@@ -420,12 +498,12 @@ internal object ButtonDefaults {
         ButtonStyle(
             colors =
                 ButtonColors(
-                    containerColor = AppTheme2.colors.transparent,
+                    containerColor = AppTheme.colors.transparent,
                     contentColor = LocalContentColor.current,
-                    borderColor = AppTheme2.colors.transparent,
-                    disabledContainerColor = AppTheme2.colors.transparent,
-                    disabledContentColor = AppTheme2.colors.onDisabled,
-                    disabledBorderColor = AppTheme2.colors.transparent,
+                    borderColor = AppTheme.colors.transparent,
+                    disabledContainerColor = AppTheme.colors.transparent,
+                    disabledContentColor = AppTheme.colors.onDisabled,
+                    disabledBorderColor = AppTheme.colors.transparent,
                 ),
             shape = filledShape,
             elevation = null,
@@ -465,26 +543,19 @@ internal data class ButtonStyle(
 
 @Composable
 @Preview
-internal fun ButtonPreview() {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        PrimaryButtonPreview()
-        SecondaryButtonPreview()
-        DestructiveButtonPreview()
-    }
-}
-
-@Composable
-@Preview
 internal fun PrimaryButtonPreview() {
-    AppTheme2 {
+    AppPreview {
         Column(
             modifier =
-                Modifier
-                    .background(AppTheme2.colors.background)
+                Modifier.Companion
+                    .background(AppTheme.colors.background)
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(text = "Primary Buttons", style = AppTheme2.typography.h2)
+            Text(
+                text = "Primary",
+                style = AppTheme.typography.h2,
+            )
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Button(text = "PrimaryFilled", variant = ButtonVariant.Primary, onClick = {})
@@ -497,7 +568,11 @@ internal fun PrimaryButtonPreview() {
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Button(text = "PrimaryOutlined", variant = ButtonVariant.PrimaryOutlined, onClick = {})
+                Button(
+                    text = "PrimaryOutlined",
+                    variant = ButtonVariant.PrimaryOutlined,
+                    onClick = {},
+                )
 
                 Button(
                     text = "Disabled",
@@ -507,7 +582,11 @@ internal fun PrimaryButtonPreview() {
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Button(text = "PrimaryElevated", variant = ButtonVariant.PrimaryElevated, onClick = {})
+                Button(
+                    text = "PrimaryElevated",
+                    variant = ButtonVariant.PrimaryElevated,
+                    onClick = {},
+                )
 
                 Button(
                     text = "Disabled",
@@ -532,15 +611,18 @@ internal fun PrimaryButtonPreview() {
 @Composable
 @Preview
 internal fun SecondaryButtonPreview() {
-    AppTheme2 {
+    AppPreview {
         Column(
             modifier =
-                Modifier
-                    .background(AppTheme2.colors.background)
+                Modifier.Companion
+                    .background(AppTheme.colors.background)
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(text = "Secondary Buttons", style = AppTheme2.typography.h2)
+            Text(
+                text = "Secondary",
+                style = AppTheme.typography.h2,
+            )
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Button(text = "SecondaryFilled", variant = ButtonVariant.Secondary, onClick = {})
@@ -553,7 +635,11 @@ internal fun SecondaryButtonPreview() {
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Button(text = "SecondaryOutlined", variant = ButtonVariant.SecondaryOutlined, onClick = {})
+                Button(
+                    text = "SecondaryOutlined",
+                    variant = ButtonVariant.SecondaryOutlined,
+                    onClick = {},
+                )
 
                 Button(
                     text = "Disabled",
@@ -563,7 +649,11 @@ internal fun SecondaryButtonPreview() {
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Button(text = "SecondaryElevated", variant = ButtonVariant.SecondaryElevated, onClick = {})
+                Button(
+                    text = "SecondaryElevated",
+                    variant = ButtonVariant.SecondaryElevated,
+                    onClick = {},
+                )
 
                 Button(
                     text = "Disabled",
@@ -573,7 +663,11 @@ internal fun SecondaryButtonPreview() {
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Button(text = "SecondaryGhost", variant = ButtonVariant.SecondaryGhost, onClick = {})
+                Button(
+                    text = "SecondaryGhost",
+                    variant = ButtonVariant.SecondaryGhost,
+                    onClick = {},
+                )
 
                 Button(
                     text = "Disabled",
@@ -587,19 +681,97 @@ internal fun SecondaryButtonPreview() {
 
 @Composable
 @Preview
-internal fun DestructiveButtonPreview() {
-    AppTheme2 {
+internal fun TertiaryButtonPreview() {
+    AppPreview {
         Column(
             modifier =
-                Modifier
-                    .background(AppTheme2.colors.background)
+                Modifier.Companion
+                    .background(AppTheme.colors.background)
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(text = "Destructive Buttons", style = AppTheme2.typography.h2)
+            Text(
+                text = "Tertiary",
+                style = AppTheme.typography.h2,
+            )
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Button(text = "DestructiveFilled", variant = ButtonVariant.Destructive, onClick = {})
+                Button(text = "TertiaryFilled", variant = ButtonVariant.Tertiary, onClick = {})
+
+                Button(
+                    text = "Disabled",
+                    variant = ButtonVariant.Tertiary,
+                    enabled = false,
+                )
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Button(
+                    text = "TertiaryOutlined",
+                    variant = ButtonVariant.TertiaryOutlined,
+                    onClick = {},
+                )
+
+                Button(
+                    text = "Disabled",
+                    variant = ButtonVariant.TertiaryOutlined,
+                    enabled = false,
+                )
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Button(
+                    text = "TertiaryElevated",
+                    variant = ButtonVariant.TertiaryElevated,
+                    onClick = {},
+                )
+
+                Button(
+                    text = "Disabled",
+                    variant = ButtonVariant.TertiaryElevated,
+                    enabled = false,
+                )
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Button(
+                    text = "TertiaryGhost",
+                    variant = ButtonVariant.TertiaryGhost,
+                    onClick = {},
+                )
+
+                Button(
+                    text = "Disabled",
+                    variant = ButtonVariant.TertiaryGhost,
+                    enabled = false,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+@Preview
+internal fun DestructiveButtonPreview() {
+    AppPreview {
+        Column(
+            modifier =
+                Modifier.Companion
+                    .background(AppTheme.colors.background)
+                    .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text(
+                text = "Destructive",
+                style = AppTheme.typography.h2,
+            )
+
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Button(
+                    text = "DestructiveFilled",
+                    variant = ButtonVariant.Destructive,
+                    onClick = {},
+                )
 
                 Button(
                     text = "Disabled",
@@ -637,7 +809,11 @@ internal fun DestructiveButtonPreview() {
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Button(text = "DestructiveGhost", variant = ButtonVariant.DestructiveGhost, onClick = {})
+                Button(
+                    text = "DestructiveGhost",
+                    variant = ButtonVariant.DestructiveGhost,
+                    onClick = {},
+                )
 
                 Button(
                     text = "Disabled",

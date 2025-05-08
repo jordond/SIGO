@@ -1,4 +1,4 @@
-package app.sigot.core.ui.components
+package app.sigot.core.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
@@ -76,21 +76,21 @@ private val defaultTypography =
         h1 =
             TextStyle(
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
+                fontSize = 40.sp,
                 lineHeight = 32.sp,
                 letterSpacing = 0.sp,
             ),
         h2 =
             TextStyle(
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
+                fontSize = 30.sp,
                 lineHeight = 28.sp,
                 letterSpacing = 0.sp,
             ),
         h3 =
             TextStyle(
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
+                fontSize = 20.sp,
                 lineHeight = 24.sp,
                 letterSpacing = 0.sp,
             ),
@@ -160,21 +160,24 @@ private val defaultTypography =
     )
 
 @Composable
-public fun provideTypography(): Typography =
-    defaultTypography.copy(
-        h1 = defaultTypography.h1.copy(fontFamily = displayFont),
-        h2 = defaultTypography.h2.copy(fontFamily = displayFont),
-        h3 = defaultTypography.h3.copy(fontFamily = displayFont),
-        h4 = defaultTypography.h4.copy(fontFamily = displayFont),
-        body1 = defaultTypography.body1.copy(fontFamily = contentFont),
-        body2 = defaultTypography.body2.copy(fontFamily = contentFont),
-        body3 = defaultTypography.body3.copy(fontFamily = contentFont),
-        label1 = defaultTypography.label1.copy(fontFamily = contentFont),
-        label2 = defaultTypography.label2.copy(fontFamily = contentFont),
-        label3 = defaultTypography.label3.copy(fontFamily = contentFont),
-        button = defaultTypography.button.copy(fontFamily = contentFont),
-        input = defaultTypography.input.copy(fontFamily = contentFont),
+public fun provideTypography(): Typography {
+    val display = displayFont
+    val content = contentFont
+    return defaultTypography.copy(
+        h1 = defaultTypography.h1.copy(fontFamily = display),
+        h2 = defaultTypography.h2.copy(fontFamily = display),
+        h3 = defaultTypography.h3.copy(fontFamily = display),
+        h4 = defaultTypography.h4.copy(fontFamily = content),
+        body1 = defaultTypography.body1.copy(fontFamily = content),
+        body2 = defaultTypography.body2.copy(fontFamily = content),
+        body3 = defaultTypography.body3.copy(fontFamily = content),
+        label1 = defaultTypography.label1.copy(fontFamily = content),
+        label2 = defaultTypography.label2.copy(fontFamily = content),
+        label3 = defaultTypography.label3.copy(fontFamily = content),
+        button = defaultTypography.button.copy(fontFamily = content),
+        input = defaultTypography.input.copy(fontFamily = content),
     )
+}
 
 public val LocalTypography: ProvidableCompositionLocal<Typography> =
     staticCompositionLocalOf { defaultTypography }

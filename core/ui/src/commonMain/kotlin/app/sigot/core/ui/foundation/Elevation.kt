@@ -1,4 +1,4 @@
-package app.sigot.core.ui.components.foundation
+package app.sigot.core.ui.foundation
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
