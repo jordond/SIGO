@@ -8,7 +8,7 @@ app-android-version = "0.1.0"
 app-android-code = "99999"
 sdk-target = "36"
 sdk-compile = "36"
-sdk-min = "26"
+sdk-min = "30"
 jvmTarget = "17"
 ############################
 

@@ -18,6 +18,7 @@ print_usage() {
     echo "          ktlint|k [arguments]                        Install ktlint and integrate it with the project"
     echo "          hooks|h [--output]                          Install the git hooks, pass --output to display the contents of the hooks"
     echo "    gradle <command>                                  Run any gradle command"
+    echo "    add <component>                                   Add a lumo ui component"
     echo "    clean                                             Cleans all the build files"
     echo "    lint --all | --staged [args]                      Lint the codebase using ktlint"
     echo "    fix [--all] [--staged]                            Fixes only staged files if --all is not passed"
@@ -80,6 +81,15 @@ gradle | g)
     shift
     "$ROOT"/gradlew "$@"
     ;;
+add)
+  shift
+  # Check if there is a component name:
+  if [ "$#" -eq 0 ]; then
+    echo "Error: No component name provided"
+    exit 1
+  fi
+  "$ROOT"/gradlew lumo --no-configuration-cache --add "$@"
+  ;;
 clean)
     "$ROOT"/scripts/cleanup
     ;;

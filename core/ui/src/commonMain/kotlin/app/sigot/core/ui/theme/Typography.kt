@@ -2,54 +2,52 @@ package app.sigot.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import app.toebean.core.resources.PatrickHandSC_Regular
-import app.toebean.core.resources.Recoleta_Bold
-import app.toebean.core.resources.Res
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontVariation
+import androidx.compose.ui.unit.sp
+import app.sigot.core.resources.LexendMega
+import app.sigot.core.resources.PublicSans
+import app.sigot.core.resources.PublicSans_Italic
+import app.sigot.core.resources.Res
 import org.jetbrains.compose.resources.Font
 
-public val PatrickHandSc: FontFamily
+public val LexendMega: FontFamily
     @Composable
-    get() = FontFamily(Font(Res.font.PatrickHandSC_Regular))
+    get() = FontFamily(
+        Font(
+            Res.font.LexendMega,
+            variationSettings = FontVariation.Settings(
+                FontVariation.weight(700),
+            ),
+        ),
+    )
 
-public val Recoleta: FontFamily
+public val PublicSans: FontFamily
     @Composable
-    get() = FontFamily(Font(Res.font.Recoleta_Bold, weight = FontWeight.Bold))
-
-public val displayFont: FontFamily
-    @Composable
-    get() = Recoleta
-
-public val contentFont: FontFamily
-    @Composable
-    get() = PatrickHandSc
+    get() = FontFamily(
+        listOf(
+            Font(Res.font.PublicSans),
+            Font(Res.font.PublicSans_Italic, style = FontStyle.Italic),
+        ),
+    )
 
 public val AppTypography: Typography
-    @Composable get() = createTypographyWith(contentFont).run {
+    @Composable get() = createTypographyWith(PublicSans).run {
         copy(
-            displayLarge = displayLarge.copy(fontFamily = displayFont),
-            displayMedium = displayMedium.copy(fontFamily = displayFont),
-            displaySmall = displaySmall.copy(fontFamily = displayFont),
+            displayLarge = displayLarge.copy(fontFamily = LexendMega),
+            displayMedium = displayMedium.copy(fontFamily = LexendMega),
+            displaySmall = displaySmall.copy(fontFamily = LexendMega),
         )
     }
-
-public val TextStyle.asDisplay: TextStyle
-    @Composable
-    get() = copy(fontFamily = displayFont)
-
-public val TextStyle.asContent: TextStyle
-    @Composable
-    get() = copy(fontFamily = contentFont)
 
 @Composable
 private fun createTypographyWith(family: FontFamily): Typography {
     val base = Typography()
     return Typography().copy(
-        displayLarge = base.displayLarge.copy(fontFamily = family),
-        displayMedium = base.displayMedium.copy(fontFamily = family),
-        displaySmall = base.displaySmall.copy(fontFamily = family),
+        displayLarge = base.displayLarge.copy(fontFamily = family, letterSpacing = (-7).sp),
+        displayMedium = base.displayMedium.copy(fontFamily = family, letterSpacing = (-5).sp),
+        displaySmall = base.displaySmall.copy(fontFamily = family, letterSpacing = (-5).sp),
         headlineLarge = base.headlineLarge.copy(fontFamily = family),
         headlineMedium = base.headlineMedium.copy(fontFamily = family),
         headlineSmall = base.headlineSmall.copy(fontFamily = family),
