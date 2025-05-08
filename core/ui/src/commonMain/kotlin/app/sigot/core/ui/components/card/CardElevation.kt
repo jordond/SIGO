@@ -1,34 +1,43 @@
-package app.sigot.core.ui.components.foundation
+package app.sigot.core.ui.components.card
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Dp
+import app.sigot.core.ui.foundation.animateElevation
 
-@Stable
-public class ButtonElevation internal constructor(
+@Immutable
+public class CardElevation internal constructor(
     private val defaultElevation: Dp,
     private val pressedElevation: Dp,
     private val focusedElevation: Dp,
     private val hoveredElevation: Dp,
+    private val draggedElevation: Dp,
     private val disabledElevation: Dp,
 ) {
     @Composable
     internal fun shadowElevation(
         enabled: Boolean,
-        interactionSource: InteractionSource,
-    ): State<Dp> = animateElevation(enabled = enabled, interactionSource = interactionSource)
+        interactionSource: InteractionSource?,
+    ): State<Dp> {
+        if (interactionSource == null) {
+            return remember { mutableStateOf(defaultElevation) }
+        }
+        return animateElevation(enabled = enabled, interactionSource = interactionSource)
+    }
 
     @Composable
     private fun animateElevation(
@@ -66,6 +75,18 @@ public class ButtonElevation internal constructor(
                     is PressInteraction.Cancel -> {
                         interactions.remove(interaction.press)
                     }
+
+                    is DragInteraction.Start -> {
+                        interactions.add(interaction)
+                    }
+
+                    is DragInteraction.Stop -> {
+                        interactions.remove(interaction.start)
+                    }
+
+                    is DragInteraction.Cancel -> {
+                        interactions.remove(interaction.start)
+                    }
                 }
             }
         }
@@ -80,22 +101,21 @@ public class ButtonElevation internal constructor(
                     is PressInteraction.Press -> pressedElevation
                     is HoverInteraction.Enter -> hoveredElevation
                     is FocusInteraction.Focus -> focusedElevation
+                    is DragInteraction.Start -> draggedElevation
                     else -> defaultElevation
                 }
             }
 
         val animatable = remember { Animatable(target, Dp.VectorConverter) }
 
-        if (!enabled) {
-            // No transition when moving to a disabled state
-            LaunchedEffect(target) { animatable.snapTo(target) }
-        } else {
-            LaunchedEffect(target) {
+        LaunchedEffect(target) {
+            if (enabled) {
                 val lastInteraction =
                     when (animatable.targetValue) {
                         pressedElevation -> PressInteraction.Press(Offset.Zero)
                         hoveredElevation -> HoverInteraction.Enter()
                         focusedElevation -> FocusInteraction.Focus()
+                        draggedElevation -> DragInteraction.Start()
                         else -> null
                     }
                 animatable.animateElevation(
@@ -103,6 +123,9 @@ public class ButtonElevation internal constructor(
                     to = interaction,
                     target = target,
                 )
+            } else {
+                // No transition when moving to a disabled state.
+                animatable.snapTo(target)
             }
         }
 
@@ -111,7 +134,7 @@ public class ButtonElevation internal constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || other !is ButtonElevation) return false
+        if (other == null || other !is CardElevation) return false
 
         if (defaultElevation != other.defaultElevation) return false
         if (pressedElevation != other.pressedElevation) return false

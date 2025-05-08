@@ -4,19 +4,29 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import app.sigot.core.ui.theme.AppTheme
+import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.components.Surface
 
 @Composable
 public fun AppPreview(
     modifier: Modifier = Modifier,
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    useSurface: Boolean = false,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
     AppTheme(
-        useDarkTheme = useDarkTheme,
+        isDarkTheme = isDarkTheme,
     ) {
-        Box(modifier = modifier) {
-            content()
+        if (useSurface) {
+            Surface {
+                Box(modifier = modifier) {
+                    content()
+                }
+            }
+        } else {
+            Box(modifier = modifier) {
+                content()
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package app.sigot.core.ui.components.components
+package app.sigot.core.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -23,17 +23,17 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.sigot.core.ui.components.AppTheme2
-import app.sigot.core.ui.components.LocalContentColor
-import app.sigot.core.ui.components.contentColorFor
-import app.sigot.core.ui.components.foundation.ripple
+import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalContentColor
+import app.sigot.core.ui.contentColorFor
+import app.sigot.core.ui.foundation.ripple
 
 @Composable
 @NonRestartableComposable
 public fun Surface(
     modifier: Modifier = Modifier,
     shape: Shape = RectangleShape,
-    color: Color = AppTheme2.colors.surface,
+    color: Color = AppTheme.colors.surface,
     contentColor: Color = contentColorFor(color),
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
@@ -67,7 +67,7 @@ public fun Surface(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = RectangleShape,
-    color: Color = AppTheme2.colors.background,
+    color: Color = AppTheme.colors.background,
     contentColor: Color = contentColorFor(color),
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
@@ -106,7 +106,7 @@ public fun Surface(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = RectangleShape,
-    color: Color = AppTheme2.colors.background,
+    color: Color = AppTheme.colors.background,
     contentColor: Color = contentColorFor(color),
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
@@ -146,7 +146,7 @@ public fun Surface(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = RectangleShape,
-    color: Color = AppTheme2.colors.background,
+    color: Color = AppTheme.colors.background,
     contentColor: Color = contentColorFor(color),
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
@@ -186,8 +186,8 @@ private fun Modifier.surface(
     shadowElevation: Dp,
 ) = this
     .shadow(
-        ambientColor = AppTheme2.colors.elevation,
-        spotColor = AppTheme2.colors.elevation,
+        ambientColor = AppTheme.colors.elevation,
+        spotColor = AppTheme.colors.elevation,
         elevation = shadowElevation,
         shape = shape,
         clip = false,

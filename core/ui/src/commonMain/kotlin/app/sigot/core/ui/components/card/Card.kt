@@ -1,8 +1,9 @@
-package app.sigot.core.ui.components.components.card
+package app.sigot.core.ui.components.card
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -24,9 +25,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.sigot.core.ui.components.AppTheme2
-import app.sigot.core.ui.components.LocalTypography
-import app.sigot.core.ui.components.components.Surface
+import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalTypography
+import app.sigot.core.ui.components.Surface
+import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -230,11 +232,11 @@ public object CardDefaults {
 
     @Composable
     public fun cardColors(
-        containerColor: Color = AppTheme2.colors.surface,
-        contentColor: Color = AppTheme2.colors.onSurface,
+        containerColor: Color = AppTheme.colors.surface,
+        contentColor: Color = AppTheme.colors.onSurface,
         disabledContainerColor: Color =
-            AppTheme2.colors.disabled,
-        disabledContentColor: Color = AppTheme2.colors.onDisabled,
+            AppTheme.colors.disabled,
+        disabledContentColor: Color = AppTheme.colors.onDisabled,
     ): CardColors =
         CardColors(
             containerColor = containerColor,
@@ -245,11 +247,11 @@ public object CardDefaults {
 
     @Composable
     public fun elevatedCardColors(
-        containerColor: Color = AppTheme2.colors.background,
-        contentColor: Color = AppTheme2.colors.onBackground,
+        containerColor: Color = AppTheme.colors.background,
+        contentColor: Color = AppTheme.colors.onBackground,
         disabledContainerColor: Color =
-            AppTheme2.colors.disabled,
-        disabledContentColor: Color = AppTheme2.colors.onDisabled,
+            AppTheme.colors.disabled,
+        disabledContentColor: Color = AppTheme.colors.onDisabled,
     ): CardColors =
         CardColors(
             containerColor = containerColor,
@@ -260,11 +262,11 @@ public object CardDefaults {
 
     @Composable
     public fun outlinedCardColors(
-        containerColor: Color = AppTheme2.colors.background,
-        contentColor: Color = AppTheme2.colors.onBackground,
+        containerColor: Color = AppTheme.colors.background,
+        contentColor: Color = AppTheme.colors.onBackground,
         disabledContainerColor: Color =
-            AppTheme2.colors.disabled,
-        disabledContentColor: Color = AppTheme2.colors.onDisabled,
+            AppTheme.colors.disabled,
+        disabledContentColor: Color = AppTheme.colors.onDisabled,
     ): CardColors =
         CardColors(
             containerColor = containerColor,
@@ -277,9 +279,9 @@ public object CardDefaults {
     public fun outlinedCardBorder(enabled: Boolean = true): BorderStroke {
         val color =
             if (enabled) {
-                AppTheme2.colors.outline
+                AppTheme.colors.outline
             } else {
-                AppTheme2.colors.disabled
+                AppTheme.colors.disabled
             }
         return remember(color) { BorderStroke(BorderWidth, color) }
     }
@@ -305,112 +307,58 @@ public data class CardColors internal constructor(
 @Composable
 @Preview
 internal fun CardComponentSampleInTheme() {
-    AppTheme2 {
+    AppPreview(useSurface = true) {
         CardComponentSample()
     }
 }
 
 @Composable
-@Preview
 internal fun CardComponentSample() {
-    val cardModifier =
-        Modifier
-            .fillMaxWidth()
-            .height(120.dp)
+    val cardModifier = Modifier
+        .fillMaxWidth()
+        .height(120.dp)
 
-    Column(
-        modifier =
-            Modifier
+    Box {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
-    ) {
-        Column {
-            BasicText(text = "Default Card", style = LocalTypography.current.h3)
-            Spacer(modifier = Modifier.height(8.dp))
+        ) {
+            Column {
+                BasicText(text = "Default Card", style = LocalTypography.current.h3)
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Card(
-                modifier = cardModifier,
-            ) {}
-        }
+                Card(
+                    modifier = cardModifier,
+                ) {}
+            }
 
-        Column {
-            BasicText(text = "Elevated Card with Action", style = LocalTypography.current.h3)
-            ElevatedCard(
-                modifier = cardModifier,
-                onClick = { /* Handle click */ },
-            ) {}
-        }
+            Column {
+                BasicText(text = "Elevated Card", style = LocalTypography.current.h3)
+                ElevatedCard(
+                    modifier = cardModifier,
+                    onClick = { /* Handle click */ },
+                ) {}
+            }
 
-        // Outlined Card
-        Column {
-            BasicText(text = "Custom Outlined Card", style = LocalTypography.current.h3)
-            OutlinedCard(
-                modifier = cardModifier,
-            ) {}
-        }
+            // Outlined Card
+            Column {
+                BasicText(text = "Outlined Card", style = LocalTypography.current.h3)
+                OutlinedCard(
+                    modifier = cardModifier,
+                ) {}
+            }
 
-        Column {
-            BasicText(text = "Disabled Card", style = LocalTypography.current.h3)
-            Card(
-                modifier = cardModifier,
-                onClick = { },
-                enabled = false,
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = Color(0xFFBDBDBD),
-                        contentColor = Color(0xFF9E9E9E),
-                        disabledContainerColor = Color(0xFFEEEEEE),
-                        disabledContentColor = Color(0xFFBDBDBD),
-                    ),
-            ) {}
-        }
-
-        Column {
-            BasicText(text = "Custom Colored Card", style = LocalTypography.current.h3)
-            Card(
-                modifier = cardModifier,
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = Color(0xFFECEFF1),
-                        contentColor = Color(0xFF607D8B),
-                    ),
-            ) {}
-        }
-
-        Column {
-            BasicText(text = "Outlined Card with Hover Elevation", style = LocalTypography.current.h3)
-            OutlinedCard(
-                modifier = cardModifier,
-                onClick = { /* Handle click */ },
-                elevation =
-                    CardDefaults.outlinedCardElevation(
-                        defaultElevation = 0.dp,
-                        hoveredElevation = 4.dp,
-                    ),
-                border = BorderStroke(1.dp, Color(0xFFBDBDBD)),
-                colors =
-                    CardDefaults.outlinedCardColors(
-                        containerColor = Color(0xFFE0E0E0),
-                        contentColor = Color(0xFF616161),
-                    ),
-            ) {}
-        }
-
-        // Interactive Card
-        Column {
-            BasicText(text = "Interactive Card", style = LocalTypography.current.h3)
-            Card(
-                modifier = cardModifier,
-                onClick = { /* Handle click */ },
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = Color(0xFFECEFF1),
-                        contentColor = Color(0xFF455A64),
-                    ),
-                enabled = true,
-            ) {}
+            Column {
+                BasicText(text = "Disabled Card", style = LocalTypography.current.h3)
+                Card(
+                    modifier = cardModifier,
+                    onClick = { },
+                    enabled = false,
+                ) {}
+            }
         }
     }
 }

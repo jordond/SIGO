@@ -6,10 +6,11 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.lumo)
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.Compose)
+configureMultiplatform(Platforms.Compose, name = "core.ui")
 
 kotlin {
     compilerOptions {
@@ -34,14 +35,5 @@ kotlin {
             implementation(libs.coil)
             implementation(libs.materialKolor)
         }
-
-        androidMain.dependencies {
-            implementation(compose.preview)
-        }
     }
-}
-
-android {
-    namespace = libs.versions.app.name
-        .get() + ".core.ui"
 }

@@ -41,8 +41,8 @@ import app.sigot.core.resources.ic_rotate_right
 import app.sigot.core.resources.run
 import app.sigot.core.resources.stop
 import app.sigot.core.resources.theme
-import app.sigot.core.ui.theme.AppTheme
-import app.sigot.core.ui.theme.LocalThemeIsDark
+import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalThemeIsDark
 import kotlinx.coroutines.isActive
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
