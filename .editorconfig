@@ -27,6 +27,6 @@ ij_kotlin_spaces_around_assignment_operators = true
 ij_kotlin_name_count_to_use_star_import = 2147483647
 ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
 
-[core/ui-icons/src/commonMain/kotlin/app/toebean/core/ui/icons/**/*.{kt,kts}]
+[core/ui-icons/src/commonMain/kotlin/app/sigot/core/ui/icons/**/*.{kt,kts}]
 ktlint_standard_backing-property-naming = disabled
 ktlint_standard_filename = disabled

@@ -1,0 +1,47 @@
+import app.sigot.convention.Platforms
+import app.sigot.convention.configureMultiplatform
+
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.multiplatform)
+    alias(libs.plugins.compose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.convention.multiplatform)
+}
+
+configureMultiplatform(Platforms.Compose)
+
+kotlin {
+    compilerOptions {
+        optIn.add("androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi")
+    }
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(projects.core.platform)
+            implementation(projects.core.resources)
+            implementation(projects.core.uiIcons)
+
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.components.uiToolingPreview)
+            implementation(libs.androidx.navigation.composee)
+            api(libs.compose.windowSizeClass)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.collections)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kermit)
+            implementation(libs.coil)
+            implementation(libs.materialKolor)
+        }
+
+        androidMain.dependencies {
+            implementation(compose.preview)
+        }
+    }
+}
+
+android {
+    namespace = libs.versions.app.name
+        .get() + ".core.ui"
+}

@@ -43,8 +43,8 @@ import app.sigot.core.resources.ic_rotate_right
 import app.sigot.core.resources.run
 import app.sigot.core.resources.stop
 import app.sigot.core.resources.theme
-import app.sigot.theme.AppTheme
-import app.sigot.theme.LocalThemeIsDark
+import app.sigot.core.ui.theme.AppTheme
+import app.sigot.core.ui.theme.LocalThemeIsDark
 import kotlinx.coroutines.isActive
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
@@ -53,7 +53,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-fun App() =
+fun App() {
     AppTheme {
         Column(
             modifier = Modifier
@@ -109,7 +109,7 @@ fun App() =
                 },
             )
 
-            var isDark by LocalThemeIsDark.current
+            var isDark = LocalThemeIsDark.current
             val icon = remember(isDark) {
                 if (isDark) {
                     Res.drawable.ic_light_mode
@@ -141,3 +141,4 @@ fun App() =
             }
         }
     }
+}

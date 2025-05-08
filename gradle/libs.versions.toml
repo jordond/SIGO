@@ -19,7 +19,9 @@ androidx-activity = "1.10.1"
 androidx-core = "1.16.0"
 androidx-compose-ui-tooling = "1.8.1"
 androidx-ui-test = "1.8.1"
+compose-windowSizeClass = "1.8.0"
 hotReload = "1.0.0-alpha09"
+kotlinx-collections = "0.3.8"
 kotlinx-coroutines = "1.10.2"
 ktor = "3.1.3"
 filekit = "0.10.0-beta03"
@@ -54,6 +56,7 @@ compass-geocoder = { module = "dev.jordond.compass:geocoder", version.ref = "com
 compass-geocoder-mobile = { module = "dev.jordond.compass:geocoder-mobile", version.ref = "compass" }
 compass-geolocation = { module = "dev.jordond.compass:geolocation", version.ref = "compass" }
 compass-geolocation-mobile = { module = "dev.jordond.compass:geolocation-mobile", version.ref = "compass" }
+compose-windowSizeClass = {module="org.jetbrains.compose.material3:material3-window-size-class", version.ref="compose-windowSizeClass"}
 connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
 connectivity-device = { module = "dev.jordond.connectivity:connectivity-device", version.ref = "connectivity" }
 connectivity-http = { module = "dev.jordond.connectivity:connectivity-http", version.ref = "connectivity" }
@@ -61,6 +64,7 @@ connectivity-compose-device = { module = "dev.jordond.connectivity:connectivity-
 connectivity-compose-http = { module = "dev.jordond.connectivity:connectivity-compose-http", version.ref = "connectivity" }
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+kotlinx-collections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-collections" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
