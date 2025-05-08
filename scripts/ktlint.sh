@@ -10,9 +10,11 @@ set -euo pipefail
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ROOT="$(cd "$CWD"/.. >/dev/null 2>&1 && pwd)"
 
+KTLINT="$ROOT/.app/ktlint"
+
 # Check if $ROOT/.app/ktlint exists
-if [[ ! -f "$ROOT/.app/ktlint" ]]; then
-    echo "Error: $ROOT/.app/ktlint not found, you need to run 'sigot init ktlint'"
+if [[ ! -f "$KTLINT" ]]; then
+    echo "Error: $KTLINT not found, you need to run 'sigot init ktlint'"
     exit 1
 fi
 
@@ -20,7 +22,7 @@ fi
 MODE=${1:-}
 shift || true
 
-# Function to run ktlint.sh on staged files
+# Function to run ktlint on staged files
 run_ktlint_staged() {
     echo "Linting staged files..."
     local changed_files
@@ -29,13 +31,13 @@ run_ktlint_staged() {
         exit 0
     fi
 
-    echo "${changed_files[@]}" | xargs ktlint.sh --relative --reporter=plain "$@" 2>&1
+    echo "${changed_files[@]}" | xargs "$KTLINT" --relative --reporter=plain "$@" 2>&1
 }
 
 # Function to run ktlint.sh on all files
 run_ktlint_all() {
     echo "Linting all files..."
-    ktlint.sh --reporter=plain '**/*.kt' '**/*.kts' '!**/build/**' '!**/generated/**' "$@"
+    "$KTLINT" --reporter=plain '**/*.kt' '**/*.kts' '!**/build/**' '!**/generated/**' "$@"
 }
 
 if [[ -z "$MODE" ]]; then

@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose)
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.hotReload)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.room)
@@ -59,7 +59,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(compose.uiTooling)
-            implementation(libs.androidx.activityCompose)
+            implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.okhttp)
         }
@@ -76,7 +76,7 @@ kotlin {
     }
 }
 
-//https://developer.android.com/develop/ui/compose/testing#setup
+// https://developer.android.com/develop/ui/compose/testing#setup
 dependencies {
     androidTestImplementation(libs.androidx.uitest.junit4)
     debugImplementation(libs.androidx.uitest.testManifest)
@@ -86,11 +86,13 @@ compose.desktop {
     application {
         mainClass = "MainKt"
 
-        val name = libs.versions.app.name.get()
+        val name = libs.versions.app.name
+            .get()
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = name
-            packageVersion = libs.versions.app.desktop.version.get()
+            packageVersion = libs.versions.app.desktop.version
+                .get()
 
             linux {
                 iconFile.set(project.file("desktopIcons/LinuxIcon.png"))
@@ -106,7 +108,7 @@ compose.desktop {
     }
 }
 
-//https://github.com/JetBrains/compose-hot-reload
+// https://github.com/JetBrains/compose-hot-reload
 composeCompiler {
     featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
 }

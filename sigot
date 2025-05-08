@@ -91,7 +91,7 @@ fix | f)
     if [[ "$2" == "--all" ]]; then
         set +e
         echo "Linting and fixing all kotlin files"
-        "$ROOT"/scripts/ktlint --all -F
+        "$ROOT"/scripts/ktlint.sh --all -F
 
         echo "Formatting all shell scripts"
         shfmt -w -i 4 "$ROOT"/scripts/
