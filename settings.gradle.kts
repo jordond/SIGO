@@ -20,6 +20,7 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage")
     repositories {
         google {
             content {
@@ -40,4 +41,8 @@ plugins {
 include(":android")
 
 include(":core:app")
+include(":core:model")
+include(":core:platform")
 include(":core:resources")
+include(":core:ui")
+include(":core:ui-icons")

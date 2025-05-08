@@ -1,10 +1,66 @@
 <resources>
     <string name="app_name">Should I go outside today?</string>
     <string name="app_name_short">SIGOT</string>
+    <string name="blank" />
 
     <string name="cyclone">Cyclone</string>
     <string name="open_github">Open NOTHING</string>
     <string name="run">Run</string>
     <string name="stop">Stop</string>
     <string name="theme">Theme</string>
+
+    <string name="month_january">January</string>
+    <string name="month_february">February</string>
+    <string name="month_march">March</string>
+    <string name="month_april">April</string>
+    <string name="month_may">May</string>
+    <string name="month_june">June</string>
+    <string name="month_july">July</string>
+    <string name="month_august">August</string>
+    <string name="month_september">September</string>
+    <string name="month_october">October</string>
+    <string name="month_november">November</string>
+    <string name="month_december">December</string>
+
+    <string name="month_january_short">Jan</string>
+    <string name="month_february_short">Feb</string>
+    <string name="month_march_short">Mar</string>
+    <string name="month_april_short">Apr</string>
+    <string name="month_august_short">Aug</string>
+    <string name="month_september_short">Sep</string>
+    <string name="month_october_short">Oct</string>
+    <string name="month_november_short">Nov</string>
+    <string name="month_december_short">Dec</string>
+
+    <string name="day_of_week_sunday">Sunday</string>
+    <string name="day_of_week_monday">Monday</string>
+    <string name="day_of_week_tuesday">Tuesday</string>
+    <string name="day_of_week_wednesday">Wednesday</string>
+    <string name="day_of_week_thursday">Thursday</string>
+    <string name="day_of_week_friday">Friday</string>
+    <string name="day_of_week_saturday">Saturday</string>
+
+    <string name="day_of_week_short_sunday">Sun</string>
+    <string name="day_of_week_short_monday">Mon</string>
+    <string name="day_of_week_short_tuesday">Tue</string>
+    <string name="day_of_week_short_wednesday">Wed</string>
+    <string name="day_of_week_short_thursday">Thu</string>
+    <string name="day_of_week_short_friday">Fri</string>
+    <string name="day_of_week_short_saturday">Sat</string>
+
+    <string name="day_of_week_ordinal_first">st</string>
+    <string name="day_of_week_ordinal_second">nd</string>
+    <string name="day_of_week_ordinal_third">rd</string>
+    <string name="day_of_week_ordinal_th">th</string>
+
+    <string name="unit_wind_mph">mph</string>
+    <string name="unit_wind_kph">km/h</string>
+    <string name="unit_wind_ms">m/s</string>
+    <string name="unit_temperature_celsius">°C</string>
+    <string name="unit_temperature_fahrenheit">°F</string>
+    <string name="unit_temperature_kelvin">K</string>
+    <string name="unit_precipitation_mm">mm</string>
+    <string name="unit_precipitation_inch">in</string>
+    <string name="unit_distance_km">km</string>
+    <string name="unit_distance_mile">mi</string>
 </resources>
