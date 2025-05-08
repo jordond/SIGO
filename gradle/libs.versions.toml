@@ -38,6 +38,7 @@ kermit = "2.0.5"
 stateHolder = "2.0.0-rc02"
 compass = "2.0.1"
 connectivity = "2.0.0"
+lumo = "1.2.5"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
@@ -113,5 +114,6 @@ hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hotReload"
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+lumo = {id="com.nomanr.plugin.lumo", version.ref="lumo"}
 convention-multiplatform = { id = "convention.multiplatform", version = "0" }
 toolchain-version = { id = "toolchain.version", version = "0" }
