@@ -12,12 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
@@ -27,7 +26,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalTypography
+import app.sigot.core.ui.components.BrutalContainer
+import app.sigot.core.ui.components.BrutalDefaults
+import app.sigot.core.ui.components.BrutalElevationDefaults
 import app.sigot.core.ui.components.Surface
+import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -36,8 +39,7 @@ public fun Card(
     modifier: Modifier = Modifier,
     shape: Shape = CardDefaults.Shape,
     colors: CardColors = CardDefaults.cardColors(),
-    elevation: CardElevation = CardDefaults.cardElevation(),
-    border: BorderStroke? = null,
+    border: BorderStroke = CardDefaults.cardBorder(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
@@ -45,12 +47,6 @@ public fun Card(
         shape = shape,
         color = colors.containerColor(enabled = true).value,
         contentColor = colors.contentColor(enabled = true).value,
-        shadowElevation =
-            elevation
-                .shadowElevation(
-                    enabled = true,
-                    interactionSource = null,
-                ).value,
         border = border,
     ) {
         Column(content = content)
@@ -64,8 +60,7 @@ public fun Card(
     enabled: Boolean = true,
     shape: Shape = CardDefaults.Shape,
     colors: CardColors = CardDefaults.cardColors(),
-    elevation: CardElevation = CardDefaults.cardElevation(),
-    border: BorderStroke? = null,
+    border: BorderStroke = CardDefaults.cardBorder(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -76,7 +71,6 @@ public fun Card(
         shape = shape,
         color = colors.containerColor(enabled).value,
         contentColor = colors.contentColor(enabled).value,
-        shadowElevation = elevation.shadowElevation(enabled, interactionSource).value,
         border = border,
         interactionSource = interactionSource,
     ) {
@@ -89,17 +83,25 @@ public fun ElevatedCard(
     modifier: Modifier = Modifier,
     shape: Shape = CardDefaults.ElevatedShape,
     colors: CardColors = CardDefaults.elevatedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    elevation: CardElevation = CardDefaults.cardElevation(),
+    border: BorderStroke = CardDefaults.cardBorder(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Card(
-        modifier = modifier,
+    val elevationValue by elevation.shadowElevation(enabled = true, interactionSource = null)
+    BrutalContainer(
         shape = shape,
-        border = null,
-        elevation = elevation,
-        colors = colors,
-        content = content,
-    )
+        offset = elevationValue,
+        color = CardDefaults.BorderColor,
+        extraY = true,
+    ) {
+        Card(
+            modifier = modifier,
+            shape = shape,
+            border = border,
+            colors = colors,
+            content = content,
+        )
+    }
 }
 
 @Composable
@@ -107,119 +109,46 @@ public fun ElevatedCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = CardDefaults.ElevatedShape,
+    shape: Shape = CardDefaults.Shape,
     colors: CardColors = CardDefaults.elevatedCardColors(),
-    elevation: CardElevation = CardDefaults.elevatedCardElevation(),
+    elevation: CardElevation = CardDefaults.cardElevation(),
+    border: BorderStroke = CardDefaults.cardBorder(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Card(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
+    val elevationValue by elevation.shadowElevation(enabled, interactionSource)
+    BrutalContainer(
         shape = shape,
-        colors = colors,
-        elevation = elevation,
-        border = null,
-        interactionSource = interactionSource,
-        content = content,
-    )
-}
-
-@Composable
-public fun OutlinedCard(
-    modifier: Modifier = Modifier,
-    shape: Shape = CardDefaults.OutlinedShape,
-    colors: CardColors = CardDefaults.outlinedCardColors(),
-    elevation: CardElevation = CardDefaults.outlinedCardElevation(),
-    border: BorderStroke = CardDefaults.outlinedCardBorder(),
-    content: @Composable ColumnScope.() -> Unit,
-) {
-    Card(
-        modifier = modifier,
-        shape = shape,
-        border = border,
-        elevation = elevation,
-        colors = colors,
-        content = content,
-    )
-}
-
-@Composable
-public fun OutlinedCard(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    shape: Shape = CardDefaults.OutlinedShape,
-    colors: CardColors = CardDefaults.outlinedCardColors(),
-    elevation: CardElevation = CardDefaults.outlinedCardElevation(),
-    border: BorderStroke = CardDefaults.outlinedCardBorder(),
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable ColumnScope.() -> Unit,
-) {
-    Card(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-        shape = shape,
-        colors = colors,
-        elevation = elevation,
-        border = border,
-        interactionSource = interactionSource,
-        content = content,
-    )
+        offset = elevationValue,
+        color = CardDefaults.BorderColor,
+    ) {
+        Card(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            shape = shape,
+            border = border,
+            colors = colors,
+            interactionSource = interactionSource,
+            content = content,
+        )
+    }
 }
 
 public object CardDefaults {
-    public val Shape: Shape @Composable get() = RoundedCornerShape(12.0.dp)
+    public val Shape: Shape @Composable get() = BrutalDefaults.Shape
     public val ElevatedShape: Shape @Composable get() = Shape
-    public val OutlinedShape: Shape @Composable get() = Shape
-    private val BorderWidth = 1.dp
+    public val BorderColor: Color @Composable get() = BrutalDefaults.Color
+    private val BorderWidth = BrutalDefaults.BorderWidth
 
     @Composable
     public fun cardElevation(
-        defaultElevation: Dp = 0.0.dp,
-        pressedElevation: Dp = 0.0.dp,
-        focusedElevation: Dp = 0.0.dp,
-        hoveredElevation: Dp = 1.0.dp,
-        draggedElevation: Dp = 3.0.dp,
-        disabledElevation: Dp = 0.0.dp,
-    ): CardElevation =
-        CardElevation(
-            defaultElevation = defaultElevation,
-            pressedElevation = pressedElevation,
-            focusedElevation = focusedElevation,
-            hoveredElevation = hoveredElevation,
-            draggedElevation = draggedElevation,
-            disabledElevation = disabledElevation,
-        )
-
-    @Composable
-    public fun elevatedCardElevation(
-        defaultElevation: Dp = 2.0.dp,
-        pressedElevation: Dp = 4.0.dp,
-        focusedElevation: Dp = 4.0.dp,
-        hoveredElevation: Dp = 4.0.dp,
-        draggedElevation: Dp = 4.0.dp,
-        disabledElevation: Dp = 0.0.dp,
-    ): CardElevation =
-        CardElevation(
-            defaultElevation = defaultElevation,
-            pressedElevation = pressedElevation,
-            focusedElevation = focusedElevation,
-            hoveredElevation = hoveredElevation,
-            draggedElevation = draggedElevation,
-            disabledElevation = disabledElevation,
-        )
-
-    @Composable
-    public fun outlinedCardElevation(
-        defaultElevation: Dp = 0.0.dp,
-        pressedElevation: Dp = 0.0.dp,
-        focusedElevation: Dp = 0.0.dp,
-        hoveredElevation: Dp = 1.0.dp,
-        draggedElevation: Dp = 3.0.dp,
-        disabledElevation: Dp = 0.0.dp,
+        defaultElevation: Dp = BrutalElevationDefaults.defaultElevation,
+        pressedElevation: Dp = BrutalElevationDefaults.pressedElevation,
+        focusedElevation: Dp = BrutalElevationDefaults.focusedElevation,
+        hoveredElevation: Dp = BrutalElevationDefaults.hoveredElevation,
+        draggedElevation: Dp = BrutalElevationDefaults.draggedElevation,
+        disabledElevation: Dp = BrutalElevationDefaults.disabledElevation,
     ): CardElevation =
         CardElevation(
             defaultElevation = defaultElevation,
@@ -234,8 +163,7 @@ public object CardDefaults {
     public fun cardColors(
         containerColor: Color = AppTheme.colors.surface,
         contentColor: Color = AppTheme.colors.onSurface,
-        disabledContainerColor: Color =
-            AppTheme.colors.disabled,
+        disabledContainerColor: Color = AppTheme.colors.disabled,
         disabledContentColor: Color = AppTheme.colors.onDisabled,
     ): CardColors =
         CardColors(
@@ -247,10 +175,9 @@ public object CardDefaults {
 
     @Composable
     public fun elevatedCardColors(
-        containerColor: Color = AppTheme.colors.background,
-        contentColor: Color = AppTheme.colors.onBackground,
-        disabledContainerColor: Color =
-            AppTheme.colors.disabled,
+        containerColor: Color = AppTheme.colors.surface,
+        contentColor: Color = AppTheme.colors.onSurface,
+        disabledContainerColor: Color = AppTheme.colors.disabled,
         disabledContentColor: Color = AppTheme.colors.onDisabled,
     ): CardColors =
         CardColors(
@@ -261,30 +188,8 @@ public object CardDefaults {
         )
 
     @Composable
-    public fun outlinedCardColors(
-        containerColor: Color = AppTheme.colors.background,
-        contentColor: Color = AppTheme.colors.onBackground,
-        disabledContainerColor: Color =
-            AppTheme.colors.disabled,
-        disabledContentColor: Color = AppTheme.colors.onDisabled,
-    ): CardColors =
-        CardColors(
-            containerColor = containerColor,
-            contentColor = contentColor,
-            disabledContainerColor = disabledContainerColor,
-            disabledContentColor = disabledContentColor,
-        )
-
-    @Composable
-    public fun outlinedCardBorder(enabled: Boolean = true): BorderStroke {
-        val color =
-            if (enabled) {
-                AppTheme.colors.outline
-            } else {
-                AppTheme.colors.disabled
-            }
-        return remember(color) { BorderStroke(BorderWidth, color) }
-    }
+    public fun cardBorder(color: Color = BorderColor): BorderStroke =
+        remember(color) { BorderStroke(BorderWidth, color) }
 }
 
 @ConsistentCopyVisibility
@@ -306,8 +211,16 @@ public data class CardColors internal constructor(
 
 @Composable
 @Preview
-internal fun CardComponentSampleInTheme() {
-    AppPreview(useSurface = true) {
+internal fun CardComponentLight() {
+    AppPreview(isDarkTheme = false) {
+        CardComponentSample()
+    }
+}
+
+@Composable
+@Preview
+internal fun CardComponentDark() {
+    AppPreview(isDarkTheme = true) {
         CardComponentSample()
     }
 }
@@ -327,7 +240,7 @@ internal fun CardComponentSample() {
                 .verticalScroll(rememberScrollState()),
         ) {
             Column {
-                BasicText(text = "Default Card", style = LocalTypography.current.h3)
+                Text(text = "Default Card", style = LocalTypography.current.h3)
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Card(
@@ -336,24 +249,27 @@ internal fun CardComponentSample() {
             }
 
             Column {
-                BasicText(text = "Elevated Card", style = LocalTypography.current.h3)
+                Text(text = "Disabled Card", style = LocalTypography.current.h3)
+                Card(
+                    modifier = cardModifier,
+                    onClick = { },
+                    enabled = false,
+                ) {}
+            }
+
+            Column {
+                Text(text = "Elevated Card", style = LocalTypography.current.h3)
+                Spacer(modifier = Modifier.height(8.dp))
+
                 ElevatedCard(
                     modifier = cardModifier,
-                    onClick = { /* Handle click */ },
-                ) {}
-            }
-
-            // Outlined Card
-            Column {
-                BasicText(text = "Outlined Card", style = LocalTypography.current.h3)
-                OutlinedCard(
-                    modifier = cardModifier,
+                    onClick = { },
                 ) {}
             }
 
             Column {
-                BasicText(text = "Disabled Card", style = LocalTypography.current.h3)
-                Card(
+                Text(text = "Disabled Elevated Card", style = LocalTypography.current.h3)
+                ElevatedCard(
                     modifier = cardModifier,
                     onClick = { },
                     enabled = false,

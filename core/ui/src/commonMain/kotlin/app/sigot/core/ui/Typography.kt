@@ -78,21 +78,21 @@ private val defaultTypography =
                 fontWeight = FontWeight.Bold,
                 fontSize = 40.sp,
                 lineHeight = 32.sp,
-                letterSpacing = 0.sp,
+                letterSpacing = (-7).sp,
             ),
         h2 =
             TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp,
                 lineHeight = 28.sp,
-                letterSpacing = 0.sp,
+                letterSpacing = (-6).sp,
             ),
         h3 =
             TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 lineHeight = 24.sp,
-                letterSpacing = 0.sp,
+                letterSpacing = (-4).sp,
             ),
         h4 =
             TextStyle(

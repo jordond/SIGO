@@ -10,7 +10,7 @@ import app.sigot.core.ui.components.Surface
 @Composable
 public fun AppPreview(
     modifier: Modifier = Modifier,
-    useSurface: Boolean = false,
+    useSurface: Boolean = true,
     isDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {

@@ -6,7 +6,6 @@ import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ProvidableCompositionLocal
@@ -15,9 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 
-internal val Black: Color = Color(0xFF000000)
 internal val Gray900: Color = Color(0xFF282828)
 internal val Gray800: Color = Color(0xFF4b4b4b)
 internal val Gray700: Color = Color(0xFF5e5e5e)
@@ -26,43 +23,10 @@ internal val Gray500: Color = Color(0xFF868686)
 internal val Gray400: Color = Color(0xFFC7C7C7)
 internal val Gray300: Color = Color(0xFFDFDFDF)
 internal val Gray200: Color = Color(0xFFE2E2E2)
-internal val Gray100: Color = Color(0xFFF7F7F7)
-internal val Gray50: Color = Color(0xFFFFFFFF)
-internal val White: Color = Color(0xFFFFFFFF)
 
-internal val Red900: Color = Color(0xFF520810)
-internal val Red800: Color = Color(0xFF950f22)
-internal val Red700: Color = Color(0xFFbb032a)
-internal val Red600: Color = Color(0xFFde1135)
-internal val Red500: Color = Color(0xFFf83446)
 internal val Red400: Color = Color(0xFFfc7f79)
-internal val Red300: Color = Color(0xFFffb2ab)
-internal val Red200: Color = Color(0xFFffd2cd)
-internal val Red100: Color = Color(0xFFffe1de)
-internal val Red50: Color = Color(0xFFfff0ee)
-
-internal val Blue900: Color = Color(0xFF276EF1)
-internal val Blue800: Color = Color(0xFF3F7EF2)
-internal val Blue700: Color = Color(0xFF578EF4)
-internal val Blue600: Color = Color(0xFF6F9EF5)
-internal val Blue500: Color = Color(0xFF87AEF7)
-internal val Blue400: Color = Color(0xFF9FBFF8)
 internal val Blue300: Color = Color(0xFFB7CEFA)
-internal val Blue200: Color = Color(0xFFCFDEFB)
-internal val Blue100: Color = Color(0xFFE7EEFD)
-internal val Blue50: Color = Color(0xFFFFFFFF)
-
-internal val Green950: Color = Color(0xFF0B4627)
-internal val Green900: Color = Color(0xFF16643B)
-internal val Green800: Color = Color(0xFF1A7544)
 internal val Green700: Color = Color(0xFF178C4E)
-internal val Green600: Color = Color(0xFF1DAF61)
-internal val Green500: Color = Color(0xFF1FC16B)
-internal val Green400: Color = Color(0xFF3EE089)
-internal val Green300: Color = Color(0xFF84EBB4)
-internal val Green200: Color = Color(0xFFC2F5DA)
-internal val Green100: Color = Color(0xFFD0FBE9)
-internal val Green50: Color = Color(0xFFE0FAEC)
 
 @Immutable
 public data class Colors(
@@ -84,8 +48,8 @@ public data class Colors(
     val onBackground: Color,
     val outline: Color,
     val transparent: Color = Color.Transparent,
-    val white: Color = White,
-    val black: Color = Black,
+    val white: Color = Color.White,
+    val black: Color = Color.Black,
     val text: Color,
     val textSecondary: Color,
     val textDisabled: Color,
@@ -93,63 +57,85 @@ public data class Colors(
     val elevation: Color,
 )
 
-internal val LightColors =
-    Colors(
-        primary = Black,
-        onPrimary = White,
-        secondary = Gray400,
-        onSecondary = Black,
-        tertiary = Blue900,
-        onTertiary = White,
-        surface = Gray200,
-        onSurface = Black,
-        error = Red600,
-        onError = White,
-        success = Green600,
-        onSuccess = White,
-        disabled = Gray100,
-        onDisabled = Gray500,
-        background = White,
-        onBackground = Black,
-        outline = Gray300,
-        transparent = Color.Transparent,
-        white = White,
-        black = Black,
-        text = Black,
-        textSecondary = Gray700,
-        textDisabled = Gray400,
-        scrim = Color.Black.copy(alpha = 0.32f),
-        elevation = Gray700,
-    )
+private val Yellow = Color(0xFFFFD738) // Bright yellow - from palette
+private val Coral = Color(0xFFFF6B6B) // Coral red - from palette
+private val Mint = Color(0xFF90EE90) // Light mint green - for success
+private val LightBlue = Color(0xFF87CEEB) // Light blue - from palette
+private val Pink = Color(0xFFFF69B4) // Pink - from palette
+private val LightPurple = Color(0xFFA388EE) // Light purple - from palette
+private val WarmBeige = Color(0xFFFEECDE) // Warm beige for backgrounds
+private val LightBeige = Color(0xFFFFF5EA)
+private val Orange = Color(0xFFE3A018) // Orange - from palette
+private val LightGray = Color(0xFFF8F8F8) // Light gray for backgrounds
+private val MediumGray = Color(0xFFAAAAAA) // Medium gray for disabled states
+private val DarkGray = Color(0xFF333333) // Dark gray for secondary text
+private val ScrimColor = Color(0x99000000) // Semi-transparent black for scrims
 
-internal val DarkColors =
-    Colors(
-        primary = White,
-        onPrimary = Black,
-        secondary = Gray400,
-        onSecondary = White,
-        tertiary = Blue300,
-        onTertiary = Black,
-        surface = Gray900,
-        onSurface = White,
-        error = Red400,
-        onError = Black,
-        success = Green700,
-        onSuccess = Black,
-        disabled = Gray700,
-        onDisabled = Gray500,
-        background = Black,
-        onBackground = White,
-        outline = Gray800,
-        transparent = Color.Transparent,
-        white = White,
-        black = Black,
-        text = White,
-        textSecondary = Gray300,
-        textDisabled = Gray600,
-        scrim = Color.Black.copy(alpha = 0.72f),
-        elevation = Gray200,
-    )
+// Dark theme colors
+private val DarkNavy = Color(0xFF1A1A2E) // Dark navy for backgrounds
+private val DeepBlue = Color(0xFF16213E) // Deeper blue for surfaces
+private val DarkPurple = Color(0xFF35155D) // Dark purple
+private val BrightYellow = Color(0xFFFCCF03) // More saturated yellow
+private val BrightCoral = Color(0xFFFF8C91) // Brighter coral
+private val BrightMint = Color(0xFF7FFFD4) // Brighter mint
+private val BrightBlue = Color(0xFF5599FF) // Brighter blue
+private val VividPink = Color(0xFFFF79C6) // More vivid pink
+private val NeoDarkBackground = Color(0xFF141228)
+private val NeoDarkSurface = Color(0xFF2A2236)
+
+private val DarkScrim = Color(0xCC000000) // Darker scrim for dark theme
+
+internal val LightColors = Colors(
+    primary = Yellow,
+    onPrimary = Color.Black,
+    secondary = LightBlue,
+    onSecondary = Color.Black,
+    tertiary = Pink,
+    onTertiary = Color.Black,
+    error = Coral,
+    onError = Color.White,
+    success = Mint,
+    onSuccess = Color.Black,
+    disabled = MediumGray,
+    onDisabled = Color.White,
+    surface = LightBeige,
+    onSurface = Color.Black,
+    background = WarmBeige,
+    onBackground = Color.Black,
+    outline = Color.Black,
+    transparent = Color.Transparent,
+    text = Color.Black,
+    textSecondary = DarkGray,
+    textDisabled = MediumGray,
+    scrim = ScrimColor,
+    elevation = Color.Black,
+)
+
+public val DarkColors: Colors = Colors(
+    primary = BrightYellow,
+    onPrimary = DarkNavy,
+    secondary = BrightBlue,
+    onSecondary = Color.Black,
+    tertiary = VividPink,
+    onTertiary = Color.Black,
+    error = BrightCoral,
+    onError = Color.Black,
+    success = BrightMint,
+    onSuccess = Color.Black,
+    disabled = DarkGray,
+    onDisabled = MediumGray,
+    surface = NeoDarkSurface,
+    onSurface = Color.White,
+    background = NeoDarkBackground,
+    onBackground = Color.White,
+    outline = Color.Black,
+    transparent = Color.Transparent,
+    text = LightGray,
+    textSecondary = MediumGray,
+    textDisabled = DarkGray,
+    scrim = DarkScrim,
+    elevation = Color.Black,
+)
 
 public val LocalColors: ProvidableCompositionLocal<Colors> = staticCompositionLocalOf { LightColors }
 public val LocalContentColor: ProvidableCompositionLocal<Color> = compositionLocalOf { Color.Black }
