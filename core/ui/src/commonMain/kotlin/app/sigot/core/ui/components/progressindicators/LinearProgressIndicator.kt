@@ -113,9 +113,13 @@ public fun LinearProgressIndicator(
 @Composable
 public fun LinearProgressIndicator(
     modifier: Modifier = Modifier,
+    height: Dp = LinearProgressIndicatorDefaults.TrackHeight,
     color: Color = LinearProgressIndicatorDefaults.Color,
     trackColor: Color = LinearProgressIndicatorDefaults.TrackColor,
     strokeCap: StrokeCap = LinearProgressIndicatorDefaults.StrokeStyle,
+    shape: Shape = LinearProgressIndicatorDefaults.Shape,
+    elevation: Dp = LinearProgressIndicatorDefaults.Elevation,
+    showEndMarker: Boolean = LinearProgressIndicatorDefaults.ShowEndMarker,
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "InfiniteTransition")
     val firstLineHead =
@@ -186,31 +190,48 @@ public fun LinearProgressIndicator(
             ),
             label = "SecondLineTail",
         )
-    Canvas(
-        modifier = modifier
-            .progressSemantics()
-            .height(LinearProgressIndicatorDefaults.TrackHeight)
-            .fillMaxWidth(),
+
+    val borderColor = LinearProgressIndicatorDefaults.BorderColor
+    val border = LinearProgressIndicatorDefaults.borderStroke()
+
+    BrutalContainer(
+        shape = shape,
+        offset = elevation,
+        color = borderColor,
+        modifier = modifier.progressSemantics(),
     ) {
-        val strokeWidth = size.height
-        drawLinearIndicatorTrack(trackColor, strokeWidth, strokeCap)
-        if (firstLineHead.value - firstLineTail.value > 0) {
-            drawLinearIndicator(
-                startFraction = firstLineHead.value,
-                endFraction = firstLineTail.value,
-                color = color,
-                strokeWidth = strokeWidth,
-                strokeCap = strokeCap,
-            )
-        }
-        if (secondLineHead.value - secondLineTail.value > 0) {
-            drawLinearIndicator(
-                startFraction = secondLineHead.value,
-                endFraction = secondLineTail.value,
-                color = color,
-                strokeWidth = strokeWidth,
-                strokeCap = strokeCap,
-            )
+        Surface(
+            shape = shape,
+            border = border,
+            color = trackColor,
+            shadowElevation = 0.dp,
+        ) {
+            Canvas(
+                modifier = Modifier
+                    .height(height)
+                    .fillMaxWidth(),
+            ) {
+                val strokeWidth = size.height
+                drawLinearIndicatorTrack(trackColor, strokeWidth, strokeCap)
+                if (firstLineHead.value - firstLineTail.value > 0) {
+                    drawLinearIndicator(
+                        startFraction = firstLineHead.value,
+                        endFraction = firstLineTail.value,
+                        color = color,
+                        strokeWidth = strokeWidth,
+                        strokeCap = strokeCap,
+                    )
+                }
+                if (secondLineHead.value - secondLineTail.value > 0) {
+                    drawLinearIndicator(
+                        startFraction = secondLineHead.value,
+                        endFraction = secondLineTail.value,
+                        color = color,
+                        strokeWidth = strokeWidth,
+                        strokeCap = strokeCap,
+                    )
+                }
+            }
         }
     }
 }
@@ -369,58 +390,71 @@ public object LinearProgressIndicatorDefaults {
 }
 
 @Composable
-@Preview
-internal fun LinearProgressIndicatorPreview() {
-    AppPreview {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(16.dp),
-        ) {
-            Text(
-                text = "Determinate Progress",
-                style = AppTheme.typography.h4,
-            )
-            LinearProgressIndicator(progress = { 0.7f }, showEndMarker = false)
+private fun IndicatorPreview() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(16.dp),
+    ) {
+        Text(
+            text = "Determinate Progress",
+            style = AppTheme.typography.h4,
+        )
+        LinearProgressIndicator(progress = { 0.7f }, showEndMarker = false)
 
-            Text(
-                text = "Determinate Progress with End Marker",
-                style = AppTheme.typography.h4,
-            )
+        Text(
+            text = "Determinate Progress with End Marker",
+            style = AppTheme.typography.h4,
+        )
 
-            var progress by remember { mutableStateOf(0.4f) }
-            val animatedProgress by animateFloatAsState(progress)
-            LaunchedEffect(Unit) {
-                while (isActive) {
-                    progress = (progress + 0.01f).coerceAtMost(1f)
-                    if (progress == 1f) {
-                        progress = 0f
-                    }
-                    delay(100)
+        var progress by remember { mutableStateOf(0.4f) }
+        val animatedProgress by animateFloatAsState(progress)
+        LaunchedEffect(Unit) {
+            while (isActive) {
+                progress = (progress + 0.01f).coerceAtMost(1f)
+                if (progress == 1f) {
+                    progress = 0f
                 }
+                delay(100)
             }
-
-            LinearProgressIndicator(
-                strokeCap = StrokeCap.Square,
-                showEndMarker = true,
-                progress = { animatedProgress },
-            )
-            LinearProgressIndicator(
-                strokeCap = StrokeCap.Round,
-                showEndMarker = true,
-                progress = { animatedProgress },
-            )
-            LinearProgressIndicator(
-                strokeCap = StrokeCap.Butt,
-                showEndMarker = true,
-                progress = { animatedProgress },
-            )
-
-            Text(
-                text = "Indeterminate Progress",
-                style = AppTheme.typography.h4,
-            )
-            LinearProgressIndicator()
         }
+
+        LinearProgressIndicator(
+            strokeCap = StrokeCap.Square,
+            showEndMarker = true,
+            progress = { animatedProgress },
+        )
+        LinearProgressIndicator(
+            strokeCap = StrokeCap.Round,
+            showEndMarker = true,
+            progress = { animatedProgress },
+        )
+        LinearProgressIndicator(
+            strokeCap = StrokeCap.Butt,
+            showEndMarker = true,
+            progress = { animatedProgress },
+        )
+
+        Text(
+            text = "Indeterminate Progress",
+            style = AppTheme.typography.h4,
+        )
+        LinearProgressIndicator()
+    }
+}
+
+@Composable
+@Preview
+internal fun LinearProgressIndicatorLightPreview() {
+    AppPreview(isDarkTheme = false) {
+        IndicatorPreview()
+    }
+}
+
+@Composable
+@Preview
+internal fun LinearProgressIndicatorDarkPreview() {
+    AppPreview(isDarkTheme = true) {
+        IndicatorPreview()
     }
 }
