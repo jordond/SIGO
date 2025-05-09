@@ -284,11 +284,11 @@ public object ButtonDefaults {
 
     @Composable
     public fun buttonElevation(
-        defaultElevation: Dp = BrutalElevationDefaults.Small.defaultElevation,
-        pressedElevation: Dp = BrutalElevationDefaults.Small.pressedElevation,
-        focusedElevation: Dp = BrutalElevationDefaults.Small.focusedElevation,
-        hoveredElevation: Dp = BrutalElevationDefaults.Small.hoveredElevation,
-        disabledElevation: Dp = BrutalElevationDefaults.Small.disabledElevation,
+        defaultElevation: Dp = BrutalElevationDefaults.Small.default,
+        pressedElevation: Dp = BrutalElevationDefaults.Small.pressed,
+        focusedElevation: Dp = BrutalElevationDefaults.Small.focused,
+        hoveredElevation: Dp = BrutalElevationDefaults.Small.hovered,
+        disabledElevation: Dp = BrutalElevationDefaults.Small.disabled,
     ): ButtonElevation =
         ButtonElevation(
             defaultElevation = defaultElevation,

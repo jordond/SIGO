@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -207,16 +206,16 @@ public object IconButtonDefaults {
     internal val ButtonSize = 44.dp
     internal val OutlineHeight = BrutalDefaults.BorderWidth
     public val ButtonPadding: PaddingValues = PaddingValues(4.dp)
-    public val ButtonSquareShape: CornerBasedShape @Composable get() = AppTheme.shapes.small
-    public val ButtonCircleShape: RoundedCornerShape = RoundedCornerShape(percent = 50)
+    public val ButtonSquareShape: Shape @Composable get() = AppTheme.shapes.small
+    public val ButtonCircleShape: Shape = RoundedCornerShape(percent = 50)
 
     @Composable
     public fun buttonElevation(
-        defaultElevation: Dp = BrutalElevationDefaults.Small.defaultElevation,
-        pressedElevation: Dp = BrutalElevationDefaults.Small.pressedElevation,
-        focusedElevation: Dp = BrutalElevationDefaults.Small.focusedElevation,
-        hoveredElevation: Dp = BrutalElevationDefaults.Small.hoveredElevation,
-        disabledElevation: Dp = BrutalElevationDefaults.Small.disabledElevation,
+        defaultElevation: Dp = BrutalElevationDefaults.Small.default,
+        pressedElevation: Dp = BrutalElevationDefaults.Small.pressed,
+        focusedElevation: Dp = BrutalElevationDefaults.Small.focused,
+        hoveredElevation: Dp = BrutalElevationDefaults.Small.hovered,
+        disabledElevation: Dp = BrutalElevationDefaults.Small.disabled,
     ): ButtonElevation =
         ButtonElevation(
             defaultElevation = defaultElevation,

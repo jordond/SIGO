@@ -45,29 +45,29 @@ public object BrutalDefaults {
 
 public object BrutalElevationDefaults {
     public object Small {
-        public val defaultElevation: Dp = 2.dp
-        public val pressedElevation: Dp = 1.dp
-        public val focusedElevation: Dp = 1.dp
-        public val hoveredElevation: Dp = 1.dp
-        public val draggedElevation: Dp = 1.dp
-        public val disabledElevation: Dp = 0.dp
+        public val default: Dp = 2.dp
+        public val pressed: Dp = 1.dp
+        public val focused: Dp = 1.dp
+        public val hovered: Dp = 1.dp
+        public val dragged: Dp = 1.dp
+        public val disabled: Dp = 0.dp
     }
 
     public object Medium {
-        public val defaultElevation: Dp = 4.dp
-        public val pressedElevation: Dp = 2.dp
-        public val focusedElevation: Dp = 2.dp
-        public val hoveredElevation: Dp = 2.dp
-        public val draggedElevation: Dp = 2.dp
-        public val disabledElevation: Dp = 0.dp
+        public val default: Dp = 4.dp
+        public val pressed: Dp = 2.dp
+        public val focused: Dp = 2.dp
+        public val hovered: Dp = 2.dp
+        public val dragged: Dp = 2.dp
+        public val disabled: Dp = 0.dp
     }
 
     public object Large {
-        public val defaultElevation: Dp = 8.dp
-        public val pressedElevation: Dp = 4.dp
-        public val focusedElevation: Dp = 4.dp
-        public val hoveredElevation: Dp = 4.dp
-        public val draggedElevation: Dp = 4.dp
-        public val disabledElevation: Dp = 0.dp
+        public val default: Dp = 8.dp
+        public val pressed: Dp = 4.dp
+        public val focused: Dp = 4.dp
+        public val hovered: Dp = 4.dp
+        public val dragged: Dp = 4.dp
+        public val disabled: Dp = 0.dp
     }
 }
