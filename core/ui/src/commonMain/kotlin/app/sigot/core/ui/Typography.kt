@@ -96,28 +96,28 @@ private val defaultTypography =
             ),
         h4 =
             TextStyle(
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
                 letterSpacing = 0.sp,
             ),
         body1 =
             TextStyle(
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
                 letterSpacing = 0.sp,
             ),
         body2 =
             TextStyle(
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
                 letterSpacing = 0.15.sp,
             ),
         body3 =
             TextStyle(
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.Bold,
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
                 letterSpacing = 0.15.sp,
@@ -145,10 +145,10 @@ private val defaultTypography =
             ),
         button =
             TextStyle(
-                fontWeight = FontWeight.W500,
+                fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
-                letterSpacing = 1.sp,
+                letterSpacing = 0.sp,
             ),
         input =
             TextStyle(

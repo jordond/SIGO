@@ -28,6 +28,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.navigation.composee)
             api(libs.compose.windowSizeClass)
+            api(libs.composables)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.collections)
             implementation(libs.kotlinx.coroutines.core)

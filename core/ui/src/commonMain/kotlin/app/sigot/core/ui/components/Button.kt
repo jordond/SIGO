@@ -202,7 +202,7 @@ internal object ButtonDefaults {
     private val ButtonHorizontalPadding = 16.dp
     private val ButtonVerticalPadding = 8.dp
     private val ButtonShape = RoundedCornerShape(12)
-    private const val DisabledAlpha = 0.7f
+    private const val DisabledAlpha = 0.8f
 
     val contentPadding =
         PaddingValues(
