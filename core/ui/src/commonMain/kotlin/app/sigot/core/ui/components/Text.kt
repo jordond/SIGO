@@ -221,6 +221,16 @@ internal fun TypographySample() {
             )
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Button Text",
+                style = typography.button,
+            )
+
+            Text(
+                text = "Input Text",
+                style = typography.input,
+            )
         }
     }
 }

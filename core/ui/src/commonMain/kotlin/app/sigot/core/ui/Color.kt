@@ -58,6 +58,7 @@ public data class Colors(
 )
 
 private val Yellow = Color(0xFFFFD738) // Bright yellow - from palette
+private val YellowAlt = Color(0xFFffdb02)
 private val Coral = Color(0xFFFF6B6B) // Coral red - from palette
 private val Mint = Color(0xFF90EE90) // Light mint green - for success
 private val LightBlue = Color(0xFF87CEEB) // Light blue - from palette
@@ -65,7 +66,6 @@ private val Pink = Color(0xFFFF69B4) // Pink - from palette
 private val LightPurple = Color(0xFFA388EE) // Light purple - from palette
 private val WarmBeige = Color(0xFFFEECDE) // Warm beige for backgrounds
 private val LightBeige = Color(0xFFFFF5EA)
-private val Orange = Color(0xFFE3A018) // Orange - from palette
 private val LightGray = Color(0xFFF8F8F8) // Light gray for backgrounds
 private val MediumGray = Color(0xFFAAAAAA) // Medium gray for disabled states
 private val DarkGray = Color(0xFF333333) // Dark gray for secondary text
@@ -86,14 +86,14 @@ private val NeoDarkSurface = Color(0xFF2A2236)
 private val DarkScrim = Color(0xCC000000) // Darker scrim for dark theme
 
 internal val LightColors = Colors(
-    primary = Yellow,
+    primary = YellowAlt,
     onPrimary = Color.Black,
     secondary = LightBlue,
     onSecondary = Color.Black,
     tertiary = Pink,
     onTertiary = Color.Black,
     error = Coral,
-    onError = Color.White,
+    onError = Color.Black,
     success = Mint,
     onSuccess = Color.Black,
     disabled = MediumGray,
