@@ -2,9 +2,11 @@ package app.sigot.core.ui.components.progressindicators
 
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,12 +14,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.progressSemantics
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
@@ -27,7 +34,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.components.BrutalContainer
+import app.sigot.core.ui.components.BrutalDefaults
+import app.sigot.core.ui.components.BrutalElevationDefaults
+import app.sigot.core.ui.components.Surface
+import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.preview.AppPreview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.abs
 
@@ -35,22 +49,64 @@ import kotlin.math.abs
 public fun LinearProgressIndicator(
     progress: () -> Float,
     modifier: Modifier = Modifier,
+    height: Dp = LinearProgressIndicatorDefaults.TrackHeight,
     color: Color = LinearProgressIndicatorDefaults.Color,
     trackColor: Color = LinearProgressIndicatorDefaults.TrackColor,
     strokeCap: StrokeCap = LinearProgressIndicatorDefaults.StrokeStyle,
+    shape: Shape = LinearProgressIndicatorDefaults.Shape,
+    elevation: Dp = LinearProgressIndicatorDefaults.Elevation,
+    showEndMarker: Boolean = LinearProgressIndicatorDefaults.ShowEndMarker,
 ) {
-    androidx.compose.material3.LinearProgressIndicator({ 1f })
+    val borderColor = LinearProgressIndicatorDefaults.BorderColor
+    val border = LinearProgressIndicatorDefaults.borderStroke()
     val coercedProgress = { progress().coerceIn(0f, 1f) }
-    Canvas(
-        modifier = modifier
-            .semantics(mergeDescendants = true) {
-                progressBarRangeInfo = ProgressBarRangeInfo(coercedProgress(), 0f..1f)
-            }.height(LinearProgressIndicatorDefaults.TrackHeight)
-            .fillMaxWidth(),
+    BrutalContainer(
+        shape = shape,
+        offset = elevation,
+        color = borderColor,
+        modifier = modifier.semantics(mergeDescendants = true) {
+            progressBarRangeInfo = ProgressBarRangeInfo(coercedProgress(), 0f..1f)
+        },
     ) {
-        val strokeWidth = size.height
-        drawLinearIndicatorTrack(trackColor, strokeWidth, strokeCap)
-        drawLinearIndicator(0f, coercedProgress(), color, strokeWidth, strokeCap)
+        Surface(
+            shape = shape,
+            border = border,
+            color = trackColor,
+            shadowElevation = 0.dp,
+        ) {
+            Canvas(
+                modifier = Modifier
+                    .height(height)
+                    .fillMaxWidth(),
+            ) {
+                val strokeWidth = size.height
+                drawLinearIndicatorTrack(trackColor, strokeWidth, strokeCap)
+
+                val progressEndPosition = getProgressEndPosition(
+                    progress = coercedProgress(),
+                    width = size.width,
+                    strokeWidth = strokeWidth,
+                    strokeCap = strokeCap,
+                )
+
+                drawLinearIndicator(
+                    startFraction = 0f,
+                    endFraction = coercedProgress(),
+                    color = color,
+                    strokeWidth = strokeWidth,
+                    strokeCap = strokeCap,
+                    isDeterminant = true,
+                )
+                if (showEndMarker && coercedProgress() > 0f && coercedProgress() < 1f) {
+                    drawProgressEndMarker(
+                        markerPosition = progressEndPosition,
+                        color = borderColor,
+                        markerWidth = border.width.toPx(),
+                        strokeCap = strokeCap,
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -165,6 +221,7 @@ private fun DrawScope.drawLinearIndicator(
     color: Color,
     strokeWidth: Float,
     strokeCap: StrokeCap,
+    isDeterminant: Boolean = false,
 ) {
     val width = size.width
     val height = size.height
@@ -179,7 +236,12 @@ private fun DrawScope.drawLinearIndicator(
     } else {
         val strokeCapOffset = strokeWidth / 2
         val coerceRange = strokeCapOffset..(width - strokeCapOffset)
-        val adjustedBarStart = barStart.coerceIn(coerceRange)
+        val adjustedBarStart =
+            if (isDeterminant && strokeCap == StrokeCap.Round) {
+                0f
+            } else {
+                barStart.coerceIn(coerceRange)
+            }
         val adjustedBarEnd = barEnd.coerceIn(coerceRange)
 
         if (abs(endFraction - startFraction) > 0) {
@@ -200,16 +262,88 @@ private fun DrawScope.drawLinearIndicatorTrack(
     strokeCap: StrokeCap,
 ) = drawLinearIndicator(0f, 1f, color, strokeWidth, strokeCap)
 
+private fun DrawScope.drawProgressEndMarker(
+    markerPosition: Float,
+    color: Color,
+    markerWidth: Float,
+    strokeCap: StrokeCap,
+) {
+    val height = size.height
+
+    when (strokeCap) {
+        StrokeCap.Round -> {
+            val radius = height / 2
+            drawArc(
+                color = color,
+                startAngle = -90f,
+                sweepAngle = 180f,
+                useCenter = false,
+                topLeft = Offset(markerPosition - (radius * 2), 0f),
+                size = androidx.compose.ui.geometry
+                    .Size(radius * 2, height),
+                style = androidx.compose.ui.graphics.drawscope
+                    .Stroke(markerWidth),
+            )
+        }
+        else -> {
+            drawLine(
+                color = color,
+                start = Offset(markerPosition, 0f),
+                end = Offset(markerPosition, height),
+                strokeWidth = markerWidth,
+            )
+        }
+    }
+}
+
+private fun getProgressEndPosition(
+    progress: Float,
+    width: Float,
+    strokeWidth: Float,
+    strokeCap: StrokeCap,
+): Float {
+    val isLtr = true // Always LTR for calculation purposes
+    val endFraction = if (isLtr) progress else 1f - progress
+    val barEnd = endFraction * width
+
+    // For StrokeCap.Butt, the end position is exactly at the mathematical endpoint
+    // For StrokeCap.Round and StrokeCap.Square, we need to account for the cap extension
+    return when {
+        strokeCap == StrokeCap.Butt || strokeWidth > width -> barEnd
+        else -> {
+            val strokeCapOffset = strokeWidth / 2
+            // Apply the coerced range to ensure the endpoint stays within bounds
+            val adjustedBarEnd = barEnd.coerceIn(strokeCapOffset..(width - strokeCapOffset))
+
+            // For non-Butt stroke caps, adjust the marker position based on cap type
+            when (strokeCap) {
+                StrokeCap.Round, StrokeCap.Square -> {
+                    // For Round and Square caps, the visual end extends by half strokeWidth
+                    if (progress < 1f) adjustedBarEnd + strokeCapOffset else width
+                }
+                else -> adjustedBarEnd // Should never reach here
+            }
+        }
+    }
+}
+
 @Suppress("ConstPropertyName")
 public object LinearProgressIndicatorDefaults {
+    public const val ShowEndMarker: Boolean = true
+    public val BorderColor: Color @Composable get() = BrutalDefaults.Color
+    public val BorderWidth: Dp = BrutalDefaults.BorderWidth
+    public val Shape: Shape @Composable get() = AppTheme.shapes.extraSmall
+    public val Elevation: Dp = BrutalElevationDefaults.Small.default
+
     public val Color: Color
         @Composable get() = AppTheme.colors.primary
 
     public val TrackColor: Color
-        @Composable get() = AppTheme.colors.transparent
+        @Composable get() = AppTheme.colors.surface
 
-    public val TrackHeight: Dp = 4.dp
+    public val TrackHeight: Dp = 24.dp
     public val StrokeStyle: StrokeCap = StrokeCap.Round
+    public val EndMarkerWidth: Dp = 5.dp
     public const val AnimationDuration: Int = 1800
 
     public const val FirstLineHeadDuration: Int = 750
@@ -226,6 +360,12 @@ public object LinearProgressIndicatorDefaults {
     public val FirstLineTailEasing: CubicBezierEasing = CubicBezierEasing(0.4f, 0f, 1f, 1f)
     public val SecondLineHeadEasing: CubicBezierEasing = CubicBezierEasing(0f, 0f, 0.65f, 1f)
     public val SecondLineTailEasing: CubicBezierEasing = CubicBezierEasing(0.1f, 0f, 0.45f, 1f)
+
+    @Composable
+    internal fun borderStroke(
+        color: Color = BorderColor,
+        width: Dp = BorderWidth,
+    ): BorderStroke = BorderStroke(width, color)
 }
 
 @Composable
@@ -237,15 +377,48 @@ internal fun LinearProgressIndicatorPreview() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(16.dp),
         ) {
-            BasicText(
+            Text(
                 text = "Determinate Progress",
-                style = AppTheme.typography.body1,
+                style = AppTheme.typography.h4,
             )
-            LinearProgressIndicator(progress = { 0.7f })
+            LinearProgressIndicator(progress = { 0.7f }, showEndMarker = false)
 
-            BasicText(
+            Text(
+                text = "Determinate Progress with End Marker",
+                style = AppTheme.typography.h4,
+            )
+
+            var progress by remember { mutableStateOf(0.4f) }
+            val animatedProgress by animateFloatAsState(progress)
+            LaunchedEffect(Unit) {
+                while (isActive) {
+                    progress = (progress + 0.01f).coerceAtMost(1f)
+                    if (progress == 1f) {
+                        progress = 0f
+                    }
+                    delay(100)
+                }
+            }
+
+            LinearProgressIndicator(
+                strokeCap = StrokeCap.Square,
+                showEndMarker = true,
+                progress = { animatedProgress },
+            )
+            LinearProgressIndicator(
+                strokeCap = StrokeCap.Round,
+                showEndMarker = true,
+                progress = { animatedProgress },
+            )
+            LinearProgressIndicator(
+                strokeCap = StrokeCap.Butt,
+                showEndMarker = true,
+                progress = { animatedProgress },
+            )
+
+            Text(
                 text = "Indeterminate Progress",
-                style = AppTheme.typography.body1,
+                style = AppTheme.typography.h4,
             )
             LinearProgressIndicator()
         }

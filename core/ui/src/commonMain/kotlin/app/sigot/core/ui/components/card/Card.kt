@@ -143,12 +143,12 @@ public object CardDefaults {
 
     @Composable
     public fun cardElevation(
-        defaultElevation: Dp = BrutalElevationDefaults.Medium.defaultElevation,
-        pressedElevation: Dp = BrutalElevationDefaults.Medium.pressedElevation,
-        focusedElevation: Dp = BrutalElevationDefaults.Medium.focusedElevation,
-        hoveredElevation: Dp = BrutalElevationDefaults.Medium.hoveredElevation,
-        draggedElevation: Dp = BrutalElevationDefaults.Medium.draggedElevation,
-        disabledElevation: Dp = BrutalElevationDefaults.Medium.disabledElevation,
+        defaultElevation: Dp = BrutalElevationDefaults.Medium.default,
+        pressedElevation: Dp = BrutalElevationDefaults.Medium.pressed,
+        focusedElevation: Dp = BrutalElevationDefaults.Medium.focused,
+        hoveredElevation: Dp = BrutalElevationDefaults.Medium.hovered,
+        draggedElevation: Dp = BrutalElevationDefaults.Medium.dragged,
+        disabledElevation: Dp = BrutalElevationDefaults.Medium.disabled,
     ): CardElevation =
         CardElevation(
             defaultElevation = defaultElevation,
