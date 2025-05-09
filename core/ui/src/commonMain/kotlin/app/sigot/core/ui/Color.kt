@@ -141,8 +141,9 @@ public val LocalColors: ProvidableCompositionLocal<Colors> = staticCompositionLo
 public val LocalContentColor: ProvidableCompositionLocal<Color> = compositionLocalOf { Color.Black }
 public val LocalContentAlpha: ProvidableCompositionLocal<Float> = compositionLocalOf { 1f }
 
-public fun Colors.contentColorFor(backgroundColor: Color): Color =
-    when (backgroundColor) {
+public fun Colors.contentColorFor(backgroundColor: Color): Color {
+    val color = backgroundColor.copy(alpha = 1f)
+    return when (color) {
         primary -> onPrimary
         secondary -> onSecondary
         tertiary -> onTertiary
@@ -153,6 +154,7 @@ public fun Colors.contentColorFor(backgroundColor: Color): Color =
         background -> onBackground
         else -> Color.Unspecified
     }
+}
 
 @Composable
 internal fun Colors.animate(

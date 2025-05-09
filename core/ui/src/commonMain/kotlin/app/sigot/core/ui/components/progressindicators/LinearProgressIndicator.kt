@@ -20,6 +20,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -30,22 +33,24 @@ import kotlin.math.abs
 
 @Composable
 public fun LinearProgressIndicator(
-    progress: Float,
+    progress: () -> Float,
     modifier: Modifier = Modifier,
     color: Color = LinearProgressIndicatorDefaults.Color,
     trackColor: Color = LinearProgressIndicatorDefaults.TrackColor,
     strokeCap: StrokeCap = LinearProgressIndicatorDefaults.StrokeStyle,
 ) {
-    val coercedProgress = progress.coerceIn(0f, 1f)
+    androidx.compose.material3.LinearProgressIndicator({ 1f })
+    val coercedProgress = { progress().coerceIn(0f, 1f) }
     Canvas(
         modifier = modifier
-            .progressSemantics(coercedProgress)
-            .height(LinearProgressIndicatorDefaults.TrackHeight)
+            .semantics(mergeDescendants = true) {
+                progressBarRangeInfo = ProgressBarRangeInfo(coercedProgress(), 0f..1f)
+            }.height(LinearProgressIndicatorDefaults.TrackHeight)
             .fillMaxWidth(),
     ) {
         val strokeWidth = size.height
         drawLinearIndicatorTrack(trackColor, strokeWidth, strokeCap)
-        drawLinearIndicator(0f, coercedProgress, color, strokeWidth, strokeCap)
+        drawLinearIndicator(0f, coercedProgress(), color, strokeWidth, strokeCap)
     }
 }
 
@@ -179,11 +184,11 @@ private fun DrawScope.drawLinearIndicator(
 
         if (abs(endFraction - startFraction) > 0) {
             drawLine(
-                color,
-                Offset(adjustedBarStart, yOffset),
-                Offset(adjustedBarEnd, yOffset),
-                strokeWidth,
-                strokeCap,
+                color = color,
+                start = Offset(adjustedBarStart, yOffset),
+                end = Offset(adjustedBarEnd, yOffset),
+                strokeWidth = strokeWidth,
+                cap = strokeCap,
             )
         }
     }
@@ -236,7 +241,7 @@ internal fun LinearProgressIndicatorPreview() {
                 text = "Determinate Progress",
                 style = AppTheme.typography.body1,
             )
-            LinearProgressIndicator(progress = 0.7f)
+            LinearProgressIndicator(progress = { 0.7f })
 
             BasicText(
                 text = "Indeterminate Progress",

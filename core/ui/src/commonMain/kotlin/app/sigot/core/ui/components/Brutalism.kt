@@ -4,7 +4,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -17,8 +16,8 @@ import app.sigot.core.ui.AppTheme
 @Composable
 public fun BrutalContainer(
     shape: Shape,
+    offset: Dp,
     modifier: Modifier = Modifier,
-    offset: Dp = BrutalDefaults.Offset,
     color: Color = BrutalDefaults.Color,
     extraY: Boolean = false,
     content: @Composable () -> Unit,
@@ -36,19 +35,39 @@ public fun BrutalContainer(
     }
 }
 
+@Suppress("ConstPropertyName")
 public object BrutalDefaults {
-    public val Shape: Shape @Composable get() = RoundedCornerShape(12.0.dp)
+    public const val DisabledAlpha: Float = 0.8f
     public val BorderWidth: Dp = 2.dp
-    public val Offset: Dp = BrutalElevationDefaults.defaultElevation
     public val Color: Color
         @Composable get() = AppTheme.colors.outline
 }
 
 public object BrutalElevationDefaults {
-    public val defaultElevation: Dp = 4.dp
-    public val pressedElevation: Dp = 2.dp
-    public val focusedElevation: Dp = 2.dp
-    public val hoveredElevation: Dp = 2.dp
-    public val draggedElevation: Dp = 2.dp
-    public val disabledElevation: Dp = 0.dp
+    public object Small {
+        public val defaultElevation: Dp = 2.dp
+        public val pressedElevation: Dp = 1.dp
+        public val focusedElevation: Dp = 1.dp
+        public val hoveredElevation: Dp = 1.dp
+        public val draggedElevation: Dp = 1.dp
+        public val disabledElevation: Dp = 0.dp
+    }
+
+    public object Medium {
+        public val defaultElevation: Dp = 4.dp
+        public val pressedElevation: Dp = 2.dp
+        public val focusedElevation: Dp = 2.dp
+        public val hoveredElevation: Dp = 2.dp
+        public val draggedElevation: Dp = 2.dp
+        public val disabledElevation: Dp = 0.dp
+    }
+
+    public object Large {
+        public val defaultElevation: Dp = 8.dp
+        public val pressedElevation: Dp = 4.dp
+        public val focusedElevation: Dp = 4.dp
+        public val hoveredElevation: Dp = 4.dp
+        public val draggedElevation: Dp = 4.dp
+        public val disabledElevation: Dp = 0.dp
+    }
 }

@@ -136,19 +136,19 @@ public fun ElevatedCard(
 }
 
 public object CardDefaults {
-    public val Shape: Shape @Composable get() = BrutalDefaults.Shape
+    public val Shape: Shape @Composable get() = AppTheme.shapes.large
     public val ElevatedShape: Shape @Composable get() = Shape
     public val BorderColor: Color @Composable get() = BrutalDefaults.Color
     private val BorderWidth = BrutalDefaults.BorderWidth
 
     @Composable
     public fun cardElevation(
-        defaultElevation: Dp = BrutalElevationDefaults.defaultElevation,
-        pressedElevation: Dp = BrutalElevationDefaults.pressedElevation,
-        focusedElevation: Dp = BrutalElevationDefaults.focusedElevation,
-        hoveredElevation: Dp = BrutalElevationDefaults.hoveredElevation,
-        draggedElevation: Dp = BrutalElevationDefaults.draggedElevation,
-        disabledElevation: Dp = BrutalElevationDefaults.disabledElevation,
+        defaultElevation: Dp = BrutalElevationDefaults.Medium.defaultElevation,
+        pressedElevation: Dp = BrutalElevationDefaults.Medium.pressedElevation,
+        focusedElevation: Dp = BrutalElevationDefaults.Medium.focusedElevation,
+        hoveredElevation: Dp = BrutalElevationDefaults.Medium.hoveredElevation,
+        draggedElevation: Dp = BrutalElevationDefaults.Medium.draggedElevation,
+        disabledElevation: Dp = BrutalElevationDefaults.Medium.disabledElevation,
     ): CardElevation =
         CardElevation(
             defaultElevation = defaultElevation,

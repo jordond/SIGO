@@ -26,6 +26,9 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
@@ -37,25 +40,26 @@ import kotlin.math.max
 
 @Composable
 public fun CircularProgressIndicator(
-    progress: Float,
+    progress: () -> Float,
     modifier: Modifier = Modifier,
     color: Color = CircularProgressIndicatorDefaults.Color,
     trackColor: Color = CircularProgressIndicatorDefaults.TrackColor,
     strokeWidth: Dp = CircularProgressIndicatorDefaults.StrokeWidth,
     strokeCap: StrokeCap = CircularProgressIndicatorDefaults.StrokeStyle,
 ) {
-    val coercedProgress = progress.coerceIn(0f, 1f)
+    val coercedProgress = { progress().coerceIn(0f, 1f) }
     val stroke =
         with(LocalDensity.current) {
             Stroke(width = strokeWidth.toPx(), cap = strokeCap)
         }
     Canvas(
-        modifier
-            .progressSemantics(coercedProgress)
-            .size(CircularProgressIndicatorDefaults.Diameter),
+        modifier = modifier
+            .semantics(mergeDescendants = true) {
+                progressBarRangeInfo = ProgressBarRangeInfo(coercedProgress(), 0f..1f)
+            }.size(CircularProgressIndicatorDefaults.Diameter),
     ) {
         val startAngle = CircularProgressIndicatorDefaults.StartAngle
-        val sweep = coercedProgress * CircularProgressIndicatorDefaults.SweepAngle
+        val sweep = coercedProgress() * CircularProgressIndicatorDefaults.SweepAngle
         drawCircularIndicatorTrack(trackColor, stroke)
         drawDeterminateCircularIndicator(startAngle, sweep, color, stroke)
     }
@@ -137,7 +141,7 @@ public fun CircularProgressIndicator(
             label = "Start Angle",
         )
     Canvas(
-        modifier
+        modifier = modifier
             .progressSemantics()
             .size(CircularProgressIndicatorDefaults.Diameter),
     ) {
@@ -254,7 +258,7 @@ internal fun CircularProgressIndicatorPreview() {
                 text = "Determinate Progress",
                 style = AppTheme.typography.body1,
             )
-            CircularProgressIndicator(progress = 0.7f)
+            CircularProgressIndicator(progress = { 0.7f })
 
             BasicText(
                 text = "Indeterminate Progress",
