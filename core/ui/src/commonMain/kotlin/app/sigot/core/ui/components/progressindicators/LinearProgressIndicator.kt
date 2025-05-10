@@ -14,7 +14,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.progressSemantics
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +39,7 @@ import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -78,9 +82,6 @@ public fun LinearProgressIndicator(
     val currentProgress = coercedProgress()
     var progressPositionOffset by remember { mutableStateOf(0f) }
 
-    val percentStyle = remember(progressTextStyle) {
-        progressTextStyle.copy(fontWeight = FontWeight.Black, fontSize = 10.sp)
-    }
     val progressTextAlignment: Alignment? = remember(textPosition) {
         when (textPosition) {
             ProgressTextPosition.Start -> Alignment.CenterStart
@@ -93,7 +94,6 @@ public fun LinearProgressIndicator(
     }
 
     val percentValue = remember(currentProgress) { (currentProgress * 100).toInt() }
-    val percentText = Res.string.progress.get(percentValue)
 
     BrutalContainer(
         shape = shape,
@@ -148,6 +148,16 @@ public fun LinearProgressIndicator(
                 }
 
                 if (textPosition != ProgressTextPosition.None) {
+                    val textWidth = remember(height) { height * 1.3f }
+                    val percentText = Res.string.progress.get(percentValue)
+                    val percentStyle = remember(progressTextStyle) {
+                        progressTextStyle.copy(
+                            fontWeight = FontWeight.Black,
+                            fontSize = 10.sp,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+
                     Box(
                         modifier = Modifier
                             .height(height)
@@ -159,14 +169,17 @@ public fun LinearProgressIndicator(
                                 }
                             }.graphicsLayer {
                                 if (textPosition == ProgressTextPosition.Follow) {
-                                    translationX = progressPositionOffset - 8.dp.toPx()
+                                    translationX = progressPositionOffset - (height * 0.3f).toPx()
                                 }
                             },
                     ) {
-                        Text(
+                        BasicText(
                             text = percentText,
                             style = percentStyle,
+                            maxLines = 1,
+                            autoSize = TextAutoSize.StepBased(minFontSize = 10.sp),
                             modifier = Modifier
+                                .width(textWidth)
                                 .padding(horizontal = 8.dp)
                                 .align(Alignment.Center),
                         )
