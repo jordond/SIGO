@@ -16,18 +16,18 @@ import app.sigot.core.ui.AppTheme
 @Composable
 public fun BrutalContainer(
     shape: Shape,
-    offset: Dp,
+    elevation: Dp,
     modifier: Modifier = Modifier,
     color: Color = BrutalDefaults.Color,
     extraY: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val yOffset by animateDpAsState(if (offset == 0.dp) 0.dp else offset + 2.dp)
+    val yOffset by animateDpAsState(if (elevation == 0.dp) 0.dp else elevation + 2.dp)
     Box(modifier = modifier) {
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .offset(x = offset, y = if (extraY) yOffset else offset)
+                .offset(x = elevation, y = if (extraY) yOffset else elevation)
                 .background(color, shape = shape),
         )
 
@@ -44,6 +44,15 @@ public object BrutalDefaults {
 }
 
 public object BrutalElevationDefaults {
+    public object ExtraSmall {
+        public val default: Dp = 1.dp
+        public val pressed: Dp = 0.5.dp
+        public val focused: Dp = 0.5.dp
+        public val hovered: Dp = 0.5.dp
+        public val dragged: Dp = 0.5.dp
+        public val disabled: Dp = 0.dp
+    }
+
     public object Small {
         public val default: Dp = 2.dp
         public val pressed: Dp = 1.dp

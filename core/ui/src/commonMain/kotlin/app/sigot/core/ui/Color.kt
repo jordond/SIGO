@@ -44,6 +44,8 @@ public data class Colors(
     val onDisabled: Color,
     val surface: Color,
     val onSurface: Color,
+    val inverseSurface: Color,
+    val onInverseSurface: Color,
     val background: Color,
     val onBackground: Color,
     val outline: Color,
@@ -100,6 +102,8 @@ internal val LightColors = Colors(
     onDisabled = Color.White,
     surface = LightBeige,
     onSurface = Color.Black,
+    inverseSurface = NeoDarkSurface,
+    onInverseSurface = Color.White,
     background = WarmBeige,
     onBackground = Color.Black,
     outline = Color.Black,
@@ -126,6 +130,8 @@ public val DarkColors: Colors = Colors(
     onDisabled = MediumGray,
     surface = NeoDarkSurface,
     onSurface = Color.White,
+    inverseSurface = LightBeige,
+    onInverseSurface = Color.Black,
     background = NeoDarkBackground,
     onBackground = Color.White,
     outline = Color.Black,
@@ -148,6 +154,7 @@ public fun Colors.contentColorFor(backgroundColor: Color): Color {
         secondary -> onSecondary
         tertiary -> onTertiary
         surface -> onSurface
+        inverseSurface -> onInverseSurface
         error -> onError
         success -> onSuccess
         disabled -> onDisabled

@@ -90,7 +90,7 @@ public fun ElevatedCard(
     val elevationValue by elevation.shadowElevation(enabled = true, interactionSource = null)
     BrutalContainer(
         shape = shape,
-        offset = elevationValue,
+        elevation = elevationValue,
         color = CardDefaults.BorderColor,
         extraY = true,
     ) {
@@ -119,7 +119,7 @@ public fun ElevatedCard(
     val elevationValue by elevation.shadowElevation(enabled, interactionSource)
     BrutalContainer(
         shape = shape,
-        offset = elevationValue,
+        elevation = elevationValue,
         color = CardDefaults.BorderColor,
     ) {
         Card(
