@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
@@ -34,7 +35,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 public fun Text(
     text: StringResource,
     modifier: Modifier = Modifier,
-    color: Color = LocalContentColor.current,
+    color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,
@@ -75,7 +76,7 @@ public fun Text(
 public fun Text(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = LocalContentColor.current,
+    color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,
@@ -116,7 +117,7 @@ public fun Text(
 public fun Text(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
-    color: Color = LocalContentColor.current,
+    color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,
@@ -133,10 +134,11 @@ public fun Text(
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = LocalTextStyle.current,
 ) {
+    val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
     val mergedStyle =
         style.merge(
             TextStyle(
-                color = color,
+                color = textColor,
                 fontSize = fontSize,
                 fontWeight = fontWeight,
                 textAlign = textAlign,
@@ -148,15 +150,15 @@ public fun Text(
             ),
         )
     BasicText(
-        text,
-        modifier,
-        mergedStyle,
-        onTextLayout,
-        overflow,
-        softWrap,
-        maxLines,
-        minLines,
-        inlineContent,
+        text = text,
+        modifier = modifier,
+        style = mergedStyle,
+        onTextLayout = onTextLayout,
+        overflow = overflow,
+        softWrap = softWrap,
+        maxLines = maxLines,
+        minLines = minLines,
+        inlineContent = inlineContent,
     )
 }
 
