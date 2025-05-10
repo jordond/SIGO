@@ -9,6 +9,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,22 +24,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import app.sigot.core.resources.Res
+import app.sigot.core.resources.progress
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.BrutalContainer
 import app.sigot.core.ui.components.BrutalDefaults
 import app.sigot.core.ui.components.BrutalElevationDefaults
 import app.sigot.core.ui.components.Surface
 import app.sigot.core.ui.components.Text
+import app.sigot.core.ui.contentColorFor
+import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -56,16 +67,40 @@ public fun LinearProgressIndicator(
     shape: Shape = LinearProgressIndicatorDefaults.Shape,
     elevation: Dp = LinearProgressIndicatorDefaults.Elevation,
     showEndMarker: Boolean = LinearProgressIndicatorDefaults.ShowEndMarker,
+    textPosition: ProgressTextPosition = LinearProgressIndicatorDefaults.TextPosition,
+    progressTextStyle: TextStyle = LinearProgressIndicatorDefaults.ProgressTextStyle.copy(
+        color = contentColorFor(color),
+    ),
 ) {
     val borderColor = LinearProgressIndicatorDefaults.BorderColor
     val border = LinearProgressIndicatorDefaults.borderStroke()
     val coercedProgress = { progress().coerceIn(0f, 1f) }
+    val currentProgress = coercedProgress()
+    var progressPositionOffset by remember { mutableStateOf(0f) }
+
+    val percentStyle = remember(progressTextStyle) {
+        progressTextStyle.copy(fontWeight = FontWeight.Black, fontSize = 10.sp)
+    }
+    val progressTextAlignment: Alignment? = remember(textPosition) {
+        when (textPosition) {
+            ProgressTextPosition.Start -> Alignment.CenterStart
+            ProgressTextPosition.Center -> Alignment.Center
+            ProgressTextPosition.End -> Alignment.CenterEnd
+            ProgressTextPosition.Follow,
+            ProgressTextPosition.None,
+            -> null
+        }
+    }
+
+    val percentValue = remember(currentProgress) { (currentProgress * 100).toInt() }
+    val percentText = Res.string.progress.get(percentValue)
+
     BrutalContainer(
         shape = shape,
         offset = elevation,
         color = borderColor,
         modifier = modifier.semantics(mergeDescendants = true) {
-            progressBarRangeInfo = ProgressBarRangeInfo(coercedProgress(), 0f..1f)
+            progressBarRangeInfo = ProgressBarRangeInfo(currentProgress, 0f..1f)
         },
     ) {
         Surface(
@@ -74,36 +109,68 @@ public fun LinearProgressIndicator(
             color = trackColor,
             shadowElevation = 0.dp,
         ) {
-            Canvas(
-                modifier = Modifier
-                    .height(height)
-                    .fillMaxWidth(),
-            ) {
-                val strokeWidth = size.height
-                drawLinearIndicatorTrack(trackColor, strokeWidth, strokeCap)
+            Box {
+                Canvas(
+                    modifier = Modifier
+                        .height(height)
+                        .fillMaxWidth(),
+                ) {
+                    val strokeWidth = size.height
+                    drawLinearIndicatorTrack(trackColor, strokeWidth, strokeCap)
 
-                val progressEndPosition = getProgressEndPosition(
-                    progress = coercedProgress(),
-                    width = size.width,
-                    strokeWidth = strokeWidth,
-                    strokeCap = strokeCap,
-                )
-
-                drawLinearIndicator(
-                    startFraction = 0f,
-                    endFraction = coercedProgress(),
-                    color = color,
-                    strokeWidth = strokeWidth,
-                    strokeCap = strokeCap,
-                    isDeterminant = true,
-                )
-                if (showEndMarker && coercedProgress() > 0f && coercedProgress() < 1f) {
-                    drawProgressEndMarker(
-                        markerPosition = progressEndPosition,
-                        color = borderColor,
-                        markerWidth = border.width.toPx(),
+                    val progressEndPosition = getProgressEndPosition(
+                        progress = currentProgress,
+                        width = size.width,
+                        strokeWidth = strokeWidth,
                         strokeCap = strokeCap,
                     )
+
+                    if (textPosition == ProgressTextPosition.Follow) {
+                        progressPositionOffset = progressEndPosition - (strokeWidth * 1.1f)
+                    }
+
+                    drawLinearIndicator(
+                        startFraction = 0f,
+                        endFraction = currentProgress,
+                        color = color,
+                        strokeWidth = strokeWidth,
+                        strokeCap = strokeCap,
+                        isDeterminant = true,
+                    )
+                    if (showEndMarker && coercedProgress() > 0f && coercedProgress() < 1f) {
+                        drawProgressEndMarker(
+                            markerPosition = progressEndPosition,
+                            color = borderColor,
+                            markerWidth = border.width.toPx(),
+                            strokeCap = strokeCap,
+                        )
+                    }
+                }
+
+                if (textPosition != ProgressTextPosition.None) {
+                    Box(
+                        modifier = Modifier
+                            .height(height)
+                            .let { currentModifier ->
+                                if (progressTextAlignment == null) {
+                                    currentModifier
+                                } else {
+                                    currentModifier.then(Modifier.align(progressTextAlignment))
+                                }
+                            }.graphicsLayer {
+                                if (textPosition == ProgressTextPosition.Follow) {
+                                    translationX = progressPositionOffset - 8.dp.toPx()
+                                }
+                            },
+                    ) {
+                        Text(
+                            text = percentText,
+                            style = percentStyle,
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp)
+                                .align(Alignment.Center),
+                        )
+                    }
                 }
             }
         }
@@ -300,10 +367,8 @@ private fun DrawScope.drawProgressEndMarker(
                 sweepAngle = 180f,
                 useCenter = false,
                 topLeft = Offset(markerPosition - (radius * 2), 0f),
-                size = androidx.compose.ui.geometry
-                    .Size(radius * 2, height),
-                style = androidx.compose.ui.graphics.drawscope
-                    .Stroke(markerWidth),
+                size = Size(radius * 2, height),
+                style = Stroke(markerWidth),
             )
         }
         else -> {
@@ -348,6 +413,14 @@ private fun getProgressEndPosition(
     }
 }
 
+public enum class ProgressTextPosition {
+    Start,
+    Center,
+    End,
+    Follow,
+    None,
+}
+
 @Suppress("ConstPropertyName")
 public object LinearProgressIndicatorDefaults {
     public const val ShowEndMarker: Boolean = true
@@ -355,6 +428,8 @@ public object LinearProgressIndicatorDefaults {
     public val BorderWidth: Dp = BrutalDefaults.BorderWidth
     public val Shape: Shape @Composable get() = AppTheme.shapes.extraSmall
     public val Elevation: Dp = BrutalElevationDefaults.Small.default
+    public val TextPosition: ProgressTextPosition = ProgressTextPosition.Follow
+    public val ProgressTextStyle: TextStyle @Composable get() = AppTheme.typography.label3
 
     public val Color: Color
         @Composable get() = AppTheme.colors.primary
@@ -362,9 +437,8 @@ public object LinearProgressIndicatorDefaults {
     public val TrackColor: Color
         @Composable get() = AppTheme.colors.surface
 
-    public val TrackHeight: Dp = 24.dp
+    public val TrackHeight: Dp = 32.dp
     public val StrokeStyle: StrokeCap = StrokeCap.Round
-    public val EndMarkerWidth: Dp = 5.dp
     public const val AnimationDuration: Int = 1800
 
     public const val FirstLineHeadDuration: Int = 750
@@ -400,7 +474,21 @@ private fun IndicatorPreview() {
             text = "Determinate Progress",
             style = AppTheme.typography.h4,
         )
-        LinearProgressIndicator(progress = { 0.7f }, showEndMarker = false)
+        LinearProgressIndicator(
+            progress = { 0.7f },
+            showEndMarker = false,
+            textPosition = ProgressTextPosition.Start,
+        )
+        LinearProgressIndicator(
+            progress = { 0.7f },
+            showEndMarker = false,
+            textPosition = ProgressTextPosition.Center,
+        )
+        LinearProgressIndicator(
+            progress = { 0.7f },
+            showEndMarker = false,
+            textPosition = ProgressTextPosition.End,
+        )
 
         Text(
             text = "Determinate Progress with End Marker",
