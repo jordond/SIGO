@@ -143,7 +143,7 @@ private fun IconButtonComponent(
 
     BrutalContainer(
         shape = style.shape,
-        offset = shadowElevation,
+        elevation = shadowElevation,
         color = style.colors.borderColor,
         modifier = modifier,
     ) {

@@ -97,7 +97,7 @@ public fun LinearProgressIndicator(
 
     BrutalContainer(
         shape = shape,
-        offset = elevation,
+        elevation = elevation,
         color = borderColor,
         modifier = modifier.semantics(mergeDescendants = true) {
             progressBarRangeInfo = ProgressBarRangeInfo(currentProgress, 0f..1f)
@@ -276,7 +276,7 @@ public fun LinearProgressIndicator(
 
     BrutalContainer(
         shape = shape,
-        offset = elevation,
+        elevation = elevation,
         color = borderColor,
         modifier = modifier.progressSemantics(),
     ) {
