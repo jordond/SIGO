@@ -9,9 +9,9 @@ import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -110,14 +110,16 @@ private fun SwitchComponent(
     thumbPosition: Float,
     thumbSizeOffset: Float,
 ) {
-    val borderColor = colors.borderColor(enabled = enabled, checked = checked)
+    val borderColor = remember(colors, enabled, checked) {
+        colors.borderColor(enabled = enabled, checked = checked)
+    }
 
     Box(
         modifier =
             modifier
                 .size(SwitchWidth, SwitchHeight)
                 .background(
-                    color = colors.trackColor(enabled, checked),
+                    color = remember(enabled, checked) { colors.trackColor(enabled, checked) },
                     shape = TrackShape,
                 ).border(
                     width = TrackBorderWidth,
@@ -125,13 +127,17 @@ private fun SwitchComponent(
                     shape = TrackShape,
                 ),
     ) {
-        val checkedThumbSize = UncheckedThumbSize + ThumbSizeStateOffset * thumbPosition
-        val uncheckedThumbSize =
+        val checkedThumbSize = remember(thumbPosition) {
+            UncheckedThumbSize + ThumbSizeStateOffset * thumbPosition
+        }
+
+        val uncheckedThumbSize = remember(thumbPosition, thumbSizeOffset, thumbPosition) {
             UncheckedThumbSize +
                 ThumbSizeStateOffset * if (thumbPosition == 0f) thumbSizeOffset else thumbPosition
+        }
 
         val thumbSize = if (checked) checkedThumbSize else uncheckedThumbSize
-        val verticalPadding = (SwitchHeight - ThumbSize) / 2
+        val verticalPadding = (SwitchHeight - ThumbSize) / 1.5f
 
         Box(
             modifier =
@@ -179,9 +185,9 @@ private fun SwitchComponent(
 
 public object SwitchDefaults {
     public val ThumbSize: Dp = 16.dp
-    public val UncheckedThumbSize: Dp = 12.dp
+    public val UncheckedThumbSize: Dp = 16.dp
     public val ThumbSizeStateOffset: Dp = ThumbSize - UncheckedThumbSize
-    public val SwitchWidth: Dp = 40.dp
+    public val SwitchWidth: Dp = 48.dp
     public val SwitchHeight: Dp = 24.dp
     public val TrackBorderWidth: Dp = 2.dp
     public val TrackShape: RoundedCornerShape = RoundedCornerShape(50)
@@ -189,21 +195,21 @@ public object SwitchDefaults {
 
     @Composable
     public fun colors(
-        checkedThumbColor: Color = AppTheme.colors.onPrimary,
+        checkedThumbColor: Color = Color.White,
         checkedTrackColor: Color = AppTheme.colors.primary,
-        checkedBorderColor: Color = AppTheme.colors.primary,
+        checkedBorderColor: Color = BrutalDefaults.Color,
         checkedIconColor: Color = AppTheme.colors.primary,
         uncheckedThumbColor: Color = AppTheme.colors.primary,
         uncheckedTrackColor: Color = AppTheme.colors.background,
-        uncheckedBorderColor: Color = AppTheme.colors.primary,
+        uncheckedBorderColor: Color = BrutalDefaults.Color,
         uncheckedIconColor: Color = AppTheme.colors.onPrimary,
         disabledCheckedThumbColor: Color = AppTheme.colors.onDisabled,
         disabledCheckedTrackColor: Color = AppTheme.colors.disabled,
-        disabledCheckedBorderColor: Color = AppTheme.colors.disabled,
+        disabledCheckedBorderColor: Color = BrutalDefaults.Color,
         disabledCheckedIconColor: Color = AppTheme.colors.disabled,
         disabledUncheckedThumbColor: Color = AppTheme.colors.disabled,
         disabledUncheckedTrackColor: Color = AppTheme.colors.transparent,
-        disabledUncheckedBorderColor: Color = AppTheme.colors.disabled,
+        disabledUncheckedBorderColor: Color = BrutalDefaults.Color,
         disabledUncheckedIconColor: Color = AppTheme.colors.onDisabled,
     ): SwitchColors =
         SwitchColors(
@@ -336,35 +342,27 @@ private class SwitchAnimationState(
 
 @Composable
 private fun SwitchPreview() {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.padding(16.dp),
+    ) {
         val value =
             remember {
                 mutableStateOf(false)
             }
 
-        Spacer(modifier = Modifier.size(16.dp))
         Switch(
             checked = value.value,
             onCheckedChange = {
                 value.value = it
             },
         )
-        Spacer(modifier = Modifier.size(16.dp))
-        Switch(
-            checked = value.value,
-            onCheckedChange = {
-                value.value = it
-            },
-        )
-        Spacer(modifier = Modifier.size(16.dp))
-
         Switch(
             checked = true,
             onCheckedChange = {
                 value.value = it
             },
         )
-        Spacer(modifier = Modifier.size(16.dp))
 
         Switch(
             checked = false,
@@ -372,7 +370,6 @@ private fun SwitchPreview() {
                 value.value = it
             },
         )
-        Spacer(modifier = Modifier.size(16.dp))
 
         Switch(
             checked = true,
@@ -381,7 +378,6 @@ private fun SwitchPreview() {
                 value.value = it
             },
         )
-        Spacer(modifier = Modifier.size(16.dp))
 
         Switch(
             checked = false,
@@ -390,7 +386,6 @@ private fun SwitchPreview() {
                 value.value = it
             },
         )
-        Spacer(modifier = Modifier.size(16.dp))
     }
 }
 
