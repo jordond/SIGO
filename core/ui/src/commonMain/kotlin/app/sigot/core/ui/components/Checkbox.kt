@@ -6,9 +6,9 @@ import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.triStateToggleable
-import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.State
@@ -66,6 +66,7 @@ public fun Checkbox(
     onCheckedChange: ((Boolean) -> Unit)? = null,
     enabled: Boolean = true,
     colors: CheckboxColors = CheckboxDefaults.colors(),
+    elevation: BrutalElevation? = CheckboxDefaults.elevation,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     TriStateCheckbox(
@@ -79,6 +80,7 @@ public fun Checkbox(
         modifier = modifier,
         enabled = enabled,
         colors = colors,
+        elevation = elevation,
         interactionSource = interactionSource,
     )
 }
@@ -90,10 +92,13 @@ public fun TriStateCheckbox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: CheckboxColors = CheckboxDefaults.colors(),
+    elevation: BrutalElevation? = CheckboxDefaults.elevation,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     val toggleableModifier =
-        if (onClick != null) {
+        if (onClick == null) {
+            Modifier
+        } else {
             Modifier
                 .requiredSize(MinimumInteractiveSize)
                 .triStateToggleable(
@@ -108,17 +113,17 @@ public fun TriStateCheckbox(
                             radius = MinimumInteractiveSize / 2,
                         ),
                 )
-        } else {
-            Modifier
         }
+
     CheckboxComponent(
         enabled = enabled,
         value = state,
+        colors = colors,
+        elevation = elevation,
         modifier =
             modifier
                 .then(toggleableModifier)
                 .padding(CheckboxDefaultPadding),
-        colors = colors,
     )
 }
 
@@ -128,6 +133,7 @@ private fun CheckboxComponent(
     value: ToggleableState,
     modifier: Modifier,
     colors: CheckboxColors,
+    elevation: BrutalElevation?,
 ) {
     val transition = updateTransition(value, label = "checkbox")
     val checkDrawFraction =
@@ -166,25 +172,32 @@ private fun CheckboxComponent(
             }
         }
     val checkCache = remember { CheckDrawingCache() }
-    val checkColor = colors.checkmarkColor(value)
+    val checkColor = colors.checkmarkColor(enabled, value)
     val boxColor = colors.boxColor(enabled, value)
     val borderColor = colors.borderColor(enabled, value)
 
-    Canvas(modifier.wrapContentSize(Alignment.Center).requiredSize(CheckboxSize)) {
-        val strokeWidthPx = floor(StrokeWidth.toPx())
-        drawBox(
-            boxColor = boxColor.value,
-            borderColor = borderColor.value,
-            radius = RadiusSize.toPx(),
-            strokeWidth = strokeWidthPx,
-        )
-        drawCheck(
-            checkColor = checkColor,
-            checkFraction = checkDrawFraction.value,
-            crossCenterGravitation = checkCenterGravitationShiftFraction.value,
-            strokeWidthPx = strokeWidthPx,
-            drawingCache = checkCache,
-        )
+    Box(modifier) {
+        BrutalContainer(
+            shape = CheckboxDefaults.Shape,
+            elevation = elevation?.default ?: 0.dp,
+        ) {
+            Canvas(Modifier.wrapContentSize(Alignment.Center).requiredSize(CheckboxSize)) {
+                val strokeWidthPx = floor(StrokeWidth.toPx())
+                drawBox(
+                    boxColor = boxColor.value,
+                    borderColor = borderColor.value,
+                    radius = RadiusSize.toPx(),
+                    strokeWidth = strokeWidthPx,
+                )
+                drawCheck(
+                    checkColor = checkColor,
+                    checkFraction = checkDrawFraction.value,
+                    crossCenterGravitation = checkCenterGravitationShiftFraction.value,
+                    strokeWidthPx = strokeWidthPx,
+                    drawingCache = checkCache,
+                )
+            }
+        }
     }
 }
 
@@ -229,7 +242,7 @@ private fun DrawScope.drawCheck(
     strokeWidthPx: Float,
     drawingCache: CheckDrawingCache,
 ) {
-    val stroke = Stroke(width = strokeWidthPx, cap = StrokeCap.Square)
+    val stroke = Stroke(width = strokeWidthPx, cap = StrokeCap.Butt)
     val width = size.width
     val checkCrossX = 0.4f
     val checkCrossY = 0.7f
@@ -251,10 +264,10 @@ private fun DrawScope.drawCheck(
         pathMeasure.setPath(checkPath, false)
         pathToDraw.reset()
         pathMeasure.getSegment(
-            0f,
-            pathMeasure.length * checkFraction,
-            pathToDraw,
-            true,
+            startDistance = 0f,
+            stopDistance = pathMeasure.length * checkFraction,
+            destination = pathToDraw,
+            startWithMoveTo = true,
         )
     }
     drawPath(drawingCache.pathToDraw, checkColor, style = stroke)
@@ -269,31 +282,50 @@ private class CheckDrawingCache(
 
 @Suppress("ConstPropertyName")
 public object CheckboxDefaults {
+    public val elevation: BrutalElevation = BrutalElevationDefaults.Small
     internal const val BoxInDuration = 50
     internal const val BoxOutDuration = 100
     internal const val CheckAnimationDuration = 100
 
     internal val CheckboxDefaultPadding = 2.dp
     internal val CheckboxSize = 20.dp
-    internal val StrokeWidth = 2.dp
+    internal val StrokeWidth = BrutalDefaults.BorderWidth
     internal val RadiusSize = 4.dp
+    internal val Shape = RoundedCornerShape(RadiusSize)
     internal val MinimumInteractiveSize = 44.dp
 
     @Composable
-    public fun colors(): CheckboxColors =
+    public fun colors(
+        checkedCheckmarkColor: Color = AppTheme.colors.onPrimary,
+        uncheckedCheckmarkColor: Color = Color.Transparent,
+        disabledCheckedCheckmarkColor: Color = AppTheme.colors.onDisabled,
+        disabledUncheckedCheckmarkColor: Color = Color.Transparent,
+        checkedBoxColor: Color = AppTheme.colors.primary,
+        uncheckedBoxColor: Color = AppTheme.colors.surface,
+        disabledCheckedBoxColor: Color = AppTheme.colors.disabled,
+        disabledUncheckedBoxColor: Color = AppTheme.colors.disabled,
+        disabledIndeterminateBoxColor: Color = AppTheme.colors.disabled,
+        checkedBorderColor: Color = Color.Black,
+        uncheckedBorderColor: Color = Color.Black,
+        disabledBorderColor: Color = Color.Black,
+        disabledUncheckedBorderColor: Color = Color.Black,
+        disabledIndeterminateBorderColor: Color = Color.Black,
+    ): CheckboxColors =
         CheckboxColors(
-            checkedCheckmarkColor = AppTheme.colors.onPrimary,
-            uncheckedCheckmarkColor = AppTheme.colors.transparent,
-            checkedBoxColor = AppTheme.colors.primary,
-            uncheckedBoxColor = AppTheme.colors.transparent,
-            disabledCheckedBoxColor = AppTheme.colors.disabled,
-            disabledUncheckedBoxColor = AppTheme.colors.transparent,
-            disabledIndeterminateBoxColor = AppTheme.colors.disabled,
-            checkedBorderColor = AppTheme.colors.primary,
-            uncheckedBorderColor = AppTheme.colors.primary,
-            disabledBorderColor = AppTheme.colors.disabled,
-            disabledUncheckedBorderColor = AppTheme.colors.disabled,
-            disabledIndeterminateBorderColor = AppTheme.colors.disabled,
+            checkedCheckmarkColor = checkedCheckmarkColor,
+            uncheckedCheckmarkColor = uncheckedCheckmarkColor,
+            disabledCheckedCheckmarkColor = disabledCheckedCheckmarkColor,
+            disabledUncheckedCheckmarkColor = disabledUncheckedCheckmarkColor,
+            checkedBoxColor = checkedBoxColor,
+            uncheckedBoxColor = uncheckedBoxColor,
+            disabledCheckedBoxColor = disabledCheckedBoxColor,
+            disabledUncheckedBoxColor = disabledUncheckedBoxColor,
+            disabledIndeterminateBoxColor = disabledIndeterminateBoxColor,
+            checkedBorderColor = checkedBorderColor,
+            uncheckedBorderColor = uncheckedBorderColor,
+            disabledBorderColor = disabledBorderColor,
+            disabledUncheckedBorderColor = disabledUncheckedBorderColor,
+            disabledIndeterminateBorderColor = disabledIndeterminateBorderColor,
         )
 }
 
@@ -301,6 +333,8 @@ public object CheckboxDefaults {
 public data class CheckboxColors(
     val checkedCheckmarkColor: Color,
     val uncheckedCheckmarkColor: Color,
+    val disabledCheckedCheckmarkColor: Color,
+    val disabledUncheckedCheckmarkColor: Color,
     val checkedBoxColor: Color,
     val uncheckedBoxColor: Color,
     val disabledCheckedBoxColor: Color,
@@ -313,11 +347,24 @@ public data class CheckboxColors(
     val disabledIndeterminateBorderColor: Color,
 ) {
     @Composable
-    internal fun checkmarkColor(state: ToggleableState): Color =
-        if (state == ToggleableState.Off) {
-            uncheckedCheckmarkColor
-        } else {
-            checkedCheckmarkColor
+    internal fun checkmarkColor(
+        enabled: Boolean,
+        state: ToggleableState,
+    ): Color =
+        remember(enabled, state) {
+            if (enabled) {
+                if (state == ToggleableState.Off) {
+                    uncheckedCheckmarkColor
+                } else {
+                    checkedCheckmarkColor
+                }
+            } else {
+                if (state == ToggleableState.Off) {
+                    disabledUncheckedCheckmarkColor
+                } else {
+                    disabledCheckedCheckmarkColor
+                }
+            }
         }
 
     @Composable
@@ -377,128 +424,135 @@ public data class CheckboxColors(
 
 @Composable
 private fun CheckboxPreview() {
-    AppTheme {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        var isChecked by remember { mutableStateOf(false) }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            var isChecked by remember { mutableStateOf(false) }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
+            Checkbox(
+                checked = isChecked,
+                onCheckedChange = { isChecked = it },
+            )
+            Text("Basic")
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Checkbox(
+                checked = true,
+                onCheckedChange = {},
+            )
+            Text("Basic")
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Column {
                 Checkbox(
-                    checked = isChecked,
-                    onCheckedChange = { isChecked = it },
+                    checked = true,
+                    onCheckedChange = null,
+                    enabled = false,
                 )
-                BasicText("Basic Checkbox")
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("Disabled Checked")
             }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                Column {
-                    Checkbox(
-                        checked = true,
-                        onCheckedChange = null,
-                        enabled = false,
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    BasicText("Disabled Checked")
-                }
-
-                Column {
-                    Checkbox(
-                        checked = false,
-                        onCheckedChange = null,
-                        enabled = false,
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    BasicText("Disabled Unchecked")
-                }
-            }
-
-            var triState by remember { mutableStateOf(ToggleableState.Off) }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                TriStateCheckbox(
-                    state = triState,
-                    onClick = {
-                        triState =
-                            when (triState) {
-                                ToggleableState.Off -> ToggleableState.Indeterminate
-                                ToggleableState.Indeterminate -> ToggleableState.On
-                                ToggleableState.On -> ToggleableState.Off
-                            }
-                    },
-                )
-                BasicText("Tri-State Checkbox")
-            }
-
-            var customColorChecked by remember { mutableStateOf(false) }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                val customColors =
-                    CheckboxColors(
-                        checkedCheckmarkColor = AppTheme.colors.onPrimary,
-                        uncheckedCheckmarkColor = AppTheme.colors.transparent,
-                        checkedBoxColor = AppTheme.colors.primary,
-                        uncheckedBoxColor = AppTheme.colors.transparent,
-                        disabledCheckedBoxColor = AppTheme.colors.disabled,
-                        disabledUncheckedBoxColor = AppTheme.colors.transparent,
-                        disabledIndeterminateBoxColor = AppTheme.colors.primary,
-                        checkedBorderColor = AppTheme.colors.primary,
-                        uncheckedBorderColor = AppTheme.colors.primary,
-                        disabledBorderColor = AppTheme.colors.disabled,
-                        disabledUncheckedBorderColor = AppTheme.colors.disabled,
-                        disabledIndeterminateBorderColor = AppTheme.colors.disabled,
-                    )
-
-                Checkbox(
-                    checked = customColorChecked,
-                    onCheckedChange = { customColorChecked = it },
-                    colors = customColors,
-                )
-                BasicText("Custom Colors")
-            }
-
-            var selectedItems by remember { mutableStateOf(setOf<String>()) }
-            val items = listOf("Option 1", "Option 2", "Option 3")
 
             Column {
-                BasicText("Checkbox Group")
-                Spacer(modifier = Modifier.height(8.dp))
-                items.forEach { item ->
-                    Row(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Checkbox(
-                            checked = selectedItems.contains(item),
-                            onCheckedChange = { checked ->
-                                selectedItems =
-                                    if (checked) {
-                                        selectedItems + item
-                                    } else {
-                                        selectedItems - item
-                                    }
-                            },
-                        )
-                        BasicText(item)
-                    }
+                Checkbox(
+                    checked = false,
+                    onCheckedChange = null,
+                    enabled = false,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("Disabled Unchecked")
+            }
+        }
+
+        var triState by remember { mutableStateOf(ToggleableState.Off) }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            TriStateCheckbox(
+                state = triState,
+                onClick = {
+                    triState =
+                        when (triState) {
+                            ToggleableState.Off -> ToggleableState.Indeterminate
+                            ToggleableState.Indeterminate -> ToggleableState.On
+                            ToggleableState.On -> ToggleableState.Off
+                        }
+                },
+            )
+            Text("Tri-State Checkbox")
+        }
+
+        var customColorChecked by remember { mutableStateOf(false) }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            val customColors =
+                CheckboxDefaults.colors(
+                    checkedCheckmarkColor = AppTheme.colors.onPrimary,
+                    uncheckedCheckmarkColor = AppTheme.colors.transparent,
+                    checkedBoxColor = AppTheme.colors.primary,
+                    uncheckedBoxColor = AppTheme.colors.transparent,
+                    disabledCheckedBoxColor = AppTheme.colors.disabled,
+                    disabledUncheckedBoxColor = AppTheme.colors.transparent,
+                    disabledIndeterminateBoxColor = AppTheme.colors.primary,
+                    checkedBorderColor = AppTheme.colors.primary,
+                    uncheckedBorderColor = AppTheme.colors.primary,
+                    disabledBorderColor = AppTheme.colors.disabled,
+                    disabledUncheckedBorderColor = AppTheme.colors.disabled,
+                    disabledIndeterminateBorderColor = AppTheme.colors.disabled,
+                )
+
+            Checkbox(
+                checked = customColorChecked,
+                onCheckedChange = { customColorChecked = it },
+                colors = customColors,
+            )
+            Text("Custom Colors")
+        }
+
+        var selectedItems by remember { mutableStateOf(setOf<String>()) }
+        val items = listOf("Option 1", "Option 2", "Option 3")
+
+        Column {
+            Text("Checkbox Group")
+            Spacer(modifier = Modifier.height(8.dp))
+            items.forEach { item ->
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Checkbox(
+                        checked = selectedItems.contains(item),
+                        onCheckedChange = { checked ->
+                            selectedItems =
+                                if (checked) {
+                                    selectedItems + item
+                                } else {
+                                    selectedItems - item
+                                }
+                        },
+                    )
+                    Text(item)
                 }
             }
         }
