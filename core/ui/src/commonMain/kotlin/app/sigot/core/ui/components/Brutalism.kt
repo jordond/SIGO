@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,40 +44,50 @@ public object BrutalDefaults {
         @Composable get() = AppTheme.colors.outline
 }
 
+@Immutable
+public data class BrutalElevation(
+    public val default: Dp,
+    public val pressed: Dp,
+    public val focused: Dp,
+    public val hovered: Dp,
+    public val dragged: Dp,
+    public val disabled: Dp,
+)
+
 public object BrutalElevationDefaults {
-    public object ExtraSmall {
-        public val default: Dp = 1.dp
-        public val pressed: Dp = 0.5.dp
-        public val focused: Dp = 0.5.dp
-        public val hovered: Dp = 0.5.dp
-        public val dragged: Dp = 0.5.dp
-        public val disabled: Dp = 0.dp
-    }
+    public val ExtraSmall: BrutalElevation = BrutalElevation(
+        default = 1.dp,
+        pressed = 0.5.dp,
+        focused = 0.5.dp,
+        hovered = 0.5.dp,
+        dragged = 0.5.dp,
+        disabled = 0.dp,
+    )
 
-    public object Small {
-        public val default: Dp = 2.dp
-        public val pressed: Dp = 1.dp
-        public val focused: Dp = 1.dp
-        public val hovered: Dp = 1.dp
-        public val dragged: Dp = 1.dp
-        public val disabled: Dp = 0.dp
-    }
+    public val Small: BrutalElevation = BrutalElevation(
+        default = 2.dp,
+        pressed = 1.dp,
+        focused = 1.dp,
+        hovered = 1.dp,
+        dragged = 1.dp,
+        disabled = 0.dp,
+    )
 
-    public object Medium {
-        public val default: Dp = 4.dp
-        public val pressed: Dp = 2.dp
-        public val focused: Dp = 2.dp
-        public val hovered: Dp = 2.dp
-        public val dragged: Dp = 2.dp
-        public val disabled: Dp = 0.dp
-    }
+    public val Medium: BrutalElevation = BrutalElevation(
+        default = 4.dp,
+        pressed = 2.dp,
+        focused = 2.dp,
+        hovered = 2.dp,
+        dragged = 2.dp,
+        disabled = 0.dp,
+    )
 
-    public object Large {
-        public val default: Dp = 8.dp
-        public val pressed: Dp = 4.dp
-        public val focused: Dp = 4.dp
-        public val hovered: Dp = 4.dp
-        public val dragged: Dp = 4.dp
-        public val disabled: Dp = 0.dp
-    }
+    public val Large: BrutalElevation = BrutalElevation(
+        default = 8.dp,
+        pressed = 4.dp,
+        focused = 4.dp,
+        hovered = 4.dp,
+        dragged = 4.dp,
+        disabled = 0.dp,
+    )
 }
