@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalContentColor
 import app.sigot.core.ui.LocalThemeIsDark
 import app.sigot.core.ui.components.SwitchDefaults.RippleRadius
@@ -223,7 +224,7 @@ public object SwitchDefaults {
         checkedIconColor: Color = contentColorFor(checkedThumbColor),
         checkedThumbBorderColor: Color = BrutalDefaults.Color,
         uncheckedThumbColor: Color = thumbColor(),
-        uncheckedTrackColor: Color = AppTheme.colors.surface,
+        uncheckedTrackColor: Color = LocalContainerColor.current,
         uncheckedBorderColor: Color = BrutalDefaults.Color,
         uncheckedIconColor: Color = contentColorFor(uncheckedThumbColor),
         uncheckedThumbBorderColor: Color = BrutalDefaults.Color,

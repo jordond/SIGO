@@ -64,6 +64,7 @@ public fun AppTheme(
             LocalIndication provides rippleIndication,
             LocalTextSelectionColors provides selectionColors,
             LocalContentColor provides colors.contentColorFor(colors.background),
+            LocalContainerColor provides colors.surface,
             LocalTextStyle provides typography.body1,
         ) {
             SystemAppearance(isDarkTheme)

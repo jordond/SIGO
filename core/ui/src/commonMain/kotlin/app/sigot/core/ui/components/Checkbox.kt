@@ -45,6 +45,7 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.components.CheckboxDefaults.BoxInDuration
 import app.sigot.core.ui.components.CheckboxDefaults.BoxOutDuration
 import app.sigot.core.ui.components.CheckboxDefaults.CheckAnimationDuration
@@ -301,7 +302,7 @@ public object CheckboxDefaults {
         disabledCheckedCheckmarkColor: Color = AppTheme.colors.onDisabled,
         disabledUncheckedCheckmarkColor: Color = Color.Transparent,
         checkedBoxColor: Color = AppTheme.colors.primary,
-        uncheckedBoxColor: Color = AppTheme.colors.surface,
+        uncheckedBoxColor: Color = LocalContainerColor.current,
         disabledCheckedBoxColor: Color = AppTheme.colors.disabled,
         disabledUncheckedBoxColor: Color = AppTheme.colors.disabled,
         disabledIndeterminateBoxColor: Color = AppTheme.colors.disabled,

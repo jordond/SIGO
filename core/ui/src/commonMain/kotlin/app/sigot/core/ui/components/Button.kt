@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalContentColor
 import app.sigot.core.ui.components.BrutalDefaults.DisabledAlpha
 import app.sigot.core.ui.components.progressindicators.CircularProgressIndicator
@@ -174,15 +176,19 @@ internal fun ButtonComponent(
             border = borderStroke,
             interactionSource = interactionSource,
         ) {
-            DefaultButtonContent(
-                text = text,
-                textStyle = textStyle,
-                loading = loading,
-                loadingContent = loadingContent,
-                contentColor = contentColor,
-                content = content,
-                modifier = Modifier.padding(contentPadding),
-            )
+            CompositionLocalProvider(
+                LocalContainerColor provides containerColor,
+            ) {
+                DefaultButtonContent(
+                    text = text,
+                    textStyle = textStyle,
+                    loading = loading,
+                    loadingContent = loadingContent,
+                    contentColor = contentColor,
+                    content = content,
+                    modifier = Modifier.padding(contentPadding),
+                )
+            }
         }
     }
 }
@@ -428,10 +434,10 @@ public object ButtonDefaults {
 
     @Composable
     public fun outlinedColors(
-        containerColor: Color = AppTheme.colors.surface,
+        containerColor: Color = LocalContainerColor.current,
         contentColor: Color = contentColorFor(containerColor),
         borderColor: Color = AppTheme.colors.onSurface,
-        disabledContainerColor: Color = AppTheme.colors.surface.disabled(DisabledAlpha),
+        disabledContainerColor: Color = LocalContainerColor.current.disabled(DisabledAlpha),
         disabledContentColor: Color = contentColorFor(disabledContainerColor),
     ): ButtonColors =
         ButtonColors(

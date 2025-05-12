@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalThemeIsDark
 import app.sigot.core.ui.foundation.slider.BasicRangeSlider
 import app.sigot.core.ui.foundation.slider.BasicSlider
 import app.sigot.core.ui.foundation.slider.RangeSliderState
@@ -218,13 +219,21 @@ public fun RangeSlider(
 @Stable
 public object SliderDefaults {
     @Composable
+    private fun thumbColor(): Color =
+        if (LocalThemeIsDark.current) {
+            AppTheme.colors.inverseSurface
+        } else {
+            AppTheme.colors.surface
+        }
+
+    @Composable
     public fun colors(
-        thumbColor: Color = Color.White,
+        thumbColor: Color = thumbColor(),
         activeTrackColor: Color = AppTheme.colors.primary,
         activeTickColor: Color = AppTheme.colors.onPrimary,
         inactiveTrackColor: Color = AppTheme.colors.secondary,
         inactiveTickColor: Color = AppTheme.colors.onPrimary.disabled(),
-        disabledThumbColor: Color = Color.White,
+        disabledThumbColor: Color = thumbColor(),
         disabledActiveTrackColor: Color = AppTheme.colors.disabled,
         disabledActiveTickColor: Color = AppTheme.colors.disabled,
         disabledInactiveTrackColor: Color = AppTheme.colors.disabled.disabled(),

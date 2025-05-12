@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.progress
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.components.BrutalContainer
 import app.sigot.core.ui.components.BrutalDefaults
 import app.sigot.core.ui.components.BrutalElevationDefaults
@@ -448,7 +449,7 @@ public object LinearProgressIndicatorDefaults {
         @Composable get() = AppTheme.colors.primary
 
     public val TrackColor: Color
-        @Composable get() = AppTheme.colors.surface
+        @Composable get() = LocalContainerColor.current
 
     public val TrackHeight: Dp = 32.dp
     public val StrokeStyle: StrokeCap = StrokeCap.Round
