@@ -183,8 +183,15 @@ internal fun CommonDecorationBox(
         }
 
         val isFocused by interactionSource.collectIsFocusedAsState()
-        val elevationDp by animateDpAsState(if (isFocused) elevation.focused else elevation.default)
         val elevationColor by colors.containerOutlineColor(enabled, isError, interactionSource)
+        val elevationDp by animateDpAsState(
+            label = "TextFieldElevation",
+            targetValue = when {
+                !enabled -> elevation.disabled
+                isFocused -> elevation.focused
+                else -> elevation.default
+            },
+        )
 
         BrutalContainer(
             shape = shape,
@@ -382,6 +389,6 @@ internal val MinTextLineHeight = 24.dp
 internal val MinSupportingTextLineHeight = 16.dp
 
 internal val UnfocusedOutlineThickness = 2.dp
-internal val FocusedOutlineThickness = 4.dp
+internal val FocusedOutlineThickness = 2.dp
 
 internal val IconDefaultSizeModifier = Modifier.defaultMinSize(24.dp, 24.dp)
