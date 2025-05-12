@@ -3,6 +3,7 @@
     <string name="app_name_short">SIGOT</string>
     <string name="blank" />
     <string name="progress">%1$d%</string>
+    <string name="dismiss">Dismiss</string>
 
     <string name="cyclone">Cyclone</string>
     <string name="open_github">Open NOTHING</string>
