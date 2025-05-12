@@ -613,7 +613,7 @@ internal fun ButtonVariantPreview(
 
 @Composable
 @Preview
-internal fun ButtonrimaryPreview() {
+internal fun ButtonPrimaryPreview() {
     @Composable
     fun Preview() {
         ButtonVariantPreview(

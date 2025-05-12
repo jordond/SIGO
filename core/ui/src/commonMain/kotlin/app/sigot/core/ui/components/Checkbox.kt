@@ -424,7 +424,7 @@ public data class CheckboxColors(
 }
 
 @Composable
-private fun CheckboxPreview() {
+internal fun CheckboxPreview() {
     Column(
         modifier =
             Modifier
@@ -562,7 +562,7 @@ private fun CheckboxPreview() {
 
 @Preview
 @Composable
-private fun CheckBoxLightPreview() {
+internal fun CheckBoxLightPreview() {
     AppPreview {
         CheckboxPreview()
     }
@@ -570,7 +570,7 @@ private fun CheckBoxLightPreview() {
 
 @Preview
 @Composable
-private fun CheckBoxDarkPreview() {
+internal fun CheckBoxDarkPreview() {
     AppPreview(isDarkTheme = true) {
         CheckboxPreview()
     }
