@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.progressSemantics
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +31,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.PI
@@ -254,13 +254,13 @@ internal fun CircularProgressIndicatorPreview() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(16.dp),
         ) {
-            BasicText(
+            Text(
                 text = "Determinate Progress",
                 style = AppTheme.typography.body1,
             )
             CircularProgressIndicator(progress = { 0.7f })
 
-            BasicText(
+            Text(
                 text = "Indeterminate Progress",
                 style = AppTheme.typography.body1,
             )
