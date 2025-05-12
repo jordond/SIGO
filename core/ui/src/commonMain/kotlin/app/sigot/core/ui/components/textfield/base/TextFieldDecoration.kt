@@ -3,6 +3,7 @@
 package app.sigot.core.ui.components.textfield.base
 
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -40,6 +41,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalContentColor
+import app.sigot.core.ui.components.BrutalContainer
+import app.sigot.core.ui.components.BrutalElevation
 import app.sigot.core.ui.foundation.ProvideContentColorTextStyle
 
 @Composable
@@ -47,7 +50,8 @@ internal fun CommonDecorationBox(
     value: String,
     innerTextField: @Composable () -> Unit,
     visualTransformation: VisualTransformation,
-    label: @Composable (() -> Unit)?,
+    label: @Composable (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -63,6 +67,8 @@ internal fun CommonDecorationBox(
     supportingTextPadding: PaddingValues,
     leadingIconPadding: PaddingValues,
     trailingIconPadding: PaddingValues,
+    elevation: BrutalElevation,
+    shape: Shape,
     container: @Composable () -> Unit,
 ) {
     val transformedText =
@@ -82,7 +88,6 @@ internal fun CommonDecorationBox(
         inputState = inputState,
         showLabel = label != null,
     ) { placeholderAlphaProgress ->
-
         val labelColor = colors
             .labelColor(
                 enabled = enabled,
@@ -177,23 +182,33 @@ internal fun CommonDecorationBox(
             }
         }
 
-        TextFieldLayout(
-            modifier = Modifier,
-            textField = innerTextField,
-            placeholder = decoratedPlaceholder,
-            label = decoratedLabel,
-            leading = decoratedLeading,
-            trailing = decoratedTrailing,
-            prefix = decoratedPrefix,
-            suffix = decoratedSuffix,
-            container = containerWithId,
-            supporting = decoratedSupporting,
-            paddingValues = contentPadding,
-            labelPaddingValues = labelPadding,
-            supportingPaddingValues = supportingTextPadding,
-            leadingIconPaddingValues = leadingIconPadding,
-            trailingIconPaddingValues = trailingIconPadding,
-        )
+        val isFocused by interactionSource.collectIsFocusedAsState()
+        val elevationDp by animateDpAsState(if (isFocused) elevation.focused else elevation.default)
+        val elevationColor by colors.containerOutlineColor(enabled, isError, interactionSource)
+
+        BrutalContainer(
+            shape = shape,
+            elevation = elevationDp,
+            color = elevationColor,
+        ) {
+            TextFieldLayout(
+                modifier = modifier,
+                textField = innerTextField,
+                placeholder = decoratedPlaceholder,
+                label = decoratedLabel,
+                leading = decoratedLeading,
+                trailing = decoratedTrailing,
+                prefix = decoratedPrefix,
+                suffix = decoratedSuffix,
+                container = containerWithId,
+                supporting = decoratedSupporting,
+                paddingValues = contentPadding,
+                labelPaddingValues = labelPadding,
+                supportingPaddingValues = supportingTextPadding,
+                leadingIconPaddingValues = leadingIconPadding,
+                trailingIconPaddingValues = trailingIconPadding,
+            )
+        }
     }
 }
 
@@ -367,6 +382,6 @@ internal val MinTextLineHeight = 24.dp
 internal val MinSupportingTextLineHeight = 16.dp
 
 internal val UnfocusedOutlineThickness = 2.dp
-internal val FocusedOutlineThickness = 2.dp
+internal val FocusedOutlineThickness = 4.dp
 
 internal val IconDefaultSizeModifier = Modifier.defaultMinSize(24.dp, 24.dp)

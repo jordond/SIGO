@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.components.BrutalDefaults
+import app.sigot.core.ui.components.BrutalElevation
+import app.sigot.core.ui.components.BrutalElevationDefaults
 import app.sigot.core.ui.components.Icon
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.textfield.base.CommonDecorationBox
@@ -80,6 +82,7 @@ public fun TextField(
     isError: Boolean = false,
     shape: Shape = TextFieldDefaults.Shape,
     colors: TextFieldColors = TextFieldDefaults.colors(),
+    elevation: BrutalElevation = TextFieldDefaults.Elevation,
     cursorBrush: Brush = SolidColor(colors.cursorColor(isError).value),
 ) {
     val textColor =
@@ -113,16 +116,15 @@ public fun TextField(
                     value = value,
                     innerTextField = innerTextField,
                     visualTransformation = visualTransformation,
-                    label = label,
                     placeholder = placeholder,
                     leadingIcon = leadingIcon,
                     trailingIcon = trailingIcon,
                     prefix = prefix,
                     suffix = suffix,
-                    supportingText = supportingText,
                     enabled = enabled,
                     isError = isError,
                     interactionSource = interactionSource,
+                    elevation = elevation,
                     colors = colors,
                     shape = shape,
                 )
@@ -157,6 +159,7 @@ public fun TextField(
     isError: Boolean = false,
     shape: Shape = TextFieldDefaults.Shape,
     colors: TextFieldColors = TextFieldDefaults.colors(),
+    elevation: BrutalElevation = TextFieldDefaults.Elevation,
     cursorBrush: Brush = SolidColor(colors.cursorColor(isError).value),
 ) {
     val textColor =
@@ -190,16 +193,15 @@ public fun TextField(
                     value = value.text,
                     innerTextField = innerTextField,
                     visualTransformation = visualTransformation,
-                    label = label,
                     placeholder = placeholder,
                     leadingIcon = leadingIcon,
                     trailingIcon = trailingIcon,
                     prefix = prefix,
                     suffix = suffix,
-                    supportingText = supportingText,
                     enabled = enabled,
                     isError = isError,
                     interactionSource = interactionSource,
+                    elevation = elevation,
                     colors = TextFieldDefaults.colors(),
                     shape = shape,
                 )
@@ -212,6 +214,7 @@ public fun TextField(
 public object TextFieldDefaults {
     public val MinHeight: Dp = TextFieldMinHeight
     public val Shape: Shape @Composable get() = AppTheme.shapes.small
+    public val Elevation: BrutalElevation = BrutalElevationDefaults.Small
 
     private fun contentPadding(
         start: Dp = TextFieldHorizontalPadding,
@@ -265,14 +268,13 @@ public object TextFieldDefaults {
         visualTransformation: VisualTransformation,
         interactionSource: InteractionSource,
         isError: Boolean = false,
-        label: @Composable (() -> Unit)? = null,
         placeholder: @Composable (() -> Unit)? = null,
         leadingIcon: @Composable (() -> Unit)? = null,
         trailingIcon: @Composable (() -> Unit)? = null,
         prefix: @Composable (() -> Unit)? = null,
         suffix: @Composable (() -> Unit)? = null,
-        supportingText: @Composable (() -> Unit)? = null,
         shape: Shape = Shape,
+        elevation: BrutalElevation = Elevation,
         colors: TextFieldColors = colors(),
         container: @Composable () -> Unit = {
             ContainerBox(enabled, isError, interactionSource, colors, shape)
@@ -283,12 +285,10 @@ public object TextFieldDefaults {
             innerTextField = innerTextField,
             visualTransformation = visualTransformation,
             placeholder = placeholder,
-            label = label,
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
             prefix = prefix,
             suffix = suffix,
-            supportingText = supportingText,
             enabled = enabled,
             isError = isError,
             interactionSource = interactionSource,
@@ -299,6 +299,9 @@ public object TextFieldDefaults {
             leadingIconPadding = leadingIconPadding(),
             trailingIconPadding = trailingIconPadding(),
             container = container,
+            shape = shape,
+            elevation = elevation,
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 
@@ -315,12 +318,12 @@ public object TextFieldDefaults {
             modifier = Modifier
                 .background(colors.containerColor(enabled, isError, interactionSource).value, shape)
                 .containerOutline(
-                    enabled,
-                    isError,
-                    interactionSource,
-                    colors,
-                    borderThickness,
-                    shape,
+                    enabled = enabled,
+                    isError = isError,
+                    interactionSource = interactionSource,
+                    colors = colors,
+                    borderThickness = borderThickness,
+                    shape = shape,
                 ),
         )
     }
@@ -334,7 +337,7 @@ public object TextFieldDefaults {
         focusedContainerColor: Color = AppTheme.colors.secondary,
         unfocusedContainerColor: Color = LocalContainerColor.current,
         disabledContainerColor: Color = LocalContainerColor.current,
-        errorContainerColor: Color = AppTheme.colors.secondary,
+        errorContainerColor: Color = LocalContainerColor.current,
         cursorColor: Color = AppTheme.colors.primary,
         errorCursorColor: Color = AppTheme.colors.error,
         textSelectionColors: TextSelectionColors = LocalTextSelectionColors.current,
