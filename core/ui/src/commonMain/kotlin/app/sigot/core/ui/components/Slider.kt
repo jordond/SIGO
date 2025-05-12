@@ -1,6 +1,7 @@
 package app.sigot.core.ui.components
 
 import androidx.annotation.IntRange
+import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,14 +24,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.foundation.slider.BasicRangeSlider
+import app.sigot.core.ui.foundation.slider.BasicSlider
+import app.sigot.core.ui.foundation.slider.RangeSliderState
+import app.sigot.core.ui.foundation.slider.SliderColors
+import app.sigot.core.ui.foundation.slider.SliderFoundationDefaults
+import app.sigot.core.ui.foundation.slider.SliderState
+import app.sigot.core.ui.ktx.disabled
 import app.sigot.core.ui.preview.AppPreview
-import com.nomanr.composables.slider.BasicRangeSlider
-import com.nomanr.composables.slider.BasicSlider
-import com.nomanr.composables.slider.RangeSliderState
-import com.nomanr.composables.slider.SliderColors
-import com.nomanr.composables.slider.SliderState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -48,10 +52,10 @@ public fun Slider(
     val state =
         remember(steps, valueRange) {
             SliderState(
-                value,
-                steps,
-                onValueChangeFinished,
-                valueRange,
+                value = value,
+                steps = steps,
+                onValueChangeFinished = onValueChangeFinished,
+                valueRange = valueRange,
             )
         }
 
@@ -68,6 +72,8 @@ public fun Slider(
     )
 }
 
+private val thumbSize = 24.dp
+
 @Composable
 public fun Slider(
     state: SliderState,
@@ -83,7 +89,38 @@ public fun Slider(
         state = state,
         colors = colors,
         enabled = enabled,
+        trackInsideCornerSize = 1.dp,
+        trackHeight = 32.dp,
+        thumbWidth = thumbSize,
+        thumbHeight = thumbSize,
         interactionSource = interactionSource,
+        thumb = {
+            SliderFoundationDefaults.Thumb(
+                interactionSource = interactionSource,
+                colors = colors,
+                enabled = enabled,
+                thumbWidth = thumbSize,
+                thumbHeight = thumbSize,
+                thumbSizeOnPress = DpSize(thumbSize, thumbSize),
+                modifier = Modifier.border(
+                    width = BrutalDefaults.BorderWidth,
+                    color = BrutalDefaults.Color,
+                    shape = SliderFoundationDefaults.ThumbShape,
+                ),
+            )
+        },
+        track = { sliderState ->
+            SliderFoundationDefaults.Track(
+                colors = colors,
+                enabled = enabled,
+                sliderState = sliderState,
+                modifier = Modifier.border(
+                    width = BrutalDefaults.BorderWidth,
+                    color = BrutalDefaults.Color,
+                    shape = AppTheme.shapes.extraSmall,
+                ),
+            )
+        },
     )
 }
 
@@ -103,11 +140,11 @@ public fun RangeSlider(
     val state =
         remember(steps, valueRange) {
             RangeSliderState(
-                value.start,
-                value.endInclusive,
-                steps,
-                onValueChangeFinished,
-                valueRange,
+                activeRangeStart = value.start,
+                activeRangeEnd = value.endInclusive,
+                steps = steps,
+                onValueChangeFinished = onValueChangeFinished,
+                valueRange = valueRange,
             )
         }
 
@@ -137,6 +174,23 @@ public fun RangeSlider(
 ) {
     require(state.steps >= 0) { "steps should be >= 0" }
 
+    @Composable
+    fun Thumb(interactionSource: MutableInteractionSource) {
+        SliderFoundationDefaults.Thumb(
+            interactionSource = interactionSource,
+            colors = colors,
+            enabled = enabled,
+            thumbWidth = thumbSize,
+            thumbHeight = thumbSize,
+            thumbSizeOnPress = DpSize(thumbSize, thumbSize),
+            modifier = Modifier.border(
+                width = BrutalDefaults.BorderWidth,
+                color = BrutalDefaults.Color,
+                shape = SliderFoundationDefaults.ThumbShape,
+            ),
+        )
+    }
+
     BasicRangeSlider(
         modifier = modifier,
         state = state,
@@ -144,6 +198,20 @@ public fun RangeSlider(
         startInteractionSource = startInteractionSource,
         endInteractionSource = endInteractionSource,
         colors = colors,
+        startThumb = { Thumb(startInteractionSource) },
+        endThumb = { Thumb(endInteractionSource) },
+        track = { rangeSliderState ->
+            SliderFoundationDefaults.Track(
+                rangeSliderState = rangeSliderState,
+                colors = colors,
+                enabled = enabled,
+                modifier = Modifier.border(
+                    width = BrutalDefaults.BorderWidth,
+                    color = BrutalDefaults.Color,
+                    shape = AppTheme.shapes.extraSmall,
+                ),
+            )
+        },
     )
 }
 
@@ -151,15 +219,15 @@ public fun RangeSlider(
 public object SliderDefaults {
     @Composable
     public fun colors(
-        thumbColor: Color = AppTheme.colors.primary,
+        thumbColor: Color = Color.White,
         activeTrackColor: Color = AppTheme.colors.primary,
         activeTickColor: Color = AppTheme.colors.onPrimary,
         inactiveTrackColor: Color = AppTheme.colors.secondary,
-        inactiveTickColor: Color = AppTheme.colors.primary,
-        disabledThumbColor: Color = AppTheme.colors.disabled,
+        inactiveTickColor: Color = AppTheme.colors.onPrimary.disabled(),
+        disabledThumbColor: Color = Color.White,
         disabledActiveTrackColor: Color = AppTheme.colors.disabled,
         disabledActiveTickColor: Color = AppTheme.colors.disabled,
-        disabledInactiveTrackColor: Color = AppTheme.colors.disabled,
+        disabledInactiveTrackColor: Color = AppTheme.colors.disabled.disabled(),
         disabledInactiveTickColor: Color = Color.Unspecified,
     ): SliderColors =
         SliderColors(
@@ -259,25 +327,6 @@ private fun SliderPreview() {
                 value = 0.7f,
                 onValueChange = {},
                 enabled = false,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-
-        Column {
-            Text(
-                text = "Custom Colors",
-                style = AppTheme.typography.h4,
-            )
-            var value by remember { mutableFloatStateOf(0.5f) }
-            Slider(
-                value = value,
-                onValueChange = { value = it },
-                colors =
-                    SliderDefaults.colors(
-                        thumbColor = AppTheme.colors.error,
-                        activeTrackColor = AppTheme.colors.error,
-                        inactiveTrackColor = AppTheme.colors.error.copy(alpha = 0.3f),
-                    ),
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -399,25 +448,6 @@ private fun RangeSliderPreview() {
                 value = 0.3f..0.7f,
                 onValueChange = {},
                 enabled = false,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-
-        Column {
-            Text(
-                text = "Custom Colors",
-                style = AppTheme.typography.h4,
-            )
-            var range by remember { mutableStateOf(0.3f..0.7f) }
-            RangeSlider(
-                value = range,
-                onValueChange = { range = it },
-                colors =
-                    SliderDefaults.colors(
-                        thumbColor = AppTheme.colors.error,
-                        activeTrackColor = AppTheme.colors.error,
-                        inactiveTrackColor = AppTheme.colors.error.copy(alpha = 0.3f),
-                    ),
                 modifier = Modifier.fillMaxWidth(),
             )
         }
