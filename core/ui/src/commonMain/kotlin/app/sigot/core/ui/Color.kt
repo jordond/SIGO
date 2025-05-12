@@ -146,6 +146,8 @@ public val DarkColors: Colors = Colors(
 public val LocalColors: ProvidableCompositionLocal<Colors> = staticCompositionLocalOf { LightColors }
 public val LocalContentColor: ProvidableCompositionLocal<Color> = compositionLocalOf { Color.Black }
 public val LocalContentAlpha: ProvidableCompositionLocal<Float> = compositionLocalOf { 1f }
+public val LocalContainerColor: ProvidableCompositionLocal<Color> =
+    compositionLocalOf { error("Not initialized") }
 
 public fun Colors.contentColorFor(backgroundColor: Color): Color {
     val color = backgroundColor.copy(alpha = 1f)

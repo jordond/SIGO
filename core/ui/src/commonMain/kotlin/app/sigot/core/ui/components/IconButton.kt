@@ -34,6 +34,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalContentColor
 import app.sigot.core.ui.components.BrutalDefaults.DisabledAlpha
 import app.sigot.core.ui.components.progressindicators.CircularProgressIndicator
@@ -373,10 +374,10 @@ public object IconButtonDefaults {
 
     @Composable
     public fun outlinedColors(
-        containerColor: Color = AppTheme.colors.surface,
+        containerColor: Color = LocalContainerColor.current,
         contentColor: Color = contentColorFor(containerColor),
         borderColor: Color = AppTheme.colors.onSurface,
-        disabledContainerColor: Color = AppTheme.colors.surface.disabled(DisabledAlpha),
+        disabledContainerColor: Color = LocalContainerColor.current.disabled(DisabledAlpha),
         disabledContentColor: Color = contentColorFor(disabledContainerColor),
     ): IconButtonColors =
         IconButtonColors(

@@ -24,6 +24,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalContentColor
 import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.foundation.ripple
@@ -40,6 +41,7 @@ public fun Surface(
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
+        LocalContainerColor provides color,
         LocalContentColor provides contentColor,
     ) {
         Box(
@@ -75,6 +77,7 @@ public fun Surface(
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
+        LocalContainerColor provides color,
         LocalContentColor provides contentColor,
     ) {
         Box(
@@ -114,6 +117,7 @@ public fun Surface(
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
+        LocalContainerColor provides color,
         LocalContentColor provides contentColor,
     ) {
         Box(
@@ -154,6 +158,7 @@ public fun Surface(
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
+        LocalContainerColor provides color,
         LocalContentColor provides contentColor,
     ) {
         Box(

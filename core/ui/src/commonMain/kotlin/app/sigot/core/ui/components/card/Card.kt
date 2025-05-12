@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalTypography
 import app.sigot.core.ui.components.BrutalContainer
 import app.sigot.core.ui.components.BrutalDefaults
@@ -49,7 +51,11 @@ public fun Card(
         contentColor = colors.contentColor(enabled = true).value,
         border = border,
     ) {
-        Column(content = content)
+        CompositionLocalProvider(
+            LocalContainerColor provides colors.containerColor(enabled = true).value,
+        ) {
+            Column(content = content)
+        }
     }
 }
 
@@ -74,7 +80,11 @@ public fun Card(
         border = border,
         interactionSource = interactionSource,
     ) {
-        Column(content = content)
+        CompositionLocalProvider(
+            LocalContainerColor provides colors.containerColor(enabled).value,
+        ) {
+            Column(content = content)
+        }
     }
 }
 
