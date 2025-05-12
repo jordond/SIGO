@@ -52,6 +52,7 @@ public fun Button(
     loadingContent: (@Composable () -> Unit)? = ButtonDefaults.LoadingIndicator(),
     onClick: () -> Unit = {},
     contentPadding: PaddingValues = ButtonDefaults.contentPadding,
+    minHeight: Dp = ButtonDefaults.MinHeight,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: (@Composable () -> Unit)? = null,
 ) {
@@ -63,6 +64,7 @@ public fun Button(
         loadingContent = loadingContent,
         style = style,
         onClick = onClick,
+        minHeight = minHeight,
         contentPadding = contentPadding,
         interactionSource = interactionSource,
         content = content,
@@ -78,14 +80,16 @@ public fun Button(
     loading: Boolean = false,
     loadingContent: (@Composable () -> Unit)? = ButtonDefaults.LoadingIndicator(),
     variant: ButtonVariant = ButtonVariant.Primary,
+    shape: Shape? = null,
     onClick: () -> Unit = {},
     contentPadding: PaddingValues = ButtonDefaults.contentPadding,
+    minHeight: Dp = ButtonDefaults.MinHeight,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: (@Composable () -> Unit)? = null,
 ) {
     val style = buttonStyleFor(variant)
     Button(
-        style = style,
+        style = if (shape != null) style.copy(shape = shape) else style,
         text = text,
         modifier = modifier,
         enabled = enabled,
@@ -93,6 +97,8 @@ public fun Button(
         loadingContent = loadingContent,
         onClick = onClick,
         contentPadding = contentPadding,
+        minHeight = minHeight,
+        textStyle = textStyle,
         interactionSource = interactionSource,
         content = content,
     )
@@ -109,6 +115,7 @@ public fun Button(
     shape: Shape = ButtonDefaults.ButtonShape,
     colors: ButtonColors = ButtonDefaults.primaryColors(),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
+    minHeight: Dp = ButtonDefaults.MinHeight,
     onClick: () -> Unit = {},
     contentPadding: PaddingValues = ButtonDefaults.contentPadding,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -126,6 +133,8 @@ public fun Button(
         loading = loading,
         loadingContent = loadingContent,
         onClick = onClick,
+        minHeight = minHeight,
+        textStyle = textStyle,
         contentPadding = contentPadding,
         interactionSource = interactionSource,
         content = content,
@@ -140,6 +149,7 @@ internal fun ButtonComponent(
     loading: Boolean = false,
     loadingContent: (@Composable () -> Unit)? = null,
     style: ButtonStyle,
+    minHeight: Dp = ButtonDefaults.MinHeight,
     textStyle: TextStyle = AppTheme.typography.button,
     onClick: () -> Unit,
     contentPadding: PaddingValues = ButtonDefaults.contentPadding,
@@ -167,7 +177,7 @@ internal fun ButtonComponent(
             onClick = onClick,
             modifier =
                 Modifier
-                    .defaultMinSize(minHeight = ButtonDefaults.MinHeight)
+                    .defaultMinSize(minHeight = minHeight)
                     .semantics { role = Role.Button },
             enabled = enabled,
             shape = style.shape,
@@ -436,7 +446,7 @@ public object ButtonDefaults {
     public fun outlinedColors(
         containerColor: Color = LocalContainerColor.current,
         contentColor: Color = contentColorFor(containerColor),
-        borderColor: Color = AppTheme.colors.onSurface,
+        borderColor: Color = BrutalDefaults.Color,
         disabledContainerColor: Color = LocalContainerColor.current.disabled(DisabledAlpha),
         disabledContentColor: Color = contentColorFor(disabledContainerColor),
     ): ButtonColors =

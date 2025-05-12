@@ -2,6 +2,7 @@ package app.sigot.core.ui.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ public fun BrutalContainer(
     modifier: Modifier = Modifier,
     color: Color = BrutalDefaults.Color,
     extraY: Boolean = false,
+    border: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val yOffset by animateDpAsState(if (elevation == 0.dp) 0.dp else elevation + 2.dp)
@@ -32,7 +34,19 @@ public fun BrutalContainer(
                 .background(color, shape = shape),
         )
 
-        content()
+        if (border) {
+            Box(
+                modifier = Modifier.border(
+                    width = BrutalDefaults.BorderWidth,
+                    color = BrutalDefaults.Color,
+                    shape = shape,
+                ),
+            ) {
+                content()
+            }
+        } else {
+            content()
+        }
     }
 }
 
