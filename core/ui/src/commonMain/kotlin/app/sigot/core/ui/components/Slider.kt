@@ -24,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
@@ -36,6 +38,8 @@ import app.sigot.core.ui.foundation.slider.SliderFoundationDefaults
 import app.sigot.core.ui.foundation.slider.SliderState
 import app.sigot.core.ui.ktx.disabled
 import app.sigot.core.ui.preview.AppPreview
+import com.materialkolor.ktx.darken
+import com.materialkolor.ktx.lighten
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -46,6 +50,7 @@ public fun Slider(
     enabled: Boolean = true,
     onValueChangeFinished: (() -> Unit)? = null,
     colors: SliderColors = SliderDefaults.colors(),
+    shape: Shape = SliderDefaults.Shape,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     @IntRange(from = 0) steps: Int = 0,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
@@ -68,6 +73,7 @@ public fun Slider(
         state = state,
         modifier = modifier,
         enabled = enabled,
+        shape = shape,
         interactionSource = interactionSource,
         colors = colors,
     )
@@ -81,6 +87,7 @@ public fun Slider(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: SliderColors = SliderDefaults.colors(),
+    shape: Shape = SliderDefaults.Shape,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     require(state.steps >= 0) { "steps should be >= 0" }
@@ -111,16 +118,21 @@ public fun Slider(
             )
         },
         track = { sliderState ->
-            SliderFoundationDefaults.Track(
-                colors = colors,
-                enabled = enabled,
-                sliderState = sliderState,
-                modifier = Modifier.border(
-                    width = BrutalDefaults.BorderWidth,
-                    color = BrutalDefaults.Color,
-                    shape = AppTheme.shapes.extraSmall,
-                ),
-            )
+            BrutalContainer(
+                shape = shape,
+                elevation = SliderDefaults.Elevation,
+            ) {
+                SliderFoundationDefaults.Track(
+                    colors = colors,
+                    enabled = enabled,
+                    sliderState = sliderState,
+                    modifier = Modifier.border(
+                        width = BrutalDefaults.BorderWidth,
+                        color = BrutalDefaults.Color,
+                        shape = shape,
+                    ),
+                )
+            }
         },
     )
 }
@@ -135,6 +147,7 @@ public fun RangeSlider(
     @IntRange(from = 0) steps: Int = 0,
     onValueChangeFinished: (() -> Unit)? = null,
     colors: SliderColors = SliderDefaults.colors(),
+    shape: Shape = SliderDefaults.Shape,
     startInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     endInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
@@ -159,6 +172,7 @@ public fun RangeSlider(
         modifier = modifier,
         enabled = enabled,
         colors = colors,
+        shape = shape,
         startInteractionSource = startInteractionSource,
         endInteractionSource = endInteractionSource,
     )
@@ -170,6 +184,7 @@ public fun RangeSlider(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: SliderColors = SliderDefaults.colors(),
+    shape: Shape = SliderDefaults.Shape,
     startInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     endInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
@@ -202,28 +217,44 @@ public fun RangeSlider(
         startThumb = { Thumb(startInteractionSource) },
         endThumb = { Thumb(endInteractionSource) },
         track = { rangeSliderState ->
-            SliderFoundationDefaults.Track(
-                rangeSliderState = rangeSliderState,
-                colors = colors,
-                enabled = enabled,
-                modifier = Modifier.border(
-                    width = BrutalDefaults.BorderWidth,
-                    color = BrutalDefaults.Color,
-                    shape = AppTheme.shapes.extraSmall,
-                ),
-            )
+            BrutalContainer(
+                shape = shape,
+                elevation = SliderDefaults.Elevation,
+            ) {
+                SliderFoundationDefaults.Track(
+                    rangeSliderState = rangeSliderState,
+                    colors = colors,
+                    enabled = enabled,
+                    modifier = Modifier.border(
+                        width = BrutalDefaults.BorderWidth,
+                        color = BrutalDefaults.Color,
+                        shape = shape,
+                    ),
+                )
+            }
         },
     )
 }
 
 @Stable
 public object SliderDefaults {
+    public val Shape: Shape @Composable get() = AppTheme.shapes.small
+    public val Elevation: Dp = BrutalElevationDefaults.Small.default
+
     @Composable
     private fun thumbColor(): Color =
         if (LocalThemeIsDark.current) {
             AppTheme.colors.inverseSurface
         } else {
             AppTheme.colors.surface
+        }
+
+    @Composable
+    private fun disabledInactiveTrackColor(): Color =
+        if (LocalThemeIsDark.current) {
+            AppTheme.colors.surface.lighten(0.8f)
+        } else {
+            AppTheme.colors.disabled.darken(2f)
         }
 
     @Composable
@@ -236,7 +267,7 @@ public object SliderDefaults {
         disabledThumbColor: Color = thumbColor(),
         disabledActiveTrackColor: Color = AppTheme.colors.disabled,
         disabledActiveTickColor: Color = AppTheme.colors.disabled,
-        disabledInactiveTrackColor: Color = AppTheme.colors.disabled.disabled(),
+        disabledInactiveTrackColor: Color = disabledInactiveTrackColor(),
         disabledInactiveTickColor: Color = Color.Unspecified,
     ): SliderColors =
         SliderColors(
