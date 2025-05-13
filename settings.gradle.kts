@@ -48,3 +48,8 @@ include(":core:platform")
 include(":core:resources")
 include(":core:ui")
 include(":core:ui-icons")
+
+include(
+    ":feature:forecast:data",
+    ":feature:forecast:domain",
+)
