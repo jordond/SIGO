@@ -5,19 +5,6 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.compose.ComposePlugin.Dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
-
-fun KotlinMultiplatformExtension.commonDependencies(handler: KotlinDependencyHandler.() -> Unit) {
-    sourceSets.commonMain.dependencies(handler)
-}
-
-fun KotlinMultiplatformExtension.androidDependencies(handler: KotlinDependencyHandler.() -> Unit) {
-    sourceSets.androidMain.dependencies(handler)
-}
-
-fun KotlinMultiplatformExtension.iosDependencies(handler: KotlinDependencyHandler.() -> Unit) {
-    sourceSets.iosMain.dependencies(handler)
-}
 
 fun Project.composeDependencies() {
     extensions.configure<KotlinMultiplatformExtension> {
@@ -29,6 +16,12 @@ fun Project.composeDependencies() {
             // implementation(compose.material3)
             implementation("org.jetbrains.compose.material3:material3:1.8.0-alpha03")
             implementation(compose.components.resources)
+        }
+
+        sourceSets.androidMain.dependencies {
+            implementation(compose.preview)
+            implementation(libs.findLibrary("androidx-compose-ui-tooling").get())
+            implementation(libs.findLibrary("androidx-compose-ui-tooling-preview").get())
         }
 
         configureComposeOptIn()
