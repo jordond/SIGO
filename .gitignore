@@ -30,11 +30,11 @@ backend/lib
 fastlane_service_account.json
 fastlane_appstore_connect_key.p8
 
-ios/Podfile.lock
-ios/Pods/*
-ios/iosApp.xcworkspace/*
-ios/iosApp.xcodeproj/*
-!ios/iosApp.xcodeproj/
+apps/ios/Podfile.lock
+apps/ios/Pods/*
+apps/ios/iosApp.xcworkspace/*
+apps/ios/iosApp.xcodeproj/*
+!apps/ios/iosApp.xcodeproj/
 *.podspec
 app/build
 *.aab
