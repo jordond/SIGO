@@ -27,6 +27,8 @@ kotlin {
             implementation(libs.androidx.compose.ui.tooling)
             implementation(libs.androidx.compose.ui.tooling.preview)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.koin.core)
+            implementation(libs.koin.android)
             implementation(libs.kotlinx.coroutines.android)
         }
     }

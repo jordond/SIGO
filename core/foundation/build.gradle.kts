@@ -1,3 +1,4 @@
+
 import app.sigot.convention.Platforms
 import app.sigot.convention.configureMultiplatform
 
@@ -8,23 +9,20 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All)
+configureMultiplatform(Platforms.All, name = "core.foundation")
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.forecast.domain)
+            implementation(projects.core.model)
+            implementation(projects.core.platform)
 
-            implementation(libs.kotlinx.collections)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.collections)
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.kermit)
             implementation(libs.koin.core)
+            implementation(libs.kermit)
         }
     }
-}
-
-android {
-    namespace = libs.versions.app.name
-        .get() + ".forecase.data"
 }
