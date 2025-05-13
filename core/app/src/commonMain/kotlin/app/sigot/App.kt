@@ -31,9 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import app.sigot.core.resources.IndieFlower_Regular
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.cyclone
 import app.sigot.core.resources.ic_cyclone
@@ -43,10 +41,9 @@ import app.sigot.core.resources.ic_rotate_right
 import app.sigot.core.resources.run
 import app.sigot.core.resources.stop
 import app.sigot.core.resources.theme
-import app.sigot.core.ui.theme.AppTheme
-import app.sigot.core.ui.theme.LocalThemeIsDark
+import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalThemeIsDark
 import kotlinx.coroutines.isActive
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -64,7 +61,6 @@ fun App() {
         ) {
             Text(
                 text = stringResource(Res.string.cyclone),
-                fontFamily = FontFamily(Font(Res.font.IndieFlower_Regular)),
                 style = MaterialTheme.typography.displayLarge,
             )
 

@@ -8,7 +8,7 @@ app-android-version = "0.1.0"
 app-android-code = "99999"
 sdk-target = "36"
 sdk-compile = "36"
-sdk-min = "26"
+sdk-min = "30"
 jvmTarget = "17"
 ############################
 
@@ -20,6 +20,7 @@ androidx-core = "1.16.0"
 androidx-compose-ui-tooling = "1.8.1"
 androidx-ui-test = "1.8.1"
 compose-windowSizeClass = "1.8.0"
+composables = "1.1.0"
 hotReload = "1.0.0-alpha09"
 kotlinx-collections = "0.3.8"
 kotlinx-coroutines = "1.10.2"
@@ -38,6 +39,7 @@ kermit = "2.0.5"
 stateHolder = "2.0.0-rc02"
 compass = "2.0.1"
 connectivity = "2.0.0"
+lumo = "1.2.5"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
@@ -56,7 +58,8 @@ compass-geocoder = { module = "dev.jordond.compass:geocoder", version.ref = "com
 compass-geocoder-mobile = { module = "dev.jordond.compass:geocoder-mobile", version.ref = "compass" }
 compass-geolocation = { module = "dev.jordond.compass:geolocation", version.ref = "compass" }
 compass-geolocation-mobile = { module = "dev.jordond.compass:geolocation-mobile", version.ref = "compass" }
-compose-windowSizeClass = {module="org.jetbrains.compose.material3:material3-window-size-class", version.ref="compose-windowSizeClass"}
+compose-windowSizeClass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-windowSizeClass" }
+composables = { module = "com.nomanr:composables", version.ref = "composables" }
 connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
 connectivity-device = { module = "dev.jordond.connectivity:connectivity-device", version.ref = "connectivity" }
 connectivity-http = { module = "dev.jordond.connectivity:connectivity-http", version.ref = "connectivity" }
@@ -113,5 +116,6 @@ hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hotReload"
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+lumo = {id="com.nomanr.plugin.lumo", version.ref="lumo"}
 convention-multiplatform = { id = "convention.multiplatform", version = "0" }
 toolchain-version = { id = "toolchain.version", version = "0" }

@@ -1,4 +1,4 @@
-package app.sigot.core.ui.theme
+package app.sigot.core.ui
 
 import android.app.Activity
 import androidx.compose.runtime.Composable

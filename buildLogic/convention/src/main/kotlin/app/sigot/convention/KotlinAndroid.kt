@@ -102,6 +102,7 @@ internal fun Project.setNamespace(name: String) {
 
 fun Project.disableExplicitApi() {
     extensions.configure<KotlinBaseExtension> {
+        explicitApi()
         explicitApi = ExplicitApiMode.Disabled
     }
 }
