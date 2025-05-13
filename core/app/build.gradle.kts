@@ -21,8 +21,12 @@ kotlin {
     disableExplicitApi()
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.foundation)
             implementation(projects.core.resources)
             implementation(projects.core.ui)
+
+            implementation(projects.feature.forecast.data)
+            implementation(projects.feature.forecast.domain)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -45,6 +49,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.room.runtime)
             implementation(libs.materialKolor)
+            implementation(libs.bundles.koin.compose)
         }
 
         commonTest.dependencies {
