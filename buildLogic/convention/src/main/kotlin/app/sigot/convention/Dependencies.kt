@@ -6,7 +6,7 @@ import org.gradle.kotlin.dsl.configure
 import org.jetbrains.compose.ComposePlugin.Dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
-fun Project.composeDependencies() {
+fun Project.composeDependencies(hasAndroid: Boolean) {
     extensions.configure<KotlinMultiplatformExtension> {
         sourceSets.commonMain.dependencies {
             implementation(compose.runtime)
@@ -18,10 +18,12 @@ fun Project.composeDependencies() {
             implementation(compose.components.resources)
         }
 
-        sourceSets.androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.findLibrary("androidx-compose-ui-tooling").get())
-            implementation(libs.findLibrary("androidx-compose-ui-tooling-preview").get())
+        if (hasAndroid) {
+            sourceSets.androidMain.dependencies {
+                implementation(compose.preview)
+                implementation(libs.findLibrary("androidx-compose-ui-tooling").get())
+                implementation(libs.findLibrary("androidx-compose-ui-tooling-preview").get())
+            }
         }
 
         configureComposeOptIn()

@@ -141,7 +141,7 @@ commit | c)
     ;;
 xcode)
     echo "Opening Xcode workspace"
-    open "$ROOT/ios/iosApp.xcworkspace"
+    open "$ROOT/apps/ios/iosApp.xcworkspace"
     ;;
 generate-image-sizes)
     shift

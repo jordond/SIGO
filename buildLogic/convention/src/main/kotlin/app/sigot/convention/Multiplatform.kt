@@ -42,12 +42,13 @@ fun Project.configureMultiplatform(
         }
     }
 
-    if (platforms.contains(Platform.Android)) {
+    val hasAndroid = platforms.contains(Platform.Android)
+    if (hasAndroid) {
         configureAndroid(name, compose)
     }
 
     if (compose) {
-        composeDependencies()
+        composeDependencies(hasAndroid)
     }
 }
 
@@ -70,7 +71,7 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
     if (platforms.contains(Platform.Android)) {
         androidTarget {
             publishAllLibraryVariants()
-            //https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
+            // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
             @Suppress("OPT_IN_USAGE")
             instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
         }
