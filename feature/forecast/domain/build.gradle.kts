@@ -13,6 +13,8 @@ configureMultiplatform(Platforms.All)
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.model)
+
             implementation(libs.kotlinx.collections)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)

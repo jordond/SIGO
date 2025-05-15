@@ -13,9 +13,12 @@ configureMultiplatform(Platforms.All)
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.foundation)
+            implementation(projects.core.platform)
             implementation(projects.feature.forecast.domain)
 
             implementation(libs.kotlinx.collections)
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kermit)
