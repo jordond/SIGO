@@ -1,4 +1,4 @@
-package app.sigot.core.platform
+package app.sigot.core.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal

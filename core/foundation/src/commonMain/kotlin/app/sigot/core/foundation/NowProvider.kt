@@ -14,6 +14,7 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
 import kotlin.coroutines.coroutineContext
+import kotlin.time.Duration
 
 public interface NowProvider {
     public fun now(): Instant
@@ -21,6 +22,8 @@ public interface NowProvider {
     public fun today(): LocalDate
 
     public fun todayFlow(): Flow<LocalDate>
+
+    public fun durationFromNow(instant: Instant): Duration
 }
 
 internal class DefaultNowProvider(
@@ -52,4 +55,6 @@ internal class DefaultNowProvider(
                 }
             }
         }.distinctUntilChanged()
+
+    override fun durationFromNow(instant: Instant): Duration = now().minus(instant)
 }
