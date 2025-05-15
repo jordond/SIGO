@@ -27,12 +27,14 @@ kotlin {
             implementation(projects.core.ui)
 
             implementation(projects.feature.forecast)
+            implementation(projects.feature.settings)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.compose.windowSizeClass)
             api(libs.kermit)
             implementation(libs.kermit.koin)
             implementation(libs.androidx.lifecycle.viewmodel)
@@ -46,6 +48,7 @@ kotlin {
             implementation(libs.room.runtime)
             implementation(libs.materialKolor)
             implementation(libs.bundles.koin.compose)
+            implementation(libs.bundles.stateHolder)
         }
 
         commonTest.dependencies {

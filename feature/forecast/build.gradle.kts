@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All)
+configureMultiplatform(Platforms.All, name = "forecast")
 
 kotlin {
     sourceSets {
@@ -26,9 +26,4 @@ kotlin {
             implementation(libs.koin.core)
         }
     }
-}
-
-android {
-    namespace = libs.versions.app.name
-        .get() + ".forecase.data"
 }

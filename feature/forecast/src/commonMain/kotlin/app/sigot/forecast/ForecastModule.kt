@@ -1,9 +1,10 @@
-package app.sigot.forecast.data
+package app.sigot.forecast
 
 import app.sigot.core.domain.forecast.ForecastRepo
 import app.sigot.core.foundation.analytics.AnalyticsLogger
 import app.sigot.core.platform.store.NoopStore
 import app.sigot.core.platform.store.Store
+import app.sigot.forecast.data.DefaultForecastRepo
 import app.sigot.forecast.data.source.ForecastCache
 import app.sigot.forecast.data.source.ForecastSource
 import app.sigot.forecast.data.source.QueryCostLogger
