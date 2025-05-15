@@ -107,9 +107,9 @@ internal data class VCForecastBlock(
     @SerialName("feelslike")
     val feelsLike: Double,
     @SerialName("feelslikemax")
-    val feelsLikeMax: Double,
+    val feelsLikeMax: Double? = null,
     @SerialName("feelslikemin")
-    val feelsLikeMin: Double,
+    val feelsLikeMin: Double? = null,
     @SerialName("humidity")
     val humidity: Double,
     @SerialName("icon")
@@ -117,19 +117,19 @@ internal data class VCForecastBlock(
     @SerialName("moonphase")
     val moonPhase: Double = 0.0,
     @SerialName("precip")
-    val precip: Double = 0.0,
+    val precip: Double? = 0.0,
     @SerialName("precipcover")
-    val precipCover: Double = 0.0,
+    val precipCover: Double? = 0.0,
     @SerialName("precipprob")
-    val precipProb: Double = 0.0,
+    val precipProb: Double? = 0.0,
     @SerialName("preciptype")
     val precipType: List<String>? = null,
     @SerialName("pressure")
     val pressure: Double,
     @SerialName("snow")
-    val snow: Double = 0.0,
+    val snow: Double? = 0.0,
     @SerialName("snowdepth")
-    val snowDepth: Double = 0.0,
+    val snowDepth: Double? = 0.0,
     @SerialName("sunrise")
     val sunrise: String? = null,
     @SerialName("sunriseEpoch")
@@ -173,7 +173,7 @@ internal data class VCForecastBlock(
     @SerialName("solarenergy")
     val solarEnergy: Double,
     @SerialName("severerisk")
-    val severeRisk: Double,
+    val severeRisk: Double? = null,
     @SerialName("hours")
     val hours: List<VCForecastBlock>? = null,
 )
@@ -209,8 +209,8 @@ private fun VCForecastBlock.toModel(): ForecastBlock =
             min = tempMin,
         ),
         precipitation = Precipitation(
-            amount = precip,
-            probability = precipProb.toInt(),
+            amount = precip ?: 0.0,
+            probability = precipProb?.toInt() ?: 0,
             types = parsePrecipTypes(precipType),
         ),
         wind = Wind(
@@ -239,9 +239,11 @@ private fun parsePrecipTypes(types: List<String>?) =
             }
         }?.toSet() ?: emptySet()
 
-private fun parseSevereWeatherRisk(risk: Double): SevereWeatherRisk =
-    when (risk.roundToInt()) {
+private fun parseSevereWeatherRisk(risk: Double?): SevereWeatherRisk {
+    if (risk == null) return SevereWeatherRisk.None
+    return when (risk.roundToInt()) {
         in 0..30 -> SevereWeatherRisk.Low
         in 31..70 -> SevereWeatherRisk.Moderate
         else -> SevereWeatherRisk.High
     }
+}

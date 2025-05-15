@@ -2,6 +2,7 @@ package app.sigot.forecast.data
 
 import app.sigot.core.domain.forecast.ForecastRepo
 import app.sigot.core.foundation.analytics.AnalyticsLogger
+import app.sigot.core.platform.store.NoopStore
 import app.sigot.core.platform.store.Store
 import app.sigot.forecast.data.source.ForecastCache
 import app.sigot.forecast.data.source.ForecastSource
@@ -16,7 +17,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-public fun forecastDataModule(): Module =
+public fun forecastAppModule(): Module =
     module {
         factory<QueryCostLogger> {
             val logger = get<AnalyticsLogger>()
@@ -33,6 +34,15 @@ public fun forecastDataModule(): Module =
             )
         } bind ForecastCache::class
 
+        factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
+        factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
+        singleOf(::DefaultForecastRepo) bind ForecastRepo::class
+    }
+
+public fun forecastCliModule(): Module =
+    module {
+        factory<QueryCostLogger> { QueryCostLogger {} }
+        single { StoreForecastCache(store = NoopStore(), nowProvider = get()) } bind ForecastCache::class
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
         singleOf(::DefaultForecastRepo) bind ForecastRepo::class

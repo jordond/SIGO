@@ -1,6 +1,7 @@
 plugins {
     application
     alias(libs.plugins.jvm)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 application {
@@ -16,8 +17,11 @@ dependencies {
     implementation(projects.feature.forecast)
 
     implementation(libs.clikt)
+    implementation(libs.filekit.core)
     implementation(libs.kermit)
     implementation(libs.koin.core)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.mordant)
     implementation(libs.mordant.coroutines)
 }

@@ -42,6 +42,7 @@ kotlin {
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.kstore.file)
         }
 
         jsMain.dependencies {
@@ -55,6 +56,7 @@ kotlin {
             iosMain.get().dependsOn(this)
             dependencies {
                 implementation(libs.connectivity.device)
+                implementation(libs.kstore.file)
             }
         }
 
@@ -64,16 +66,6 @@ kotlin {
             jsMain.get().dependsOn(this)
             dependencies {
                 implementation(libs.connectivity.http)
-            }
-        }
-
-        val nonJsMain by creating {
-            dependsOn(commonMain.get())
-            androidMain.get().dependsOn(this)
-            iosMain.get().dependsOn(this)
-            jvmMain.get().dependsOn(this)
-            dependencies {
-                implementation(libs.kstore.file)
             }
         }
     }

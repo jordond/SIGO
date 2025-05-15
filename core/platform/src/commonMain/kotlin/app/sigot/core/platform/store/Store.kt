@@ -11,6 +11,8 @@ public interface Store<T> {
 
     public suspend fun set(data: T)
 
+    public suspend fun update(block: (T) -> T)
+
     public suspend fun clear()
 
     public sealed interface Type {

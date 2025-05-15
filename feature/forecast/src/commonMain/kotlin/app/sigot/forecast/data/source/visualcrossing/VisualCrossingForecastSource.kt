@@ -11,9 +11,22 @@ internal class VisualCrossingForecastSource(
     private val queryCostLogger: QueryCostLogger,
     private val api: VisualCrossingApi,
 ) : ForecastSource {
-    override suspend fun forecastFor(location: Location): Forecast {
+    override suspend fun forecastFor(location: Location): Forecast =
+        makeRequest(location.toString()) {
+            api.forecastFor(location.latitude, location.longitude)
+        }
+
+    override suspend fun forecastFor(location: String): Forecast =
+        makeRequest(location) {
+            api.forecastFor(location)
+        }
+
+    private suspend fun makeRequest(
+        location: String,
+        block: suspend () -> VCForecastResponse,
+    ): Forecast {
         try {
-            val response = api.forecastFor(location.latitude, location.longitude)
+            val response = block()
             queryCostLogger.log(response.queryCost)
             return response.toModel()
         } catch (cause: Throwable) {

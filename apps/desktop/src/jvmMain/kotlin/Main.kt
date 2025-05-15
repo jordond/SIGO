@@ -11,6 +11,7 @@ import app.sigot.core.resources.Res
 import app.sigot.core.resources.app_name
 import app.sigot.core.resources.ic_cyclone
 import co.touchlab.kermit.Logger
+import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import java.awt.Dimension
@@ -53,6 +54,8 @@ fun main(args: Array<String>) =
 
         Logger.i { "Starting application in mode: $mode" }
         Logger.i { "Window size: $width x $height" }
+
+        FileKit.init("app.sigot.desktop")
 
         Window(
             title = stringResource(Res.string.app_name),

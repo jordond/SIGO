@@ -23,6 +23,7 @@ kotlin {
             implementation(projects.core.resources)
 
             implementation(compose.desktop.currentOs)
+            implementation(libs.filekit.core)
         }
     }
 }

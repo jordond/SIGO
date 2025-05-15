@@ -5,4 +5,6 @@ import app.sigot.core.model.forecast.Location
 
 internal interface ForecastSource {
     suspend fun forecastFor(location: Location): Forecast
+
+    suspend fun forecastFor(location: String): Forecast
 }

@@ -19,7 +19,6 @@ public actual inline fun <reified T : @Serializable Any> createStore(
             is Store.Type.Cache -> FileKit.cacheDir
             is Store.Type.Persistent -> FileKit.filesDir
         }
-
     val path = folder.resolve(filename).toKotlinxIoPath()
     return storeOf(path, default = default)
 }

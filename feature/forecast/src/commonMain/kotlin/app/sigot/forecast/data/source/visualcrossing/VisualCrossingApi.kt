@@ -17,13 +17,14 @@ internal interface VisualCrossingApi {
 
 internal class DefaultVisualCrossingApi(
     private val httpClient: HttpClient,
-    tokenProvider: VisualCrossingTokenProvider,
+    private val tokenProvider: VisualCrossingTokenProvider,
 ) : VisualCrossingApi {
-    private val params = listOf(
-        "key" to tokenProvider.provide(),
-        "unitGroup" to "base",
-        "include" to "days,hours,alerts,current,events",
-    )
+    private val params
+        get() = listOf(
+            "key" to tokenProvider.provide(),
+            "unitGroup" to "base",
+            "include" to "days,hours,alerts,current,events",
+        )
 
     override suspend fun forecastFor(
         latitude: Double,
