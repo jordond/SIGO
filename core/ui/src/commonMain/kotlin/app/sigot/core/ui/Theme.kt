@@ -7,6 +7,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Shapes
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
@@ -39,6 +40,10 @@ public val LocalThemeIsDark: ProvidableCompositionLocal<Boolean> = compositionLo
 
 public val LocalSharedTransitionScope: ProvidableCompositionLocal<SharedTransitionScope> =
     compositionLocalOf { error("SharedTransitionScope not provided") }
+
+public val LocalWindowSizeClass: ProvidableCompositionLocal<WindowSizeClass> = compositionLocalOf {
+    error("WindowSizeClass not provided")
+}
 
 @Composable
 public fun AppTheme(

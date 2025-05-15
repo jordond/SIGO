@@ -8,18 +8,22 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "core.domain")
+configureMultiplatform(Platforms.All, name = "settings")
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.domain)
+            implementation(projects.core.foundation)
             implementation(projects.core.model)
+            implementation(projects.core.platform)
 
             implementation(libs.kotlinx.collections)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kermit)
+            implementation(libs.koin.core)
         }
     }
 }
