@@ -39,10 +39,12 @@ plugins {
 }
 
 include(":apps:android")
+include(":apps:cli")
 include(":apps:desktop")
 include(":apps:ios")
 
 include(":core:app")
+include(":core:domain")
 include(":core:foundation")
 include(":core:model")
 include(":core:platform")
@@ -50,7 +52,4 @@ include(":core:resources")
 include(":core:ui")
 include(":core:ui-icons")
 
-include(
-    ":feature:forecast:data",
-    ":feature:forecast:domain",
-)
+include(":feature:forecast")

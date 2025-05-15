@@ -9,11 +9,18 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 private val taggedLogger = co.touchlab.kermit.Logger
     .withTag("Ktor")
+
+public inline fun <reified T> getKoinInstance(): T =
+    object : KoinComponent {
+        val value: T by inject()
+    }.value
 
 public fun platformModule(): Module =
     module {

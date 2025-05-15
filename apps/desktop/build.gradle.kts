@@ -21,6 +21,8 @@ kotlin {
         jvmMain.dependencies {
             implementation(projects.core.app)
             implementation(projects.core.resources)
+
+            implementation(compose.desktop.currentOs)
         }
     }
 }

@@ -1,6 +1,5 @@
 import app.sigot.convention.Platforms
 import app.sigot.convention.configureMultiplatform
-import app.sigot.convention.disableExplicitApi
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
@@ -18,15 +17,16 @@ plugins {
 configureMultiplatform(Platforms.Compose, name = "app")
 
 kotlin {
-    disableExplicitApi()
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.domain)
             implementation(projects.core.foundation)
+            implementation(projects.core.model)
+            implementation(projects.core.platform)
             implementation(projects.core.resources)
             implementation(projects.core.ui)
 
-            implementation(projects.feature.forecast.data)
-            implementation(projects.feature.forecast.domain)
+            implementation(projects.feature.forecast)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -58,10 +58,6 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.uiTooling)
             implementation(libs.androidx.activity.compose)
-        }
-
-        jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
         }
     }
 }
