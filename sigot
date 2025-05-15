@@ -12,17 +12,18 @@ print_usage() {
     echo "    $0 <command> [args]"
     echo " "
     echo "Commands:"
-    echo "    help                                              Show this help message"
-    echo "    init <command> [arguments]                        Initialize a project component"
-    echo "          secrets|s [--empty]                         Generate the secrets.properties file, pass --empty to use 'empty' for all secrets"
-    echo "          ktlint|k [arguments]                        Install ktlint and integrate it with the project"
-    echo "          hooks|h [--output]                          Install the git hooks, pass --output to display the contents of the hooks"
-    echo "    gradle <command>                                  Run any gradle command"
-    echo "    add <component>                                   Add a lumo ui component"
-    echo "    clean                                             Cleans all the build files"
-    echo "    lint --all | --staged [args]                      Lint the codebase using ktlint"
-    echo "    fix [--all] [--staged]                            Fixes only staged files if --all is not passed"
-    echo "    commit|c [options]                                Stage changes, run fix, and commit"
+    echo "    help                           Show this help message"
+    echo "    init <command> [arguments]     Initialize a project component"
+    echo "          secrets|s [--empty]      Generate the secrets.properties file, pass --empty to use 'empty' for all secrets"
+    echo "          ktlint|k [arguments]     Install ktlint and integrate it with the project"
+    echo "          hooks|h [--output]       Install the git hooks, pass --output to display the contents of the hooks"
+    echo "    gradle <command>               Run any gradle command"
+    echo "    add <component>                Add a lumo ui component"
+    echo "    clean                          Cleans all the build files"
+    echo "    lint --all | --staged [args]   Lint the codebase using ktlint"
+    echo "    fix [--all] [--staged]         Fixes only staged files if --all is not passed"
+    echo "    commit|c [options]             Stage changes, run fix, and commit"
+    echo "    cli [args]                     Run the CLI version of SIGOT"
 }
 
 check_directory() {
@@ -147,6 +148,10 @@ generate-image-sizes)
     shift
     node "$ROOT"/scripts/image-resource.js "$@"
     ;;
+cli)
+  shift
+  "$ROOT"/scripts/cli.sh "$@"
+  ;;
 *)
     echo "Unknown command: $1"
     echo ""
