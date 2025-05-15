@@ -29,4 +29,21 @@ internal class DefaultForecastRepo(
             return Result.failure(cause)
         }
     }
+
+    override suspend fun forecastFor(location: String): Result<Forecast> {
+        val cached = withContext(Dispatchers.Default) { cache.get() }
+        if (cached != null && cached.location.name == location) {
+            return Result.success(cached)
+        }
+
+        try {
+            val result = withContext(Dispatchers.Default) {
+                source.forecastFor(location).also { cache.save(it) }
+            }
+            return Result.success(result)
+        } catch (cause: Throwable) {
+            if (cause is CancellationException) throw cause
+            return Result.failure(cause)
+        }
+    }
 }

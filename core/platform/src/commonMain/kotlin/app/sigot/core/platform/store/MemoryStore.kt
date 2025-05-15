@@ -19,6 +19,10 @@ public open class MemoryStore<T : @Serializable Any>(
         state.update { data }
     }
 
+    override suspend fun update(block: (T) -> T) {
+        state.update(block)
+    }
+
     override suspend fun clear() {
         state.update { initialValue }
     }
