@@ -1,10 +1,10 @@
 package app.sigot.core.platform.store
 
 import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.cacheDir
 import io.github.vinceglb.filekit.filesDir
 import io.github.vinceglb.filekit.path
-import io.github.vinceglb.filekit.resolve
 import io.github.vinceglb.filekit.toKotlinxIoPath
 import io.github.xxfast.kstore.KStore
 import io.github.xxfast.kstore.file.storeOf
@@ -22,12 +22,10 @@ public actual inline fun <reified T : @Serializable Any> createStore(
             is Store.Type.Cache -> FileKit.cacheDir
             is Store.Type.Persistent -> FileKit.filesDir
         }
-
-    val pathString = folder.resolve(filename).path
     runCatching {
-        FileSystem.SYSTEM.createDirectories(pathString.toPath())
+        FileSystem.SYSTEM.createDirectories(folder.path.toPath())
     }
 
-    val path = folder.resolve(filename).toKotlinxIoPath()
+    val path = PlatformFile(folder, filename).toKotlinxIoPath()
     return storeOf(path, default = default)
 }

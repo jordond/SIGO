@@ -13,7 +13,7 @@ import org.koin.dsl.module
 internal fun cliModule() =
     module {
         single {
-            val store = Store.storeOf<CliConfig>("config/sigot-cli.json", Store.Type.Persistent)
+            val store = Store.storeOf<CliConfig>("sigot-cli.json", Store.Type.Persistent)
             DefaultCliConfigRepo(store)
         } bind CliConfigRepo::class
 

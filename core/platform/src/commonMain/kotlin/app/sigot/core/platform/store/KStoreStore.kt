@@ -39,8 +39,8 @@ public open class KStoreStore<T : @Serializable Any>(
         }
     }
 
-    override suspend fun update(block: (T) -> T) {
-        store.update { if (it == null) null else block(it) }
+    override suspend fun update(block: (T?) -> T) {
+        store.update(block)
     }
 
     override suspend fun clear() {

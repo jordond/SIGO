@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CliConfig(
     @SerialName("token")
-    val token: String,
+    val token: String? = null,
     @SerialName("last_location")
     val lastLocation: String? = null,
 )
