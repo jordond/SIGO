@@ -20,7 +20,7 @@ internal class DefaultCliConfigRepo(
     override suspend fun set(config: CliConfig): Unit = store.set(config)
 
     override suspend fun update(block: (CliConfig) -> CliConfig) {
-        store.update(block)
+        store.update { block(it ?: CliConfig()) }
     }
 
     override suspend fun reset() {

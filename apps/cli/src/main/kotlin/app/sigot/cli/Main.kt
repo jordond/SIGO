@@ -53,6 +53,8 @@ class Cli(
             throw RuntimeException("No forecast data available")
         }
 
+        configRepo.update { it.copy(lastLocation = location) }
+
         success("Forecast for ${forecast.location.name}:")
         success("\tTemperature: ${forecast.current.temperature.value} K")
         success("\tHumidity:    ${forecast.current.humidity} %")
@@ -83,7 +85,6 @@ suspend fun main(args: Array<String>) {
     FileKit.init("app.sigot.cli")
     val di = initKoin()
 
-    // TODO: The saving of the ConfigRepo to the Store isn't working
     Cli(
         configRepo = di.get(),
         apiTokenProvider = di.get(),

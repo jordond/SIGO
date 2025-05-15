@@ -12,14 +12,14 @@ sdk-min = "30"
 jvmTarget = "17"
 ############################
 
-kotlin = "2.1.20"
+kotlin = "2.1.21"
 compose = "1.8.0"
 agp = "8.10.0"
 androidx-activity = "1.10.1"
 androidx-core = "1.16.0"
 androidx-compose-ui-tooling = "1.8.1"
 androidx-ui-test = "1.8.1"
-clikt = "5.0.1"
+clikt = "5.0.3"
 compose-windowSizeClass = "1.8.0"
 composables = "1.1.0"
 hotReload = "1.0.0-alpha09"
@@ -39,11 +39,12 @@ room = "2.7.1"
 ksp = "2.1.20-2.0.1"
 materialKolor = "3.0.0-beta01"
 kermit = "2.0.5"
+slf4jNop = "2.0.17"
 stateHolder = "2.0.0-rc03"
 compass = "2.2.0"
 connectivity = "2.0.2"
 lumo = "1.2.5"
-mordant = "3.0.0"
+mordant = "3.0.2"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
@@ -103,6 +104,7 @@ mordant-coroutines = { module = "com.github.ajalt.mordant:mordant-coroutines", v
 multiplatformSettings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4jNop" }
 stateHolder = { module = "dev.jordond.stateholder:core", version.ref = "stateHolder" }
 stateHolder-dispatcher = { module = "dev.jordond.stateholder:dispatcher-compose", version.ref = "stateHolder" }
 stateHolder-compose = { module = "dev.jordond.stateholder:extensions-compose", version.ref = "stateHolder" }

@@ -24,4 +24,5 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.mordant)
     implementation(libs.mordant.coroutines)
+    implementation(libs.slf4j.nop)
 }

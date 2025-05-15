@@ -10,7 +10,7 @@ public class NoopStore<T> : Store<T> {
 
     override suspend fun set(data: T) {}
 
-    override suspend fun update(block: (T) -> T) {}
+    override suspend fun update(block: (T?) -> T) {}
 
     override suspend fun clear() {}
 }

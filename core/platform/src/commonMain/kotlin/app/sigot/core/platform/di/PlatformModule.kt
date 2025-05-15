@@ -46,7 +46,7 @@ public fun platformModule(): Module =
                     level = if (isDebug) LogLevel.INFO else LogLevel.HEADERS
                     logger = object : Logger {
                         override fun log(message: String) {
-                            taggedLogger.i { message }
+                            taggedLogger.d { message }
                         }
                     }
                 }
