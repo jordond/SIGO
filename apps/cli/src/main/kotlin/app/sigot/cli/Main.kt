@@ -11,6 +11,8 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.option
 import io.github.vinceglb.filekit.FileKit
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.http.HttpStatusCode
 import kotlin.system.exitProcess
 
 class Cli(
@@ -43,14 +45,23 @@ class Cli(
         val result = forecastRepo
             .forecastFor(location)
             .onFailure { cause ->
-                error("Failed to get forecast: ${cause.message}")
-                throw cause
+                if (cause is ClientRequestException) {
+                    if (cause.response.status == HttpStatusCode.Unauthorized) {
+                        error { "Unauthorized, please check your token" }
+                        configRepo.update { it.copy(token = null) }
+                        exitProcess(1)
+                    }
+                }
+
+                error { "Failed to get forecast" }
+                error { cause.stackTraceToString() }
+                exitProcess(1)
             }
 
         val forecast = result.getOrNull()
         if (forecast == null) {
             error("No forecast data available")
-            throw RuntimeException("No forecast data available")
+            exitProcess(1)
         }
 
         configRepo.update { it.copy(lastLocation = location) }
