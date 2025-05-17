@@ -40,6 +40,7 @@ import app.sigot.core.ui.components.BrutalDefaults.DisabledAlpha
 import app.sigot.core.ui.components.progressindicators.CircularProgressIndicator
 import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.foundation.ButtonElevation
+import app.sigot.core.ui.foundation.ripple
 import app.sigot.core.ui.ktx.disabled
 import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -146,12 +147,15 @@ private fun IconButtonComponent(
         shape = style.shape,
         elevation = shadowElevation,
         color = style.colors.borderColor,
-        modifier = modifier,
     ) {
+        val indication = remember(style, contentColor) {
+            if (style.elevation != null) null else ripple(color = contentColor)
+        }
+
         Surface(
             onClick = onClick,
             modifier =
-                Modifier
+                modifier
                     .defaultMinSize(
                         minWidth = IconButtonDefaults.ButtonSize,
                         minHeight = IconButtonDefaults.ButtonSize,
@@ -162,6 +166,7 @@ private fun IconButtonComponent(
             contentColor = contentColor,
             border = borderStroke,
             interactionSource = interactionSource,
+            indication = indication,
         ) {
             Box(
                 modifier = Modifier.padding(contentPadding),

@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 public data object OnboardingRoute
 
 public fun NavGraphBuilder.onboardingScreen(navController: NavHostController) {
-    composable<Onboarding> {
+    composable<OnboardingRoute> {
         OnboardingScreen(
             parentNavController = navController,
             onFinish = { /* TODO: Implement onFinish */ },

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +51,7 @@ public fun Text(
     minLines: Int = 1,
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = LocalTextStyle.current,
+    autoSize: TextAutoSize? = null,
 ) {
     Text(
         text = stringResource(text),
@@ -69,6 +71,7 @@ public fun Text(
         minLines = minLines,
         onTextLayout = onTextLayout,
         style = style,
+        autoSize = autoSize,
     )
 }
 
@@ -91,6 +94,7 @@ public fun Text(
     minLines: Int = 1,
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = LocalTextStyle.current,
+    autoSize: TextAutoSize? = null,
 ) {
     Text(
         text = AnnotatedString(text = text),
@@ -110,6 +114,7 @@ public fun Text(
         minLines = minLines,
         onTextLayout = onTextLayout,
         style = style,
+        autoSize = autoSize,
     )
 }
 
@@ -133,6 +138,7 @@ public fun Text(
     inlineContent: Map<String, InlineTextContent> = mapOf(),
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = LocalTextStyle.current,
+    autoSize: TextAutoSize? = null,
 ) {
     val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
     val mergedStyle =
@@ -159,6 +165,7 @@ public fun Text(
         maxLines = maxLines,
         minLines = minLines,
         inlineContent = inlineContent,
+        autoSize = autoSize,
     )
 }
 
