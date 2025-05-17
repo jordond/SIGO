@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -146,8 +147,8 @@ public fun ElevatedCard(
 }
 
 public object CardDefaults {
-    public val Shape: Shape @Composable get() = AppTheme.shapes.large
-    public val ElevatedShape: Shape @Composable get() = Shape
+    public val Shape: CornerBasedShape @Composable get() = AppTheme.shapes.large
+    public val ElevatedShape: CornerBasedShape @Composable get() = Shape
     public val BorderColor: Color @Composable get() = BrutalDefaults.Color
     private val BorderWidth = BrutalDefaults.BorderWidth
 

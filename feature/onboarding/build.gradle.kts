@@ -19,6 +19,7 @@ kotlin {
             implementation(projects.core.domain)
             implementation(projects.core.foundation)
             implementation(projects.core.platform)
+            implementation(projects.core.resources)
             implementation(projects.core.ui)
             implementation(projects.core.uiIcons)
 

@@ -51,7 +51,7 @@ public val TextStyle.asDisplay: TextStyle
 
 public val TextStyle.asContent: TextStyle
     @Composable
-    get() = copy(fontFamily = contentFont)
+    get() = copy(fontFamily = contentFont, letterSpacing = 0.sp)
 
 @Composable
 public fun fontFamily(): FontFamily = contentFont

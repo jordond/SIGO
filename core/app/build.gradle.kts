@@ -27,6 +27,7 @@ kotlin {
             implementation(projects.core.ui)
 
             implementation(projects.feature.forecast)
+            implementation(projects.feature.onboarding)
             implementation(projects.feature.settings)
 
             implementation(compose.runtime)

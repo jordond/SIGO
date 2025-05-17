@@ -19,26 +19,26 @@ internal fun OnboardingNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Onboarding.WelcomeRoute,
+        startDestination = OnboardingDestination.Welcome,
         modifier = modifier,
     ) {
-        composable<Onboarding.WelcomeRoute> {
+        composable<OnboardingDestination.Welcome> {
             WelcomeScreen()
         }
 
-        composable<Onboarding.UnitsRoute> {
+        composable<OnboardingDestination.Units> {
             UnitsScreen()
         }
 
-        composable<Onboarding.PreferencesRoute> {
+        composable<OnboardingDestination.Preferences> {
             PreferencesScreen()
         }
 
-        composable<Onboarding.LocationRoute> {
+        composable<OnboardingDestination.Location> {
             LocationScreen()
         }
 
-        composable<Onboarding.SummaryRoute> {
+        composable<OnboardingDestination.Summary> {
             SummaryScreen()
         }
     }

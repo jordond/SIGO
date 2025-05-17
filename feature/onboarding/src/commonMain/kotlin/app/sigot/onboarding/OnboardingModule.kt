@@ -1,6 +1,7 @@
 package app.sigot.onboarding
 
 import app.sigot.onboarding.ui.OnboardingModel
+import app.sigot.onboarding.ui.location.LocationModel
 import app.sigot.onboarding.ui.preferences.PreferencesModel
 import app.sigot.onboarding.ui.units.UnitsModel
 import org.koin.core.module.Module
@@ -12,4 +13,5 @@ public fun onboardingModule(): Module =
         viewModelOf(::OnboardingModel)
         viewModelOf(::UnitsModel)
         viewModelOf(::PreferencesModel)
+        viewModelOf(::LocationModel)
     }

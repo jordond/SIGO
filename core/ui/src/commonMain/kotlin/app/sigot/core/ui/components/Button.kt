@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -37,6 +38,7 @@ import app.sigot.core.ui.components.BrutalDefaults.DisabledAlpha
 import app.sigot.core.ui.components.progressindicators.CircularProgressIndicator
 import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.foundation.ButtonElevation
+import app.sigot.core.ui.foundation.ripple
 import app.sigot.core.ui.ktx.disabled
 import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -57,8 +59,9 @@ public fun Button(
     content: (@Composable () -> Unit)? = null,
 ) {
     ButtonComponent(
-        text = text,
         modifier = modifier,
+        text = text,
+        textStyle = textStyle,
         enabled = enabled,
         loading = loading,
         loadingContent = loadingContent,
@@ -171,12 +174,15 @@ internal fun ButtonComponent(
         shape = style.shape,
         elevation = shadowElevation,
         color = style.colors.borderColor,
-        modifier = modifier,
     ) {
+        val indication = remember(style, contentColor) {
+            if (style.elevation != null) null else ripple(color = contentColor)
+        }
+
         Surface(
             onClick = onClick,
             modifier =
-                Modifier
+                modifier
                     .defaultMinSize(minHeight = minHeight)
                     .semantics { role = Role.Button },
             enabled = enabled,
@@ -185,6 +191,7 @@ internal fun ButtonComponent(
             contentColor = contentColor,
             border = borderStroke,
             interactionSource = interactionSource,
+            indication = indication,
         ) {
             CompositionLocalProvider(
                 LocalContainerColor provides containerColor,
@@ -228,6 +235,7 @@ private fun DefaultButtonContent(
                     style = textStyle,
                     overflow = TextOverflow.Clip,
                     color = contentColor,
+                    autoSize = TextAutoSize.StepBased(maxFontSize = textStyle.fontSize),
                 )
             }
         }
@@ -300,11 +308,11 @@ public object ButtonDefaults {
 
     @Composable
     public fun buttonElevation(
-        defaultElevation: Dp = BrutalElevationDefaults.Small.default,
-        pressedElevation: Dp = BrutalElevationDefaults.Small.pressed,
-        focusedElevation: Dp = BrutalElevationDefaults.Small.focused,
-        hoveredElevation: Dp = BrutalElevationDefaults.Small.hovered,
-        disabledElevation: Dp = BrutalElevationDefaults.Small.disabled,
+        defaultElevation: Dp = BrutalElevationDefaults.Medium.default,
+        pressedElevation: Dp = BrutalElevationDefaults.Medium.pressed,
+        focusedElevation: Dp = BrutalElevationDefaults.Medium.focused,
+        hoveredElevation: Dp = BrutalElevationDefaults.Medium.hovered,
+        disabledElevation: Dp = BrutalElevationDefaults.Medium.disabled,
     ): ButtonElevation =
         ButtonElevation(
             defaultElevation = defaultElevation,
