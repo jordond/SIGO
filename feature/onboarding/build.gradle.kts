@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "forecast")
+configureMultiplatform(Platforms.Compose, name = "onboarding")
 
 kotlin {
     sourceSets {
@@ -19,7 +19,10 @@ kotlin {
             implementation(projects.core.domain)
             implementation(projects.core.foundation)
             implementation(projects.core.platform)
+            implementation(projects.core.ui)
+            implementation(projects.core.uiIcons)
 
+            implementation(compose.components.uiToolingPreview)
             implementation(libs.kermit)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.bundles.koin.compose)

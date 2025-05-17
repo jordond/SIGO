@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "settings")
+configureMultiplatform(Platforms.Compose, name = "settings")
 
 kotlin {
     sourceSets {
@@ -24,6 +24,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kermit)
             implementation(libs.koin.core)
+            implementation(libs.kstore)
         }
     }
 }

@@ -14,7 +14,7 @@ fun Project.composeDependencies(hasAndroid: Boolean) {
             implementation(compose.foundation)
             // TODO: Temporarily set material3 to a specific version until CMP supports 1.8.0
             // implementation(compose.material3)
-            implementation("org.jetbrains.compose.material3:material3:1.8.0-alpha03")
+            // implementation("org.jetbrains.compose.material3:material3:1.8.0-alpha03")
             implementation(compose.components.resources)
         }
 

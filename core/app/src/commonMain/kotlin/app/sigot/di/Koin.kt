@@ -3,6 +3,7 @@ package app.sigot.di
 import app.sigot.core.foundation.di.foundationModule
 import app.sigot.core.platform.di.platformModule
 import app.sigot.forecast.forecastAppModule
+import app.sigot.settings.settingsModule
 import app.sigot.ui.uiModule
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.koin.KermitKoinLogger
@@ -22,6 +23,7 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
             platformModule(),
             // Feature
             forecastAppModule(),
+            settingsModule(),
             uiModule(),
         )
     }

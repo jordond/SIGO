@@ -10,14 +10,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import app.sigot.core.model.ui.ThemeMode
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalHaptics
 import app.sigot.core.ui.LocalWindowSizeClass
 import app.sigot.core.ui.calculateWindowSizeClass
-import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.rememberHaptics
 import app.sigot.ui.AppHostModel.State.UiState
+import app.sigot.ui.navigation.AppNavHost
 import dev.stateholder.extensions.collectAsState
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -25,6 +27,7 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun AppHost(
     model: AppHostModel = koinViewModel(),
     windowSizeClass: WindowSizeClass = calculateWindowSizeClass(),
+    navController: NavHostController = rememberNavController(),
 ) {
     val state by model.collectAsState()
 
@@ -59,8 +62,10 @@ internal fun AppHost(
                     LocalWindowSizeClass provides windowSizeClass,
                     LocalHaptics provides haptics,
                 ) {
-                    // TODO: NavHost
-                    Text("Hello, world! ${uiState.startDestination}")
+                    AppNavHost(
+                        startDestination = uiState.startDestination,
+                        navController = navController,
+                    )
                 }
             }
         }

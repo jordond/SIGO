@@ -74,7 +74,7 @@ internal fun SnackbarDuration.toMillis(
             SnackbarDuration.Short -> 4000L
         }
     return accessibilityManager?.calculateRecommendedTimeoutMillis(
-        original,
+        originalTimeoutMillis = original,
         containsIcons = true,
         containsText = true,
         containsControls = hasAction,
@@ -84,7 +84,7 @@ internal fun SnackbarDuration.toMillis(
 @Stable
 public class SnackbarHostState {
     private val mutex: Mutex = Mutex()
-    public var currentSnackbarData: SnackbarData? by mutableStateOf<SnackbarData?>(null)
+    public var currentSnackbarData: SnackbarData? by mutableStateOf(null)
         private set
 
     public suspend fun show(
@@ -179,8 +179,8 @@ public fun SnackbarHost(
         if (currentSnackbarData != null) {
             val duration =
                 currentSnackbarData.visuals.duration.toMillis(
-                    currentSnackbarData.visuals.actionLabel != null,
-                    accessibilityManager,
+                    hasAction = currentSnackbarData.visuals.actionLabel != null,
+                    accessibilityManager = accessibilityManager,
                 )
             delay(duration)
             currentSnackbarData.dismiss()

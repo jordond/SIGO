@@ -25,6 +25,7 @@ kotlin {
 
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(compose.material3)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.navigation.composee)
             api(libs.compose.windowSizeClass)
