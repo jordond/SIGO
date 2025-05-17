@@ -77,7 +77,7 @@ private val defaultTypography =
             TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontSize = 40.sp,
-                lineHeight = 32.sp,
+                lineHeight = 58.sp,
                 letterSpacing = (-7).sp,
             ),
         h2 =
