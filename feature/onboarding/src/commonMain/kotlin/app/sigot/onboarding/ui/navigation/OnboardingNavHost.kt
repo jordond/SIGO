@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import app.sigot.core.ui.navigation.slideHorizontally
 import app.sigot.onboarding.ui.location.LocationScreen
 import app.sigot.onboarding.ui.preferences.PreferencesScreen
 import app.sigot.onboarding.ui.summary.SummaryScreen
@@ -22,23 +22,23 @@ internal fun OnboardingNavHost(
         startDestination = OnboardingDestination.Welcome,
         modifier = modifier,
     ) {
-        composable<OnboardingDestination.Welcome> {
+        slideHorizontally<OnboardingDestination.Welcome> {
             WelcomeScreen()
         }
 
-        composable<OnboardingDestination.Units> {
+        slideHorizontally<OnboardingDestination.Units> {
             UnitsScreen()
         }
 
-        composable<OnboardingDestination.Preferences> {
+        slideHorizontally<OnboardingDestination.Preferences> {
             PreferencesScreen()
         }
 
-        composable<OnboardingDestination.Location> {
+        slideHorizontally<OnboardingDestination.Location> {
             LocationScreen()
         }
 
-        composable<OnboardingDestination.Summary> {
+        slideHorizontally<OnboardingDestination.Summary> {
             SummaryScreen()
         }
     }

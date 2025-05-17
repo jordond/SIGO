@@ -34,6 +34,7 @@ import app.sigot.core.ui.components.BrutalDefaults
 import app.sigot.core.ui.components.BrutalElevationDefaults
 import app.sigot.core.ui.components.Surface
 import app.sigot.core.ui.components.Text
+import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -42,7 +43,7 @@ public fun Card(
     modifier: Modifier = Modifier,
     shape: Shape = CardDefaults.Shape,
     colors: CardColors = CardDefaults.cardColors(),
-    border: BorderStroke = CardDefaults.cardBorder(),
+    border: BorderStroke? = CardDefaults.cardBorder(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
@@ -67,7 +68,7 @@ public fun Card(
     enabled: Boolean = true,
     shape: Shape = CardDefaults.Shape,
     colors: CardColors = CardDefaults.cardColors(),
-    border: BorderStroke = CardDefaults.cardBorder(),
+    border: BorderStroke? = CardDefaults.cardBorder(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -95,7 +96,7 @@ public fun ElevatedCard(
     shape: Shape = CardDefaults.ElevatedShape,
     colors: CardColors = CardDefaults.elevatedCardColors(),
     elevation: CardElevation = CardDefaults.cardElevation(),
-    border: BorderStroke = CardDefaults.cardBorder(),
+    border: BorderStroke? = CardDefaults.cardBorder(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val elevationValue by elevation.shadowElevation(enabled = true, interactionSource = null)
@@ -173,9 +174,9 @@ public object CardDefaults {
     @Composable
     public fun cardColors(
         containerColor: Color = AppTheme.colors.surface,
-        contentColor: Color = AppTheme.colors.onSurface,
+        contentColor: Color = contentColorFor(containerColor),
         disabledContainerColor: Color = AppTheme.colors.disabled,
-        disabledContentColor: Color = AppTheme.colors.onDisabled,
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
     ): CardColors =
         CardColors(
             containerColor = containerColor,
@@ -187,9 +188,9 @@ public object CardDefaults {
     @Composable
     public fun elevatedCardColors(
         containerColor: Color = AppTheme.colors.surface,
-        contentColor: Color = AppTheme.colors.onSurface,
+        contentColor: Color = contentColorFor(containerColor),
         disabledContainerColor: Color = AppTheme.colors.disabled,
-        disabledContentColor: Color = AppTheme.colors.onDisabled,
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
     ): CardColors =
         CardColors(
             containerColor = containerColor,

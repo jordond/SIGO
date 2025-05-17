@@ -10,6 +10,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,18 @@ public fun BrutalContainer(
         }
     }
 }
+
+@Composable
+public fun Modifier.brutalBorder(
+    color: Color = BrutalDefaults.Color,
+    width: Dp = BrutalDefaults.BorderWidth * 2,
+    shape: Shape = RectangleShape,
+): Modifier =
+    border(
+        width = BrutalDefaults.BorderWidth,
+        color = color,
+        shape = shape,
+    )
 
 @Suppress("ConstPropertyName")
 public object BrutalDefaults {

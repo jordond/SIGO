@@ -31,18 +31,20 @@ import app.sigot.core.model.units.Units
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.back
 import app.sigot.core.resources.done
-import app.sigot.core.resources.lets_go
+import app.sigot.core.resources.get_started
 import app.sigot.core.resources.next
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.asContent
 import app.sigot.core.ui.components.Button
 import app.sigot.core.ui.components.ButtonVariant
+import app.sigot.core.ui.components.HorizontalDivider
 import app.sigot.core.ui.components.Icon
 import app.sigot.core.ui.components.IconButton
 import app.sigot.core.ui.components.IconButtonVariant
 import app.sigot.core.ui.components.Scaffold
 import app.sigot.core.ui.components.Surface
 import app.sigot.core.ui.components.Text
+import app.sigot.core.ui.components.brutalBorder
 import app.sigot.core.ui.components.card.Card
 import app.sigot.core.ui.components.snackbar.LocalSnackbarProvider
 import app.sigot.core.ui.components.snackbar.SnackbarHost
@@ -130,6 +132,7 @@ internal fun OnboardingScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier
+                .brutalBorder()
                 .padding(
                     top = innerPadding.calculateTopPadding(),
                     start = innerPadding.calculateStartPadding(layoutDirection),
@@ -138,15 +141,17 @@ internal fun OnboardingScreen(
         ) {
             Surface(
                 color = AppTheme.colors.background,
-                modifier = Modifier.weight(3f),
+                modifier = Modifier.weight(4f),
             ) {
                 content()
             }
 
             Card(
                 shape = RectangleShape,
+                border = null,
                 modifier = Modifier.weight(1f),
             ) {
+                HorizontalDivider()
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -182,7 +187,7 @@ internal fun OnboardingScreen(
                         ) {
                             val text = remember(currentDestination) {
                                 when (currentDestination) {
-                                    is OnboardingDestination.Welcome -> Res.string.lets_go
+                                    is OnboardingDestination.Welcome -> Res.string.get_started
                                     is OnboardingDestination.Summary -> Res.string.done
                                     else -> Res.string.next
                                 }

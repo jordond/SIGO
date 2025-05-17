@@ -35,7 +35,8 @@
     <string name="recommendation">Recommendation</string>
     <string name="retry">Retry</string>
     <string name="try_again">Try again</string>
-    <string name="lets_go">Lets go!</string>
+    <string name="lets_go">Lets go</string>
+    <string name="get_started">Get started</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="tomorrow">Tomorrow</string>
@@ -107,4 +108,9 @@
     <string name="unit_precipitation_inch">in</string>
     <string name="unit_distance_km">km</string>
     <string name="unit_distance_mile">mi</string>
+
+    <string name="onboarding">Onboarding</string>
+    <string name="onboarding_welcome_preamble">Welcome to</string>
+    <string name="onboarding_welcome">"Should I go outside today?"</string>
+    <string name="onboarding_welcome_footer">Your brutally honest weather buddy that doesn't sugarcoat the forecast! We'll tell you when to go out and explore, or just stay home and binge-watch shows instead.</string>
 </resources>
