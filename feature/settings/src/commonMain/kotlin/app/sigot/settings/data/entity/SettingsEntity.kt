@@ -14,8 +14,8 @@ internal data class SettingsEntity(
     val theme: String,
     @SerialName("has_completed_onboarding")
     val hasCompletedOnboarding: Boolean,
-    @SerialName("units")
-    val units: UnitsEntity,
+    @SerialName("preferences")
+    val preferences: PreferencesEntity,
     @SerialName("enable_haptics")
     val enableHaptics: Boolean = true,
     @SerialName("internal_settings")
@@ -27,7 +27,7 @@ internal fun SettingsEntity.toModel() =
         firstLaunch = Instant.fromEpochMilliseconds(firstLaunch),
         themeMode = ThemeMode.from(theme),
         hasCompletedOnboarding = hasCompletedOnboarding,
-        units = units.toModel(),
+        preferences = preferences.toModel(),
         enableHaptics = enableHaptics,
         internalSettings = internalSettings.toModel(),
         loaded = true,
@@ -38,7 +38,7 @@ internal fun Settings.toEntity() =
         firstLaunch = firstLaunch.toEpochMilliseconds(),
         theme = themeMode.name,
         hasCompletedOnboarding = hasCompletedOnboarding,
-        units = units.toEntity(),
+        preferences = preferences.toEntity(),
         enableHaptics = enableHaptics,
         internalSettings = internalSettings.toEntity(),
     )

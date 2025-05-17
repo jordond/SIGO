@@ -53,4 +53,5 @@ include(":core:ui")
 include(":core:ui-icons")
 
 include(":feature:forecast")
+include(":feature:onboarding")
 include(":feature:settings")

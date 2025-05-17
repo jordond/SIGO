@@ -1,7 +1,29 @@
 package app.sigot.core.model.preferences
 
-import app.sigot.core.model.preferences.units.Units
+import app.sigot.core.model.units.Units
 
 public data class Preferences(
-    public val units: Units = Units(),
-)
+    val units: Units,
+    val use24HourFormat: Boolean,
+    val enableLocationUpdates: Boolean,
+    val minTemperature: Int,
+    val maxTemperature: Int,
+    val includeApparentTemperature: Boolean,
+    val windSpeed: Int,
+    val rain: Boolean,
+    val snow: Boolean,
+) {
+    public companion object {
+        public val default: Preferences = Preferences(
+            units = Units.Metric,
+            use24HourFormat = false,
+            enableLocationUpdates = true,
+            minTemperature = 5,
+            maxTemperature = 35,
+            includeApparentTemperature = false,
+            windSpeed = 30,
+            rain = false,
+            snow = false,
+        )
+    }
+}

@@ -15,19 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-internal val Gray900: Color = Color(0xFF282828)
-internal val Gray800: Color = Color(0xFF4b4b4b)
-internal val Gray700: Color = Color(0xFF5e5e5e)
-internal val Gray600: Color = Color(0xFF727272)
-internal val Gray500: Color = Color(0xFF868686)
-internal val Gray400: Color = Color(0xFFC7C7C7)
-internal val Gray300: Color = Color(0xFFDFDFDF)
-internal val Gray200: Color = Color(0xFFE2E2E2)
-
-internal val Red400: Color = Color(0xFFfc7f79)
-internal val Blue300: Color = Color(0xFFB7CEFA)
-internal val Green700: Color = Color(0xFF178C4E)
-
 @Immutable
 public data class Colors(
     val primary: Color,

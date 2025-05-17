@@ -12,6 +12,8 @@ import app.sigot.forecast.data.source.cache.StoreForecastCache
 import app.sigot.forecast.data.source.visualcrossing.DefaultVisualCrossingApi
 import app.sigot.forecast.data.source.visualcrossing.VisualCrossingApi
 import app.sigot.forecast.data.source.visualcrossing.VisualCrossingForecastSource
+import app.sigot.forecast.domain.DefaultGetForecastUseCase
+import app.sigot.forecast.domain.GetForecastUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -38,6 +40,8 @@ public fun forecastAppModule(): Module =
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
         singleOf(::DefaultForecastRepo) bind ForecastRepo::class
+
+        factoryOf(::DefaultGetForecastUseCase) bind GetForecastUseCase::class
     }
 
 public fun forecastCliModule(): Module =
@@ -47,4 +51,5 @@ public fun forecastCliModule(): Module =
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
         singleOf(::DefaultForecastRepo) bind ForecastRepo::class
+        factoryOf(::DefaultGetForecastUseCase) bind GetForecastUseCase::class
     }

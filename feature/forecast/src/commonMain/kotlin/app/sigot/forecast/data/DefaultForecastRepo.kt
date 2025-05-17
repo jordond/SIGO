@@ -13,37 +13,43 @@ internal class DefaultForecastRepo(
     private val cache: ForecastCache,
     private val source: ForecastSource,
 ) : ForecastRepo {
-    override suspend fun forecastFor(location: Location): Result<Forecast> {
-        val cached = withContext(Dispatchers.Default) { cache.get() }
-        if (cached != null && cached.location == location) {
-            return Result.success(cached)
+    override suspend fun forecastFor(
+        location: Location,
+        force: Boolean,
+    ): Result<Forecast> {
+        if (!force) {
+            val cached = withContext(Dispatchers.Default) { cache.get() }
+            if (cached != null && cached.location == location) {
+                return Result.success(cached)
+            }
         }
 
-        try {
-            val result = withContext(Dispatchers.Default) {
+        return runCatching {
+            withContext(Dispatchers.Default) {
                 source.forecastFor(location).also { cache.save(it) }
             }
-            return Result.success(result)
-        } catch (cause: Throwable) {
+        }.onFailure { cause ->
             if (cause is CancellationException) throw cause
-            return Result.failure(cause)
         }
     }
 
-    override suspend fun forecastFor(location: String): Result<Forecast> {
-        val cached = withContext(Dispatchers.Default) { cache.get() }
-        if (cached != null && cached.location.name == location) {
-            return Result.success(cached)
+    override suspend fun forecastFor(
+        location: String,
+        force: Boolean,
+    ): Result<Forecast> {
+        if (!force) {
+            val cached = withContext(Dispatchers.Default) { cache.get() }
+            if (cached != null && cached.location.name == location) {
+                return Result.success(cached)
+            }
         }
 
-        try {
-            val result = withContext(Dispatchers.Default) {
+        return runCatching {
+            withContext(Dispatchers.Default) {
                 source.forecastFor(location).also { cache.save(it) }
             }
-            return Result.success(result)
-        } catch (cause: Throwable) {
+        }.onFailure { cause ->
             if (cause is CancellationException) throw cause
-            return Result.failure(cause)
         }
     }
 }
