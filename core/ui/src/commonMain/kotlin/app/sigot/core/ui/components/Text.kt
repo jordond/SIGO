@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.foundation.text.TextAutoSizeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +32,12 @@ import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Composable
+public fun TextStyle.autoSize(
+    max: TextUnit = this.fontSize,
+    min: TextUnit = TextAutoSizeDefaults.MinFontSize,
+): TextAutoSize = TextAutoSize.StepBased(minFontSize = min, maxFontSize = max)
 
 @Composable
 public fun Text(

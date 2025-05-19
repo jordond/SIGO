@@ -4,4 +4,7 @@ public enum class TemperatureUnit : BaseUnit {
     Kelvin,
     Celsius,
     Fahrenheit,
+    ;
+
+    public companion object
 }

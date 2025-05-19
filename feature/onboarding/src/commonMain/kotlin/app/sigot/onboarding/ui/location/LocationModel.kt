@@ -25,7 +25,7 @@ internal class LocationModel(
             val preferences = settings.preferences.copy(
                 enableLocationUpdates = !settings.preferences.enableLocationUpdates,
             )
-            settings.copy(preferences = preferences)
+            settings.updatePreferences(preferences)
         }
     }
 

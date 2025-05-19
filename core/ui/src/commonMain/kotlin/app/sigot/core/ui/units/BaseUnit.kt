@@ -24,6 +24,10 @@ import app.sigot.core.resources.unit_wind_kph
 import app.sigot.core.resources.unit_wind_mph
 import app.sigot.core.resources.unit_wind_ms
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.BrutalColor.blue
+import app.sigot.core.ui.BrutalColor.green
+import app.sigot.core.ui.BrutalColor.pink
+import app.sigot.core.ui.BrutalColor.red
 import app.sigot.core.ui.BrutalColors
 import app.sigot.core.ui.brutal
 import app.sigot.core.ui.icons.AppIcons
@@ -48,7 +52,7 @@ public fun BaseUnit.rememberTitle(): String {
     return res.get()
 }
 
-public fun BaseUnit.labelResource(): StringResource =
+public fun BaseUnit.unitResource(): StringResource =
     when (this) {
         is PrecipitationUnit -> when (this) {
             PrecipitationUnit.Millimeter -> Res.string.unit_precipitation_mm
@@ -71,10 +75,18 @@ public fun BaseUnit.labelResource(): StringResource =
     }
 
 @Composable
-public fun BaseUnit.rememberLabel(): String {
-    val res = remember(this) { labelResource() }
+public fun BaseUnit.rememberUnit(): String {
+    val res = remember(this) { unitResource() }
     return res.get()
 }
+
+public fun PrecipitationUnit.Companion.icon(): ImageVector = AppIcons.Lucide.CloudRain
+
+public fun PressureUnit.Companion.icon(): ImageVector = AppIcons.Lucide.Waves
+
+public fun TemperatureUnit.Companion.icon(): ImageVector = AppIcons.Lucide.Thermometer
+
+public fun WindSpeedUnit.Companion.icon(): ImageVector = AppIcons.Lucide.Wind
 
 public fun BaseUnit.icon(): ImageVector =
     when (this) {
@@ -88,10 +100,22 @@ public fun BaseUnit.icon(): ImageVector =
 public fun BaseUnit.rememberIcon(): ImageVector = remember(this) { icon() }
 
 @Composable
+public fun PrecipitationUnit.Companion.colors(): BrutalColors = AppTheme.colors.brutal.blue
+
+@Composable
+public fun PressureUnit.Companion.colors(): BrutalColors = AppTheme.colors.brutal.pink
+
+@Composable
+public fun TemperatureUnit.Companion.colors(): BrutalColors = AppTheme.colors.brutal.red
+
+@Composable
+public fun WindSpeedUnit.Companion.colors(): BrutalColors = AppTheme.colors.brutal.green
+
+@Composable
 public fun BaseUnit.colors(): BrutalColors =
     when (this) {
-        is PrecipitationUnit -> AppTheme.colors.brutal.blue
-        is PressureUnit -> AppTheme.colors.brutal.pink
-        is TemperatureUnit -> AppTheme.colors.brutal.red
-        is WindSpeedUnit -> AppTheme.colors.brutal.green
+        is PrecipitationUnit -> PrecipitationUnit.colors()
+        is PressureUnit -> PressureUnit.colors()
+        is TemperatureUnit -> TemperatureUnit.colors()
+        is WindSpeedUnit -> WindSpeedUnit.colors()
     }

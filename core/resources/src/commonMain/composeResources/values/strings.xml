@@ -47,6 +47,12 @@
     <string name="show">Show</string>
     <string name="hide">Hide</string>
     <string name="configure">Configure</string>
+    <string name="min">Min</string>
+    <string name="minimum">Minimum</string>
+    <string name="max">Max</string>
+    <string name="maximum">Maximum</string>
+    <string name="snow">Snow</string>
+    <string name="rain">Rain</string>
 
     <string name="cyclone">Cyclone</string>
     <string name="open_github">Open NOTHING</string>
@@ -126,4 +132,13 @@
     <string name="onboarding_welcome_footer">Your brutally honest weather buddy that doesn't sugarcoat the forecast! We'll tell you when to go out and explore, or just stay home and binge-watch shows instead.</string>
     <string name="onboarding_units">Units</string>
     <string name="onboarding_units_subtext">Tell us which units you prefer</string>
+    <string name="onboarding_preferences">Preferences</string>
+    <string name="onboarding_preferences_subtext">Tell us your weather comfort levels</string>
+
+    <string name="preferences_temp_description">When is it too cold or too hot to go outside?</string>
+    <string name="preferences_temp_min">min: %1$s</string>
+    <string name="preferences_temp_max">max: %1$s</string>
+    <string name="preferences_wind_description">When is it too windy to go outside?</string>
+    <string name="preferences_wind_max">max: %1$s</string>
+    <string name="preferences_precipitation_title">Do you want to go outside in the:</string>
 </resources>

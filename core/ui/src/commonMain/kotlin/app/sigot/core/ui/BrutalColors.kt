@@ -2,6 +2,12 @@ package app.sigot.core.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import app.sigot.core.ui.components.SliderDefaults
+import app.sigot.core.ui.components.SwitchColors
+import app.sigot.core.ui.components.SwitchDefaults
+import app.sigot.core.ui.components.card.CardColors
+import app.sigot.core.ui.components.card.CardDefaults
+import app.sigot.core.ui.foundation.slider.SliderColors
 
 public data class BrutalColors(
     val bright: Color,
@@ -14,7 +20,40 @@ public data class BrutalColors(
     val onLow: Color,
     val lowest: Color,
     val onLowest: Color,
-)
+) {
+    public val containerColor: Color = normal
+
+    public fun contentColorFor(color: Color): Color =
+        when (color) {
+            bright -> onBright
+            high -> onHigh
+            normal -> onNormal
+            low -> onLow
+            lowest -> onLowest
+            else -> onNormal
+        }
+}
+
+@Composable
+public fun BrutalColors.cardColors(): CardColors =
+    CardDefaults.cardColors(
+        containerColor = containerColor,
+        contentColor = contentColorFor(containerColor),
+    )
+
+@Composable
+public fun BrutalColors.sliderColors(): SliderColors =
+    SliderDefaults.colors(
+        activeTrackColor = bright,
+        inactiveTrackColor = low,
+    )
+
+@Composable
+public fun BrutalColors.switchColors(): SwitchColors =
+    SwitchDefaults.colors(
+        checkedTrackColor = bright,
+        uncheckedTrackColor = lowest,
+    )
 
 @Suppress("UnusedReceiverParameter")
 public val Colors.brutal: BrutalColor
