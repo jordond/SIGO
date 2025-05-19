@@ -1,6 +1,6 @@
 package app.sigot.core.model.units
 
-public enum class PressureUnit {
+public enum class PressureUnit : BaseUnit {
     HectoPascal,
     InchMercury,
 }

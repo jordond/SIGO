@@ -98,14 +98,25 @@
     <string name="day_of_week_ordinal_third">rd</string>
     <string name="day_of_week_ordinal_th">th</string>
 
+    <string name="unit_preset_title">Quick Select</string>
+    <string name="unit_preset_si">SI</string>
+    <string name="unit_preset_metric">Metric</string>
+    <string name="unit_preset_imperial">Imperial</string>
+    <string name="unit_wind">Wind</string>
     <string name="unit_wind_mph">mph</string>
     <string name="unit_wind_kph">km/h</string>
     <string name="unit_wind_ms">m/s</string>
+    <string name="unit_temperature">Temperature</string>
     <string name="unit_temperature_celsius">°C</string>
     <string name="unit_temperature_fahrenheit">°F</string>
     <string name="unit_temperature_kelvin">K</string>
+    <string name="unit_precipitation">Precipitation</string>
     <string name="unit_precipitation_mm">mm</string>
     <string name="unit_precipitation_inch">in</string>
+    <string name="unit_pressure">Pressure</string>
+    <string name="unit_pressure_hecto_pascal">hPa</string>
+    <string name="unit_pressure_inch_mercury">inHg</string>
+    <string name="unit_distance">Distance</string>
     <string name="unit_distance_km">km</string>
     <string name="unit_distance_mile">mi</string>
 
@@ -113,4 +124,6 @@
     <string name="onboarding_welcome_preamble">Welcome to</string>
     <string name="onboarding_welcome">"Should I go outside today?"</string>
     <string name="onboarding_welcome_footer">Your brutally honest weather buddy that doesn't sugarcoat the forecast! We'll tell you when to go out and explore, or just stay home and binge-watch shows instead.</string>
+    <string name="onboarding_units">Units</string>
+    <string name="onboarding_units_subtext">Tell us which units you prefer</string>
 </resources>

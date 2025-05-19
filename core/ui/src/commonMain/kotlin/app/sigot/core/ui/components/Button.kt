@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.material3.ButtonDefaults.ContentPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -280,6 +281,7 @@ internal fun buttonStyleFor(variant: ButtonVariant): ButtonStyle =
 @Suppress("ConstPropertyName")
 public object ButtonDefaults {
     internal val MinHeight = 44.dp
+    internal val MinWidth = 58.dp
     internal val OutlineHeight = BrutalDefaults.BorderWidth
     private val ButtonHorizontalPadding = 16.dp
     private val ButtonVerticalPadding = 8.dp
@@ -295,6 +297,16 @@ public object ButtonDefaults {
 
     private val filledShape @Composable get() = ButtonShape
     private val elevatedShape @Composable get() = ButtonShape
+
+    private val TextButtonHorizontalPadding = 12.dp
+
+    internal val TextButtonContentPadding =
+        PaddingValues(
+            start = TextButtonHorizontalPadding,
+            top = ContentPadding.calculateTopPadding(),
+            end = TextButtonHorizontalPadding,
+            bottom = ContentPadding.calculateBottomPadding(),
+        )
 
     @Composable
     public fun LoadingIndicator(): @Composable () -> Unit =
