@@ -52,7 +52,6 @@ import app.sigot.core.ui.components.snackbar.SnackbarHostState
 import app.sigot.core.ui.components.snackbar.rememberSnackbarProvider
 import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.ArrowLeft
-import app.sigot.core.ui.icons.lucide.ArrowRight
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.onboarding.ui.location.LocationScreen
@@ -196,11 +195,6 @@ internal fun OnboardingScreen(
                                 text = text.get().uppercase(),
                                 style = AppTheme.typography.h2.asContent,
                                 modifier = Modifier.align(Alignment.Center),
-                            )
-
-                            Icon(
-                                icon = AppIcons.Lucide.ArrowRight,
-                                modifier = Modifier.align(Alignment.CenterEnd),
                             )
                         }
                     }

@@ -1,6 +1,6 @@
 package app.sigot.core.model.units
 
-public enum class PrecipitationUnit {
+public enum class PrecipitationUnit : BaseUnit {
     Millimeter,
     Inch,
 }

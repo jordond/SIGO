@@ -19,6 +19,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.model)
             implementation(projects.core.platform)
             implementation(projects.core.resources)
             implementation(projects.core.uiIcons)

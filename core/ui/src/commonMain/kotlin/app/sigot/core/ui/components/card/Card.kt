@@ -153,6 +153,24 @@ public object CardDefaults {
     public val BorderColor: Color @Composable get() = BrutalDefaults.Color
     private val BorderWidth = BrutalDefaults.BorderWidth
 
+    public val primaryColors: CardColors
+        @Composable get() = cardColors(
+            containerColor = AppTheme.colors.primary,
+            contentColor = AppTheme.colors.onPrimary,
+        )
+
+    public val secondaryColors: CardColors
+        @Composable get() = cardColors(
+            containerColor = AppTheme.colors.secondary,
+            contentColor = AppTheme.colors.onSecondary,
+        )
+
+    public val tertiaryColors: CardColors
+        @Composable get() = cardColors(
+            containerColor = AppTheme.colors.tertiary,
+            contentColor = AppTheme.colors.onTertiary,
+        )
+
     @Composable
     public fun cardElevation(
         defaultElevation: Dp = BrutalElevationDefaults.Medium.default,
