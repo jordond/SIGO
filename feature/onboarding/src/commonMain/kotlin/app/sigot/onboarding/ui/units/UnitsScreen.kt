@@ -72,63 +72,59 @@ internal fun UnitsScreen(
     Column(
         modifier = modifier
             .padding(horizontal = 16.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.verticalScroll(rememberScrollState()),
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                Column {
-                    Text(
-                        text = Res.string.onboarding_units,
-                        style = AppTheme.typography.header,
-                        autoSize = AppTheme.typography.header.autoSize(),
-                        maxLines = 1,
-                    )
-
-                    Text(
-                        text = Res.string.onboarding_units_subtext,
-                        modifier = Modifier.padding(start = 8.dp),
-                    )
-                }
-
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    UnitPresetCard(
-                        units = units,
-                        onSelect = { preset -> update(preset.units) },
-                    )
-                }
-
-                UnitCard(
-                    items = remember { TemperatureUnit.entries.toList() },
-                    selected = units.temperature,
-                    onSelect = { value -> update(units.copy(temperature = value)) },
+            Column {
+                Text(
+                    text = Res.string.onboarding_units,
+                    style = AppTheme.typography.header,
+                    autoSize = AppTheme.typography.header.autoSize(),
+                    maxLines = 1,
                 )
 
-                UnitCard(
-                    items = remember { WindSpeedUnit.entries.toList() },
-                    selected = units.windSpeed,
-                    onSelect = { value -> update(units.copy(windSpeed = value)) },
-                )
-
-                UnitCard(
-                    items = remember { PrecipitationUnit.entries.toList() },
-                    selected = units.precipitation,
-                    onSelect = { value -> update(units.copy(precipitation = value)) },
-                )
-
-                UnitCard(
-                    items = remember { PressureUnit.entries.toList() },
-                    selected = units.pressure,
-                    onSelect = { value -> update(units.copy(pressure = value)) },
+                Text(
+                    text = Res.string.onboarding_units_subtext,
+                    modifier = Modifier.padding(start = 8.dp),
                 )
             }
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                UnitPresetCard(
+                    units = units,
+                    onSelect = { preset -> update(preset.units) },
+                )
+            }
+
+            UnitCard(
+                items = remember { TemperatureUnit.entries.toList() },
+                selected = units.temperature,
+                onSelect = { value -> update(units.copy(temperature = value)) },
+            )
+
+            UnitCard(
+                items = remember { WindSpeedUnit.entries.toList() },
+                selected = units.windSpeed,
+                onSelect = { value -> update(units.copy(windSpeed = value)) },
+            )
+
+            UnitCard(
+                items = remember { PrecipitationUnit.entries.toList() },
+                selected = units.precipitation,
+                onSelect = { value -> update(units.copy(precipitation = value)) },
+            )
+
+            UnitCard(
+                items = remember { PressureUnit.entries.toList() },
+                selected = units.pressure,
+                onSelect = { value -> update(units.copy(pressure = value)) },
+            )
         }
     }
 }
