@@ -37,6 +37,6 @@ internal fun LocationScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize(),
     ) {
-        Text("Preferences Screen")
+        Text("Location Screen")
     }
 }
