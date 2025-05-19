@@ -20,7 +20,7 @@ internal class UnitsModel(
 
     fun update(units: Units) {
         settingsRepo.update { settings ->
-            settings.copy(preferences = settings.preferences.copy(units = units))
+            settings.updatePreferences(settings.preferences.copy(units = units))
         }
     }
 

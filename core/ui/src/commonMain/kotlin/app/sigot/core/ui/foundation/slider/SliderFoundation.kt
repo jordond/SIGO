@@ -82,7 +82,6 @@ import androidx.compose.ui.util.lerp
 import androidx.compose.ui.util.packFloats
 import androidx.compose.ui.util.unpackFloat1
 import androidx.compose.ui.util.unpackFloat2
-import app.sigot.core.ui.components.BrutalDefaults
 import app.sigot.core.ui.foundation.IncreaseHorizontalSemanticsBounds
 import app.sigot.core.ui.foundation.slider.SliderFoundationDefaults.SliderRangeTolerance
 import app.sigot.core.ui.foundation.slider.SliderFoundationDefaults.ThumbHeight
@@ -291,7 +290,7 @@ private fun SliderComponent(
         val thumbOffsetX = (trackPlaceable.width * state.coercedValueAsFraction).roundToInt()
         val trackOffsetY = (sliderHeight - trackPlaceable.height) / 2
         val thumbOffsetY =
-            ((sliderHeight - thumbPlaceable.height) / 2) + (BrutalDefaults.BorderWidth * 2).toPx().toInt()
+            ((sliderHeight - thumbPlaceable.height) / 2)
 
         layout(sliderWidth, sliderHeight) {
             trackPlaceable.placeRelative(trackOffsetX, trackOffsetY)
@@ -538,9 +537,9 @@ private fun Modifier.slideOnKeyEvents(
 
 @Suppress("ConstPropertyName")
 internal object SliderFoundationDefaults {
-    internal val TrackHeight = 20.0.dp
-    internal val ThumbWidth = 24.dp
-    internal val ThumbHeight = 24.dp
+    internal val TrackHeight = 32.0.dp
+    internal val ThumbWidth = TrackHeight
+    internal val ThumbHeight = TrackHeight
     internal val ThumbSize = DpSize(ThumbWidth, ThumbHeight)
     internal val ThumbSizeOnPress = ThumbSize
     internal val ThumbTrackGap: Dp = 0.dp

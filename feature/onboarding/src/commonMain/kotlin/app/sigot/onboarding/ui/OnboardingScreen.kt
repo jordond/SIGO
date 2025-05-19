@@ -205,8 +205,11 @@ internal fun OnboardingScreen(
 }
 
 @Composable
-internal fun OnboardingScreenPreview(route: OnboardingDestination) {
-    AppPreview {
+internal fun OnboardingScreenPreview(
+    route: OnboardingDestination,
+    isDarkTheme: Boolean = false,
+) {
+    AppPreview(isDarkTheme = isDarkTheme) {
         OnboardingScreen(currentDestination = route) {
             when (route) {
                 OnboardingDestination.Welcome -> {

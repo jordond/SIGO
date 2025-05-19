@@ -38,15 +38,15 @@ import app.sigot.core.ui.components.SegmentedButtonDefaults
 import app.sigot.core.ui.components.SegmentedButtonDefaults.itemShape
 import app.sigot.core.ui.components.SingleChoiceSegmentedButtonRow
 import app.sigot.core.ui.components.Text
+import app.sigot.core.ui.components.autoSize
 import app.sigot.core.ui.components.card.Card
 import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.components.card.ElevatedCard
-import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.units.colors
 import app.sigot.core.ui.units.rememberIcon
-import app.sigot.core.ui.units.rememberLabel
 import app.sigot.core.ui.units.rememberText
 import app.sigot.core.ui.units.rememberTitle
+import app.sigot.core.ui.units.rememberUnit
 import app.sigot.onboarding.ui.OnboardingScreenPreview
 import app.sigot.onboarding.ui.navigation.OnboardingDestination
 import dev.stateholder.extensions.collectAsState
@@ -76,9 +76,7 @@ internal fun UnitsScreen(
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.verticalScroll(rememberScrollState()),
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -87,6 +85,8 @@ internal fun UnitsScreen(
                     Text(
                         text = Res.string.onboarding_units,
                         style = AppTheme.typography.header,
+                        autoSize = AppTheme.typography.header.autoSize(),
+                        maxLines = 1,
                     )
 
                     Text(
@@ -194,8 +194,8 @@ private fun <T : BaseUnit> UnitCard(
     ElevatedCard(
         modifier = modifier,
         colors = CardDefaults.elevatedCardColors(
-            containerColor = colors.normal,
-            contentColor = colors.onNormal,
+            containerColor = colors.containerColor,
+            contentColor = colors.contentColorFor(colors.containerColor),
         ),
     ) {
         Row(
@@ -231,7 +231,7 @@ private fun <T : BaseUnit> UnitCard(
                         ),
                         onClick = { onSelect(unit) },
                         selected = selected == unit,
-                        label = { Text(unit.rememberLabel()) },
+                        label = { Text(unit.rememberUnit()) },
                     )
                 }
             }
@@ -242,7 +242,11 @@ private fun <T : BaseUnit> UnitCard(
 @Preview
 @Composable
 private fun UnitsScreenPreview() {
-    AppPreview {
-        OnboardingScreenPreview(OnboardingDestination.Units)
-    }
+    OnboardingScreenPreview(OnboardingDestination.Units)
+}
+
+@Preview
+@Composable
+private fun UnitsScreenDarkPreview() {
+    OnboardingScreenPreview(OnboardingDestination.Units, isDarkTheme = true)
 }

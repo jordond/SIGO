@@ -4,4 +4,7 @@ public enum class WindSpeedUnit : BaseUnit {
     MeterPerSecond,
     KilometerPerHour,
     MilePerHour,
+    ;
+
+    public companion object
 }
