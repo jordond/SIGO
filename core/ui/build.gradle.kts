@@ -29,6 +29,7 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.navigation.composee)
+            api(libs.compass.geolocation)
             api(libs.compose.windowSizeClass)
             api(libs.composables)
             implementation(libs.kotlinx.datetime)

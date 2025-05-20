@@ -105,9 +105,9 @@ public fun ElevatedCard(
         elevation = elevationValue,
         color = CardDefaults.BorderColor,
         extraY = true,
+        modifier = modifier,
     ) {
         Card(
-            modifier = modifier,
             shape = shape,
             border = border,
             colors = colors,
@@ -148,7 +148,7 @@ public fun ElevatedCard(
 }
 
 public object CardDefaults {
-    public val Shape: CornerBasedShape @Composable get() = AppTheme.shapes.large
+    public val Shape: CornerBasedShape @Composable get() = AppTheme.shapes.medium
     public val ElevatedShape: CornerBasedShape @Composable get() = Shape
     public val BorderColor: Color @Composable get() = BrutalDefaults.Color
     private val BorderWidth = BrutalDefaults.BorderWidth

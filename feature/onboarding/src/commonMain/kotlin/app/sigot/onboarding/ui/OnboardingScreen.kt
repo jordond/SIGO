@@ -61,10 +61,7 @@ import app.sigot.onboarding.ui.preferences.PreferencesScreen
 import app.sigot.onboarding.ui.summary.SummaryScreen
 import app.sigot.onboarding.ui.units.UnitsScreen
 import app.sigot.onboarding.ui.welcome.WelcomeScreen
-import dev.stateholder.extensions.HandleEvents
-import dev.stateholder.extensions.collectAsState
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
 
 private val destinations = listOfNotNull(
     OnboardingDestination.Welcome,
@@ -78,7 +75,6 @@ private val destinations = listOfNotNull(
 internal fun OnboardingScreen(
     parentNavController: NavHostController,
     onFinish: () -> Unit,
-    model: OnboardingModel = koinViewModel(),
 ) {
     val snackbarProvider = rememberSnackbarProvider()
 
@@ -89,10 +85,6 @@ internal fun OnboardingScreen(
             currentEntry?.destination?.hasRoute(destination::class) == true
         } ?: OnboardingDestination.Welcome
     }
-
-    val state by model.collectAsState()
-
-    HandleEvents(model) { event -> }
 
     OnboardingScreen(
         currentDestination = currentDestination,
@@ -229,9 +221,7 @@ internal fun OnboardingScreenPreview(
                 }
                 OnboardingDestination.Location -> {
                     LocationScreen(
-                        enableLocationUpdates = true,
                         location = null,
-                        toggleLocationUpdates = { },
                         getCurrentLocation = { },
                     )
                 }

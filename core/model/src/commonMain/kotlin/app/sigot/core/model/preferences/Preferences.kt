@@ -5,7 +5,6 @@ import app.sigot.core.model.units.Units
 public data class Preferences(
     val units: Units,
     val use24HourFormat: Boolean,
-    val enableLocationUpdates: Boolean,
     val minTemperature: Int,
     val maxTemperature: Int,
     val includeApparentTemperature: Boolean,
@@ -17,7 +16,6 @@ public data class Preferences(
         public val default: Preferences = Preferences(
             units = Units.Metric,
             use24HourFormat = false,
-            enableLocationUpdates = true,
             minTemperature = 5,
             maxTemperature = 35,
             includeApparentTemperature = false,

@@ -10,8 +10,6 @@ internal data class PreferencesEntity(
     val units: UnitsEntity,
     @SerialName("use_24_hour_format")
     val use24HourFormat: Boolean,
-    @SerialName("enable_location_updates")
-    val enableLocationUpdates: Boolean,
     @SerialName("min_temp")
     val minTemperature: Int,
     @SerialName("max_temp")
@@ -30,7 +28,6 @@ internal fun Preferences.toEntity() =
     PreferencesEntity(
         units = units.toEntity(),
         use24HourFormat = use24HourFormat,
-        enableLocationUpdates = enableLocationUpdates,
         minTemperature = minTemperature,
         maxTemperature = maxTemperature,
         includeApparentTemperature = includeApparentTemperature,
@@ -43,7 +40,6 @@ internal fun PreferencesEntity.toModel() =
     Preferences(
         units = units.toModel(),
         use24HourFormat = use24HourFormat,
-        enableLocationUpdates = enableLocationUpdates,
         minTemperature = minTemperature,
         maxTemperature = maxTemperature,
         includeApparentTemperature = includeApparentTemperature,

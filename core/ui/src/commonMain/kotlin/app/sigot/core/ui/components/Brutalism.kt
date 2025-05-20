@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
@@ -13,8 +15,51 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.ktx.whenNotNull
+
+@Composable
+public fun BrutalCircle(
+    color: Color,
+    size: Dp,
+    modifier: Modifier = Modifier,
+) {
+    BrutalShape(
+        shape = CircleShape,
+        color = color,
+        size = DpSize(size, size),
+        border = true,
+        modifier = modifier,
+    )
+}
+
+@Composable
+public fun BrutalShape(
+    shape: Shape,
+    color: Color,
+    modifier: Modifier = Modifier,
+    size: DpSize? = null,
+    elevation: BrutalElevation = BrutalElevationDefaults.Small,
+    shadowColor: Color = BrutalDefaults.Color,
+    border: Boolean = true,
+    extraY: Boolean = false,
+) {
+    BrutalContainer(
+        shape = shape,
+        elevation = BrutalElevationDefaults.Small.default,
+        color = shadowColor,
+        border = true,
+    ) {
+        Box(
+            modifier = Modifier
+                .background(color, shape)
+                .whenNotNull(size) { value -> Modifier.size(value) }
+                .then(modifier),
+        )
+    }
+}
 
 @Composable
 public fun BrutalContainer(

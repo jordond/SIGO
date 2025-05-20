@@ -98,9 +98,9 @@ private val defaultTypography =
         h3 =
             TextStyle(
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 lineHeight = 24.sp,
-                letterSpacing = (-4).sp,
+                letterSpacing = (-3).sp,
             ),
         h4 =
             TextStyle(

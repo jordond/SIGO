@@ -8,7 +8,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.getString
 
 public val LocalSnackbarProvider: ProvidableCompositionLocal<SnackbarProvider> =
     compositionLocalOf {
@@ -17,6 +17,14 @@ public val LocalSnackbarProvider: ProvidableCompositionLocal<SnackbarProvider> =
 
             override fun show(
                 message: String,
+                duration: SnackbarDuration,
+                withDismissAction: Boolean,
+            ) {
+                // No-op
+            }
+
+            override fun show(
+                message: StringResource,
                 duration: SnackbarDuration,
                 withDismissAction: Boolean,
             ) {
@@ -33,6 +41,12 @@ public interface SnackbarProvider {
         duration: SnackbarDuration = SnackbarDuration.Long,
         withDismissAction: Boolean = true,
     )
+
+    public fun show(
+        message: StringResource,
+        duration: SnackbarDuration = SnackbarDuration.Long,
+        withDismissAction: Boolean = true,
+    )
 }
 
 @Composable
@@ -43,15 +57,6 @@ public fun rememberSnackbarProvider(
     return remember(hostState) {
         hostState.snackbarProvider(scope)
     }
-}
-
-@Composable
-public fun SnackbarProvider.show(
-    message: StringResource,
-    duration: SnackbarDuration = SnackbarDuration.Long,
-    withDismissAction: Boolean = true,
-) {
-    show(stringResource(message), duration, withDismissAction)
 }
 
 internal fun SnackbarHostState.snackbarProvider(scope: CoroutineScope): SnackbarProvider =
@@ -67,5 +72,13 @@ internal fun SnackbarHostState.snackbarProvider(scope: CoroutineScope): Snackbar
             scope.launch {
                 show(message, duration = duration, withDismissAction = withDismissAction)
             }
+        }
+
+        override fun show(
+            message: StringResource,
+            duration: SnackbarDuration,
+            withDismissAction: Boolean,
+        ) {
+            scope.launch { show(getString(message), duration, withDismissAction) }
         }
     }

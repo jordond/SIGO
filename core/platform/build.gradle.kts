@@ -14,6 +14,8 @@ configureMultiplatform(Platforms.All, name = "core.platform")
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.model)
+
             api(libs.coil)
             implementation(libs.connectivity.core)
             implementation(libs.filekit.core)
@@ -22,6 +24,8 @@ kotlin {
             api(libs.kotlinx.coroutines.core)
             implementation(libs.kstore)
             api(libs.ktor.client.core)
+            implementation(libs.compass.geolocation)
+            implementation(libs.compass.geocoder)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.serialization)
             implementation(libs.ktor.client.serialization.json)
@@ -48,6 +52,7 @@ kotlin {
         jsMain.dependencies {
             implementation(libs.kstore.storage)
             implementation(libs.ktor.client.js)
+            implementation(libs.compass.geolocation.browser)
         }
 
         val deviceMain by creating {
@@ -56,6 +61,8 @@ kotlin {
             iosMain.get().dependsOn(this)
             dependencies {
                 implementation(libs.connectivity.device)
+                implementation(libs.compass.geocoder.mobile)
+                implementation(libs.compass.geolocation.mobile)
                 implementation(libs.kstore.file)
             }
         }

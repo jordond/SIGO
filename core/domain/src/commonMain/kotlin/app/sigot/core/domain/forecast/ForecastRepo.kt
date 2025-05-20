@@ -1,7 +1,7 @@
 package app.sigot.core.domain.forecast
 
 import app.sigot.core.model.forecast.Forecast
-import app.sigot.core.model.forecast.Location
+import app.sigot.core.model.location.Location
 
 public interface ForecastRepo {
     public suspend fun forecastFor(
