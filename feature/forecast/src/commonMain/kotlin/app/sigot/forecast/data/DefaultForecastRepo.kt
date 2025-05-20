@@ -2,7 +2,7 @@ package app.sigot.forecast.data
 
 import app.sigot.core.domain.forecast.ForecastRepo
 import app.sigot.core.model.forecast.Forecast
-import app.sigot.core.model.forecast.Location
+import app.sigot.core.model.location.Location
 import app.sigot.forecast.data.source.ForecastCache
 import app.sigot.forecast.data.source.ForecastSource
 import kotlinx.coroutines.Dispatchers

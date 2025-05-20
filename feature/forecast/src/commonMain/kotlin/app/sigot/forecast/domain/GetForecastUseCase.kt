@@ -4,7 +4,7 @@ import app.sigot.core.domain.forecast.ForecastRepo
 import app.sigot.core.domain.forecast.convert
 import app.sigot.core.domain.settings.SettingsRepo
 import app.sigot.core.model.forecast.Forecast
-import app.sigot.core.model.forecast.Location
+import app.sigot.core.model.location.Location
 import app.sigot.core.model.units.Units
 import app.sigot.core.platform.ticker
 import app.sigot.forecast.domain.DefaultGetForecastUseCase.Companion.refreshInterval
@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlin.time.Duration.Companion.minutes
 
+// TODO: Add function for getting location before forecast
 public interface GetForecastUseCase {
     public suspend fun forecastFor(
         location: Location,

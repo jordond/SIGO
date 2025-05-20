@@ -8,10 +8,22 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
+import dev.jordond.compass.Coordinates
+import dev.jordond.compass.Location
+import kotlinx.datetime.Clock
 
 public object PreviewData {
     public val Icon: ImageVector
         get() = PreviewIcon
+
+    public val compassLocation: Location = Location(
+        coordinates = Coordinates(latitude = 43.6532, longitude = -79.3832),
+        accuracy = 100.0,
+        azimuth = null,
+        speed = null,
+        altitude = null,
+        timestampMillis = Clock.System.now().toEpochMilliseconds(),
+    )
 }
 
 internal val PreviewIcon: ImageVector

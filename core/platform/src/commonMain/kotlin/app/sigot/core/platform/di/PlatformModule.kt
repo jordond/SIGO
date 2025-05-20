@@ -1,6 +1,12 @@
 package app.sigot.core.platform.di
 
+import app.sigot.core.platform.DefaultLocationManager
+import app.sigot.core.platform.LocationManager
+import app.sigot.core.platform.createGeocoder
+import app.sigot.core.platform.createGeolocator
 import app.sigot.core.platform.isDebug
+import dev.jordond.compass.geocoder.Geocoder
+import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.connectivity.Connectivity
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -12,6 +18,8 @@ import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val taggedLogger = co.touchlab.kermit.Logger
@@ -19,6 +27,7 @@ private val taggedLogger = co.touchlab.kermit.Logger
 
 public inline fun <reified T> getKoinInstance(): T =
     object : KoinComponent {
+        @Suppress("UndeclaredKoinUsage")
         val value: T by inject()
     }.value
 
@@ -54,6 +63,10 @@ public fun platformModule(): Module =
         }
 
         single<Connectivity> { getConnectivity() }
+
+        single<Geocoder> { createGeocoder() }
+        single<Geolocator> { createGeolocator() }
+        factoryOf(::DefaultLocationManager) bind LocationManager::class
     }
 
 internal expect fun Module.platformConfig()

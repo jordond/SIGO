@@ -4,12 +4,12 @@ import app.sigot.core.model.forecast.Alert
 import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.forecast.ForecastBlock
 import app.sigot.core.model.forecast.ForecastDay
-import app.sigot.core.model.forecast.Location
 import app.sigot.core.model.forecast.Precipitation
 import app.sigot.core.model.forecast.PrecipitationType
 import app.sigot.core.model.forecast.SevereWeatherRisk
 import app.sigot.core.model.forecast.Temperature
 import app.sigot.core.model.forecast.Wind
+import app.sigot.core.model.location.Location
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

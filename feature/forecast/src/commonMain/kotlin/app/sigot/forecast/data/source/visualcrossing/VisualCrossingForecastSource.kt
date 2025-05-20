@@ -1,7 +1,7 @@
 package app.sigot.forecast.data.source.visualcrossing
 
 import app.sigot.core.model.forecast.Forecast
-import app.sigot.core.model.forecast.Location
+import app.sigot.core.model.location.Location
 import app.sigot.forecast.data.source.ForecastSource
 import app.sigot.forecast.data.source.QueryCostLogger
 

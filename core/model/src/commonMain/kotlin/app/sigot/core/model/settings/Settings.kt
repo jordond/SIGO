@@ -1,6 +1,6 @@
 package app.sigot.core.model.settings
 
-import app.sigot.core.model.forecast.Location
+import app.sigot.core.model.location.Location
 import app.sigot.core.model.preferences.Preferences
 import app.sigot.core.model.ui.ThemeMode
 import app.sigot.core.model.units.convertTemperature

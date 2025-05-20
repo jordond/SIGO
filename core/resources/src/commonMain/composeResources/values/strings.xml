@@ -53,6 +53,12 @@
     <string name="maximum">Maximum</string>
     <string name="snow">Snow</string>
     <string name="rain">Rain</string>
+    <string name="not_applicable">N/A</string>
+
+    <string name="permission_status">Permissions %1$s</string>
+    <string name="permission_granted">Granted</string>
+    <string name="permission_denied">Denied</string>
+    <string name="permission_unknown">Unknown</string>
 
     <string name="cyclone">Cyclone</string>
     <string name="open_github">Open NOTHING</string>
@@ -134,6 +140,8 @@
     <string name="onboarding_units_subtext">Tell us which units you prefer</string>
     <string name="onboarding_preferences">Preferences</string>
     <string name="onboarding_preferences_subtext">Tell us your weather comfort levels</string>
+    <string name="onboarding_location">Location</string>
+    <string name="onboarding_location_subtext">We use your approximate location to fetch the weather</string>
 
     <string name="preferences_temp_description">When is it too cold or too hot to go outside?</string>
     <string name="preferences_temp_min">min: %1$s</string>
@@ -141,4 +149,24 @@
     <string name="preferences_wind_description">When is it too windy to go outside?</string>
     <string name="preferences_wind_max">max: %1$s</string>
     <string name="preferences_precipitation_title">Do you want to go outside in the:</string>
+
+    <string name="preferences_location_updates">Enable location updates</string>
+
+    <string name="location_geolocation_supported">Geolocation is available</string>
+    <string name="location_geolocation_unavailable">Geolocation not supported</string>
+    <string name="location_geolocation_error">Something went wrong trying to get your location, please try again</string>
+    <string name="location_geolocation_not_found">Got an invalid response from your GPS, please try again</string>
+    <string name="location_permission_rationale">We need permission to access your location. We only use an approximate location, and we use this information to get the weather forecast for your area.</string>
+    <string name="location_permission_open_settings_rationale">You have permanently denied this permission. You will have to enable it in the settings.</string>
+    <string name="location_permission_cta_request">Request Permission</string>
+    <string name="location_permission_cta_open_settings">Open Settings</string>
+    <string name="location_status">Location: %1$s</string>
+    <string name="location_status_error">Failed</string>
+    <string name="location_status_idle">Ready</string>
+    <string name="location_status_tracking">Searching...</string>
+    <string name="location_status_update">Connected</string>
+    <string name="location_details">Details</string>
+    <string name="location_latitude">Latitude</string>
+    <string name="location_longitude">Longitude</string>
+    <string name="location_place">Place</string>
 </resources>

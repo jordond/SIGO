@@ -1,4 +1,4 @@
-package app.sigot.core.model.forecast
+package app.sigot.core.model.location
 
 /**
  * A location with a name and coordinates.
@@ -10,5 +10,7 @@ package app.sigot.core.model.forecast
 public data class Location(
     val latitude: Double,
     val longitude: Double,
-    val name: String,
-)
+    val name: String = "$latitude,$longitude",
+) {
+    val isDefaultName: Boolean = name == "$latitude,$longitude"
+}

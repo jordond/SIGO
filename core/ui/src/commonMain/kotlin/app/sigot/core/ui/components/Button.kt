@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.TextAutoSize
-import androidx.compose.material3.ButtonDefaults.ContentPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -259,6 +258,7 @@ public enum class ButtonVariant {
     TertiaryElevated,
     Destructive,
     DestructiveElevated,
+    Elevated,
     Outlined,
     Ghost,
 }
@@ -274,6 +274,7 @@ internal fun buttonStyleFor(variant: ButtonVariant): ButtonStyle =
         ButtonVariant.TertiaryElevated -> ButtonDefaults.tertiaryElevated()
         ButtonVariant.Destructive -> ButtonDefaults.destructive()
         ButtonVariant.DestructiveElevated -> ButtonDefaults.destructiveElevated()
+        ButtonVariant.Elevated -> ButtonDefaults.elevated()
         ButtonVariant.Outlined -> ButtonDefaults.outlined()
         ButtonVariant.Ghost -> ButtonDefaults.ghost()
     }
@@ -299,14 +300,6 @@ public object ButtonDefaults {
     private val elevatedShape @Composable get() = ButtonShape
 
     private val TextButtonHorizontalPadding = 12.dp
-
-    internal val TextButtonContentPadding =
-        PaddingValues(
-            start = TextButtonHorizontalPadding,
-            top = ContentPadding.calculateTopPadding(),
-            end = TextButtonHorizontalPadding,
-            bottom = ContentPadding.calculateBottomPadding(),
-        )
 
     @Composable
     public fun LoadingIndicator(): @Composable () -> Unit =
@@ -463,6 +456,22 @@ public object ButtonDefaults {
         )
 
     @Composable
+    public fun elevatedColors(
+        containerColor: Color = LocalContainerColor.current,
+        contentColor: Color = contentColorFor(containerColor),
+        borderColor: Color = BrutalDefaults.Color,
+        disabledContainerColor: Color = LocalContainerColor.current.disabled(DisabledAlpha),
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
+    ): ButtonColors =
+        ButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+            borderColor = borderColor,
+            disabledContainerColor = disabledContainerColor,
+            disabledContentColor = disabledContentColor,
+        )
+
+    @Composable
     public fun outlinedColors(
         containerColor: Color = LocalContainerColor.current,
         contentColor: Color = contentColorFor(containerColor),
@@ -554,6 +563,14 @@ public object ButtonDefaults {
     public fun destructiveElevated(
         colors: ButtonColors = destructiveElevatedColors(),
         shape: Shape = elevatedShape,
+        elevation: ButtonElevation? = buttonElevation(),
+        contentPadding: PaddingValues = this.contentPadding,
+    ): ButtonStyle = ButtonStyle(colors, shape, elevation, contentPadding)
+
+    @Composable
+    public fun elevated(
+        colors: ButtonColors = elevatedColors(),
+        shape: Shape = filledShape,
         elevation: ButtonElevation? = buttonElevation(),
         contentPadding: PaddingValues = this.contentPadding,
     ): ButtonStyle = ButtonStyle(colors, shape, elevation, contentPadding)
