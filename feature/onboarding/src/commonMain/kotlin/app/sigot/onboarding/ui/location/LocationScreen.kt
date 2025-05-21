@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.sigot.core.domain.location.LocationResult
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
 import app.sigot.core.resources.Res
@@ -30,7 +31,6 @@ import app.sigot.onboarding.ui.location.components.LocationDetailsCard
 import app.sigot.onboarding.ui.location.components.LocationPermissionStatusCard
 import app.sigot.onboarding.ui.location.components.LocationServicesCard
 import app.sigot.onboarding.ui.navigation.OnboardingDestination
-import dev.jordond.compass.geolocation.TrackingStatus
 import dev.stateholder.dispatcher.Dispatcher
 import dev.stateholder.dispatcher.rememberDebounceDispatcher
 import dev.stateholder.dispatcher.rememberDispatcher
@@ -59,12 +59,13 @@ internal fun LocationScreen(model: LocationModel = koinViewModel()) {
 
     LocationScreen(
         location = state.location,
-        trackingStatus = state.trackingStatus,
+        isLoading = state.loading,
+        locationResult = state.locationResult,
         permissionStatus = state.permissionStatus,
         dispatcher = rememberDebounceDispatcher { action ->
             when (action) {
                 is RequestPermission -> model.requestPermission()
-                is StartTracking -> model.startTracking()
+                is StartTracking -> model.getLocation()
             }
         },
     )
@@ -74,10 +75,11 @@ internal fun LocationScreen(model: LocationModel = koinViewModel()) {
 internal fun LocationScreen(
     location: Location?,
     modifier: Modifier = Modifier,
-    dispatcher: Dispatcher<LocationScreenAction> = rememberDispatcher { },
+    isLoading: Boolean = false,
+    locationResult: LocationResult? = null,
+    dispatcher: Dispatcher<LocationScreenAction> = rememberDispatcher {},
     locationServicesAvailable: Boolean = true,
     permissionStatus: LocationPermissionStatus = LocationPermissionStatus.Unknown,
-    trackingStatus: TrackingStatus = TrackingStatus.Idle,
 ) {
     Column(
         modifier = modifier
@@ -121,8 +123,9 @@ internal fun LocationScreen(
             ) {
                 LocationDetailsCard(
                     location = location,
-                    status = trackingStatus,
-                    startTracking = dispatcher.rememberRelay(StartTracking),
+                    isLoading = isLoading,
+                    status = locationResult,
+                    getLocation = dispatcher.rememberRelay(StartTracking),
                 )
             }
         }
@@ -135,12 +138,8 @@ private fun LocationScreenPreview() {
     AppPreview {
         OnboardingScreen(OnboardingDestination.Location) {
             LocationScreen(
-                location = Location(
-                    latitude = 51.5074,
-                    longitude = -0.1278,
-                    name = "London, ON",
-                ),
-                trackingStatus = TrackingStatus.Update(PreviewData.compassLocation),
+                location = PreviewData.location,
+                locationResult = LocationResult.Success(PreviewData.location),
                 permissionStatus = LocationPermissionStatus.Granted,
             )
         }

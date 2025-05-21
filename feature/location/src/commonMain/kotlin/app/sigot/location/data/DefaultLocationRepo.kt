@@ -11,16 +11,11 @@ import co.touchlab.kermit.Logger
 import dev.jordond.compass.Coordinates
 import dev.jordond.compass.Priority
 import dev.jordond.compass.geolocation.GeolocatorResult
-import dev.jordond.compass.geolocation.TrackingStatus
 import dev.jordond.compass.geolocation.hasPermission
 import dev.jordond.compass.permissions.PermissionState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.awaitCancellation
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal class DefaultLocationRepo(
@@ -32,7 +27,7 @@ internal class DefaultLocationRepo(
     override fun hasPermission(): Boolean = manager.geolocator.hasPermission()
 
     override suspend fun requestPermission(): LocationPermissionStatus {
-        val result = manager.permissions.requirePermissionFor(Priority.Balanced)
+        val result = manager.permissions.requirePermissionFor(priority)
         return when (result) {
             PermissionState.NotDetermined -> LocationPermissionStatus.Unknown
             PermissionState.Granted -> LocationPermissionStatus.Granted
@@ -41,66 +36,39 @@ internal class DefaultLocationRepo(
         }
     }
 
-    override fun track(): Flow<TrackingStatus> =
-        channelFlow {
-            if (!canGeolocate()) {
-                logger.i { "Geolocation not supported" }
-                return@channelFlow send(TrackingStatus.Error(GeolocatorResult.NotSupported))
-            }
-
-            launch {
-                manager.geolocator.track().collect { result ->
-                    logger.d { "Tracking status: $result" }
-
-                    if (result is TrackingStatus.Update) {
-                        val location = result.location.toModel()
-                        settingsRepo.update { it.copy(lastLocation = location) }
-
-                        if (manager.isGeocoderSupported && manager.geocoder.isAvailable()) {
-                            val place = manager.geocoder
-                                .reverse(result.location.coordinates)
-                                .onFailed { error ->
-                                    logger.e { "Failed to reverse geocode location: $error" }
-                                }.getFirstOrNull()
-
-                            if (place != null && !place.isEmpty) {
-                                logger.d { "Geocoding result: $place" }
-
-                                val updated = location.copy(name = place.locality ?: place.firstValue)
-                                settingsRepo.update { it.copy(lastLocation = updated) }
-                            } else {
-                                logger.i { "No geocoding result found for location: ${result.location}" }
-                            }
-                        }
-                    }
-
-                    send(result)
-                }
-            }
-
-            try {
-                awaitCancellation()
-            } finally {
-                manager.geolocator.stopTracking()
-            }
+    override suspend fun location(resolve: Boolean): LocationResult {
+        if (!canGeolocate()) {
+            return LocationResult.NotSupported
         }
 
-    override suspend fun location(resolve: Boolean): LocationResult {
-        logger.d { "Getting current location" }
-        val result = manager.geolocator.current(Priority.Balanced).toResult()
+        logger.d { "Getting location" }
+        val lastLocation = manager.geolocator
+            .lastLocation(priority)
+            .getOrNull()
+            ?.toModel()
+        val result =
+            if (lastLocation != null) {
+                Logger.d { "Last location found" }
+                Success(lastLocation)
+            } else {
+                Logger.d { "Getting current location" }
+                manager.geolocator.current(priority).toResult()
+            }
 
-        logger.d { "Current location result: $result" }
+        logger.d { "Location result: $result" }
 
         if (resolve && result is Success && manager.isGeocoderSupported && manager.geocoder.isAvailable()) {
-            val place = manager.geocoder
-                .reverse(result.location.coordinates())
-                .onFailed { error -> logger.e { "Failed to reverse geocode location: $error" } }
-                .getFirstOrNull()
+            val place =
+                manager.geocoder
+                    .reverse(result.location.coordinates())
+                    .onFailed { error -> logger.e { "Failed to reverse geocode location: $error" } }
+                    .getFirstOrNull()
 
             if (place != null && !place.isEmpty) {
-                logger.d { "Geocoding result: ${place.firstValue}" }
+                logger.d { "Geocoding result: $place" }
 
-                val updated = result.location.copy(name = place.firstValue)
+                val name = place.locality ?: place.subAdministrativeArea ?: place.firstValue
+                val updated = result.location.copy(name = name)
                 settingsRepo.update { it.copy(lastLocation = updated) }
 
                 return Success(updated)
@@ -150,4 +118,9 @@ internal class DefaultLocationRepo(
         Location(coordinates.latitude, coordinates.longitude)
 
     private fun Location.coordinates() = Coordinates(latitude, longitude)
+
+    private companion object {
+        // TODO: Use RemoteConfig
+        private val priority = Priority.LowPower
+    }
 }

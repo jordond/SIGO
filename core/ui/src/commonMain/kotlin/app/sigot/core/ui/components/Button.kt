@@ -174,7 +174,6 @@ internal fun ButtonComponent(
         shape = style.shape,
         elevation = shadowElevation,
         color = style.colors.borderColor,
-        modifier = modifier,
     ) {
         val indication = remember(style, contentColor) {
             if (style.elevation != null) null else ripple(color = contentColor)
@@ -183,7 +182,7 @@ internal fun ButtonComponent(
         Surface(
             onClick = onClick,
             modifier =
-                Modifier
+                modifier
                     .defaultMinSize(minHeight = minHeight)
                     .semantics { role = Role.Button },
             enabled = enabled,

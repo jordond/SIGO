@@ -44,7 +44,6 @@ import app.sigot.core.ui.components.IconButtonVariant
 import app.sigot.core.ui.components.Scaffold
 import app.sigot.core.ui.components.Surface
 import app.sigot.core.ui.components.Text
-import app.sigot.core.ui.components.brutalBorder
 import app.sigot.core.ui.components.card.Card
 import app.sigot.core.ui.components.snackbar.LocalSnackbarProvider
 import app.sigot.core.ui.components.snackbar.SnackbarHost
@@ -123,7 +122,6 @@ internal fun OnboardingScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .brutalBorder()
                 .padding(
                     top = innerPadding.calculateTopPadding(),
                     start = innerPadding.calculateStartPadding(layoutDirection),
@@ -142,7 +140,7 @@ internal fun OnboardingScreen(
                 border = null,
                 modifier = Modifier.weight(1f),
             ) {
-                HorizontalDivider()
+                HorizontalDivider(thickness = 6.dp)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier

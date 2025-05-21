@@ -12,16 +12,23 @@ public data class Location(
     val longitude: Double,
     val name: String = "$latitude,$longitude",
 ) {
-    public constructor(latitude: Double, longitude: Double, name: String?) : this(
-        latitude,
-        longitude,
-        name ?: "$latitude,$longitude",
-    )
-
     val isDefaultName: Boolean = name == "$latitude,$longitude"
 
     val roundedLatitude: String = latitude.toFixed(4)
     val roundedLongitude: String = longitude.toFixed(4)
+
+    public companion object {
+        public fun create(
+            latitude: Double,
+            longitude: Double,
+            name: String? = null,
+        ): Location =
+            Location(
+                latitude = latitude,
+                longitude = longitude,
+                name = name ?: "$latitude,$longitude",
+            )
+    }
 }
 
 private fun Double.toFixed(digits: Int): String =

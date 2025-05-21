@@ -22,7 +22,7 @@ internal fun Location.toEntity() =
     )
 
 internal fun LocationEntity.toModel() =
-    Location(
+    Location.create(
         latitude = latitude,
         longitude = longitude,
         name = name,

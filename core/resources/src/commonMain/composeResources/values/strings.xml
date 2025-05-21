@@ -165,7 +165,7 @@
     <string name="location_status_error">Failed</string>
     <string name="location_status_idle">Ready</string>
     <string name="location_status_tracking">Searching...</string>
-    <string name="location_status_update">Connected</string>
+    <string name="location_status_update">Detected</string>
     <string name="location_details">Details</string>
     <string name="location_latitude">Latitude</string>
     <string name="location_longitude">Longitude</string>
