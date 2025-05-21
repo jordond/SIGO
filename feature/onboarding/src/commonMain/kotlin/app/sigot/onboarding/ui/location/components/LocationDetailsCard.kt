@@ -14,8 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import app.sigot.core.domain.location.LocationResult
 import app.sigot.core.model.location.Location
+import app.sigot.core.model.location.LocationResult
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.location_details
 import app.sigot.core.resources.location_get

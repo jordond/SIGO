@@ -18,11 +18,9 @@ private val destinations = listOfNotNull(
 )
 
 internal class OnboardingModel(
-    settingsRepo: SettingsRepo,
+    private val settingsRepo: SettingsRepo,
 ) : UiStateViewModel<OnboardingModel.State, OnboardingModel.Event>(State()) {
     init {
-        // TODO: Remove after testing
-        settingsRepo.update { it.copy(lastLocation = null) }
         settingsRepo.settings
             .map { it.lastLocation }
             .distinctUntilChanged()
@@ -42,6 +40,7 @@ internal class OnboardingModel(
 
         val index = destinations.indexOf(current)
         if (index == destinations.lastIndex) {
+            settingsRepo.update { it.copy(hasCompletedOnboarding = true) }
             emit(Event.Finish)
         } else if (index != -1) {
             emitNavigation(destinations[index + 1])

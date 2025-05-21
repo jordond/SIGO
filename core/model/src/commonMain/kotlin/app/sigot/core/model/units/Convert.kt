@@ -8,6 +8,9 @@ private const val KPH_TO_MPH = 0.621371
 private const val MPH_TO_KPH = 1.60934
 private const val HPA_TO_INCH_MERCURY = 0.02953
 
+public val Double.kelvin: Double
+    get() = this + KELVIN_TO_CELSIUS
+
 public fun convertTemperature(
     value: Double,
     from: TemperatureUnit,

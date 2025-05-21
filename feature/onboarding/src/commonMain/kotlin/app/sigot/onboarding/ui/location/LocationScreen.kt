@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.sigot.core.domain.location.LocationResult
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
+import app.sigot.core.model.location.LocationResult
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.onboarding_location
 import app.sigot.core.resources.onboarding_location_subtext
