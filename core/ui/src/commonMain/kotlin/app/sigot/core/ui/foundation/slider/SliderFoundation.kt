@@ -1195,7 +1195,7 @@ public class SliderColors(
 
 public class SliderState(
     value: Float = 0f,
-    @IntRange(from = 0) public val steps: Int = 0,
+    @param:IntRange(from = 0) public val steps: Int = 0,
     public var onValueChangeFinished: (() -> Unit)? = null,
     public val valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
 ) : DraggableState {
@@ -1299,7 +1299,7 @@ public class SliderState(
 public class RangeSliderState(
     activeRangeStart: Float = 0f,
     activeRangeEnd: Float = 1f,
-    @IntRange(from = 0) public val steps: Int = 0,
+    @param:IntRange(from = 0) public val steps: Int = 0,
     public var onValueChangeFinished: (() -> Unit)? = null,
     public val valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
 ) {

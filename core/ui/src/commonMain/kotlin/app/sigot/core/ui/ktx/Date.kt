@@ -54,7 +54,6 @@ public val Month.text: StringResource
         Month.OCTOBER -> Res.string.month_october
         Month.NOVEMBER -> Res.string.month_november
         Month.DECEMBER -> Res.string.month_december
-        else -> error("Unknown month: $this")
     }
 
 public val Month.shortText: StringResource
@@ -72,7 +71,6 @@ public val Month.shortText: StringResource
         Month.OCTOBER -> Res.string.month_october
         Month.NOVEMBER -> Res.string.month_november
         Month.DECEMBER -> Res.string.month_december
-        else -> error("Unknown month: $this")
     }
 
 public val DayOfWeek.text: StringResource
@@ -84,7 +82,6 @@ public val DayOfWeek.text: StringResource
         DayOfWeek.FRIDAY -> Res.string.day_of_week_friday
         DayOfWeek.SATURDAY -> Res.string.day_of_week_saturday
         DayOfWeek.SUNDAY -> Res.string.day_of_week_sunday
-        else -> error("Unknown day of week: $this")
     }
 
 public val DayOfWeek.textShort: StringResource
@@ -96,7 +93,6 @@ public val DayOfWeek.textShort: StringResource
         DayOfWeek.FRIDAY -> Res.string.day_of_week_short_friday
         DayOfWeek.SATURDAY -> Res.string.day_of_week_short_saturday
         DayOfWeek.SUNDAY -> Res.string.day_of_week_short_sunday
-        else -> error("Unknown day of week: $this")
     }
 
 private val LocalDate.dayWithOrdinal: StringResource

@@ -70,7 +70,6 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
 
     if (platforms.contains(Platform.Android)) {
         androidTarget {
-            publishAllLibraryVariants()
             // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
             @Suppress("OPT_IN_USAGE")
             instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)

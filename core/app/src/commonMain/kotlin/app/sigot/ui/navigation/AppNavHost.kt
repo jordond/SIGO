@@ -6,7 +6,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import app.sigot.onboarding.ui.navigation.onboardingScreen
+import app.sigot.forecast.ui.navigation.ForecastHomeRoute
+import app.sigot.forecast.ui.navigation.forecastNavigation
+import app.sigot.onboarding.ui.navigation.onboardingNavigation
 
 @Composable
 internal fun AppNavHost(
@@ -19,6 +21,11 @@ internal fun AppNavHost(
         startDestination = remember(startDestination) { startDestination.toRoute() },
         modifier = modifier,
     ) {
-        onboardingScreen(navController)
+        onboardingNavigation(
+            navController = navController,
+            onFinish = { navController.navigate(ForecastHomeRoute) },
+        )
+
+        forecastNavigation(navController)
     }
 }
