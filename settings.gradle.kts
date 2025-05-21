@@ -44,6 +44,7 @@ include(":apps:desktop")
 include(":apps:ios")
 
 include(":core:app")
+include(":core:config")
 include(":core:domain")
 include(":core:foundation")
 include(":core:model")
