@@ -27,5 +27,10 @@ kotlin {
             implementation(libs.kermit)
             implementation(libs.stateHolder)
         }
+
+        androidMain.dependencies {
+            implementation(libs.firebase.common)
+            implementation(libs.firebase.config)
+        }
     }
 }

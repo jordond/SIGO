@@ -16,8 +16,10 @@ kotlin = "2.2.0-RC"
 compose = "1.8.1"
 agp = "8.10.0"
 androidx-activity = "1.10.1"
-androidx-core = "1.16.0"
 androidx-compose-ui-tooling = "1.8.2"
+androidx-core = "1.16.0"
+androidx-lifecycle = "2.9.0"
+androidx-navigation = "2.9.0-beta02"
 androidx-ui-test = "1.8.2"
 clikt = "5.0.3"
 compose-windowSizeClass = "1.8.1"
@@ -31,8 +33,7 @@ ktor = "3.1.3"
 filekit = "0.10.0-beta04"
 firebase-bom = "33.14.0"
 firebase-kmp = "2.1.0"
-androidx-lifecycle = "2.9.0"
-androidx-navigation = "2.9.0-beta02"
+google-services = "4.4.2"
 kotlinx-serialization = "1.8.1"
 coil = "3.2.0"
 multiplatformSettings = "1.3.0"
@@ -159,6 +160,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hotReload" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
