@@ -30,6 +30,7 @@ backend/lib
 fastlane_service_account.json
 fastlane_appstore_connect_key.p8
 
+apps/android/google-services.json
 apps/ios/Podfile.lock
 apps/ios/Pods/*
 apps/ios/iosApp.xcworkspace/*
