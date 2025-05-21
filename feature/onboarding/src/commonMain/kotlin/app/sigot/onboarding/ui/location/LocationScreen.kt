@@ -24,15 +24,27 @@ import app.sigot.core.ui.components.snackbar.LocalSnackbarProvider
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.PreviewData
 import app.sigot.onboarding.ui.OnboardingScreen
+import app.sigot.onboarding.ui.location.LocationScreenAction.RequestPermission
+import app.sigot.onboarding.ui.location.LocationScreenAction.StartTracking
 import app.sigot.onboarding.ui.location.components.LocationDetailsCard
 import app.sigot.onboarding.ui.location.components.LocationPermissionStatusCard
 import app.sigot.onboarding.ui.location.components.LocationServicesCard
 import app.sigot.onboarding.ui.navigation.OnboardingDestination
 import dev.jordond.compass.geolocation.TrackingStatus
+import dev.stateholder.dispatcher.Dispatcher
+import dev.stateholder.dispatcher.rememberDebounceDispatcher
+import dev.stateholder.dispatcher.rememberDispatcher
+import dev.stateholder.dispatcher.rememberRelay
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+
+internal sealed interface LocationScreenAction {
+    data object RequestPermission : LocationScreenAction
+
+    data object StartTracking : LocationScreenAction
+}
 
 @Composable
 internal fun LocationScreen(model: LocationModel = koinViewModel()) {
@@ -47,18 +59,22 @@ internal fun LocationScreen(model: LocationModel = koinViewModel()) {
 
     LocationScreen(
         location = state.location,
-        getCurrentLocation = model::startTracking,
         trackingStatus = state.trackingStatus,
         permissionStatus = state.permissionStatus,
+        dispatcher = rememberDebounceDispatcher { action ->
+            when (action) {
+                is RequestPermission -> model.requestPermission()
+                is StartTracking -> model.startTracking()
+            }
+        },
     )
 }
 
 @Composable
 internal fun LocationScreen(
     location: Location?,
-    getCurrentLocation: () -> Unit,
     modifier: Modifier = Modifier,
-    permissionsOnClick: () -> Unit = {},
+    dispatcher: Dispatcher<LocationScreenAction> = rememberDispatcher { },
     locationServicesAvailable: Boolean = true,
     permissionStatus: LocationPermissionStatus = LocationPermissionStatus.Unknown,
     trackingStatus: TrackingStatus = TrackingStatus.Idle,
@@ -95,7 +111,7 @@ internal fun LocationScreen(
                 if (available) {
                     LocationPermissionStatusCard(
                         permissionStatus = permissionStatus,
-                        onClick = permissionsOnClick,
+                        onClick = dispatcher.rememberRelay(RequestPermission),
                     )
                 }
             }
@@ -106,6 +122,7 @@ internal fun LocationScreen(
                 LocationDetailsCard(
                     location = location,
                     status = trackingStatus,
+                    startTracking = dispatcher.rememberRelay(StartTracking),
                 )
             }
         }
@@ -124,7 +141,6 @@ private fun LocationScreenPreview() {
                     name = "London, ON",
                 ),
                 trackingStatus = TrackingStatus.Update(PreviewData.compassLocation),
-                getCurrentLocation = {},
                 permissionStatus = LocationPermissionStatus.Granted,
             )
         }

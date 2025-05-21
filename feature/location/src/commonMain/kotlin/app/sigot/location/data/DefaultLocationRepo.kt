@@ -5,62 +5,68 @@ import app.sigot.core.domain.location.LocationResult
 import app.sigot.core.domain.location.LocationResult.Success
 import app.sigot.core.domain.settings.SettingsRepo
 import app.sigot.core.model.location.Location
+import app.sigot.core.model.location.LocationPermissionStatus
 import app.sigot.core.platform.LocationManager
 import co.touchlab.kermit.Logger
 import dev.jordond.compass.Coordinates
 import dev.jordond.compass.Priority
-import dev.jordond.compass.geocoder.Geocoder
-import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.TrackingStatus
 import dev.jordond.compass.geolocation.hasPermission
+import dev.jordond.compass.permissions.PermissionState
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal class DefaultLocationRepo(
     private val manager: LocationManager,
-    private val geolocator: Geolocator,
-    private val geocoder: Geocoder,
     private val settingsRepo: SettingsRepo,
-    private val scope: CoroutineScope,
 ) : LocationRepo {
     private val logger = Logger.withTag("CompassLocationManager")
 
-    override fun hasPermission(): Boolean = geolocator.hasPermission()
+    override fun hasPermission(): Boolean = manager.geolocator.hasPermission()
+
+    override suspend fun requestPermission(): LocationPermissionStatus {
+        val result = manager.permissions.requirePermissionFor(Priority.Balanced)
+        return when (result) {
+            PermissionState.NotDetermined -> LocationPermissionStatus.Unknown
+            PermissionState.Granted -> LocationPermissionStatus.Granted
+            PermissionState.Denied -> LocationPermissionStatus.Denied(false)
+            PermissionState.DeniedForever -> LocationPermissionStatus.Denied(true)
+        }
+    }
 
     override fun track(): Flow<TrackingStatus> =
-        flow {
+        channelFlow {
             if (!canGeolocate()) {
                 logger.i { "Geolocation not supported" }
-                return@flow emit(TrackingStatus.Error(GeolocatorResult.NotSupported))
+                return@channelFlow send(TrackingStatus.Error(GeolocatorResult.NotSupported))
             }
 
-            scope.launch {
-                geolocator.trackingStatus.collect { result ->
+            launch {
+                manager.geolocator.track().collect { result ->
                     logger.d { "Tracking status: $result" }
 
                     if (result is TrackingStatus.Update) {
                         val location = result.location.toModel()
                         settingsRepo.update { it.copy(lastLocation = location) }
 
-                        if (manager.isGeocoderSupported && geocoder.isAvailable()) {
-                            val place = geocoder
+                        if (manager.isGeocoderSupported && manager.geocoder.isAvailable()) {
+                            val place = manager.geocoder
                                 .reverse(result.location.coordinates)
                                 .onFailed { error ->
                                     logger.e { "Failed to reverse geocode location: $error" }
                                 }.getFirstOrNull()
 
                             if (place != null && !place.isEmpty) {
-                                logger.d { "Geocoding result: ${place.firstValue}" }
+                                logger.d { "Geocoding result: $place" }
 
-                                val updated = location.copy(name = place.firstValue)
+                                val updated = location.copy(name = place.locality ?: place.firstValue)
                                 settingsRepo.update { it.copy(lastLocation = updated) }
                             } else {
                                 logger.i { "No geocoding result found for location: ${result.location}" }
@@ -68,25 +74,25 @@ internal class DefaultLocationRepo(
                         }
                     }
 
-                    emit(result)
+                    send(result)
                 }
             }
 
             try {
                 awaitCancellation()
             } finally {
-                geolocator.stopTracking()
+                manager.geolocator.stopTracking()
             }
         }
 
     override suspend fun location(resolve: Boolean): LocationResult {
         logger.d { "Getting current location" }
-        val result = geolocator.current(Priority.Balanced).toResult()
+        val result = manager.geolocator.current(Priority.Balanced).toResult()
 
         logger.d { "Current location result: $result" }
 
-        if (resolve && result is Success && manager.isGeocoderSupported && geocoder.isAvailable()) {
-            val place = geocoder
+        if (resolve && result is Success && manager.isGeocoderSupported && manager.geocoder.isAvailable()) {
+            val place = manager.geocoder
                 .reverse(result.location.coordinates())
                 .onFailed { error -> logger.e { "Failed to reverse geocode location: $error" } }
                 .getFirstOrNull()
@@ -113,7 +119,7 @@ internal class DefaultLocationRepo(
     private suspend fun canGeolocate(): Boolean =
         withContext(Dispatchers.IO) {
             manager.isGeolocationSupported &&
-                geolocator.isAvailable().also { value ->
+                manager.geolocator.isAvailable().also { value ->
                     logger.d { "Geolocation availability: $value" }
                 }
         }

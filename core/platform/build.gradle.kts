@@ -26,6 +26,7 @@ kotlin {
             api(libs.ktor.client.core)
             implementation(libs.compass.geolocation)
             implementation(libs.compass.geocoder)
+
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.serialization)
             implementation(libs.ktor.client.serialization.json)
@@ -63,6 +64,7 @@ kotlin {
                 implementation(libs.connectivity.device)
                 implementation(libs.compass.geocoder.mobile)
                 implementation(libs.compass.geolocation.mobile)
+                implementation(libs.compass.permissions.mobile)
                 implementation(libs.kstore.file)
             }
         }

@@ -160,6 +160,7 @@
     <string name="location_permission_open_settings_rationale">You have permanently denied this permission. You will have to enable it in the settings.</string>
     <string name="location_permission_cta_request">Request Permission</string>
     <string name="location_permission_cta_open_settings">Open Settings</string>
+    <string name="location_get">Get Location</string>
     <string name="location_status">Location: %1$s</string>
     <string name="location_status_error">Failed</string>
     <string name="location_status_idle">Ready</string>
