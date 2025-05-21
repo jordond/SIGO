@@ -3,6 +3,7 @@ package app.sigot.di
 import app.sigot.core.foundation.di.foundationModule
 import app.sigot.core.platform.di.platformModule
 import app.sigot.forecast.forecastAppModule
+import app.sigot.forecast.ui.forecastUiModule
 import app.sigot.location.locationModule
 import app.sigot.onboarding.onboardingModule
 import app.sigot.settings.settingsModule
@@ -25,6 +26,7 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
             platformModule(),
             // Feature
             forecastAppModule(),
+            forecastUiModule(),
             locationModule(),
             onboardingModule(),
             settingsModule(),

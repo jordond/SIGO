@@ -139,7 +139,7 @@ internal fun OnboardingScreen(
         ) {
             Surface(
                 color = AppTheme.colors.background,
-                modifier = Modifier.weight(4f),
+                modifier = Modifier.weight(5f),
             ) {
                 content()
             }

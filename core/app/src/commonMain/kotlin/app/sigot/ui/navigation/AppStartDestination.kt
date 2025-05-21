@@ -1,5 +1,6 @@
 package app.sigot.ui.navigation
 
+import app.sigot.forecast.ui.navigation.ForecastHomeRoute
 import app.sigot.onboarding.ui.navigation.OnboardingRoute
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
@@ -15,6 +16,6 @@ internal sealed interface AppStartDestination {
     fun toRoute(): KClass<*> =
         when (this) {
             Onboarding -> OnboardingRoute::class
-            Home -> TODO()
+            Home -> ForecastHomeRoute::class
         }
 }
