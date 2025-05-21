@@ -1,6 +1,7 @@
 package app.sigot.onboarding.ui.location
 
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.viewModelScope
 import app.sigot.core.domain.location.LocationRepo
 import app.sigot.core.domain.settings.SettingsRepo
 import app.sigot.core.model.location.Location
@@ -18,13 +19,16 @@ import dev.stateholder.extensions.viewmodel.UiStateViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 
 internal class LocationModel(
-    private val settingsRepo: SettingsRepo,
+    settingsRepo: SettingsRepo,
     private val locationRepo: LocationRepo,
 ) : UiStateViewModel<State, Event>(
-        State(hasLocationPermission = locationRepo.hasPermission()),
+        State(
+            permissionStatus = locationRepo.initialPermissionStatus(),
+        ),
     ) {
     private var trackingJob: Job? = null
 
@@ -33,6 +37,13 @@ internal class LocationModel(
             .map { it.lastLocation }
             .distinctUntilChanged()
             .mergeState { state, lastLocation -> state.copy(location = lastLocation) }
+    }
+
+    fun requestPermission() {
+        viewModelScope.launch {
+            val result = locationRepo.requestPermission()
+            updateState { it.copy(permissionStatus = result) }
+        }
     }
 
     fun startTracking() {
@@ -50,7 +61,7 @@ internal class LocationModel(
                     emit(Event.LocationError(message))
                 }
             }
-            state.copy(trackingStatus = value)
+            state.updateTrackingStatus(value)
         }
     }
 
@@ -59,24 +70,30 @@ internal class LocationModel(
         super.onCleared()
     }
 
+    private fun State.updateTrackingStatus(status: TrackingStatus): State {
+        val permissionStatus = when {
+            status is TrackingStatus.Error && status.cause.isPermissionDenied() -> {
+                LocationPermissionStatus.Denied(status.cause.isPermissionDeniedForever())
+            }
+            status is TrackingStatus.Tracking || status is TrackingStatus.Update -> {
+                LocationPermissionStatus.Granted
+            }
+            else -> {
+                permissionStatus
+            }
+        }
+
+        return copy(permissionStatus = permissionStatus, trackingStatus = status)
+    }
+
     @Stable
     data class State(
-        val hasLocationPermission: Boolean,
+        val permissionStatus: LocationPermissionStatus = LocationPermissionStatus.Unknown,
         val trackingStatus: TrackingStatus = TrackingStatus.Idle,
         val canGeolocate: Boolean? = null,
         val location: Location? = null,
     ) {
         val isTracking: Boolean = trackingStatus.isActive
-        val permissionStatus: LocationPermissionStatus =
-            if (trackingStatus is TrackingStatus.Error && trackingStatus.cause.isPermissionDenied()) {
-                LocationPermissionStatus.Denied(trackingStatus.cause.isPermissionDeniedForever())
-            } else {
-                if (hasLocationPermission) {
-                    LocationPermissionStatus.Granted
-                } else {
-                    LocationPermissionStatus.Unknown
-                }
-            }
     }
 
     sealed interface Event {
@@ -85,3 +102,6 @@ internal class LocationModel(
         ) : Event
     }
 }
+
+private fun LocationRepo.initialPermissionStatus() =
+    if (hasPermission()) LocationPermissionStatus.Granted else LocationPermissionStatus.Unknown

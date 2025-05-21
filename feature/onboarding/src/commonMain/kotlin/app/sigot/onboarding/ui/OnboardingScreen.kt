@@ -220,10 +220,7 @@ internal fun OnboardingScreenPreview(
                     )
                 }
                 OnboardingDestination.Location -> {
-                    LocationScreen(
-                        location = null,
-                        getCurrentLocation = { },
-                    )
+                    LocationScreen(location = null)
                 }
                 OnboardingDestination.Summary -> {
                     SummaryScreen()

@@ -3,22 +3,30 @@ package app.sigot.onboarding.ui.location.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.location.Location
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.location_details
+import app.sigot.core.resources.location_get
 import app.sigot.core.resources.location_latitude
 import app.sigot.core.resources.location_longitude
 import app.sigot.core.resources.location_place
+import app.sigot.core.resources.not_applicable
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.colors
+import app.sigot.core.ui.components.Button
+import app.sigot.core.ui.components.ButtonVariant
 import app.sigot.core.ui.components.Icon
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.icons.AppIcons
@@ -29,6 +37,7 @@ import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.PreviewData
 import app.sigot.core.ui.rememberIcon
 import app.sigot.core.ui.rememberText
+import co.touchlab.kermit.Logger
 import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.TrackingStatus
 import org.jetbrains.compose.resources.StringResource
@@ -39,6 +48,7 @@ internal fun LocationDetailsCard(
     location: Location?,
     status: TrackingStatus,
     modifier: Modifier = Modifier,
+    startTracking: () -> Unit = {},
 ) {
     val colors = status.colors()
     LocationCard(
@@ -51,9 +61,40 @@ internal fun LocationDetailsCard(
             indicatorColor = colors.bright,
         )
 
-        AnimatedVisibility(visible = location != null) {
-            LocationDetails(location)
+        val visible = remember(status, location) {
+            status is TrackingStatus.Idle || location != null
         }
+        LaunchedEffect(location) {
+            Logger.e { "Location: $location" }
+        }
+        AnimatedVisibility(visible = visible) {
+            val padding by animateDpAsState(if (!visible) 0.dp else 16.dp)
+            val contentModifier = Modifier.padding(top = padding)
+
+            if (location == null) {
+                StartTrackingContent(onClick = startTracking)
+            } else {
+                LocationDetails(location, contentModifier)
+            }
+        }
+    }
+}
+
+@Composable
+private fun StartTrackingContent(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Button(
+            text = Res.string.location_get.get(),
+            onClick = onClick,
+            variant = ButtonVariant.SecondaryElevated,
+            modifier = Modifier.padding(top = 16.dp),
+        )
     }
 }
 
@@ -62,10 +103,9 @@ private fun LocationDetails(
     location: Location?,
     modifier: Modifier = Modifier,
 ) {
-    val padding by animateDpAsState(if (location == null) 0.dp else 16.dp)
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(top = padding),
+        modifier = modifier,
     ) {
         Icon(icon = AppIcons.Lucide.MapPinned)
 
@@ -80,12 +120,12 @@ private fun LocationDetails(
             ) {
                 LocationValueRow(
                     label = Res.string.location_latitude,
-                    value = location?.latitude.toString(),
+                    value = location?.roundedLatitude,
                 )
 
                 LocationValueRow(
                     label = Res.string.location_longitude,
-                    value = location?.longitude.toString(),
+                    value = location?.roundedLongitude,
                 )
 
                 AnimatedVisibility(visible = location?.isDefaultName == false) {
@@ -107,7 +147,7 @@ private fun LocationValueRow(
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-            text = "${label.get()}: ${value ?: "N/A"}",
+            text = "${label.get()}: ${value ?: Res.string.not_applicable.get()}",
             modifier = Modifier.weight(1f),
         )
 

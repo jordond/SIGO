@@ -5,8 +5,10 @@ import app.sigot.core.platform.LocationManager
 import app.sigot.core.platform.createGeocoder
 import app.sigot.core.platform.createGeolocator
 import app.sigot.core.platform.isDebug
+import app.sigot.core.platform.locationPermissionController
 import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geolocation.Geolocator
+import dev.jordond.compass.permissions.LocationPermissionController
 import dev.jordond.connectivity.Connectivity
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -66,6 +68,7 @@ public fun platformModule(): Module =
 
         single<Geocoder> { createGeocoder() }
         single<Geolocator> { createGeolocator() }
+        single<LocationPermissionController> { locationPermissionController() }
         factoryOf(::DefaultLocationManager) bind LocationManager::class
     }
 
