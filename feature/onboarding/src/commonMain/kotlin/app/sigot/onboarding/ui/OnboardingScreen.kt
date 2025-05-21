@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -32,9 +32,12 @@ import app.sigot.core.resources.Res
 import app.sigot.core.resources.back
 import app.sigot.core.resources.done
 import app.sigot.core.resources.get_started
+import app.sigot.core.resources.location_warning_dialog_text
 import app.sigot.core.resources.next
+import app.sigot.core.resources.warning
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.asContent
+import app.sigot.core.ui.components.AlertDialog
 import app.sigot.core.ui.components.Button
 import app.sigot.core.ui.components.ButtonVariant
 import app.sigot.core.ui.components.HorizontalDivider
@@ -53,6 +56,7 @@ import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.ArrowLeft
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
+import app.sigot.onboarding.ui.OnboardingModel.Event
 import app.sigot.onboarding.ui.location.LocationScreen
 import app.sigot.onboarding.ui.navigation.OnboardingDestination
 import app.sigot.onboarding.ui.navigation.OnboardingNavHost
@@ -60,48 +64,53 @@ import app.sigot.onboarding.ui.preferences.PreferencesScreen
 import app.sigot.onboarding.ui.summary.SummaryScreen
 import app.sigot.onboarding.ui.units.UnitsScreen
 import app.sigot.onboarding.ui.welcome.WelcomeScreen
+import dev.stateholder.extensions.HandleEvents
+import dev.stateholder.extensions.collectAsState
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-private val destinations = listOfNotNull(
-    OnboardingDestination.Welcome,
-    OnboardingDestination.Units,
-    OnboardingDestination.Preferences,
-    OnboardingDestination.Location,
-    OnboardingDestination.Summary,
-)
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun OnboardingScreen(
     parentNavController: NavHostController,
     onFinish: () -> Unit,
+    model: OnboardingModel = koinViewModel(),
 ) {
-    val snackbarProvider = rememberSnackbarProvider()
-
     val navController = rememberNavController()
     val currentEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = remember(currentEntry) {
-        destinations.firstOrNull { destination ->
-            currentEntry?.destination?.hasRoute(destination::class) == true
-        } ?: OnboardingDestination.Welcome
+    LaunchedEffect(currentEntry) {
+        model.updateDestination(currentEntry)
     }
 
-    OnboardingScreen(
-        currentDestination = currentDestination,
-        onNext = {
-            val index = destinations.indexOf(currentDestination)
-            if (index == destinations.lastIndex) {
-                onFinish()
-            } else if (index != -1) {
-                navController.navigate(destinations[index + 1])
+    val state by model.collectAsState()
+    HandleEvents(model) { event ->
+        when (event) {
+            is Event.Finish -> onFinish
+            is Event.ToScreen -> navController.navigate(event.destination)
+        }
+    }
+
+    val snackbarProvider = rememberSnackbarProvider()
+    Box {
+        OnboardingScreen(
+            currentDestination = state.currentDestination,
+            onNext = model::onClick,
+            onBack = navController::popBackStack,
+            snackbarHostState = snackbarProvider.hostState,
+        ) {
+            CompositionLocalProvider(LocalSnackbarProvider provides snackbarProvider) {
+                OnboardingNavHost(
+                    navController = navController,
+                    parentNavController = parentNavController,
+                )
             }
-        },
-        onBack = navController::popBackStack,
-        snackbarHostState = snackbarProvider.hostState,
-    ) {
-        CompositionLocalProvider(LocalSnackbarProvider provides snackbarProvider) {
-            OnboardingNavHost(
-                navController = navController,
-                parentNavController = parentNavController,
+        }
+
+        if (state.showLocationWarning) {
+            AlertDialog(
+                title = Res.string.warning.get(),
+                text = Res.string.location_warning_dialog_text.get(),
+                onDismissRequest = { model.confirmLocationDialog(false) },
+                onConfirmClick = { model.confirmLocationDialog(true) },
             )
         }
     }
