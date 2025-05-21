@@ -23,6 +23,7 @@ internal fun ForecastEntity.toModel(): Forecast =
             )
         },
         alerts = alerts.map { Alert(it.title, it.description) },
+        instant = Instant.fromEpochMilliseconds(updatedAt),
     )
 
 internal fun Forecast.toEntity(): ForecastEntity =
@@ -38,6 +39,7 @@ internal fun Forecast.toEntity(): ForecastEntity =
             )
         },
         alerts = alerts.map { AlertEntity(it.title, it.description) },
+        updatedAt = instant.toEpochMilliseconds(),
     )
 
 private fun ForecastBlockEntity.toModel(): ForecastBlock =

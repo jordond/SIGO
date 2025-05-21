@@ -1,11 +1,12 @@
 package app.sigot.location.data
 
 import app.sigot.core.domain.location.LocationRepo
-import app.sigot.core.domain.location.LocationResult
-import app.sigot.core.domain.location.LocationResult.Success
 import app.sigot.core.domain.settings.SettingsRepo
+import app.sigot.core.foundation.NowProvider
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
+import app.sigot.core.model.location.LocationResult
+import app.sigot.core.model.location.LocationResult.Success
 import app.sigot.core.platform.LocationManager
 import co.touchlab.kermit.Logger
 import dev.jordond.compass.Coordinates
@@ -21,6 +22,7 @@ import kotlinx.coroutines.withContext
 internal class DefaultLocationRepo(
     private val manager: LocationManager,
     private val settingsRepo: SettingsRepo,
+    private val nowProvider: NowProvider,
 ) : LocationRepo {
     private val logger = Logger.withTag("CompassLocationManager")
 
@@ -36,7 +38,7 @@ internal class DefaultLocationRepo(
         }
     }
 
-    override suspend fun location(resolve: Boolean): LocationResult {
+    override suspend fun location(): LocationResult {
         if (!canGeolocate()) {
             return LocationResult.NotSupported
         }
@@ -57,7 +59,7 @@ internal class DefaultLocationRepo(
 
         logger.d { "Location result: $result" }
 
-        if (resolve && result is Success && manager.isGeocoderSupported && manager.geocoder.isAvailable()) {
+        if (result is Success && manager.isGeocoderSupported && manager.geocoder.isAvailable()) {
             val place =
                 manager.geocoder
                     .reverse(result.location.coordinates())
@@ -69,7 +71,12 @@ internal class DefaultLocationRepo(
 
                 val name = place.locality ?: place.subAdministrativeArea ?: place.firstValue
                 val updated = result.location.copy(name = name)
-                settingsRepo.update { it.copy(lastLocation = updated) }
+                settingsRepo.update { state ->
+                    state.copy(
+                        lastLocation = updated,
+                        lastLocationUpdate = nowProvider.now(),
+                    )
+                }
 
                 return Success(updated)
             } else {
@@ -78,7 +85,12 @@ internal class DefaultLocationRepo(
         }
 
         if (result is Success) {
-            settingsRepo.update { it.copy(lastLocation = result.location) }
+            settingsRepo.update { state ->
+                state.copy(
+                    lastLocation = result.location,
+                    lastLocationUpdate = nowProvider.now(),
+                )
+            }
         }
 
         return result

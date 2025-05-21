@@ -1,0 +1,17 @@
+package app.sigot.core.model.location
+
+public sealed interface LocationResult {
+    public sealed interface Failed : LocationResult
+
+    public data class Success(
+        val location: Location,
+    ) : LocationResult
+
+    public data class NotAllowed(
+        val permanent: Boolean,
+    ) : Failed
+
+    public data object NotSupported : Failed
+
+    public data object Error : Failed
+}

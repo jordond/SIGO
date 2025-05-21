@@ -2,6 +2,7 @@ package app.sigot.core.model.forecast
 
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.units.Units
+import kotlinx.datetime.Instant
 
 /**
  * Represents a weather forecast.
@@ -17,4 +18,5 @@ public data class Forecast(
     val daily: List<ForecastDay>,
     val alerts: List<Alert>,
     val units: Units = Units.SI,
+    val instant: Instant,
 )

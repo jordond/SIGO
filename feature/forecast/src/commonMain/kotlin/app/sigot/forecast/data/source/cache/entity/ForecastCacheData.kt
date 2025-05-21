@@ -4,14 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class ForecastCacheData(
-    @SerialName("forecast")
-    val forecast: ForecastEntity,
-    @SerialName("created_at")
-    val createdAt: Long,
-)
-
-@Serializable
 internal data class ForecastEntity(
     @SerialName("location_lat")
     val locationLat: Double,
@@ -25,6 +17,8 @@ internal data class ForecastEntity(
     val daily: List<ForecastDayEntity>,
     @SerialName("alerts")
     val alerts: List<AlertEntity>,
+    @SerialName("updated_at")
+    val updatedAt: Long,
 )
 
 @Serializable

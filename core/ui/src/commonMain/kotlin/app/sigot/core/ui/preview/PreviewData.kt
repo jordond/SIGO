@@ -8,7 +8,17 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
+import app.sigot.core.model.forecast.Alert
+import app.sigot.core.model.forecast.Forecast
+import app.sigot.core.model.forecast.ForecastBlock
+import app.sigot.core.model.forecast.ForecastDay
+import app.sigot.core.model.forecast.Precipitation
+import app.sigot.core.model.forecast.SevereWeatherRisk
+import app.sigot.core.model.forecast.Temperature
+import app.sigot.core.model.forecast.Wind
 import app.sigot.core.model.location.Location
+import app.sigot.core.model.units.Units
+import app.sigot.core.model.units.kelvin
 import dev.jordond.compass.Coordinates
 import kotlinx.datetime.Clock
 import dev.jordond.compass.Location as CompassLocation
@@ -31,6 +41,40 @@ public object PreviewData {
         altitude = null,
         timestampMillis = Clock.System.now().toEpochMilliseconds(),
     )
+
+    public val sunny: ForecastBlock = ForecastBlock(
+        instant = Clock.System.now(),
+        humidity = 20.0,
+        cloudCoverPercent = 0,
+        temperature = Temperature(
+            value = 20.0.kelvin,
+            feelsLike = 25.0.kelvin,
+            min = 10.0.kelvin,
+            max = 30.0.kelvin,
+        ),
+        precipitation = Precipitation(0.0, 0, emptySet()),
+        wind = Wind(15.0, 15.0, 90.0, 15.0, 15.0, 15.0),
+        pressure = 10.0,
+        uvIndex = 5,
+        visibility = 20.0,
+        severeWeatherRisk = SevereWeatherRisk.None,
+    )
+
+    public fun create(
+        current: ForecastBlock = sunny,
+        daily: List<ForecastDay> = emptyList(),
+        alerts: List<Alert> = emptyList(),
+        location: Location = this.location,
+        units: Units = Units.Metric,
+    ): Forecast =
+        Forecast(
+            location = location,
+            current = current,
+            daily = daily,
+            alerts = alerts,
+            units = units,
+            instant = Clock.System.now(),
+        )
 }
 
 internal val PreviewIcon: ImageVector

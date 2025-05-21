@@ -3,11 +3,11 @@ package app.sigot.onboarding.ui.location
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
 import app.sigot.core.domain.location.LocationRepo
-import app.sigot.core.domain.location.LocationResult
 import app.sigot.core.domain.settings.SettingsRepo
 import app.sigot.core.foundation.ktx.ensureExecutionTime
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
+import app.sigot.core.model.location.LocationResult
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.location_geolocation_error
 import app.sigot.onboarding.ui.location.LocationModel.Event
@@ -49,7 +49,7 @@ internal class LocationModel(
         locationJob = viewModelScope.launch {
             updateState { it.copy(loading = true, locationResult = null) }
             val result = ensureExecutionTime(ENSURED_DURATION) {
-                locationRepo.location(resolve = true)
+                locationRepo.location()
             }
 
             if (result is LocationResult.Error) {

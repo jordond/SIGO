@@ -4,28 +4,28 @@ import app.sigot.core.foundation.NowProvider
 import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.platform.store.Store
 import app.sigot.forecast.data.source.ForecastCache
-import app.sigot.forecast.data.source.cache.entity.ForecastCacheData
+import app.sigot.forecast.data.source.cache.entity.ForecastEntity
 import app.sigot.forecast.data.source.cache.entity.toEntity
 import app.sigot.forecast.data.source.cache.entity.toModel
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.minutes
 
 internal class StoreForecastCache(
-    private val store: Store<ForecastCacheData>,
+    private val store: Store<ForecastEntity>,
     private val nowProvider: NowProvider,
 ) : ForecastCache {
     override suspend fun get(): Forecast? {
         val saved = store.get() ?: return null
-        val elapsed = nowProvider.durationFromNow(Instant.fromEpochMilliseconds(saved.createdAt))
+        val elapsed = nowProvider.durationFromNow(Instant.fromEpochMilliseconds(saved.updatedAt))
         if (elapsed > DEFAULT_EXPIRY_MINUTES) {
             return null
         }
-        return saved.forecast.toModel()
+        return saved.toModel()
     }
 
     override suspend fun save(forecast: Forecast) {
         val entity = forecast.toEntity()
-        store.set(ForecastCacheData(entity, nowProvider.now().toEpochMilliseconds()))
+        store.set(entity)
     }
 
     override suspend fun clear() {

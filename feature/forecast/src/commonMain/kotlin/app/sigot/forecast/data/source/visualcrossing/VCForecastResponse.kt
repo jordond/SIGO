@@ -1,5 +1,6 @@
 package app.sigot.forecast.data.source.visualcrossing
 
+import app.sigot.core.foundation.NowProvider
 import app.sigot.core.model.forecast.Alert
 import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.forecast.ForecastBlock
@@ -186,7 +187,7 @@ internal data class VCAlert(
     val description: String,
 )
 
-internal fun VCForecastResponse.toModel(): Forecast =
+internal fun VCForecastResponse.toModel(nowProvider: NowProvider): Forecast =
     Forecast(
         location = Location(latitude = latitude, longitude = longitude, name = address),
         current = currentConditions.toModel(),
@@ -195,6 +196,7 @@ internal fun VCForecastResponse.toModel(): Forecast =
             ForecastDay(block = dayBlock.toModel(), hours = hours)
         },
         alerts = alerts.map { alert -> Alert(title = alert.event, description = alert.description) },
+        instant = nowProvider.now(),
     )
 
 private fun VCForecastBlock.toModel(): ForecastBlock =

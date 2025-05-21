@@ -13,6 +13,7 @@ public class Settings(
     public val themeMode: ThemeMode = ThemeMode.System,
     public val hasCompletedOnboarding: Boolean = false,
     public val lastLocation: Location? = null,
+    public val lastLocationUpdate: Instant? = null,
     public val preferences: Preferences = Preferences.default,
     public val enableHaptics: Boolean = true,
     public val internalSettings: InternalSettings = InternalSettings(),
@@ -49,6 +50,7 @@ public class Settings(
         themeMode: ThemeMode = this.themeMode,
         hasCompletedOnboarding: Boolean = this.hasCompletedOnboarding,
         lastLocation: Location? = this.lastLocation,
+        lastLocationUpdate: Instant? = this.lastLocationUpdate,
         enableHaptics: Boolean = this.enableHaptics,
         internalSettings: InternalSettings = this.internalSettings,
         loaded: Boolean = this.loaded,
@@ -58,6 +60,7 @@ public class Settings(
             themeMode = themeMode,
             hasCompletedOnboarding = hasCompletedOnboarding,
             lastLocation = lastLocation,
+            lastLocationUpdate = lastLocationUpdate,
             enableHaptics = enableHaptics,
             internalSettings = internalSettings,
             loaded = loaded,
@@ -68,6 +71,7 @@ public class Settings(
         themeMode: ThemeMode = this.themeMode,
         hasCompletedOnboarding: Boolean = this.hasCompletedOnboarding,
         lastLocation: Location? = this.lastLocation,
+        lastLocationUpdate: Instant? = this.lastLocationUpdate,
         preferences: Preferences = this.preferences,
         enableHaptics: Boolean = this.enableHaptics,
         internalSettings: InternalSettings = this.internalSettings,
@@ -78,6 +82,7 @@ public class Settings(
             themeMode = themeMode,
             hasCompletedOnboarding = hasCompletedOnboarding,
             lastLocation = lastLocation,
+            lastLocationUpdate = lastLocationUpdate,
             preferences = preferences,
             enableHaptics = enableHaptics,
             internalSettings = internalSettings,
@@ -87,8 +92,8 @@ public class Settings(
     override fun toString(): String =
         "Settings(firstLaunch=$firstLaunch, themeMode=$themeMode, " +
             "hasCompletedOnboarding=$hasCompletedOnboarding, lastLocation=$lastLocation, " +
-            "preferences=$preferences, enableHaptics=$enableHaptics, internalSettings=$internalSettings, " +
-            "loaded=$loaded)"
+            "lastLocationUpdate=$lastLocationUpdate, preferences=$preferences, " +
+            "enableHaptics=$enableHaptics, internalSettings=$internalSettings, loaded=$loaded)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -100,6 +105,7 @@ public class Settings(
         if (themeMode != other.themeMode) return false
         if (hasCompletedOnboarding != other.hasCompletedOnboarding) return false
         if (lastLocation != other.lastLocation) return false
+        if (lastLocationUpdate != other.lastLocationUpdate) return false
         if (preferences != other.preferences) return false
         if (enableHaptics != other.enableHaptics) return false
         if (internalSettings != other.internalSettings) return false
@@ -113,6 +119,7 @@ public class Settings(
         result = 31 * result + themeMode.hashCode()
         result = 31 * result + hasCompletedOnboarding.hashCode()
         result = 31 * result + (lastLocation?.hashCode() ?: 0)
+        result = 31 * result + (lastLocationUpdate?.hashCode() ?: 0)
         result = 31 * result + preferences.hashCode()
         result = 31 * result + enableHaptics.hashCode()
         result = 31 * result + internalSettings.hashCode()

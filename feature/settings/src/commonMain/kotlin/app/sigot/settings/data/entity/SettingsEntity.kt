@@ -16,6 +16,8 @@ internal data class SettingsEntity(
     val hasCompletedOnboarding: Boolean,
     @SerialName("last_location")
     val lastLocation: LocationEntity? = null,
+    @SerialName("last_location_update")
+    val lastLocationUpdate: Long? = null,
     @SerialName("preferences")
     val preferences: PreferencesEntity,
     @SerialName("enable_haptics")
@@ -31,6 +33,7 @@ internal fun SettingsEntity.toModel() =
         hasCompletedOnboarding = hasCompletedOnboarding,
         preferences = preferences.toModel(),
         lastLocation = lastLocation?.toModel(),
+        lastLocationUpdate = lastLocationUpdate?.let { Instant.fromEpochMilliseconds(it) },
         enableHaptics = enableHaptics,
         internalSettings = internalSettings.toModel(),
         loaded = true,
@@ -43,6 +46,7 @@ internal fun Settings.toEntity() =
         hasCompletedOnboarding = hasCompletedOnboarding,
         preferences = preferences.toEntity(),
         lastLocation = lastLocation?.toEntity(),
+        lastLocationUpdate = lastLocationUpdate?.toEpochMilliseconds(),
         enableHaptics = enableHaptics,
         internalSettings = internalSettings.toEntity(),
     )
