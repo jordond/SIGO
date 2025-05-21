@@ -2,7 +2,7 @@ package app.sigot.cli.di
 
 import app.sigot.core.foundation.di.foundationModule
 import app.sigot.core.platform.di.platformModule
-import app.sigot.forecast.data.forecastCliModule
+import app.sigot.forecast.forecastCliModule
 import org.koin.core.Koin
 import org.koin.core.context.startKoin
 
