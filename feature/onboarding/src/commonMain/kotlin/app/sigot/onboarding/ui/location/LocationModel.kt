@@ -3,18 +3,15 @@ package app.sigot.onboarding.ui.location
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
 import app.sigot.core.domain.location.LocationRepo
+import app.sigot.core.domain.location.LocationResult
 import app.sigot.core.domain.settings.SettingsRepo
+import app.sigot.core.foundation.ktx.ensureExecutionTime
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.location_geolocation_error
-import app.sigot.core.resources.location_geolocation_not_found
 import app.sigot.onboarding.ui.location.LocationModel.Event
 import app.sigot.onboarding.ui.location.LocationModel.State
-import dev.jordond.compass.geolocation.GeolocatorResult
-import dev.jordond.compass.geolocation.TrackingStatus
-import dev.jordond.compass.geolocation.isPermissionDenied
-import dev.jordond.compass.geolocation.isPermissionDeniedForever
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -30,7 +27,7 @@ internal class LocationModel(
             permissionStatus = locationRepo.initialPermissionStatus(),
         ),
     ) {
-    private var trackingJob: Job? = null
+    private var locationJob: Job? = null
 
     init {
         settingsRepo.settings
@@ -46,60 +43,48 @@ internal class LocationModel(
         }
     }
 
-    fun startTracking() {
-        if (trackingJob?.isActive == true) return
+    fun getLocation() {
+        if (locationJob?.isActive == true) return
 
-        trackingJob = locationRepo.track().mergeState { state, value ->
-            if (value is TrackingStatus.Error) {
-                val message = when (value.cause) {
-                    is GeolocatorResult.GeolocationFailed -> Res.string.location_geolocation_error
-                    is GeolocatorResult.NotFound -> Res.string.location_geolocation_not_found
-                    else -> null
+        locationJob = viewModelScope.launch {
+            updateState { it.copy(loading = true, locationResult = null) }
+            val result = ensureExecutionTime(ENSURED_DURATION) {
+                locationRepo.location(resolve = true)
+            }
+
+            if (result is LocationResult.Error) {
+                emit(Event.LocationError(Res.string.location_geolocation_error))
+            }
+
+            updateState { state ->
+                val permissionStatus = if (result is LocationResult.NotAllowed) {
+                    LocationPermissionStatus.Denied(result.permanent)
+                } else {
+                    state.permissionStatus
                 }
 
-                if (message != null) {
-                    emit(Event.LocationError(message))
-                }
-            }
-            state.updateTrackingStatus(value)
-        }
-    }
-
-    override fun onCleared() {
-        trackingJob?.cancel()
-        super.onCleared()
-    }
-
-    private fun State.updateTrackingStatus(status: TrackingStatus): State {
-        val permissionStatus = when {
-            status is TrackingStatus.Error && status.cause.isPermissionDenied() -> {
-                LocationPermissionStatus.Denied(status.cause.isPermissionDeniedForever())
-            }
-            status is TrackingStatus.Tracking || status is TrackingStatus.Update -> {
-                LocationPermissionStatus.Granted
-            }
-            else -> {
-                permissionStatus
+                state.copy(loading = false, locationResult = result, permissionStatus = permissionStatus)
             }
         }
-
-        return copy(permissionStatus = permissionStatus, trackingStatus = status)
     }
 
     @Stable
     data class State(
         val permissionStatus: LocationPermissionStatus = LocationPermissionStatus.Unknown,
-        val trackingStatus: TrackingStatus = TrackingStatus.Idle,
+        val loading: Boolean = false,
+        val locationResult: LocationResult? = null,
         val canGeolocate: Boolean? = null,
         val location: Location? = null,
-    ) {
-        val isTracking: Boolean = trackingStatus.isActive
-    }
+    )
 
     sealed interface Event {
         data class LocationError(
             val error: StringResource,
         ) : Event
+    }
+
+    companion object {
+        const val ENSURED_DURATION = 3000L
     }
 }
 

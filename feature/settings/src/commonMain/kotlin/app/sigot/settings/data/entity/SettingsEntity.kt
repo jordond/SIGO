@@ -15,7 +15,7 @@ internal data class SettingsEntity(
     @SerialName("has_completed_onboarding")
     val hasCompletedOnboarding: Boolean,
     @SerialName("last_location")
-    val lastLocation: LocationEntity?,
+    val lastLocation: LocationEntity? = null,
     @SerialName("preferences")
     val preferences: PreferencesEntity,
     @SerialName("enable_haptics")
