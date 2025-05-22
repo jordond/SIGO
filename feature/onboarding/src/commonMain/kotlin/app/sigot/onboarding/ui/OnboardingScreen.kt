@@ -5,10 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -49,6 +47,7 @@ import app.sigot.core.ui.components.Surface
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.card.Card
 import app.sigot.core.ui.components.snackbar.LocalSnackbarProvider
+import app.sigot.core.ui.components.snackbar.Snackbar
 import app.sigot.core.ui.components.snackbar.SnackbarHost
 import app.sigot.core.ui.components.snackbar.SnackbarHostState
 import app.sigot.core.ui.components.snackbar.rememberSnackbarProvider
@@ -125,29 +124,24 @@ internal fun OnboardingScreen(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     content: @Composable () -> Unit,
 ) {
-    val layoutDirection = LocalLayoutDirection.current
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    start = innerPadding.calculateStartPadding(layoutDirection),
-                    end = innerPadding.calculateEndPadding(layoutDirection),
-                ).fillMaxSize(),
-        ) {
-            Surface(
-                color = AppTheme.colors.background,
-                modifier = Modifier.weight(5f),
-            ) {
-                content()
-            }
-
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        containerColor = AppTheme.colors.error,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                    )
+                },
+            )
+        },
+        bottomBar = {
             Card(
                 shape = RectangleShape,
                 border = null,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.height(130.dp),
             ) {
                 HorizontalDivider(thickness = 6.dp)
                 Row(
@@ -198,6 +192,19 @@ internal fun OnboardingScreen(
                         }
                     }
                 }
+            }
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+        ) {
+            Surface(
+                color = AppTheme.colors.background,
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                content()
             }
         }
     }

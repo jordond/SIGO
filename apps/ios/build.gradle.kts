@@ -9,13 +9,19 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platform.Ios, name = "app")
+configureMultiplatform(Platform.Ios, name = "iosApp")
 
 kotlin {
     disableExplicitApi()
+
     sourceSets {
         iosMain.dependencies {
             implementation(projects.core.app)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.firebase.kmp.config)
         }
     }
 }

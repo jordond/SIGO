@@ -2,6 +2,11 @@
 
 import androidx.compose.ui.window.ComposeUIViewController
 import app.sigot.App
+import app.sigot.di.initKoin
 import platform.UIKit.UIViewController
 
-fun MainViewController(): UIViewController = ComposeUIViewController { App() }
+@Suppress("unused")
+fun MainViewController(): UIViewController {
+    initKoin()
+    return ComposeUIViewController { App() }
+}

@@ -24,6 +24,7 @@ androidx-ui-test = "1.8.2"
 clikt = "5.0.3"
 compose-windowSizeClass = "1.8.1"
 composables = "1.1.0"
+desugar = "2.1.5"
 hotReload = "1.0.0-alpha10"
 kotlinx-collections = "0.4.0"
 kotlinx-coroutines = "1.10.2"
@@ -44,7 +45,7 @@ materialKolor = "3.0.0-beta01"
 kermit = "2.0.5"
 slf4jNop = "2.0.17"
 stateHolder = "2.0.0-rc03"
-compass = "2.2.0"
+compass = "2.3.0"
 connectivity = "2.0.2"
 lumo = "1.2.5"
 mordant = "3.0.2"
@@ -76,6 +77,7 @@ connectivity-device = { module = "dev.jordond.connectivity:connectivity-device",
 connectivity-http = { module = "dev.jordond.connectivity:connectivity-http", version.ref = "connectivity" }
 connectivity-compose-device = { module = "dev.jordond.connectivity:connectivity-compose-device", version.ref = "connectivity" }
 connectivity-compose-http = { module = "dev.jordond.connectivity:connectivity-compose-http", version.ref = "connectivity" }
+desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 filekit-coil = { module = "io.github.vinceglb:filekit-coil", version.ref = "filekit" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }

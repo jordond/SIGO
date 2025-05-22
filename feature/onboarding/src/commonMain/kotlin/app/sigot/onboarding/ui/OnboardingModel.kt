@@ -32,7 +32,8 @@ internal class OnboardingModel(
             entry?.destination?.hasRoute(destination::class) == true
         } ?: OnboardingDestination.Welcome
 
-        updateState { it.copy(currentDestination = destination) }
+        @Suppress("USELESS_CAST") // Needed for iOS for some reason
+        updateState { it.copy(currentDestination = destination as OnboardingDestination) }
     }
 
     fun onClick() {
@@ -43,7 +44,8 @@ internal class OnboardingModel(
             settingsRepo.update { it.copy(hasCompletedOnboarding = true) }
             emit(Event.Finish)
         } else if (index != -1) {
-            emitNavigation(destinations[index + 1])
+            @Suppress("USELESS_CAST") // Needed for iOS for some reason
+            emitNavigation(destinations[index + 1] as OnboardingDestination)
         }
     }
 

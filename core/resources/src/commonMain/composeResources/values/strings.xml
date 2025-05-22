@@ -156,7 +156,9 @@
     <string name="location_geolocation_supported">Geolocation is available</string>
     <string name="location_geolocation_unavailable">Geolocation not supported</string>
     <string name="location_geolocation_error">Something went wrong trying to get your location, please try again</string>
-    <string name="location_geolocation_not_found">Got an invalid response from your GPS, please try again</string>
+    <string name="location_geolocation_not_found">GPS was unable to determine a location, please try again</string>
+    <string name="location_geolocation_not_supported">Geolocation is not supported on this device</string>
+    <string name="location_geolocation_not_allowed">Location permissions are required to get location</string>
     <string name="location_permission_rationale">We need permission to access your location. We only use an approximate location, and we use this information to get the weather forecast for your area.</string>
     <string name="location_permission_open_settings_rationale">You have permanently denied this permission. You will have to enable it in the settings.</string>
     <string name="location_permission_cta_request">Request Permission</string>

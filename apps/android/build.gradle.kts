@@ -35,27 +35,42 @@ kotlin {
     }
 }
 
+dependencies {
+    coreLibraryDesugaring(libs.desugar)
+}
+
 android {
-    val secrets = Properties().apply {
-        load(File(".app/secrets/secrets.properties").inputStream())
+    val secretsFile = File(".app/secrets/secrets.properties")
+    val releaseKeyFile = project.rootDir.resolve(".app/secrets/sigot_release.key")
+
+    val secrets = Properties()
+    val hasSecrets = secretsFile.exists() && releaseKeyFile.exists()
+
+    if (hasSecrets) {
+        secrets.load(secretsFile.inputStream())
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = project.rootDir.resolve(".app/secrets/sigot_release.key")
-            storePassword = secrets["KEYSTORE_PASSWORD"] as String
-            keyAlias = secrets["KEYSTORE_KEY_ALIAS"] as String
-            keyPassword = secrets["KEYSTORE_KEY_PASSWORD"] as String
+        if (hasSecrets) {
+            create("release") {
+                storeFile = releaseKeyFile
+                storePassword = secrets["KEYSTORE_PASSWORD"] as String
+                keyAlias = secrets["KEYSTORE_KEY_ALIAS"] as String
+                keyPassword = secrets["KEYSTORE_KEY_PASSWORD"] as String
+            }
         }
     }
 
     buildTypes {
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = if (hasSecrets) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
 
-            // TODO: Minifying is currently breaking the Object detection model
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
 
             proguardFiles(
                 // Includes the default ProGuard rules files that are packaged with
@@ -65,5 +80,9 @@ android {
                 "proguard-rules.pro",
             )
         }
+    }
+
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
     }
 }
