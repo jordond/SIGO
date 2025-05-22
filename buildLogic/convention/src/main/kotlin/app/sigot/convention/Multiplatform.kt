@@ -65,7 +65,6 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
         freeCompilerArgs.add("-Xexpect-actual-classes")
         optIn.add("kotlinx.cinterop.ExperimentalForeignApi")
         optIn.add("kotlinx.coroutines.ExperimentalCoroutinesApi")
-        optIn.add("org.jetbrains.compose.resources.ExperimentalResourceApi")
     }
 
     if (platforms.contains(Platform.Android)) {
@@ -91,12 +90,18 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
     }
 
     if (platforms.contains(Platform.Ios)) {
+        if (log) {
+            println("Configuring iOS...")
+        }
         if (!cocoapods) {
             listOf(
                 iosX64(),
                 iosArm64(),
                 iosSimulatorArm64(),
             ).forEach { target ->
+                if (log) {
+                    println("Configuring iOS target: ${target.name}")
+                }
                 target.binaries.framework {
                     baseName = name
                     isStatic = true

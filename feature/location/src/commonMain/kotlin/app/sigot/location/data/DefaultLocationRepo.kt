@@ -44,27 +44,32 @@ internal class DefaultLocationRepo(
         }
 
         logger.d { "Getting location" }
-        val lastLocation = manager.geolocator
-            .lastLocation(priority)
-            .getOrNull()
-            ?.toModel()
+        val lastLocation = withContext(Dispatchers.IO) {
+            manager.geolocator
+                .lastLocation(priority)
+                .getOrNull()
+                ?.toModel()
+        }
         val result =
             if (lastLocation != null) {
                 Logger.d { "Last location found" }
                 Success(lastLocation)
             } else {
                 Logger.d { "Getting current location" }
-                manager.geolocator.current(priority).toResult()
+                withContext(Dispatchers.IO) {
+                    manager.geolocator.current(priority).toResult()
+                }
             }
 
         logger.d { "Location result: $result" }
 
         if (result is Success && manager.isGeocoderSupported && manager.geocoder.isAvailable()) {
-            val place =
+            val place = withContext(Dispatchers.IO) {
                 manager.geocoder
                     .reverse(result.location.coordinates())
                     .onFailed { error -> logger.e { "Failed to reverse geocode location: $error" } }
                     .getFirstOrNull()
+            }
 
             if (place != null && !place.isEmpty) {
                 logger.d { "Geocoding result: $place" }
@@ -111,6 +116,8 @@ internal class DefaultLocationRepo(
                 is GeolocatorResult.PermissionDenied -> {
                     LocationResult.NotAllowed(permanent = this.forever)
                 }
+                is GeolocatorResult.NotSupported -> LocationResult.NotSupported
+                is GeolocatorResult.NotFound -> LocationResult.NotFound
                 else -> {
                     logger.e { "Geolocation error: $this" }
                     LocationResult.Error

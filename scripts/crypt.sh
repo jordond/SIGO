@@ -23,6 +23,7 @@ SECRETS_DIR="$ROOT/secrets"
 DECRYPT_DIR="$ROOT/.app/secrets"
 
 GOOGLE_SERVICES_JSON_DECRYPT_PATH="$ROOT/apps/android"
+GOOGLE_SERVICES_PLIST_DECRYPT_PATH="$ROOT/apps/ios/iosApp"
 
 print_usage() {
     echo "Usage: ./sigot crypt <command> [options] [file]"
@@ -90,6 +91,12 @@ decrypt_file() {
         # Check if Android app directory exists
         if [[ ! -d "$GOOGLE_SERVICES_JSON_DECRYPT_PATH" ]]; then
             echo "Error: Android app directory '$GOOGLE_SERVICES_JSON_DECRYPT_PATH' does not exist"
+            exit 1
+        fi
+    elif [[ $filename == "GoogleService-Info.plist" ]]; then
+        output_path="$GOOGLE_SERVICES_PLIST_DECRYPT_PATH/$filename"
+        if [[ ! -d "$GOOGLE_SERVICES_PLIST_DECRYPT_PATH" ]]; then
+            echo "Error: iOS app directory '$GOOGLE_SERVICES_PLIST_DECRYPT_PATH' does not exist"
             exit 1
         fi
     else

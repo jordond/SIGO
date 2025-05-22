@@ -70,7 +70,7 @@ internal fun SnackbarHostState.snackbarProvider(scope: CoroutineScope): Snackbar
         ) {
             currentSnackbarData?.dismiss()
             scope.launch {
-                show(message, duration = duration, withDismissAction = withDismissAction)
+                hostState.show(message, duration = duration, withDismissAction = withDismissAction)
             }
         }
 

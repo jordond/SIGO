@@ -10,6 +10,9 @@ import app.sigot.core.model.location.LocationPermissionStatus
 import app.sigot.core.model.location.LocationResult
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.location_geolocation_error
+import app.sigot.core.resources.location_geolocation_not_allowed
+import app.sigot.core.resources.location_geolocation_not_found
+import app.sigot.core.resources.location_geolocation_not_supported
 import app.sigot.onboarding.ui.location.LocationModel.Event
 import app.sigot.onboarding.ui.location.LocationModel.State
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
@@ -52,8 +55,15 @@ internal class LocationModel(
                 locationRepo.location()
             }
 
-            if (result is LocationResult.Error) {
-                emit(Event.LocationError(Res.string.location_geolocation_error))
+            if (result is LocationResult.Failed) {
+                val message = when (result) {
+                    is LocationResult.Error -> Res.string.location_geolocation_error
+                    is LocationResult.NotAllowed -> Res.string.location_geolocation_not_allowed
+                    is LocationResult.NotFound -> Res.string.location_geolocation_not_found
+                    is LocationResult.NotSupported -> Res.string.location_geolocation_not_supported
+                }
+
+                emit(Event.LocationError(message))
             }
 
             updateState { state ->

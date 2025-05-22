@@ -11,6 +11,8 @@ public sealed interface LocationResult {
         val permanent: Boolean,
     ) : Failed
 
+    public data object NotFound : Failed
+
     public data object NotSupported : Failed
 
     public data object Error : Failed
