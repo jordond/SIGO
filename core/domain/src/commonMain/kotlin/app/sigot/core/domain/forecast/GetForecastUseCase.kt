@@ -2,8 +2,8 @@ package app.sigot.core.domain.forecast
 
 import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.location.Location
+import app.sigot.core.model.location.LocationResult
 import app.sigot.core.model.units.Units
-import kotlinx.coroutines.flow.Flow
 
 public interface GetForecastUseCase {
     /**
@@ -30,15 +30,14 @@ public interface GetForecastUseCase {
         units: Units? = null,
     ): Result<Forecast>
 
-    public suspend fun forecastForCurrentLocation(units: Units? = null): Result<Forecast>
-
     /**
-     * Get the forecast for the current location.
+     * Get the forecast for the current location, then convert it to the given units.
      *
-     * This will use a ticker to update the forecast for the configured interval. It will also convert
-     * the forecast to the configured units.
+     * The location is requested from the geolocation provider, but if that fails it will throw
+     * a [LocationResult.Failed] exception.
      *
-     * @return A stream of the forecast for the current location in the configured units.
+     * @param units The units to convert the forecast to.
+     * @return The forecast for the current location, then converted to the given units.
      */
-    public fun forecast(): Flow<Result<Forecast>>
+    public suspend fun forecastForCurrentLocation(units: Units? = null): Result<Forecast>
 }

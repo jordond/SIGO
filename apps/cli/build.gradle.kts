@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.core.model)
     implementation(projects.core.platform)
     implementation(projects.feature.forecast)
+    implementation(projects.feature.settings)
 
     implementation(libs.clikt)
     implementation(libs.filekit.core)
