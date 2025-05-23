@@ -174,4 +174,6 @@
     <string name="location_longitude">Longitude</string>
     <string name="location_place">Place</string>
     <string name="location_warning_dialog_text">You can continue without setting a location but the app will not be able to function properly.\n\nLocation is required in order to fetch the weather forecast, you can set your location later.</string>
+
+    <string name="forecast_error_generic">Unable to get the current forecast for your location, please try again.</string>
 </resources>

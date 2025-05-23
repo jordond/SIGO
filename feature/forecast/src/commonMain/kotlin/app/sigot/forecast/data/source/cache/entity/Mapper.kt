@@ -16,7 +16,11 @@ internal fun ForecastEntity.toModel(): Forecast =
     Forecast(
         location = Location(locationLat, locationLong, locationName),
         current = current.toModel(),
-        daily = daily.map { day ->
+        today = ForecastDay(
+            block = today.block.toModel(),
+            hours = today.hours.map { it.toModel() },
+        ),
+        days = daily.map { day ->
             ForecastDay(
                 block = day.block.toModel(),
                 hours = day.hours.map { it.toModel() },
@@ -32,7 +36,11 @@ internal fun Forecast.toEntity(): ForecastEntity =
         locationLong = location.longitude,
         locationName = location.name,
         current = current.toEntity(),
-        daily = daily.map { day ->
+        today = ForecastDayEntity(
+            block = today.block.toEntity(),
+            hours = today.hours.map { it.toEntity() },
+        ),
+        daily = days.map { day ->
             ForecastDayEntity(
                 block = day.block.toEntity(),
                 hours = day.hours.map { it.toEntity() },

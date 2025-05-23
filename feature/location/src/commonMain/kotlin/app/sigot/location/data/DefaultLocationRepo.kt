@@ -1,5 +1,6 @@
 package app.sigot.location.data
 
+import app.sigot.core.config.AppConfigRepo
 import app.sigot.core.domain.location.LocationRepo
 import app.sigot.core.domain.settings.SettingsRepo
 import app.sigot.core.foundation.NowProvider
@@ -18,13 +19,18 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration
 
 internal class DefaultLocationRepo(
     private val manager: LocationManager,
     private val settingsRepo: SettingsRepo,
     private val nowProvider: NowProvider,
+    private val appConfigRepo: AppConfigRepo,
 ) : LocationRepo {
-    private val logger = Logger.withTag("CompassLocationManager")
+    private val logger = Logger.withTag("LocationRepo")
+
+    private val maxLocationAge: Duration
+        get() = appConfigRepo.value.locationCacheAge
 
     override fun hasPermission(): Boolean = manager.geolocator.hasPermission()
 
@@ -39,6 +45,19 @@ internal class DefaultLocationRepo(
     }
 
     override suspend fun location(): LocationResult {
+        val (savedLocation, timestamp) =
+            settingsRepo.settings.value.run { lastLocation to lastLocationUpdate }
+
+        if (savedLocation != null && timestamp != null) {
+            val age = nowProvider.now() - timestamp
+            logger.d { "Max cache age: ${maxLocationAge.inWholeMinutes} mins" }
+            logger.d { "Cached location age: ${age.inWholeMinutes} mins" }
+            if (age < maxLocationAge) {
+                logger.d { "Using cached location" }
+                return Success(savedLocation)
+            }
+        }
+
         if (!canGeolocate()) {
             return LocationResult.NotSupported
         }

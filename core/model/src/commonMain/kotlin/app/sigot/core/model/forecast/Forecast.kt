@@ -9,13 +9,15 @@ import kotlinx.datetime.Instant
  *
  * @property location The location for which the forecast is provided.
  * @property current The current weather conditions.
- * @property daily A list of daily forecasts.
+ * @property today The forecast for today.
+ * @property days A list of daily forecasts starting the day after [instant].
  * @property alerts A list of weather alerts.
  */
 public data class Forecast(
     val location: Location,
     val current: ForecastBlock,
-    val daily: List<ForecastDay>,
+    val today: ForecastDay,
+    val days: List<ForecastDay>,
     val alerts: List<Alert>,
     val units: Units = Units.SI,
     val instant: Instant,

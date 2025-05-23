@@ -5,6 +5,9 @@ import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 /**
  * Ensure that a coroutine takes at least [timeInMillis] milliseconds to execute.
@@ -107,3 +110,6 @@ public fun Throwable.checkCancellation() {
 
 public val Job?.active: Boolean
     get() = this != null && this.isActive
+
+public inline fun <T, R> Flow<T>.mapDistinct(crossinline transform: suspend (value: T) -> R): Flow<R> =
+    map(transform).distinctUntilChanged()

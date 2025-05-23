@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import app.sigot.core.model.location.Location
 import app.sigot.core.ui.components.Scaffold
 import app.sigot.core.ui.components.Text
+import app.sigot.core.ui.preview.AppPreview
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -29,5 +31,15 @@ internal fun ForecastHomeScreen(
         ) {
             Text("Forecast home")
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ForecastHomeScreenPreview() {
+    AppPreview {
+        ForecastHomeScreen(
+            location = null,
+        )
     }
 }

@@ -1,6 +1,9 @@
 package app.sigot.forecast
 
 import app.sigot.core.domain.forecast.ForecastRepo
+import app.sigot.core.domain.forecast.GetForecastUseCase
+import app.sigot.core.domain.forecast.GetScoreUseCase
+import app.sigot.core.domain.forecast.ScoreCalculator
 import app.sigot.core.foundation.analytics.AnalyticsLogger
 import app.sigot.core.platform.store.NoopStore
 import app.sigot.core.platform.store.Store
@@ -13,7 +16,8 @@ import app.sigot.forecast.data.source.visualcrossing.DefaultVisualCrossingApi
 import app.sigot.forecast.data.source.visualcrossing.VisualCrossingApi
 import app.sigot.forecast.data.source.visualcrossing.VisualCrossingForecastSource
 import app.sigot.forecast.domain.DefaultGetForecastUseCase
-import app.sigot.forecast.domain.GetForecastUseCase
+import app.sigot.forecast.domain.DefaultGetScoreUseCast
+import app.sigot.forecast.domain.DefaultScoreCalculator
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -33,6 +37,7 @@ public fun forecastAppModule(): Module =
         single {
             StoreForecastCache(
                 store = Store.storeOf("forecast_cache.json", Store.Type.Cache),
+                appConfigRepo = get(),
                 nowProvider = get(),
             )
         } bind ForecastCache::class
@@ -40,16 +45,18 @@ public fun forecastAppModule(): Module =
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
         singleOf(::DefaultForecastRepo) bind ForecastRepo::class
-
+        factoryOf(::DefaultScoreCalculator) bind ScoreCalculator::class
         factoryOf(::DefaultGetForecastUseCase) bind GetForecastUseCase::class
+        factoryOf(::DefaultGetScoreUseCast) bind GetScoreUseCase::class
     }
 
 public fun forecastCliModule(): Module =
     module {
         factory<QueryCostLogger> { QueryCostLogger {} }
-        single { StoreForecastCache(store = NoopStore(), nowProvider = get()) } bind ForecastCache::class
+        single { StoreForecastCache(store = NoopStore(), get(), get()) } bind ForecastCache::class
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
         singleOf(::DefaultForecastRepo) bind ForecastRepo::class
         factoryOf(::DefaultGetForecastUseCase) bind GetForecastUseCase::class
+        factoryOf(::DefaultGetScoreUseCast) bind GetScoreUseCase::class
     }

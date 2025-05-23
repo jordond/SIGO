@@ -13,6 +13,8 @@ internal data class ForecastEntity(
     val locationName: String,
     @SerialName("current")
     val current: ForecastBlockEntity,
+    @SerialName("today")
+    val today: ForecastDayEntity,
     @SerialName("daily")
     val daily: List<ForecastDayEntity>,
     @SerialName("alerts")
