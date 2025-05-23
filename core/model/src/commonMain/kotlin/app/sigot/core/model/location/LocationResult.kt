@@ -1,7 +1,9 @@
 package app.sigot.core.model.location
 
 public sealed interface LocationResult {
-    public sealed interface Failed : LocationResult
+    public sealed class Failed :
+        Throwable(),
+        LocationResult
 
     public data class Success(
         val location: Location,
@@ -9,11 +11,11 @@ public sealed interface LocationResult {
 
     public data class NotAllowed(
         val permanent: Boolean,
-    ) : Failed
+    ) : Failed()
 
-    public data object NotFound : Failed
+    public data object NotFound : Failed()
 
-    public data object NotSupported : Failed
+    public data object NotSupported : Failed()
 
-    public data object Error : Failed
+    public data object Error : Failed()
 }

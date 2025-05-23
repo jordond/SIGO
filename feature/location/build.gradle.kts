@@ -15,9 +15,10 @@ configureMultiplatform(Platforms.Compose, name = "location")
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.core.model)
+            implementation(projects.core.config)
             implementation(projects.core.domain)
             implementation(projects.core.foundation)
+            implementation(projects.core.model)
             implementation(projects.core.platform)
             implementation(projects.core.resources)
             implementation(projects.core.ui)

@@ -187,17 +187,34 @@ internal data class VCAlert(
     val description: String,
 )
 
-internal fun VCForecastResponse.toModel(nowProvider: NowProvider): Forecast =
-    Forecast(
+internal fun VCForecastResponse.toModel(
+    nowProvider: NowProvider,
+    maxDays: Int,
+): Forecast {
+    val todayBlock = days.firstOrNull()
+        ?: error("There was no forecast for today!")
+
+    val today = ForecastDay(
+        block = todayBlock.toModel(),
+        hours = todayBlock.hours.toModels(),
+    )
+
+    val days = days.drop(1).take(maxDays).map { dayBlock ->
+        val hours = dayBlock.hours.toModels()
+        ForecastDay(block = dayBlock.toModel(), hours = hours)
+    }
+
+    return Forecast(
         location = Location(latitude = latitude, longitude = longitude, name = address),
         current = currentConditions.toModel(),
-        daily = days.map { dayBlock ->
-            val hours = dayBlock.hours?.map { hourBlock -> hourBlock.toModel() } ?: emptyList()
-            ForecastDay(block = dayBlock.toModel(), hours = hours)
-        },
+        today = today,
+        days = days,
         alerts = alerts.map { alert -> Alert(title = alert.event, description = alert.description) },
         instant = nowProvider.now(),
     )
+}
+
+private fun List<VCForecastBlock>?.toModels(): List<ForecastBlock> = this?.map { it.toModel() } ?: emptyList()
 
 private fun VCForecastBlock.toModel(): ForecastBlock =
     ForecastBlock(

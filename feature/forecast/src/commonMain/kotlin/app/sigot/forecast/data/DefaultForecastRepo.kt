@@ -1,6 +1,7 @@
 package app.sigot.forecast.data
 
 import app.sigot.core.domain.forecast.ForecastRepo
+import app.sigot.core.foundation.NowProvider
 import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.location.Location
 import app.sigot.forecast.data.source.ForecastCache
@@ -12,6 +13,7 @@ import kotlin.coroutines.cancellation.CancellationException
 internal class DefaultForecastRepo(
     private val cache: ForecastCache,
     private val source: ForecastSource,
+    private val nowProvider: NowProvider,
 ) : ForecastRepo {
     override suspend fun forecastFor(
         location: Location,
@@ -20,7 +22,7 @@ internal class DefaultForecastRepo(
         if (!force) {
             val cached = withContext(Dispatchers.Default) { cache.get() }
             if (cached != null && cached.location == location) {
-                return Result.success(cached)
+                return Result.success(cached.copy(instant = nowProvider.now()))
             }
         }
 

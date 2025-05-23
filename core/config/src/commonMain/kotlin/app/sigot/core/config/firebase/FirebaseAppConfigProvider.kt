@@ -2,6 +2,7 @@ package app.sigot.core.config.firebase
 
 import app.sigot.core.config.AppConfigProvider
 import app.sigot.core.config.model.AppConfig
+import app.sigot.core.config.model.PrecipitationConfig
 import app.sigot.core.platform.isDebug
 import co.touchlab.kermit.Logger
 import dev.gitlive.firebase.Firebase
@@ -64,6 +65,15 @@ internal class FirebaseAppConfigProvider(
             locationCacheAge = get(KEY_LOCATION_CACHE_AGE_IN_MINUTES)?.asInt(),
             maxCacheAge = get(KEY_MAX_CACHE_AGE_IN_MINUTES)?.asInt(),
             minimumExecutionDelay = get(KEY_MINIMUM_EXECUTION_DELAY_IN_SECONDS)?.asInt(),
+            scoreNearPercent = get(KEY_SCORE_NEAR_PERCENT)?.asDouble()?.toFloat(),
+            scoreMaxNearReasons = get(KEY_SCORE_MAX_NEAR_REASONS)?.asInt(),
+            maxForecastDays = get(KEY_MAX_FORECAST_DAYS)?.asInt(),
+            precipitation = PrecipitationConfig(
+                maxChance = get(KEY_PRECIPITATION_MAX_CHANCE)?.asDouble()?.toFloat(),
+                lowAmountMm = get(KEY_PRECIPITATION_LOW_AMOUNT_MM)?.asInt(),
+                moderateAmountMm = get(KEY_PRECIPITATION_MODERATE_AMOUNT_MM)?.asInt(),
+                highAmountMm = get(KEY_PRECIPITATION_HIGH_AMOUNT_MM)?.asInt(),
+            ),
         )
 
     companion object {
@@ -73,6 +83,15 @@ internal class FirebaseAppConfigProvider(
         private const val KEY_LOCATION_CACHE_AGE_IN_MINUTES = "location_cache_age_in_minutes"
         private const val KEY_MAX_CACHE_AGE_IN_MINUTES = "max_cache_age_in_minutes"
         private const val KEY_MINIMUM_EXECUTION_DELAY_IN_SECONDS = "minimum_execution_delay_in_seconds"
+        private const val KEY_SCORE_NEAR_PERCENT = "score_near_percent"
+        private const val KEY_SCORE_MAX_NEAR_REASONS = "score_max_near_reasons"
+        private const val KEY_MAX_FORECAST_DAYS = "max_forecast_days"
+
+        // Precipitation
+        private const val KEY_PRECIPITATION_MAX_CHANCE = "precipitation_max_chance"
+        private const val KEY_PRECIPITATION_LOW_AMOUNT_MM = "precipitation_low_amount_mm"
+        private const val KEY_PRECIPITATION_MODERATE_AMOUNT_MM = "precipitation_moderate_amount_mm"
+        private const val KEY_PRECIPITATION_HIGH_AMOUNT_MM = "precipitation_high_amount_mm"
     }
 }
 

@@ -70,7 +70,11 @@ public object PreviewData {
         Forecast(
             location = location,
             current = current,
-            daily = daily,
+            today = ForecastDay(
+                block = current,
+                hours = daily.firstOrNull()?.hours ?: emptyList(),
+            ),
+            days = daily,
             alerts = alerts,
             units = units,
             instant = Clock.System.now(),

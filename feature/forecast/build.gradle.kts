@@ -15,6 +15,7 @@ configureMultiplatform(Platforms.All, name = "forecast")
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.config)
             implementation(projects.core.model)
             implementation(projects.core.domain)
             implementation(projects.core.foundation)
