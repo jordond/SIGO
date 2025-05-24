@@ -19,16 +19,34 @@ public val LocalSnackbarProvider: ProvidableCompositionLocal<SnackbarProvider> =
                 message: String,
                 duration: SnackbarDuration,
                 withDismissAction: Boolean,
+                type: SnackbarType,
             ) {
-                // No-op
+                // no -op
             }
 
             override fun show(
                 message: StringResource,
                 duration: SnackbarDuration,
                 withDismissAction: Boolean,
+                type: SnackbarType,
             ) {
-                // No-op
+                // no -op
+            }
+
+            override fun error(
+                message: String,
+                duration: SnackbarDuration,
+                withDismissAction: Boolean,
+            ) {
+                // no -op
+            }
+
+            override fun error(
+                message: StringResource,
+                duration: SnackbarDuration,
+                withDismissAction: Boolean,
+            ) {
+                // no -op
             }
         }
     }
@@ -40,9 +58,23 @@ public interface SnackbarProvider {
         message: String,
         duration: SnackbarDuration = SnackbarDuration.Long,
         withDismissAction: Boolean = true,
+        type: SnackbarType = SnackbarType.Primary,
     )
 
     public fun show(
+        message: StringResource,
+        duration: SnackbarDuration = SnackbarDuration.Long,
+        withDismissAction: Boolean = true,
+        type: SnackbarType = SnackbarType.Primary,
+    )
+
+    public fun error(
+        message: String,
+        duration: SnackbarDuration = SnackbarDuration.Long,
+        withDismissAction: Boolean = true,
+    )
+
+    public fun error(
         message: StringResource,
         duration: SnackbarDuration = SnackbarDuration.Long,
         withDismissAction: Boolean = true,
@@ -67,10 +99,16 @@ internal fun SnackbarHostState.snackbarProvider(scope: CoroutineScope): Snackbar
             message: String,
             duration: SnackbarDuration,
             withDismissAction: Boolean,
+            type: SnackbarType,
         ) {
             currentSnackbarData?.dismiss()
             scope.launch {
-                hostState.show(message, duration = duration, withDismissAction = withDismissAction)
+                hostState.show(
+                    message = message,
+                    duration = duration,
+                    withDismissAction = withDismissAction,
+                    type = type,
+                )
             }
         }
 
@@ -78,7 +116,24 @@ internal fun SnackbarHostState.snackbarProvider(scope: CoroutineScope): Snackbar
             message: StringResource,
             duration: SnackbarDuration,
             withDismissAction: Boolean,
+            type: SnackbarType,
         ) {
-            scope.launch { show(getString(message), duration, withDismissAction) }
+            scope.launch { show(getString(message), duration, withDismissAction, type) }
+        }
+
+        override fun error(
+            message: String,
+            duration: SnackbarDuration,
+            withDismissAction: Boolean,
+        ) {
+            show(message, duration, withDismissAction, SnackbarType.Error)
+        }
+
+        override fun error(
+            message: StringResource,
+            duration: SnackbarDuration,
+            withDismissAction: Boolean,
+        ) {
+            show(message, duration, withDismissAction, SnackbarType.Error)
         }
     }

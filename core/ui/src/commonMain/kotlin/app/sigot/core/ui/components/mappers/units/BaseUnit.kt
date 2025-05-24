@@ -1,4 +1,4 @@
-package app.sigot.core.ui.units
+package app.sigot.core.ui.components.mappers.units
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -24,10 +24,6 @@ import app.sigot.core.resources.unit_wind_kph
 import app.sigot.core.resources.unit_wind_mph
 import app.sigot.core.resources.unit_wind_ms
 import app.sigot.core.ui.AppTheme
-import app.sigot.core.ui.BrutalColor.blue
-import app.sigot.core.ui.BrutalColor.green
-import app.sigot.core.ui.BrutalColor.pink
-import app.sigot.core.ui.BrutalColor.red
 import app.sigot.core.ui.BrutalColors
 import app.sigot.core.ui.brutal
 import app.sigot.core.ui.icons.AppIcons

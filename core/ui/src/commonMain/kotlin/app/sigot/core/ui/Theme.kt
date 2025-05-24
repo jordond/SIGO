@@ -45,6 +45,10 @@ public val LocalWindowSizeClass: ProvidableCompositionLocal<WindowSizeClass> = c
     error("WindowSizeClass not provided")
 }
 
+public val LocalUse24HourTime: ProvidableCompositionLocal<Boolean> = compositionLocalOf {
+    false
+}
+
 @Composable
 public fun AppTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
@@ -63,6 +67,7 @@ public fun AppTheme(
             LocalSharedTransitionScope provides this,
             LocalThemeIsDark provides isDarkTheme,
             LocalPlatformIcon provides platformIcon,
+            LocalUse24HourTime provides false,
             LocalColors provides colors.animate(),
             LocalTypography provides typography,
             LocalShapes provides Shapes,

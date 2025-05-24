@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import app.sigot.core.model.ui.ThemeMode
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalHaptics
+import app.sigot.core.ui.LocalUse24HourTime
 import app.sigot.core.ui.LocalWindowSizeClass
 import app.sigot.core.ui.calculateWindowSizeClass
 import app.sigot.core.ui.rememberHaptics
@@ -32,8 +33,8 @@ internal fun AppHost(
     val state by model.collectAsState()
 
     val systemDarkMode = isSystemInDarkTheme()
-    val isDarkTheme = remember(systemDarkMode, state.themeMode) {
-        when (state.themeMode) {
+    val isDarkTheme = remember(systemDarkMode, state.settings.themeMode) {
+        when (state.settings.themeMode) {
             ThemeMode.Light -> false
             ThemeMode.Dark -> true
             ThemeMode.System -> systemDarkMode
@@ -61,6 +62,7 @@ internal fun AppHost(
                 CompositionLocalProvider(
                     LocalWindowSizeClass provides windowSizeClass,
                     LocalHaptics provides haptics,
+                    LocalUse24HourTime provides state.settings.preferences.use24HourFormat,
                 ) {
                     AppNavHost(
                         startDestination = uiState.startDestination,
