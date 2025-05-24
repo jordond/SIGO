@@ -31,8 +31,8 @@ import app.sigot.core.ui.components.Button
 import app.sigot.core.ui.components.ButtonVariant
 import app.sigot.core.ui.components.Surface
 import app.sigot.core.ui.components.Text
-import app.sigot.core.ui.components.mappers.rememberText
 import app.sigot.core.ui.ktx.get
+import app.sigot.core.ui.mappers.rememberText
 import app.sigot.core.ui.preview.AppPreview
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
