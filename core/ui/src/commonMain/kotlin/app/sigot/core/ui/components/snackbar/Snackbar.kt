@@ -52,7 +52,7 @@ public fun Snackbar(
     snackbarData: SnackbarData,
     modifier: Modifier = Modifier,
     shape: Shape = SnackbarDefaults.shape,
-    containerColor: Color = SnackbarDefaults.color,
+    containerColor: Color = snackbarData.visuals.type.containerColor(),
     contentColor: Color = contentColorFor(containerColor),
     actionColor: Color = SnackbarDefaults.actionColor,
     actionContentColor: Color = contentColorFor(actionColor),
@@ -143,6 +143,15 @@ public fun Snackbar(
         }
     }
 }
+
+@Composable
+private fun SnackbarType.containerColor(): Color =
+    when (this) {
+        SnackbarType.Primary -> AppTheme.colors.primary
+        SnackbarType.Secondary -> AppTheme.colors.secondary
+        SnackbarType.Tertiary -> AppTheme.colors.tertiary
+        SnackbarType.Error -> AppTheme.colors.error
+    }
 
 @Composable
 private fun SnackbarLayout(

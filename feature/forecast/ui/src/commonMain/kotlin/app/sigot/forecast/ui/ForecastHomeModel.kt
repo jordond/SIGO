@@ -2,12 +2,13 @@ package app.sigot.forecast.ui
 
 import androidx.lifecycle.viewModelScope
 import app.sigot.core.domain.forecast.GetForecastUseCase
-import app.sigot.core.domain.forecast.GetScoreUseCase
+import app.sigot.core.domain.forecast.ScoreCalculator
 import app.sigot.core.domain.forecast.convert
 import app.sigot.core.domain.location.LocationRepo
 import app.sigot.core.domain.settings.SettingsRepo
-import app.sigot.core.foundation.ktx.mapDistinct
-import app.sigot.core.model.forecast.Forecast
+import app.sigot.core.model.ForecastData
+import app.sigot.core.model.ForecastPeriodData
+import app.sigot.core.model.forecast.ForecastPeriod
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
 import app.sigot.core.model.location.LocationPermissionStatus.Denied
@@ -15,7 +16,6 @@ import app.sigot.core.model.location.LocationPermissionStatus.Granted
 import app.sigot.core.model.location.LocationPermissionStatus.Unknown
 import app.sigot.core.model.location.LocationResult
 import app.sigot.core.model.preferences.Preferences
-import app.sigot.core.model.score.ForecastScore
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.forecast_error_generic
 import app.sigot.core.resources.location_geolocation_error
@@ -24,8 +24,6 @@ import app.sigot.core.resources.location_geolocation_not_found
 import app.sigot.core.resources.location_geolocation_not_supported
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
@@ -34,7 +32,7 @@ internal class ForecastHomeModel(
     settingsRepo: SettingsRepo,
     locationRepo: LocationRepo,
     private val getForecastUseCase: GetForecastUseCase,
-    private val getScoresUseCase: GetScoreUseCase,
+    private val scoreCalculator: ScoreCalculator,
 ) : UiStateViewModel<ForecastHomeModel.State, ForecastHomeModel.Event>(
         State(
             location = settingsRepo.settings.value.lastLocation,
@@ -47,42 +45,45 @@ internal class ForecastHomeModel(
             .map { it.lastLocation to it.preferences }
             .distinctUntilChanged()
             .mergeState { state, (lastLocation, preferences) ->
-                state.copy(location = lastLocation, preferences = preferences)
-            }
+                val data = state.forecast?.copy(
+                    forecast = state.forecast.forecast.convert(preferences.units),
+                    score = scoreCalculator.calculate(state.forecast.forecast, preferences),
+                )
 
-        state
-            .mapDistinct { it.forecast }
-            .flatMapLatest { forecast ->
-                if (forecast == null) {
-                    flowOf(null)
-                } else {
-                    getScoresUseCase.scoreFor(forecast)
-                }
-            }.mergeState { state, value -> state.copy(score = value) }
+                state.copy(location = lastLocation, preferences = preferences, forecast = data)
+            }
 
         viewModelScope.launch { getForecast() }
     }
 
     fun forceRefresh() {
-        if (state.value.refreshing || state.value.loading) return
-
         viewModelScope.launch {
-            updateState { it.copy(refreshing = true) }
-            getForecast()
-            updateState { it.copy(refreshing = false) }
+            getForecast(isRefresh = true)
         }
     }
 
-    private suspend fun getForecast() {
-        if (state.value.loading) return
+    private suspend fun getForecast(isRefresh: Boolean = false) {
+        if (state.value.loading || state.value.refreshing) return
 
-        updateState { it.copy(loading = true) }
-        val result = getForecastUseCase
-            .forecastForCurrentLocation()
+        updateState { it.copy(loading = true, refreshing = isRefresh) }
+        val prefs = state.value.preferences
+        val forecast = getForecastUseCase
+            .forecastForCurrentLocation(prefs.units)
             .onFailure { it.handleForecastError() }
             .getOrNull()
 
-        updateState { it.copy(loading = false, forecast = result ?: it.forecast) }
+        val score = if (forecast == null) null else scoreCalculator.calculate(forecast, prefs)
+
+        updateState { state ->
+            val data =
+                if (forecast != null && score != null) ForecastData(forecast, score) else state.forecast
+
+            state.copy(
+                loading = false,
+                refreshing = false,
+                forecast = data,
+            )
+        }
     }
 
     private fun Throwable?.handleForecastError() {
@@ -107,13 +108,13 @@ internal class ForecastHomeModel(
     data class State(
         val location: Location?,
         val preferences: Preferences,
+        val period: ForecastPeriod = ForecastPeriod.Today,
         val permissionStatus: LocationPermissionStatus = Unknown,
         val loading: Boolean = false,
         val refreshing: Boolean = false,
-        val forecast: Forecast? = null,
-        val score: ForecastScore? = null,
+        val forecast: ForecastData? = null,
     ) {
-        val convertedForecast: Forecast? = forecast?.convert(preferences.units)
+        val data: ForecastPeriodData? = forecast?.forPeriod(period)
     }
 
     sealed interface Event {

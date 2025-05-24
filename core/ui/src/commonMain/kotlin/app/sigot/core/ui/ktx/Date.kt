@@ -34,8 +34,12 @@ import app.sigot.core.resources.month_may
 import app.sigot.core.resources.month_november
 import app.sigot.core.resources.month_october
 import app.sigot.core.resources.month_september
+import app.sigot.core.resources.time_am
+import app.sigot.core.resources.time_pm
+import app.sigot.core.ui.LocalUse24HourTime
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.Month
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -151,4 +155,25 @@ public fun DayOfWeek.text(): String {
 public fun DayOfWeek.textShort(): String {
     val res = remember(this) { textShort }
     return stringResource(res)
+}
+
+@Composable
+public fun LocalTime.text(use24Hours: Boolean = LocalUse24HourTime.current): String {
+    if (use24Hours) {
+        return remember(this) {
+            "${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}"
+        }
+    } else {
+        val (hour, minute, suffix) = remember(this) {
+            val hour = if (hour > 12) hour - 12 else hour
+            val minute = minute.toString().padStart(2, '0')
+            val suffix = if (hour > 11) Res.string.time_pm else Res.string.time_am
+            Triple(hour, minute, suffix)
+        }
+
+        val suffixString = suffix.get()
+        return remember(hour, minute, suffixString) {
+            "$hour:$minute $suffixString"
+        }
+    }
 }

@@ -42,11 +42,11 @@ import app.sigot.core.ui.components.autoSize
 import app.sigot.core.ui.components.card.Card
 import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.components.card.ElevatedCard
-import app.sigot.core.ui.units.colors
-import app.sigot.core.ui.units.rememberIcon
-import app.sigot.core.ui.units.rememberText
-import app.sigot.core.ui.units.rememberTitle
-import app.sigot.core.ui.units.rememberUnit
+import app.sigot.core.ui.components.mappers.units.colors
+import app.sigot.core.ui.components.mappers.units.rememberIcon
+import app.sigot.core.ui.components.mappers.units.rememberText
+import app.sigot.core.ui.components.mappers.units.rememberTitle
+import app.sigot.core.ui.components.mappers.units.rememberUnit
 import app.sigot.onboarding.ui.OnboardingScreenPreview
 import app.sigot.onboarding.ui.navigation.OnboardingDestination
 import dev.stateholder.extensions.collectAsState

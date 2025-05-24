@@ -11,6 +11,7 @@ import app.sigot.core.model.forecast.SevereWeatherRisk
 import app.sigot.core.model.forecast.Temperature
 import app.sigot.core.model.forecast.Wind
 import app.sigot.core.model.location.Location
+import co.touchlab.kermit.Logger
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -187,6 +188,8 @@ internal data class VCAlert(
     val description: String,
 )
 
+private val logger = Logger.withTag("VCForecastResponse")
+
 internal fun VCForecastResponse.toModel(
     nowProvider: NowProvider,
     maxDays: Int,
@@ -194,9 +197,31 @@ internal fun VCForecastResponse.toModel(
     val todayBlock = days.firstOrNull()
         ?: error("There was no forecast for today!")
 
+    val currentTime = currentConditions.datetime // ex: 13:30:00
+    logger.d { "Current time: $currentTime" }
+
+    // We want the next five hours from today, filter out all before and after
+    val filteredHours = todayBlock.hours?.takeIf { it.isNotEmpty() }?.let { hours ->
+        val currentHour = currentTime.split(":").first().toInt()
+
+        // Find the current hour's index and take the next 5 hours
+        val startIndex = hours
+            .indexOfFirst { hourBlock ->
+                val hourTime = hourBlock.datetime
+                    .split(":")
+                    .first()
+                    .toInt()
+                hourTime >= currentHour
+            }.takeIf { it >= 0 } ?: 0
+
+        logger.d { "Start index: $startIndex -> ${hours[startIndex]}" }
+
+        hours.subList(startIndex, minOf(startIndex + 5, hours.size))
+    } ?: emptyList()
+
     val today = ForecastDay(
         block = todayBlock.toModel(),
-        hours = todayBlock.hours.toModels(),
+        hours = filteredHours.toModels(),
     )
 
     val days = days.drop(1).take(maxDays).map { dayBlock ->

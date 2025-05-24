@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import app.sigot.core.domain.settings.SettingsRepo
 import app.sigot.core.foundation.initalize.Initializer
 import app.sigot.core.model.settings.Settings
-import app.sigot.core.model.ui.ThemeMode
 import app.sigot.ui.navigation.AppStartDestination
 import dev.stateholder.extensions.viewmodel.StateViewModel
 import kotlinx.coroutines.Dispatchers
@@ -13,33 +12,34 @@ import kotlinx.coroutines.launch
 internal class AppHostModel(
     private val initializer: Initializer,
     settingsRepo: SettingsRepo,
-) : StateViewModel<AppHostModel.State>(settingsRepo.settings.value.toState()) {
+) : StateViewModel<AppHostModel.State>(State(settingsRepo.settings.value)) {
     init {
         viewModelScope.launch(Dispatchers.Default) { initializer.initialize() }
 
-        settingsRepo.settings.mergeState { _, value ->
-            value.toState().let { newState ->
-                if (!value.loaded) {
-                    newState
+        settingsRepo.settings.mergeState { state, value ->
+            if (!value.loaded) {
+                state.copy(value)
+            } else {
+                val startDestination = if (value.hasCompletedOnboarding) {
+                    AppStartDestination.Home
                 } else {
-                    val startDestination = if (value.hasCompletedOnboarding) {
-                        AppStartDestination.Home
-                    } else {
-                        AppStartDestination.Onboarding
-                    }
-
-                    newState.copy(uiState = State.UiState.Loaded(startDestination))
+                    AppStartDestination.Onboarding
                 }
+
+                state.copy(
+                    settings = value,
+                    uiState = State.UiState.Loaded(startDestination),
+                )
             }
         }
     }
 
     data class State(
-        val themeMode: ThemeMode,
-        val settingsLoaded: Boolean = false,
+        val settings: Settings,
         val uiState: UiState = UiState.Loading,
-        val enableHaptics: Boolean = false,
     ) {
+        val enableHaptics: Boolean = settings.enableHaptics
+
         sealed interface UiState {
             data object Loading : UiState
 
@@ -49,10 +49,3 @@ internal class AppHostModel(
         }
     }
 }
-
-private fun Settings.toState(): AppHostModel.State =
-    AppHostModel.State(
-        themeMode = themeMode,
-        settingsLoaded = loaded,
-        enableHaptics = enableHaptics,
-    )

@@ -14,7 +14,10 @@ internal class DefaultGetScoreUseCast(
     private val settingsRepo: SettingsRepo,
     private val scoreCalculator: ScoreCalculator,
 ) : GetScoreUseCase {
-    override fun scoreFor(forecast: Forecast): Flow<ForecastScore> =
+    override fun scoreFor(forecast: Forecast): ForecastScore =
+        scoreCalculator.calculate(forecast, settingsRepo.settings.value.preferences)
+
+    override fun scoreForFlow(forecast: Forecast): Flow<ForecastScore> =
         flow {
             settingsRepo.settings
                 .map { it.preferences }
