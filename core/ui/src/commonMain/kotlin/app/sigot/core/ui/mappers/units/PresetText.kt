@@ -1,4 +1,4 @@
-package app.sigot.core.ui.components.mappers.units
+package app.sigot.core.ui.mappers.units
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
