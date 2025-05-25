@@ -12,6 +12,7 @@ import app.sigot.core.resources.forecast_period_tomorrow
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.ktx.text
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration.Companion.hours
@@ -27,10 +28,12 @@ public fun ForecastPeriod.rememberText(currentTime: Instant): String {
     if (this in hours) {
         val newTime = remember(this, currentTime) {
             val addHours = hours.indexOf(this) + 1
-            currentTime
+            val time = currentTime
                 .plus(addHours.hours)
                 .toLocalDateTime(TimeZone.currentSystemDefault())
                 .time
+
+            LocalTime(time.hour, 0)
         }
 
         return Res.string.forecast_period_hour.get(newTime.text())

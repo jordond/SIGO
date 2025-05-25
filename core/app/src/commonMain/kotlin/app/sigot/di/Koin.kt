@@ -8,7 +8,6 @@ import app.sigot.forecast.ui.forecastUiModule
 import app.sigot.location.locationModule
 import app.sigot.onboarding.onboardingModule
 import app.sigot.settings.settingsModule
-import app.sigot.ui.uiModule
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.koin.KermitKoinLogger
 import org.koin.core.KoinApplication
@@ -22,6 +21,7 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
         logger(KermitKoinLogger(Logger.withTag(tag = "Koin")))
 
         modules(
+            appModule(),
             // Core
             configModule(),
             foundationModule(),
@@ -32,6 +32,5 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
             locationModule(),
             onboardingModule(),
             settingsModule(),
-            uiModule(),
         )
     }

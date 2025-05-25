@@ -11,4 +11,5 @@ plugins {
     alias(libs.plugins.room).apply(false)
     alias(libs.plugins.ksp).apply(false)
     alias(libs.plugins.lumo).apply(false)
+    alias(libs.plugins.buildKonfig).apply(false)
 }

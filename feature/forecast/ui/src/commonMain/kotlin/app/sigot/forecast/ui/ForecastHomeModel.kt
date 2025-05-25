@@ -56,6 +56,10 @@ internal class ForecastHomeModel(
         viewModelScope.launch { getForecast() }
     }
 
+    fun updatePeriod(period: ForecastPeriod) {
+        updateState { it.copy(period = period) }
+    }
+
     fun forceRefresh() {
         viewModelScope.launch {
             getForecast(isRefresh = true)

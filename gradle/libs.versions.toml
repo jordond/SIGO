@@ -21,6 +21,7 @@ androidx-core = "1.16.0"
 androidx-lifecycle = "2.9.0"
 androidx-navigation = "2.9.0-beta02"
 androidx-ui-test = "1.8.2"
+buildKonfig = "0.17.1"
 clikt = "5.0.3"
 compose-windowSizeClass = "1.8.1"
 composables = "1.1.0"
@@ -168,5 +169,6 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 lumo = {id="com.nomanr.plugin.lumo", version.ref="lumo"}
+buildKonfig = {id="com.codingfeline.buildkonfig", version.ref="buildKonfig"}
 convention-multiplatform = { id = "convention.multiplatform", version = "0" }
 toolchain-version = { id = "toolchain.version", version = "0" }
