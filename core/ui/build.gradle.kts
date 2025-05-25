@@ -39,5 +39,11 @@ kotlin {
             implementation(libs.coil)
             implementation(libs.materialKolor)
         }
+
+        val skikoMain by creating {
+            dependsOn(commonMain.get())
+            nativeMain.get().dependsOn(this)
+            jvmMain.get().dependsOn(this)
+        }
     }
 }
