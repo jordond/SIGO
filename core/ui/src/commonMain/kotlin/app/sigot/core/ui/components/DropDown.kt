@@ -20,9 +20,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -56,7 +59,6 @@ import app.sigot.core.ui.icons.lucide.Check
 import app.sigot.core.ui.icons.lucide.Droplet
 import app.sigot.core.ui.icons.lucide.Share
 import app.sigot.core.ui.icons.lucide.Wind
-import app.sigot.core.ui.ktx.debugBorder
 import app.sigot.core.ui.preview.AppPreview
 import com.nomanr.composables.internal.MotionSchemeKeyTokens
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -113,7 +115,7 @@ public expect fun DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    offset: DpOffset = DpOffset(0.dp, 0.dp),
+    offset: DpOffset = DpOffset(0.dp, 12.dp),
     scrollState: ScrollState = rememberScrollState(),
     properties: PopupProperties = DefaultMenuProperties,
     shape: Shape = MenuDefaults.shape,
@@ -320,60 +322,50 @@ internal fun DropdownMenuContent(
     @Suppress("DEPRECATION")
     val transition = updateTransition(expandedState, "DropDownMenu")
     val scaleAnimationSpec = MotionSchemeKeyTokens.DefaultSpatial.value()
-    val alphaAnimationSpec = MotionSchemeKeyTokens.FastEffects.value()
     val scale by
         transition.animateFloat(transitionSpec = { scaleAnimationSpec }) { expanded ->
             if (expanded) EXPANDED_SCALE_TARGET else CLOSED_SCALE_TARGET
         }
 
-    val alpha by
-        transition.animateFloat(transitionSpec = { alphaAnimationSpec }) { expanded ->
-            if (expanded) EXPANDED_ALPHA_TARGET else CLOSED_ALPHA_TARGET
-        }
-
     val isInspecting = LocalInspectionMode.current
-    Surface(
-        modifier =
-            Modifier.graphicsLayer {
-                scaleX =
-                    if (!isInspecting) {
-                        scale
-                    } else if (expandedState.targetState) {
-                        EXPANDED_SCALE_TARGET
-                    } else {
-                        CLOSED_SCALE_TARGET
-                    }
-                scaleY =
-                    if (!isInspecting) {
-                        scale
-                    } else if (expandedState.targetState) {
-                        EXPANDED_SCALE_TARGET
-                    } else {
-                        CLOSED_SCALE_TARGET
-                    }
-                this.alpha =
-                    if (!isInspecting) {
-                        alpha
-                    } else if (expandedState.targetState) {
-                        EXPANDED_ALPHA_TARGET
-                    } else {
-                        CLOSED_ALPHA_TARGET
-                    }
-                transformOrigin = transformOriginState.value
-            },
+    BrutalContainer(
         shape = shape,
-        color = containerColor,
-        shadowElevation = elevation,
-        border = border,
+        elevation = elevation,
+        modifier = Modifier.graphicsLayer {
+            scaleX =
+                if (!isInspecting) {
+                    scale
+                } else if (expandedState.targetState) {
+                    EXPANDED_SCALE_TARGET
+                } else {
+                    CLOSED_SCALE_TARGET
+                }
+            scaleY =
+                if (!isInspecting) {
+                    scale
+                } else if (expandedState.targetState) {
+                    EXPANDED_SCALE_TARGET
+                } else {
+                    CLOSED_SCALE_TARGET
+                }
+            transformOrigin = transformOriginState.value
+        },
     ) {
-        Column(
-            modifier =
-                modifier
-                    .padding(vertical = DropdownMenuVerticalPadding)
-                    .width(IntrinsicSize.Max)
-                    .verticalScroll(scrollState),
-            content = content,
-        )
+        Surface(
+            shape = shape,
+            color = containerColor,
+            shadowElevation = elevation,
+            border = border,
+        ) {
+            Column(
+                modifier =
+                    modifier
+                        .padding(vertical = DropdownMenuVerticalPadding)
+                        .width(IntrinsicSize.Max)
+                        .verticalScroll(scrollState),
+                content = content,
+            )
+        }
     }
 }
 
@@ -489,15 +481,13 @@ internal fun calculateTransformOrigin(
 internal val MenuVerticalMargin = 48.dp
 private val MenuListItemContainerHeight = 48.dp
 private val DropdownMenuItemHorizontalPadding = 12.dp
-internal val DropdownMenuVerticalPadding = 8.dp
-private val DropdownMenuItemDefaultMinWidth = 112.dp
+internal val DropdownMenuVerticalPadding = 0.dp
+private val DropdownMenuItemDefaultMinWidth = 150.dp
 private val DropdownMenuItemDefaultMaxWidth = 280.dp
 
 // Menu open/close animation.
 internal const val EXPANDED_SCALE_TARGET = 1f
-internal const val CLOSED_SCALE_TARGET = 0.8f
-internal const val EXPANDED_ALPHA_TARGET = 1f
-internal const val CLOSED_ALPHA_TARGET = 0f
+internal const val CLOSED_SCALE_TARGET = 0f
 
 @Preview
 @Composable
@@ -507,15 +497,15 @@ private fun DropdownMenuPreview() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .debugBorder(),
+                .wrapContentSize(Alignment.TopEnd)
+                .padding(end = 24.dp),
         ) {
-            Button(onClick = { expanded = true }, modifier = Modifier.align(Alignment.TopEnd)) {
-                Text("Open menu")
+            IconButton(onClick = { expanded = true }) {
+                Icon(Icons.Default.MoreVert)
             }
-
             DropdownMenu(
                 expanded = expanded,
+                offset = DpOffset(0.dp, 10.dp),
                 onDismissRequest = { expanded = false },
             ) {
                 DropdownMenuItem(
@@ -525,6 +515,7 @@ private fun DropdownMenuPreview() {
                     },
                     onClick = { expanded = false },
                 )
+                HorizontalDivider()
 
                 DropdownMenuItem(
                     text = { Text("Item 3") },
@@ -533,6 +524,7 @@ private fun DropdownMenuPreview() {
                     },
                     onClick = { expanded = false },
                 )
+                HorizontalDivider()
 
                 DropdownMenuItem(
                     text = { Text("Item 4") },
@@ -544,6 +536,7 @@ private fun DropdownMenuPreview() {
                     },
                     onClick = { expanded = false },
                 )
+                HorizontalDivider()
 
                 DropdownMenuItem(
                     text = { Text("Item 5") },

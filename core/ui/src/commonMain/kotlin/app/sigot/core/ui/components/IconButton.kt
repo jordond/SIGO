@@ -147,6 +147,7 @@ private fun IconButtonComponent(
         shape = style.shape,
         elevation = shadowElevation,
         color = style.colors.borderColor,
+        modifier = modifier,
     ) {
         val indication = remember(style, contentColor) {
             if (style.elevation != null) null else ripple(color = contentColor)

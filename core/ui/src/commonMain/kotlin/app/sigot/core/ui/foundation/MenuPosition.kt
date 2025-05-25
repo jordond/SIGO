@@ -82,6 +82,34 @@ internal object MenuPosition {
         )
 
     /**
+     * Returns a [MenuPosition.Horizontal] which aligns the end of the menu to the start of the
+     * anchor.
+     *
+     * The given [offset] is [LayoutDirection]-aware. It will be added to the resulting x position
+     * for [LayoutDirection.Ltr] and subtracted for [LayoutDirection.Rtl].
+     */
+    fun endToAnchorStart(offset: Int = 0): Horizontal =
+        AnchorAlignmentOffsetPosition.Horizontal(
+            menuAlignment = Alignment.End,
+            anchorAlignment = Alignment.Start,
+            offset = offset,
+        )
+
+    /**
+     * Returns a [MenuPosition.Horizontal] which aligns the start of the menu to the end of the
+     * anchor.
+     *
+     * The given [offset] is [LayoutDirection]-aware. It will be added to the resulting x position
+     * for [LayoutDirection.Ltr] and subtracted for [LayoutDirection.Rtl].
+     */
+    fun startToAnchorEnd(offset: Int = 0): Horizontal =
+        AnchorAlignmentOffsetPosition.Horizontal(
+            menuAlignment = Alignment.Start,
+            anchorAlignment = Alignment.End,
+            offset = offset,
+        )
+
+    /**
      * Returns a [MenuPosition.Horizontal] which aligns the left of the menu to the left of the
      * window.
      *
@@ -319,6 +347,8 @@ internal data class DropdownMenuPositionProvider(
     // Horizontal position
     private val startToAnchorStart: Horizontal
     private val endToAnchorEnd: Horizontal
+    private val startToAnchorEnd: Horizontal
+    private val endToAnchorStart: Horizontal
     private val leftToWindowLeft: Horizontal
     private val rightToWindowRight: Horizontal
 
@@ -334,6 +364,8 @@ internal data class DropdownMenuPositionProvider(
         val contentOffsetX = with(density) { contentOffset.x.roundToPx() }
         startToAnchorStart = MenuPosition.startToAnchorStart(offset = contentOffsetX)
         endToAnchorEnd = MenuPosition.endToAnchorEnd(offset = contentOffsetX)
+        startToAnchorEnd = MenuPosition.startToAnchorEnd(offset = contentOffsetX)
+        endToAnchorStart = MenuPosition.endToAnchorStart(offset = contentOffsetX)
         leftToWindowLeft = MenuPosition.leftToWindowLeft(margin = 0)
         rightToWindowRight = MenuPosition.rightToWindowRight(margin = 0)
         // Vertical position
