@@ -3,6 +3,7 @@ package app.sigot.core.config.firebase
 import app.sigot.core.config.AppConfigProvider
 import app.sigot.core.config.model.AppConfig
 import app.sigot.core.config.model.PrecipitationConfig
+import app.sigot.core.config.model.UrlConfig
 import app.sigot.core.platform.isDebug
 import co.touchlab.kermit.Logger
 import dev.gitlive.firebase.Firebase
@@ -74,6 +75,11 @@ internal class FirebaseAppConfigProvider(
                 moderateAmountMm = get(KEY_PRECIPITATION_MODERATE_AMOUNT_MM)?.asInt(),
                 highAmountMm = get(KEY_PRECIPITATION_HIGH_AMOUNT_MM)?.asInt(),
             ),
+            urlConfig = UrlConfig(
+                root = get(KEY_URL_ROOT)?.asString() ?: UrlConfig.Defaults.ROOT,
+                privacy = get(KEY_URL_PRIVACY)?.asString() ?: UrlConfig.Defaults.PRIVACY,
+                terms = get(KEY_URL_TERMS)?.asString() ?: UrlConfig.Defaults.TERMS,
+            ),
         )
 
     companion object {
@@ -92,6 +98,11 @@ internal class FirebaseAppConfigProvider(
         private const val KEY_PRECIPITATION_LOW_AMOUNT_MM = "precipitation_low_amount_mm"
         private const val KEY_PRECIPITATION_MODERATE_AMOUNT_MM = "precipitation_moderate_amount_mm"
         private const val KEY_PRECIPITATION_HIGH_AMOUNT_MM = "precipitation_high_amount_mm"
+
+        // URL Config
+        private const val KEY_URL_ROOT = "url_root"
+        private const val KEY_URL_PRIVACY = "url_privacy"
+        private const val KEY_URL_TERMS = "url_terms"
     }
 }
 

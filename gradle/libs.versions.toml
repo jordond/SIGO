@@ -25,6 +25,7 @@ buildKonfig = "0.17.1"
 clikt = "5.0.3"
 compose-windowSizeClass = "1.8.1"
 composables = "1.1.0"
+composeWebviewMultiplatform = "1.9.40"
 desugar = "2.1.5"
 hotReload = "1.0.0-alpha10"
 kotlinx-collections = "0.4.0"
@@ -78,6 +79,7 @@ connectivity-device = { module = "dev.jordond.connectivity:connectivity-device",
 connectivity-http = { module = "dev.jordond.connectivity:connectivity-http", version.ref = "connectivity" }
 connectivity-compose-device = { module = "dev.jordond.connectivity:connectivity-compose-device", version.ref = "connectivity" }
 connectivity-compose-http = { module = "dev.jordond.connectivity:connectivity-compose-http", version.ref = "connectivity" }
+composeWebviewMultiplatform = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "composeWebviewMultiplatform" }
 desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 filekit-coil = { module = "io.github.vinceglb:filekit-coil", version.ref = "filekit" }

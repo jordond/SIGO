@@ -12,6 +12,7 @@ public data class AppConfig(
     val scoreMaxNearReasons: Int = Defaults.SCORE_MAX_NEAR_REASONS,
     val maxForecastDays: Int = Defaults.MAX_FORECAST_DAYS,
     val precipitation: PrecipitationConfig = PrecipitationConfig(),
+    val urlConfig: UrlConfig = UrlConfig(),
 ) {
     internal constructor(
         locationCacheAge: Int?,
@@ -21,6 +22,7 @@ public data class AppConfig(
         scoreMaxNearReasons: Int?,
         maxForecastDays: Int?,
         precipitation: PrecipitationConfig?,
+        urlConfig: UrlConfig?,
     ) : this(
         locationCacheAge = locationCacheAge?.minutes ?: Defaults.LOCATION_CACHE_AGE,
         maxCacheAge = maxCacheAge?.minutes ?: Defaults.MAX_CACHE_AGE,
@@ -29,6 +31,7 @@ public data class AppConfig(
         scoreMaxNearReasons = scoreMaxNearReasons ?: Defaults.SCORE_MAX_NEAR_REASONS,
         maxForecastDays = maxForecastDays ?: Defaults.MAX_FORECAST_DAYS,
         precipitation = precipitation ?: PrecipitationConfig(),
+        urlConfig = urlConfig ?: UrlConfig(),
     )
 
     internal companion object {

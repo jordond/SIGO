@@ -1,7 +1,12 @@
 package app.sigot.forecast.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
@@ -11,28 +16,38 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import app.sigot.core.model.ForecastData
 import app.sigot.core.model.forecast.ForecastPeriod
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
 import app.sigot.core.model.preferences.Preferences
+import app.sigot.core.resources.Res
+import app.sigot.core.resources.preferences
+import app.sigot.core.resources.settings
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.components.Button
+import app.sigot.core.ui.components.ButtonVariant
 import app.sigot.core.ui.components.DropdownMenu
 import app.sigot.core.ui.components.DropdownMenuItem
 import app.sigot.core.ui.components.HorizontalDivider
 import app.sigot.core.ui.components.Scaffold
 import app.sigot.core.ui.components.Text
+import app.sigot.core.ui.components.brutalBorder
 import app.sigot.core.ui.components.snackbar.Snackbar
 import app.sigot.core.ui.components.snackbar.SnackbarHost
 import app.sigot.core.ui.components.snackbar.SnackbarHostState
 import app.sigot.core.ui.components.snackbar.rememberSnackbarProvider
+import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.mappers.rememberText
 import app.sigot.core.ui.preview.AppPreview
+import app.sigot.core.ui.rounded
 import app.sigot.forecast.ui.ForecastHomeModel.Event
 import app.sigot.forecast.ui.components.HeaderText
 import dev.stateholder.dispatcher.Dispatcher
 import dev.stateholder.dispatcher.rememberDebounceDispatcher
 import dev.stateholder.dispatcher.rememberDispatcher
+import dev.stateholder.dispatcher.rememberRelay
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
 import kotlinx.datetime.Clock
@@ -40,7 +55,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-internal fun ForecastHomeScreen(model: ForecastHomeModel = koinViewModel()) {
+internal fun ForecastHomeScreen(
+    toPreferences: () -> Unit,
+    toSettings: () -> Unit,
+    model: ForecastHomeModel = koinViewModel(),
+) {
     val snackbar = rememberSnackbarProvider()
     HandleEvents(model) { event ->
         when (event) {
@@ -63,6 +82,8 @@ internal fun ForecastHomeScreen(model: ForecastHomeModel = koinViewModel()) {
             when (action) {
                 is ForecastHomeAction.Refresh -> {}
                 is ForecastHomeAction.ChangePeriod -> model.updatePeriod(action.period)
+                is ForecastHomeAction.ToPreferences -> toPreferences()
+                is ForecastHomeAction.ToSettings -> toSettings()
             }
         },
     )
@@ -70,6 +91,10 @@ internal fun ForecastHomeScreen(model: ForecastHomeModel = koinViewModel()) {
 
 internal sealed interface ForecastHomeAction {
     data object Refresh : ForecastHomeAction
+
+    data object ToSettings : ForecastHomeAction
+
+    data object ToPreferences : ForecastHomeAction
 
     data class ChangePeriod(
         val period: ForecastPeriod,
@@ -101,8 +126,39 @@ internal fun ForecastHomeScreen(
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState,
-                snackbar = { data -> Snackbar(snackbarData = data) },
+                snackbar = { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                    )
+                },
             )
+        },
+        bottomBar = {
+            val shape = AppTheme.shapes.medium.rounded(bottom = false)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .background(
+                        color = AppTheme.colors.primary,
+                        shape = shape,
+                    ).brutalBorder(shape = shape)
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
+            ) {
+                Button(
+                    text = Res.string.settings.get(),
+                    variant = ButtonVariant.SecondaryElevated,
+                    onClick = dispatcher.rememberRelay(ForecastHomeAction.ToSettings),
+                )
+
+                Button(
+                    text = Res.string.preferences.get(),
+                    variant = ButtonVariant.SecondaryElevated,
+                    onClick = dispatcher.rememberRelay(ForecastHomeAction.ToPreferences),
+                )
+            }
         },
         modifier = modifier,
     ) { innerPadding ->

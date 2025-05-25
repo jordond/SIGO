@@ -9,6 +9,10 @@ import androidx.navigation.compose.rememberNavController
 import app.sigot.forecast.ui.navigation.ForecastHomeRoute
 import app.sigot.forecast.ui.navigation.forecastNavigation
 import app.sigot.onboarding.ui.navigation.onboardingNavigation
+import app.sigot.settings.ui.navigation.SettingsRoute
+import app.sigot.settings.ui.navigation.settingsNavigation
+import app.sigot.webview.navigation.WebViewRoute
+import app.sigot.webview.navigation.webViewNavigation
 
 @Composable
 internal fun AppNavHost(
@@ -26,6 +30,21 @@ internal fun AppNavHost(
             onFinish = { navController.navigate(ForecastHomeRoute) },
         )
 
-        forecastNavigation(navController)
+        forecastNavigation(
+            navController = navController,
+            toPreferences = {
+                // TODO: Navigate to preferences
+            },
+            toSettings = { navController.navigate(SettingsRoute) },
+        )
+
+        settingsNavigation(
+            navController = navController,
+            toWebView = { title, url ->
+                navController.navigate(WebViewRoute(title, url))
+            },
+        )
+
+        webViewNavigation(onBack = navController::popBackStack)
     }
 }
