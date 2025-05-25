@@ -24,15 +24,20 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+private fun forecastBaseModule(): Module =
+    module {
+        factoryOf(::DefaultScoreCalculator) bind ScoreCalculator::class
+        factoryOf(::DefaultGetForecastUseCase) bind GetForecastUseCase::class
+        factoryOf(::DefaultGetScoreUseCast) bind GetScoreUseCase::class
+
+        factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
+        factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
+        singleOf(::DefaultForecastRepo) bind ForecastRepo::class
+    }
+
 public fun forecastAppModule(): Module =
     module {
-        factory<QueryCostLogger> {
-            val logger = get<AnalyticsLogger>()
-            // TODO: Have a real solution to logging the cost
-            QueryCostLogger { cost ->
-                logger.log("Query cost", mapOf("cost" to cost.toString()))
-            }
-        }
+        includes(forecastBaseModule())
 
         single {
             StoreForecastCache(
@@ -41,22 +46,22 @@ public fun forecastAppModule(): Module =
                 nowProvider = get(),
             )
         } bind ForecastCache::class
+    }
 
-        factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
-        factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
-        singleOf(::DefaultForecastRepo) bind ForecastRepo::class
-        factoryOf(::DefaultScoreCalculator) bind ScoreCalculator::class
-        factoryOf(::DefaultGetForecastUseCase) bind GetForecastUseCase::class
-        factoryOf(::DefaultGetScoreUseCast) bind GetScoreUseCase::class
+public fun forecastBackendModule(): Module =
+    module {
+        factory<QueryCostLogger> {
+            val logger = get<AnalyticsLogger>()
+            // TODO: Have a real solution to logging the cost
+            QueryCostLogger { cost ->
+                logger.log("Query cost", mapOf("cost" to cost.toString()))
+            }
+        }
     }
 
 public fun forecastCliModule(): Module =
     module {
+        includes(forecastBaseModule())
         factory<QueryCostLogger> { QueryCostLogger {} }
         single { StoreForecastCache(store = NoopStore(), get(), get()) } bind ForecastCache::class
-        factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
-        factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
-        singleOf(::DefaultForecastRepo) bind ForecastRepo::class
-        factoryOf(::DefaultGetForecastUseCase) bind GetForecastUseCase::class
-        factoryOf(::DefaultGetScoreUseCast) bind GetScoreUseCase::class
     }

@@ -165,10 +165,10 @@ public fun LocalTime.text(use24Hours: Boolean = LocalUse24HourTime.current): Str
         }
     } else {
         val (hour, minute, suffix) = remember(this) {
-            val hour = if (hour > 12) hour - 12 else hour
-            val minute = minute.toString().padStart(2, '0')
+            val hourValue = if (hour > 12) hour - 12 else hour
+            val minuteValue = minute.toString().padStart(2, '0')
             val suffix = if (hour > 11) Res.string.time_pm else Res.string.time_am
-            Triple(hour, minute, suffix)
+            Triple(hourValue, minuteValue, suffix)
         }
 
         val suffixString = suffix.get()

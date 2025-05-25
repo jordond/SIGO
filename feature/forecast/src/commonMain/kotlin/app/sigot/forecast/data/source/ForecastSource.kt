@@ -3,8 +3,8 @@ package app.sigot.forecast.data.source
 import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.location.Location
 
-internal interface ForecastSource {
-    suspend fun forecastFor(location: Location): Forecast
+public interface ForecastSource {
+    public suspend fun forecastFor(location: Location): Forecast
 
-    suspend fun forecastFor(location: String): Forecast
+    public suspend fun forecastFor(location: String): Forecast
 }
