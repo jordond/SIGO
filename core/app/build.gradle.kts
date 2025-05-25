@@ -32,6 +32,7 @@ kotlin {
             implementation(projects.feature.location)
             implementation(projects.feature.onboarding)
             implementation(projects.feature.settings)
+            implementation(projects.feature.webview)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

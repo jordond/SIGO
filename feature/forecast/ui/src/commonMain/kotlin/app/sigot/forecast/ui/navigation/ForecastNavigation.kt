@@ -9,8 +9,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data object ForecastHomeRoute
 
-public fun NavGraphBuilder.forecastNavigation(navController: NavHostController) {
+public fun NavGraphBuilder.forecastNavigation(
+    navController: NavHostController,
+    toPreferences: () -> Unit,
+    toSettings: () -> Unit,
+) {
     composable<ForecastHomeRoute> {
-        ForecastHomeScreen()
+        ForecastHomeScreen(
+            toPreferences = toPreferences,
+            toSettings = toSettings,
+        )
     }
 }

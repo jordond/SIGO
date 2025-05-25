@@ -8,8 +8,11 @@ import app.sigot.core.platform.store.Store
 import app.sigot.settings.data.KeyValueSettingsRepo
 import app.sigot.settings.data.entity.toEntity
 import app.sigot.settings.domain.DefaultHapticsUseCase
+import app.sigot.settings.ui.SettingsModel
+import app.sigot.settings.ui.internal.InternalSettingsModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -30,4 +33,7 @@ public fun settingsModule(useStore: Boolean = true): Module =
         }
 
         factoryOf(::DefaultHapticsUseCase) bind HapticsUseCase::class
+
+        viewModelOf(::SettingsModel)
+        viewModelOf(::InternalSettingsModel)
     }
