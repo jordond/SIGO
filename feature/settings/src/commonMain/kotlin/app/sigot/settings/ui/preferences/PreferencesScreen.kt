@@ -2,6 +2,9 @@ package app.sigot.settings.ui.preferences
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,10 +14,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.preferences.Preferences
 import app.sigot.core.resources.Res
+import app.sigot.core.resources.onboarding_units
 import app.sigot.core.resources.preferences
+import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.components.Scaffold
 import app.sigot.core.ui.preferences.PreferencesList
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.settings.ui.components.SettingsTopBar
@@ -26,7 +33,6 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 internal fun PreferencesScreen(
     onBack: () -> Unit,
-    isBack: Boolean,
     model: PreferencesModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
@@ -35,19 +41,33 @@ internal fun PreferencesScreen(
         preferences = state.preferences,
         update = model::update,
         onBack = onBack,
-        isBack = isBack,
         temperatureRange = state.tempRange,
         maxWindSpeed = state.maxWindSpeed,
     )
 }
 
 @Composable
-internal fun PreferencesScreen(
+internal fun PreferencesBottomSheet(
+    onBack: () -> Unit,
+    model: PreferencesModel = koinViewModel(),
+) {
+    val state by model.collectAsState()
+
+    PreferencesBottomSheet(
+        preferences = state.preferences,
+        update = model::update,
+        onBack = onBack,
+        temperatureRange = state.tempRange,
+        maxWindSpeed = state.maxWindSpeed,
+    )
+}
+
+@Composable
+internal fun PreferencesBottomSheet(
     preferences: Preferences,
     update: (Preferences) -> Unit,
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
-    isBack: Boolean = false,
     temperatureRange: ClosedFloatingPointRange<Float> = -30f..30f,
     maxWindSpeed: Float = 40f,
 ) {
@@ -57,13 +77,10 @@ internal fun PreferencesScreen(
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
     ) {
-        val type = remember(isBack) {
-            if (isBack) SettingsTopBarNav.Back else SettingsTopBarNav.Close
-        }
         SettingsTopBar(
             text = Res.string.preferences,
             onBack = onBack,
-            navType = type,
+            navType = SettingsTopBarNav.Close,
             handleInsets = false,
         )
 
@@ -78,13 +95,56 @@ internal fun PreferencesScreen(
 }
 
 @Composable
+internal fun PreferencesScreen(
+    preferences: Preferences,
+    update: (Preferences) -> Unit,
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit = {},
+    temperatureRange: ClosedFloatingPointRange<Float> = -30f..30f,
+    maxWindSpeed: Float = 40f,
+) {
+    Scaffold(
+        modifier = modifier,
+        containerColor = AppTheme.colors.surface,
+        topBar = {
+            SettingsTopBar(
+                text = Res.string.onboarding_units,
+                onBack = onBack,
+                navType = SettingsTopBarNav.Back,
+            )
+        },
+    ) { innerPadding ->
+        val layoutDirection = LocalLayoutDirection.current
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    start = innerPadding.calculateStartPadding(layoutDirection),
+                    end = innerPadding.calculateEndPadding(layoutDirection),
+                ).padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            PreferencesList(
+                preferences = preferences,
+                updatePreferences = update,
+                temperatureRange = temperatureRange,
+                maxWindSpeed = maxWindSpeed,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 32.dp),
+            )
+        }
+    }
+}
+
+@Composable
 private fun ScreenPreview() {
     var preferences by remember { mutableStateOf(Preferences.default) }
     PreferencesScreen(
         preferences = preferences,
         update = { preferences = it },
         onBack = {},
-        isBack = false,
     )
 }
 

@@ -73,7 +73,6 @@ internal fun AppHost(
                         modifier = Modifier.fillMaxSize(),
                     ) {
                         AppNavHost(
-                            bottomSheetNavigator = bottomSheetNavigator,
                             navController = navController,
                             startDestination = uiState.startDestination,
                         )
