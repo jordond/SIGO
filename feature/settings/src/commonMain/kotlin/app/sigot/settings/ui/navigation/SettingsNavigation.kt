@@ -23,6 +23,8 @@ public fun NavGraphBuilder.settingsNavigation(
         SettingsScreen(
             onBack = navController::popBackStack,
             toInternalSettings = { navController.navigate(InternalSettingsRoute) },
+            toUnits = { },
+            toPreferences = { },
             toWebView = toWebView,
         )
     }

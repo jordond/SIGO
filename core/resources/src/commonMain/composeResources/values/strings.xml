@@ -192,11 +192,24 @@
     <string name="forecast_period_hour">at %1$s</string>
     <string name="forecast_period_tomorrow">Tomorrow</string>
 
-    <string name="settings_internal_title">Internal Settings</string>
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_experience_title">Experience</string>
+    <string name="settings_experience_haptics">Haptic feedback</string>
+    <string name="settings_experience_haptics_desc">Enable or disable subtle vibrations for certain interactions within the app.</string>
+    <string name="settings_experience_units">Units</string>
+    <string name="settings_experience_units_desc">Update the units used in the app</string>
+    <string name="settings_experience_preferences">Preferences</string>
+    <string name="settings_experience_preferences_desc">Update your preferred weather preferences</string>
+    <string name="settings_about_title">About</string>
     <string name="settings_about_share">Share</string>
     <string name="settings_about_rate">Rate the app</string>
     <string name="settings_about_website">Website</string>
     <string name="settings_about_privacy">Privacy Policy</string>
     <string name="settings_about_terms">Terms and Conditions</string>
     <string name="settings_about_version">Version %1$s (%2$d) - %3$s</string>
+
+    <string name="settings_internal_title">Internal Settings</string>
 </resources>

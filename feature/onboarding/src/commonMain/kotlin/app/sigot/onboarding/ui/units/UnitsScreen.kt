@@ -190,8 +190,8 @@ private fun <T : BaseUnit> UnitCard(
     ElevatedCard(
         modifier = modifier,
         colors = CardDefaults.elevatedCardColors(
-            containerColor = colors.containerColor,
-            contentColor = colors.contentColorFor(colors.containerColor),
+            containerColor = colors.container,
+            contentColor = colors.contentColorFor(colors.container),
         ),
     ) {
         Row(

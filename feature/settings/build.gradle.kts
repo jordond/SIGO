@@ -12,7 +12,7 @@ plugins {
     alias(libs.plugins.toolchain.version)
 }
 
-configureMultiplatform(Platforms.Compose, name = "settings")
+configureMultiplatform(Platforms.Compose, name = "settings", desugar = true)
 
 kotlin {
     sourceSets {

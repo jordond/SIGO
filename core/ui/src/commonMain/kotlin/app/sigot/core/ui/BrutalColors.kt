@@ -21,7 +21,8 @@ public data class BrutalColors(
     val lowest: Color,
     val onLowest: Color,
 ) {
-    public val containerColor: Color = normal
+    public val container: Color = normal
+    public val containerContent: Color = contentColorFor(container)
 
     public fun contentColorFor(color: Color): Color =
         when (color) {
@@ -37,8 +38,8 @@ public data class BrutalColors(
 @Composable
 public fun BrutalColors.cardColors(): CardColors =
     CardDefaults.cardColors(
-        containerColor = containerColor,
-        contentColor = contentColorFor(containerColor),
+        containerColor = container,
+        contentColor = contentColorFor(container),
     )
 
 @Composable

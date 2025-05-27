@@ -31,7 +31,6 @@ internal fun AppNavHost(
         )
 
         forecastNavigation(
-            navController = navController,
             toPreferences = {
                 // TODO: Navigate to preferences
             },
