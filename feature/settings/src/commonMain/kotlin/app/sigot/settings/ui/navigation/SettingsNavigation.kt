@@ -3,12 +3,12 @@ package app.sigot.settings.ui.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import app.sigot.core.ui.navigation.Route
-import app.sigot.core.ui.navigation.bottomsheet.BottomSheetNavigator
 import app.sigot.core.ui.navigation.bottomsheet.bottomSheet
 import app.sigot.core.ui.navigation.popUpScreen
 import app.sigot.core.ui.navigation.slideHorizontally
 import app.sigot.settings.ui.SettingsScreen
 import app.sigot.settings.ui.internal.InternalSettingsScreen
+import app.sigot.settings.ui.preferences.PreferencesBottomSheet
 import app.sigot.settings.ui.preferences.PreferencesScreen
 import app.sigot.settings.ui.units.UnitsScreen
 import kotlinx.serialization.Serializable
@@ -26,10 +26,9 @@ internal data object UnitsRoute : Route
 internal data object PreferencesRoute : Route
 
 @Serializable
-public data object PreferencesPopUpRoute : Route
+public data object PreferencesBottomSheet : Route
 
 public fun NavGraphBuilder.settingsNavigation(
-    bottomSheetNavigator: BottomSheetNavigator,
     navController: NavHostController,
     toWebView: (title: String, url: String) -> Unit,
 ) {
@@ -48,22 +47,14 @@ public fun NavGraphBuilder.settingsNavigation(
     }
 
     slideHorizontally<UnitsRoute> { entry ->
-        UnitsScreen(
-            onBack = navController::popBackStack,
-        )
+        UnitsScreen(onBack = navController::popBackStack)
     }
 
     slideHorizontally<PreferencesRoute> { entry ->
-        PreferencesScreen(
-            onBack = navController::popBackStack,
-            isBack = true,
-        )
+        PreferencesScreen(onBack = navController::popBackStack)
     }
 
-    bottomSheet<PreferencesPopUpRoute> { entry ->
-        PreferencesScreen(
-            onBack = navController::popBackStack,
-            isBack = false,
-        )
+    bottomSheet<PreferencesBottomSheet> { entry ->
+        PreferencesBottomSheet(onBack = navController::popBackStack)
     }
 }

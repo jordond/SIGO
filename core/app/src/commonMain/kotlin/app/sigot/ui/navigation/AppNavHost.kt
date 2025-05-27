@@ -5,11 +5,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import app.sigot.core.ui.navigation.bottomsheet.BottomSheetNavigator
 import app.sigot.forecast.ui.navigation.ForecastHomeRoute
 import app.sigot.forecast.ui.navigation.forecastNavigation
 import app.sigot.onboarding.ui.navigation.onboardingNavigation
-import app.sigot.settings.ui.navigation.PreferencesPopUpRoute
+import app.sigot.settings.ui.navigation.PreferencesBottomSheet
 import app.sigot.settings.ui.navigation.SettingsRoute
 import app.sigot.settings.ui.navigation.settingsNavigation
 import app.sigot.webview.navigation.WebViewRoute
@@ -17,7 +16,6 @@ import app.sigot.webview.navigation.webViewNavigation
 
 @Composable
 internal fun AppNavHost(
-    bottomSheetNavigator: BottomSheetNavigator,
     navController: NavHostController,
     startDestination: AppStartDestination,
     modifier: Modifier = Modifier,
@@ -33,12 +31,11 @@ internal fun AppNavHost(
         )
 
         forecastNavigation(
-            toPreferences = { navController.navigate(PreferencesPopUpRoute) },
+            toPreferences = { navController.navigate(PreferencesBottomSheet) },
             toSettings = { navController.navigate(SettingsRoute) },
         )
 
         settingsNavigation(
-            bottomSheetNavigator = bottomSheetNavigator,
             navController = navController,
             toWebView = { title, url ->
                 navController.navigate(WebViewRoute(title, url))
