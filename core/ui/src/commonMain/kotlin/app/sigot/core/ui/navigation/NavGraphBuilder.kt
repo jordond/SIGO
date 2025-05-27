@@ -22,7 +22,9 @@ public inline fun <reified T : Any> NavGraphBuilder.popUpScreen(
         typeMap = typeMap,
         deepLinks = deepLinks,
         enterTransition = { slideIntoContainer(SlideDirection.Up, tween(700)) },
-        exitTransition = { slideOutOfContainer(SlideDirection.Down, tween(700)) },
+        exitTransition = { null },
+        popEnterTransition = { null },
+        popExitTransition = { slideOutOfContainer(SlideDirection.Down, tween(700)) },
         content = content,
     )
 }

@@ -1,8 +1,8 @@
 package app.sigot.webview.navigation
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import app.sigot.core.ui.navigation.popUpScreen
 import app.toebean.feature.webview.WebViewScreen
 import kotlinx.serialization.Serializable
 
@@ -13,7 +13,7 @@ public data class WebViewRoute(
 )
 
 public fun NavGraphBuilder.webViewNavigation(onBack: () -> Unit) {
-    composable<WebViewRoute> { entry ->
+    popUpScreen<WebViewRoute> { entry ->
         val link = entry.toRoute<WebViewRoute>()
         WebViewScreen(
             onBack = onBack,
