@@ -10,6 +10,8 @@ import app.sigot.settings.data.entity.toEntity
 import app.sigot.settings.domain.DefaultHapticsUseCase
 import app.sigot.settings.ui.SettingsModel
 import app.sigot.settings.ui.internal.InternalSettingsModel
+import app.sigot.settings.ui.preferences.PreferencesModel
+import app.sigot.settings.ui.units.UnitsModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
@@ -36,4 +38,6 @@ public fun settingsModule(useStore: Boolean = true): Module =
 
         viewModelOf(::SettingsModel)
         viewModelOf(::InternalSettingsModel)
+        viewModelOf(::UnitsModel)
+        viewModelOf(::PreferencesModel)
     }

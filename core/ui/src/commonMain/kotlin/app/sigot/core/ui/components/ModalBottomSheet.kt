@@ -8,17 +8,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalContentColor
+import app.sigot.core.ui.components.bottomsheet.BasicModalBottomSheet
+import app.sigot.core.ui.components.bottomsheet.SheetState
+import app.sigot.core.ui.components.bottomsheet.rememberModalBottomSheetState
+import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.preview.AppPreview
-import com.nomanr.composables.bottomsheet.BasicModalBottomSheet
-import com.nomanr.composables.bottomsheet.SheetState
-import com.nomanr.composables.bottomsheet.rememberModalBottomSheetState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -29,6 +33,9 @@ public fun ModalBottomSheet(
     onDismissRequest: () -> Unit,
     sheetGesturesEnabled: Boolean = true,
     dragHandle: @Composable (() -> Unit)? = { BottomSheetDefaults.DragHandle() },
+    containerColor: Color = LocalContainerColor.current,
+    contentColor: Color = contentColorFor(containerColor),
+    border: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     if (isVisible) {
@@ -37,24 +44,32 @@ public fun ModalBottomSheet(
             sheetState = sheetState,
             onDismissRequest = onDismissRequest,
             sheetGesturesEnabled = sheetGesturesEnabled,
-            containerColor = AppTheme.colors.background,
+            containerColor = containerColor,
             scrimColor = AppTheme.colors.scrim,
             shape = BottomSheetDefaults.ModalBottomSheetShape,
             dragHandle = dragHandle,
-            content = content,
+            border = border,
+            content = {
+                CompositionLocalProvider(
+                    LocalContainerColor provides containerColor,
+                    LocalContentColor provides contentColor,
+                ) {
+                    content()
+                }
+            },
         )
     }
 }
 
 internal object BottomSheetDefaults {
+    val parent = app.sigot.core.ui.components.bottomsheet.BottomSheetDefaults
+
     private val DragHandleHeight = 6.dp
     private val DragHandleWidth = 36.dp
     private val DragHandleShape = RoundedCornerShape(50)
     private val DragHandlePadding = 12.dp
-    val ModalBottomSheetShape = RoundedCornerShape(
-        topStart = 8.dp,
-        topEnd = 8.dp,
-    )
+    val ModalBottomSheetShape: CornerBasedShape
+        @Composable get() = AppTheme.shapes.large
 
     @Composable
     fun DragHandle() {

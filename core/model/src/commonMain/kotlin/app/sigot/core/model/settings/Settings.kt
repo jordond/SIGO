@@ -10,7 +10,7 @@ import kotlinx.datetime.Instant
 
 public class Settings(
     public val firstLaunch: Instant = Clock.System.now(),
-    public val themeMode: ThemeMode = ThemeMode.System,
+    public val themeMode: ThemeMode = ThemeMode.Light,
     public val hasCompletedOnboarding: Boolean = false,
     public val lastLocation: Location? = null,
     public val lastLocationUpdate: Instant? = null,
