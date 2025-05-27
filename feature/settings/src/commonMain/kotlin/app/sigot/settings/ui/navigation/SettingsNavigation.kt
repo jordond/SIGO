@@ -43,7 +43,7 @@ public fun NavGraphBuilder.settingsNavigation(
     }
 
     slideHorizontally<InternalSettingsRoute> {
-        InternalSettingsScreen()
+        InternalSettingsScreen(onBack = navController::popBackStack)
     }
 
     slideHorizontally<UnitsRoute> { entry ->
