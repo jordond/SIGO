@@ -8,19 +8,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class InternalSettingsEntity(
     @SerialName("enabled")
-    val enabled: Boolean,
+    val enabled: Boolean = false,
     @SerialName("backend_api_url")
-    val backendApiUrl: String,
+    val backendApiUrl: String? = null,
     @SerialName("api_key")
-    val apiKey: String?,
+    val apiKey: String? = null,
     @SerialName("use_direct_api")
-    val useDirectApi: Boolean,
+    val useDirectApi: Boolean = false,
 )
 
 internal fun InternalSettingsEntity.toModel() =
     InternalSettings(
         enabled = isDebug || enabled,
-        backendApiUrl = backendApiUrl,
+        backendApiUrl = backendApiUrl ?: InternalSettings.DefaultBackendApiUrl,
         apiKey = apiKey,
         useDirectApi = useDirectApi,
     )

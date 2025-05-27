@@ -6,8 +6,8 @@ import app.sigot.core.model.units.TemperatureUnit
 import app.sigot.core.model.units.WindSpeedUnit
 import app.sigot.core.model.units.convertTemperature
 import app.sigot.core.model.units.convertWindSpeed
-import app.sigot.onboarding.ui.preferences.PreferencesModel.Event
-import app.sigot.onboarding.ui.preferences.PreferencesModel.State
+import app.sigot.onboarding.ui.preferences.OnboardingPreferencesModel.Event
+import app.sigot.onboarding.ui.preferences.OnboardingPreferencesModel.State
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -17,7 +17,7 @@ private const val DEFAULT_MIN_TEMP_RANGE = -30.0
 private const val DEFAULT_MAX_TEMP_RANGE = 40.0
 private const val DEFAULT_MAX_WIND_SPEED = 50.0
 
-internal class PreferencesModel(
+internal class OnboardingPreferencesModel(
     private val settingsRepo: SettingsRepo,
 ) : UiStateViewModel<State, Event>(State(settingsRepo.settings.value.preferences)) {
     init {

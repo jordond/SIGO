@@ -18,6 +18,9 @@ import app.sigot.core.ui.LocalHaptics
 import app.sigot.core.ui.LocalUse24HourTime
 import app.sigot.core.ui.LocalWindowSizeClass
 import app.sigot.core.ui.calculateWindowSizeClass
+import app.sigot.core.ui.navigation.bottomsheet.BottomSheetNavigator
+import app.sigot.core.ui.navigation.bottomsheet.ModalBottomSheetLayout
+import app.sigot.core.ui.navigation.bottomsheet.rememberBottomSheetNavigator
 import app.sigot.core.ui.rememberHaptics
 import app.sigot.ui.AppHostModel.State.UiState
 import app.sigot.ui.navigation.AppNavHost
@@ -28,7 +31,8 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun AppHost(
     model: AppHostModel = koinViewModel(),
     windowSizeClass: WindowSizeClass = calculateWindowSizeClass(),
-    navController: NavHostController = rememberNavController(),
+    bottomSheetNavigator: BottomSheetNavigator = rememberBottomSheetNavigator(skipPartiallyExpanded = true),
+    navController: NavHostController = rememberNavController(bottomSheetNavigator),
 ) {
     val state by model.collectAsState()
 
@@ -64,10 +68,16 @@ internal fun AppHost(
                     LocalHaptics provides haptics,
                     LocalUse24HourTime provides state.settings.preferences.use24HourFormat,
                 ) {
-                    AppNavHost(
-                        startDestination = uiState.startDestination,
-                        navController = navController,
-                    )
+                    ModalBottomSheetLayout(
+                        bottomSheetNavigator = bottomSheetNavigator,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        AppNavHost(
+                            bottomSheetNavigator = bottomSheetNavigator,
+                            navController = navController,
+                            startDestination = uiState.startDestination,
+                        )
+                    }
                 }
             }
         }

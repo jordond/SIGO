@@ -1,16 +1,14 @@
-package app.sigot.onboarding.ui.units
+package app.sigot.settings.ui.units
 
 import app.sigot.core.domain.settings.SettingsRepo
 import app.sigot.core.model.units.Units
-import app.sigot.onboarding.ui.units.UnitsModel.Event
-import app.sigot.onboarding.ui.units.UnitsModel.State
-import dev.stateholder.extensions.viewmodel.UiStateViewModel
+import dev.stateholder.extensions.viewmodel.StateViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 internal class UnitsModel(
     private val settingsRepo: SettingsRepo,
-) : UiStateViewModel<State, Event>(State(settingsRepo.settings.value.preferences.units)) {
+) : StateViewModel<UnitsModel.State>(State(settingsRepo.settings.value.preferences.units)) {
     init {
         settingsRepo.settings
             .map { it.preferences.units }
@@ -27,6 +25,4 @@ internal class UnitsModel(
     data class State(
         val units: Units,
     )
-
-    sealed interface Event
 }

@@ -44,6 +44,10 @@ kotlin {
             dependsOn(commonMain.get())
             nativeMain.get().dependsOn(this)
             jvmMain.get().dependsOn(this)
+
+            dependencies {
+                implementation(libs.kotlinx.atomicfu)
+            }
         }
     }
 }

@@ -59,9 +59,9 @@ import app.sigot.onboarding.ui.OnboardingModel.Event
 import app.sigot.onboarding.ui.location.LocationScreen
 import app.sigot.onboarding.ui.navigation.OnboardingDestination
 import app.sigot.onboarding.ui.navigation.OnboardingNavHost
-import app.sigot.onboarding.ui.preferences.PreferencesScreen
+import app.sigot.onboarding.ui.preferences.OnboardingPreferencesScreen
 import app.sigot.onboarding.ui.summary.SummaryScreen
-import app.sigot.onboarding.ui.units.UnitsScreen
+import app.sigot.onboarding.ui.units.OnboardingUnitsScreen
 import app.sigot.onboarding.ui.welcome.WelcomeScreen
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
@@ -222,13 +222,13 @@ internal fun OnboardingScreenPreview(
                     WelcomeScreen()
                 }
                 OnboardingDestination.Units -> {
-                    UnitsScreen(
+                    OnboardingUnitsScreen(
                         units = Units.Metric,
                         update = {},
                     )
                 }
                 OnboardingDestination.Preferences -> {
-                    PreferencesScreen(
+                    OnboardingPreferencesScreen(
                         preferences = Preferences.default,
                         updatePreferences = {},
                     )

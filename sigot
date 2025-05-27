@@ -13,7 +13,7 @@ print_usage() {
     echo " "
     echo "Commands:"
     echo "    help                           Show this help message"
-    echo "    init <command> [arguments]     Initialize a project component"
+    echo "    init [command] [arguments]     Initialize a project component"
     echo "          secrets|s [--empty]      Generate the secrets.properties file, pass --empty to use 'empty' for all secrets"
     echo "          ktlint|k [arguments]     Install ktlint and integrate it with the project"
     echo "          hooks|h [--output]       Install the git hooks, pass --output to display the contents of the hooks"
@@ -51,9 +51,15 @@ help)
 init)
     shift
     if [ "$#" -eq 0 ]; then
-        echo "Please specify an init command: node, path, ktlint, hooks, or secrets"
-        echo "Run 'beans help' for more information"
-        exit 1
+        "$ROOT"/scripts/init.sh
+        # Return the exit code of the init.sh
+        if [ $? -eq 0 ]; then
+            echo "✅ Project initialized successfully"
+            exit 0
+        else
+            echo "❌ Project initialization failed"
+            exit 1
+        fi
     fi
     subcommand=$1
     shift
