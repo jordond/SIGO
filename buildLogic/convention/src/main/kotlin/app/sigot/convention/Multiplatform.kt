@@ -8,7 +8,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import kotlin.text.set
 
 fun Project.configureMultiplatform(
     platform: Platform,
@@ -24,6 +23,7 @@ fun Project.configureMultiplatform(
     name: String = this.name,
     compose: Boolean = extensions.findByType(ComposeExtension::class.java) != null,
     cocoapods: Boolean = false,
+    desugar: Boolean = false,
     log: Boolean = false,
 ) {
     if (log) {
@@ -44,7 +44,7 @@ fun Project.configureMultiplatform(
 
     val hasAndroid = platforms.contains(Platform.Android)
     if (hasAndroid) {
-        configureAndroid(name, compose)
+        configureAndroid(name, compose, desugar)
     }
 
     if (compose) {

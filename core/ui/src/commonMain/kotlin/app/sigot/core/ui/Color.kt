@@ -23,6 +23,8 @@ public data class Colors(
     val onSecondary: Color,
     val tertiary: Color,
     val onTertiary: Color,
+    val quaternary: Color,
+    val onQuaternary: Color,
     val error: Color,
     val onError: Color,
     val success: Color,
@@ -48,6 +50,7 @@ public data class Colors(
 
 private val Yellow = Color(0xFFFFD738) // Bright yellow - from palette
 private val YellowAlt = Color(0xFFffdb02)
+private val Orange = Color(0xFFFF8C42) // Vibrant orange
 private val Coral = Color(0xFFFF6B6B) // Coral red - from palette
 private val Mint = Color(0xFF90EE90) // Light mint green - for success
 private val LightBlue = Color(0xFF87CEEB) // Light blue - from palette
@@ -65,6 +68,7 @@ private val DarkNavy = Color(0xFF1A1A2E) // Dark navy for backgrounds
 private val DeepBlue = Color(0xFF16213E) // Deeper blue for surfaces
 private val DarkPurple = Color(0xFF35155D) // Dark purple
 private val BrightYellow = Color(0xFFFCCF03) // More saturated yellow
+private val BrightOrange = Color(0xFFFF9F40) // Brighter, more saturated orange
 private val BrightCoral = Color(0xFFFF8C91) // Brighter coral
 private val BrightMint = Color(0xFF7FFFD4) // Brighter mint
 private val BrightBlue = Color(0xFF5599FF) // Brighter blue
@@ -81,6 +85,8 @@ internal val LightColors = Colors(
     onSecondary = Color.Black,
     tertiary = Pink,
     onTertiary = Color.Black,
+    quaternary = Orange,
+    onQuaternary = Color.Black,
     error = Coral,
     onError = Color.Black,
     success = Mint,
@@ -109,6 +115,8 @@ public val DarkColors: Colors = Colors(
     onSecondary = Color.Black,
     tertiary = VividPink,
     onTertiary = Color.Black,
+    quaternary = BrightOrange,
+    onQuaternary = Color.Black,
     error = BrightCoral,
     onError = Color.Black,
     success = BrightMint,

@@ -171,6 +171,22 @@ public object CardDefaults {
             contentColor = AppTheme.colors.onTertiary,
         )
 
+    public val quaternaryColors: CardColors
+        @Composable get() = cardColors(
+            containerColor = AppTheme.colors.quaternary,
+            contentColor = AppTheme.colors.onQuaternary,
+        )
+
+    @Composable
+    public fun fromColor(containerColor: Color): CardColors =
+        when (containerColor) {
+            AppTheme.colors.primary -> primaryColors
+            AppTheme.colors.secondary -> secondaryColors
+            AppTheme.colors.tertiary -> tertiaryColors
+            AppTheme.colors.quaternary -> quaternaryColors
+            else -> cardColors()
+        }
+
     @Composable
     public fun cardElevation(
         defaultElevation: Dp = BrutalElevationDefaults.Medium.default,

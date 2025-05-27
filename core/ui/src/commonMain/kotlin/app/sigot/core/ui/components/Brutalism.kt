@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -70,7 +71,7 @@ public fun BrutalContainer(
     color: Color = BrutalDefaults.Color,
     extraY: Boolean = false,
     border: Boolean = false,
-    content: @Composable () -> Unit,
+    content: @Composable BoxScope.() -> Unit,
 ) {
     val yOffset by animateDpAsState(if (elevation == 0.dp) 0.dp else elevation + 2.dp)
     Box(modifier = modifier) {

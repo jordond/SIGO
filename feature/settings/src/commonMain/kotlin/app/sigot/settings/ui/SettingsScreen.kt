@@ -1,41 +1,44 @@
 package app.sigot.settings.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import app.sigot.core.Version
 import app.sigot.core.model.settings.Settings
 import app.sigot.core.platform.launchAppStore
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.settings
-import app.sigot.core.resources.settings_about_version
+import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Scaffold
-import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.snackbar.Snackbar
 import app.sigot.core.ui.components.snackbar.SnackbarHost
 import app.sigot.core.ui.components.snackbar.SnackbarHostState
 import app.sigot.core.ui.components.snackbar.rememberSnackbarProvider
-import app.sigot.core.ui.ktx.clickableWithoutRipple
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.settings.ui.components.SettingsTopBar
+import app.sigot.settings.ui.section.AboutSection
+import app.sigot.settings.ui.section.ExperienceSection
+import app.sigot.settings.ui.section.ThemeSection
+import app.sigot.settings.ui.section.VersionSection
 import dev.stateholder.dispatcher.Dispatcher
 import dev.stateholder.dispatcher.rememberDebounceDispatcher
 import dev.stateholder.dispatcher.rememberRelay
+import dev.stateholder.dispatcher.rememberRelayOf
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
-import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -44,6 +47,8 @@ internal fun SettingsScreen(
     onBack: () -> Unit,
     toInternalSettings: () -> Unit,
     toWebView: (title: String, url: String) -> Unit,
+    toUnits: () -> Unit,
+    toPreferences: () -> Unit,
     model: SettingsModel = koinViewModel(),
 ) {
     HandleEvents(model) { event ->
@@ -61,6 +66,10 @@ internal fun SettingsScreen(
         dispatcher = rememberDebounceDispatcher { action ->
             when (action) {
                 is SettingsAction.Close -> onBack()
+                is SettingsAction.UpdateTheme -> model.updateTheme(action.mode)
+                is SettingsAction.ToggleHaptics -> model.toggleHaptics()
+                is SettingsAction.ToUnitsScreen -> toUnits()
+                is SettingsAction.ToPreferencesScreen -> toPreferences()
                 is SettingsAction.RateApp -> {
                     if (state.canEnableInternalSettings) {
                         model.enableInternalSettings()
@@ -95,6 +104,7 @@ internal fun SettingsScreen(
 ) {
     Scaffold(
         modifier = modifier,
+        containerColor = AppTheme.colors.surface,
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState,
@@ -113,28 +123,45 @@ internal fun SettingsScreen(
             )
         },
     ) { innerPadding ->
+        val layoutDirection = LocalLayoutDirection.current
         Column(
-            modifier = Modifier.padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(32.dp),
+            modifier = Modifier
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    start = innerPadding.calculateStartPadding(layoutDirection),
+                    end = innerPadding.calculateEndPadding(layoutDirection),
+                ).padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
-            Text(
-                text = stringResource(
-                    Res.string.settings_about_version,
-                    version.NAME,
-                    version.CODE,
-                    version.GIT_SHA,
-                ),
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Light,
-                fontStyle = FontStyle.Italic,
-                textDecoration = if (settings.internalSettings.enabled) {
-                    TextDecoration.Underline
-                } else {
-                    TextDecoration.None
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickableWithoutRipple(dispatcher.rememberRelay(SettingsAction.TapVersion))
-                    .padding(bottom = 32.dp),
+            Spacer(Modifier.height(8.dp))
+
+            ThemeSection(
+                selected = settings.themeMode,
+                updateTheme = dispatcher.rememberRelayOf(SettingsAction::UpdateTheme),
+                primary = AppTheme.colors.primary,
+                secondary = AppTheme.colors.quaternary,
+            )
+
+            ExperienceSection(
+                haptics = settings.enableHaptics,
+                toggleHaptics = dispatcher.rememberRelay(SettingsAction.ToggleHaptics),
+                unitsClick = dispatcher.rememberRelay(SettingsAction.ToUnitsScreen),
+                preferencesClick = dispatcher.rememberRelay(SettingsAction.ToPreferencesScreen),
+                primary = AppTheme.colors.secondary,
+                secondary = AppTheme.colors.primary,
+            )
+
+            AboutSection(
+                dispatcher = dispatcher,
+                primary = AppTheme.colors.tertiary,
+                secondary = AppTheme.colors.secondary,
+            )
+
+            VersionSection(
+                internalSettingsEnabled = settings.internalSettings.enabled,
+                onClick = dispatcher.rememberRelay(SettingsAction.TapVersion),
+                version = version,
             )
 
             Spacer(

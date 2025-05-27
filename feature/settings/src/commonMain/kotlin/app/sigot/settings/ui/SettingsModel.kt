@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import app.sigot.core.config.AppConfigRepo
 import app.sigot.core.domain.settings.SettingsRepo
 import app.sigot.core.model.settings.Settings
+import app.sigot.core.model.ui.ThemeMode
 import co.touchlab.kermit.Logger
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +20,14 @@ internal class SettingsModel(
     ) {
     init {
         settingsRepo.settings.mergeState { state, value -> state.copy(settings = value) }
+    }
+
+    fun updateTheme(mode: ThemeMode) {
+        settingsRepo.update { settings -> settings.copy(themeMode = mode) }
+    }
+
+    fun toggleHaptics() {
+        settingsRepo.update { settings -> settings.copy(enableHaptics = !settings.enableHaptics) }
     }
 
     fun clickAbout() {

@@ -8,13 +8,13 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 fun Project.composeDependencies(hasAndroid: Boolean) {
     extensions.configure<KotlinMultiplatformExtension> {
+        compilerOptions {
+            optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
+        }
         sourceSets.commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.runtimeSaveable)
             implementation(compose.foundation)
-            // TODO: Temporarily set material3 to a specific version until CMP supports 1.8.0
-            // implementation(compose.material3)
-            // implementation("org.jetbrains.compose.material3:material3:1.8.0-alpha03")
             implementation(compose.components.resources)
         }
 

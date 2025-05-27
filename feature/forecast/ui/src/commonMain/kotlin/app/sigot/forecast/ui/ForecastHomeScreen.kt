@@ -68,7 +68,6 @@ internal fun ForecastHomeScreen(
     }
 
     val state by model.collectAsState()
-
     ForecastHomeScreen(
         location = state.location,
         preferences = state.preferences,
@@ -80,7 +79,7 @@ internal fun ForecastHomeScreen(
         snackbarHostState = snackbar.hostState,
         dispatcher = rememberDebounceDispatcher { action ->
             when (action) {
-                is ForecastHomeAction.Refresh -> {}
+                is ForecastHomeAction.Refresh -> model.forceRefresh()
                 is ForecastHomeAction.ChangePeriod -> model.updatePeriod(action.period)
                 is ForecastHomeAction.ToPreferences -> toPreferences()
                 is ForecastHomeAction.ToSettings -> toSettings()

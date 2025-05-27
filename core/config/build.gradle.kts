@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "core.config")
+configureMultiplatform(Platforms.All, name = "core.config", desugar = true)
 
 kotlin {
     sourceSets {

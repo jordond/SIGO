@@ -1,7 +1,6 @@
 package app.sigot.forecast.ui.navigation
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import app.sigot.forecast.ui.ForecastHomeScreen
 import kotlinx.serialization.Serializable
@@ -10,7 +9,6 @@ import kotlinx.serialization.Serializable
 public data object ForecastHomeRoute
 
 public fun NavGraphBuilder.forecastNavigation(
-    navController: NavHostController,
     toPreferences: () -> Unit,
     toSettings: () -> Unit,
 ) {

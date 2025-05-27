@@ -37,8 +37,8 @@ internal fun LocationCard(
     modifier: Modifier = Modifier,
     content: @Composable LocationCardScope.() -> Unit,
 ) {
-    val containerColor by animateColorAsState(colors.containerColor)
-    val contentColor by animateColorAsState(colors.contentColorFor(colors.containerColor))
+    val containerColor by animateColorAsState(colors.container)
+    val contentColor by animateColorAsState(colors.contentColorFor(colors.container))
     ElevatedCard(
         colors = CardDefaults.elevatedCardColors(
             containerColor = containerColor,

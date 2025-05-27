@@ -257,6 +257,8 @@ public enum class ButtonVariant {
     SecondaryElevated,
     Tertiary,
     TertiaryElevated,
+    Quaternary,
+    QuaternaryElevated,
     Destructive,
     DestructiveElevated,
     Elevated,
@@ -273,6 +275,8 @@ internal fun buttonStyleFor(variant: ButtonVariant): ButtonStyle =
         ButtonVariant.SecondaryElevated -> ButtonDefaults.secondaryElevated()
         ButtonVariant.Tertiary -> ButtonDefaults.tertiary()
         ButtonVariant.TertiaryElevated -> ButtonDefaults.tertiaryElevated()
+        ButtonVariant.Quaternary -> ButtonDefaults.quaternary()
+        ButtonVariant.QuaternaryElevated -> ButtonDefaults.quaternaryElevated()
         ButtonVariant.Destructive -> ButtonDefaults.destructive()
         ButtonVariant.DestructiveElevated -> ButtonDefaults.destructiveElevated()
         ButtonVariant.Elevated -> ButtonDefaults.elevated()
@@ -302,6 +306,7 @@ public object ButtonDefaults {
 
     private val TextButtonHorizontalPadding = 12.dp
 
+    @Suppress("ComposableNaming")
     @Composable
     public fun LoadingIndicator(): @Composable () -> Unit =
         {
@@ -414,6 +419,38 @@ public object ButtonDefaults {
         contentColor: Color = contentColorFor(containerColor),
         borderColor: Color = BrutalDefaults.Color,
         disabledContainerColor: Color = AppTheme.colors.tertiary.disabled(DisabledAlpha),
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
+    ): ButtonColors =
+        ButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+            borderColor = borderColor,
+            disabledContainerColor = disabledContainerColor,
+            disabledContentColor = disabledContentColor,
+        )
+
+    @Composable
+    public fun quaternaryColors(
+        containerColor: Color = AppTheme.colors.quaternary,
+        contentColor: Color = contentColorFor(containerColor),
+        borderColor: Color = BrutalDefaults.Color,
+        disabledContainerColor: Color = AppTheme.colors.quaternary.disabled(DisabledAlpha),
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
+    ): ButtonColors =
+        ButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+            borderColor = borderColor,
+            disabledContainerColor = disabledContainerColor,
+            disabledContentColor = disabledContentColor,
+        )
+
+    @Composable
+    public fun quaternaryElevatedColors(
+        containerColor: Color = AppTheme.colors.quaternary,
+        contentColor: Color = contentColorFor(containerColor),
+        borderColor: Color = BrutalDefaults.Color,
+        disabledContainerColor: Color = AppTheme.colors.quaternary.disabled(DisabledAlpha),
         disabledContentColor: Color = contentColorFor(disabledContainerColor),
     ): ButtonColors =
         ButtonColors(
@@ -547,6 +584,22 @@ public object ButtonDefaults {
     @Composable
     public fun tertiaryElevated(
         colors: ButtonColors = tertiaryElevatedColors(),
+        shape: Shape = elevatedShape,
+        elevation: ButtonElevation? = buttonElevation(),
+        contentPadding: PaddingValues = this.contentPadding,
+    ): ButtonStyle = ButtonStyle(colors, shape, elevation, contentPadding)
+
+    @Composable
+    public fun quaternary(
+        colors: ButtonColors = quaternaryColors(),
+        shape: Shape = filledShape,
+        elevation: ButtonElevation? = null,
+        contentPadding: PaddingValues = this.contentPadding,
+    ): ButtonStyle = ButtonStyle(colors, shape, elevation, contentPadding)
+
+    @Composable
+    public fun quaternaryElevated(
+        colors: ButtonColors = quaternaryElevatedColors(),
         shape: Shape = elevatedShape,
         elevation: ButtonElevation? = buttonElevation(),
         contentPadding: PaddingValues = this.contentPadding,
@@ -692,6 +745,23 @@ internal fun ButtonTertiaryPreview() {
             title = "Tertiary",
             filled = ButtonVariant.Tertiary,
             elevated = ButtonVariant.TertiaryElevated,
+        )
+    }
+    Column {
+        AppPreview(isDarkTheme = false) { Preview() }
+        AppPreview(isDarkTheme = true) { Preview() }
+    }
+}
+
+@Composable
+@Preview
+internal fun ButtonQuaternaryPreview() {
+    @Composable
+    fun Preview() {
+        ButtonVariantPreview(
+            title = "Quaternary",
+            filled = ButtonVariant.Quaternary,
+            elevated = ButtonVariant.QuaternaryElevated,
         )
     }
     Column {
