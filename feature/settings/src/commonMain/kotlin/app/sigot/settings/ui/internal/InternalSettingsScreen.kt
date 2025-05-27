@@ -1,37 +1,92 @@
 package app.sigot.settings.ui.internal
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.sigot.core.model.settings.Settings
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.dp
+import app.sigot.core.model.settings.InternalSettings
 import app.sigot.core.resources.Res
+import app.sigot.core.resources.save
+import app.sigot.core.resources.settings_internal_backend
+import app.sigot.core.resources.settings_internal_backend_api
+import app.sigot.core.resources.settings_internal_backend_api_desc
+import app.sigot.core.resources.settings_internal_backend_direct_api
+import app.sigot.core.resources.settings_internal_backend_direct_api_desc
+import app.sigot.core.resources.settings_internal_backend_direct_api_token_placeholder
 import app.sigot.core.resources.settings_internal_title
+import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.components.Icon
+import app.sigot.core.ui.components.IconButton
+import app.sigot.core.ui.components.IconButtonVariant
 import app.sigot.core.ui.components.Scaffold
+import app.sigot.core.ui.components.Switch
+import app.sigot.core.ui.components.Text
+import app.sigot.core.ui.components.card.CardDefaults
+import app.sigot.core.ui.components.textfield.TextField
+import app.sigot.core.ui.icons.AppIcons
+import app.sigot.core.ui.icons.lucide.Check
+import app.sigot.core.ui.icons.lucide.Link
+import app.sigot.core.ui.icons.lucide.Server
+import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
+import app.sigot.settings.ui.components.SettingsCard
+import app.sigot.settings.ui.components.SettingsTextRow
 import app.sigot.settings.ui.components.SettingsTopBar
 import dev.stateholder.extensions.collectAsState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-internal fun InternalSettingsScreen(model: InternalSettingsModel = koinViewModel()) {
+internal fun InternalSettingsScreen(
+    onBack: () -> Unit,
+    model: InternalSettingsModel = koinViewModel(),
+) {
     val state by model.collectAsState()
 
     InternalSettingsScreen(
-        settings = state.settings,
+        settings = state.settings.internalSettings,
+        update = model::update,
+        onBack = onBack,
     )
 }
 
 @Composable
 internal fun InternalSettingsScreen(
-    settings: Settings,
+    settings: InternalSettings,
     modifier: Modifier = Modifier,
+    update: (InternalSettings) -> Unit,
     onBack: () -> Unit = {},
 ) {
+    var backendApiUrl by remember(settings.backendApiUrl) { mutableStateOf(settings.backendApiUrl) }
+    val backendApiUrlChanged = remember(backendApiUrl, settings.backendApiUrl) {
+        backendApiUrl != settings.backendApiUrl && backendApiUrl.isNotBlank()
+    }
+
+    var apiKey by remember(settings.apiKey) { mutableStateOf(settings.apiKey) }
+    val apiKeyChanged = remember(apiKey, settings.apiKey) {
+        apiKey != settings.apiKey && !apiKey.isNullOrBlank()
+    }
+
     Scaffold(
         modifier = modifier,
+        containerColor = AppTheme.colors.surface,
         topBar = {
             SettingsTopBar(
                 text = Res.string.settings_internal_title,
@@ -39,9 +94,118 @@ internal fun InternalSettingsScreen(
             )
         },
     ) { innerPadding ->
+        val layoutDirection = LocalLayoutDirection.current
         Column(
-            modifier = Modifier.padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(32.dp),
+            modifier = Modifier
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    start = innerPadding.calculateStartPadding(layoutDirection),
+                    end = innerPadding.calculateEndPadding(layoutDirection),
+                ).padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
+            Spacer(Modifier.height(4.dp))
+
+            SettingsCard(
+                text = Res.string.settings_internal_backend,
+                colors = CardDefaults.quaternaryColors,
+            ) {
+                Item {
+                    Column {
+                        SettingsTextRow(
+                            text = Res.string.settings_internal_backend_api,
+                            description = Res.string.settings_internal_backend_api_desc,
+                            icon = AppIcons.Lucide.Link,
+                        )
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp)
+                                .padding(bottom = 8.dp, end = 8.dp),
+                        ) {
+                            TextField(
+                                value = backendApiUrl,
+                                onValueChange = { backendApiUrl = it },
+                                maxLines = 1,
+                                modifier = Modifier.weight(1f),
+                            )
+                            IconButton(
+                                variant = IconButtonVariant.SecondaryElevated,
+                                enabled = backendApiUrlChanged,
+                                onClick = {
+                                    update(settings.copy(backendApiUrl = backendApiUrl))
+                                },
+                                modifier = Modifier.align(Alignment.Bottom),
+                            ) {
+                                Icon(
+                                    icon = AppIcons.Lucide.Check,
+                                    contentDescription = Res.string.save.get(),
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Item(isLast = true) {
+                    Column(
+                        modifier = Modifier.animateContentSize(),
+                    ) {
+                        SettingsTextRow(
+                            text = Res.string.settings_internal_backend_direct_api,
+                            description = Res.string.settings_internal_backend_direct_api_desc,
+                            icon = AppIcons.Lucide.Server,
+                            trailingContent = {
+                                Switch(
+                                    checked = settings.useDirectApi,
+                                    onCheckedChange = {
+                                        update(settings.copy(useDirectApi = it))
+                                    },
+                                )
+                            },
+                        )
+
+                        AnimatedVisibility(visible = settings.useDirectApi) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier
+                                    .padding(horizontal = 8.dp)
+                                    .padding(bottom = 8.dp, end = 8.dp),
+                            ) {
+                                TextField(
+                                    value = apiKey ?: "",
+                                    placeholder = {
+                                        Text(
+                                            Res.string.settings_internal_backend_direct_api_token_placeholder,
+                                        )
+                                    },
+                                    onValueChange = { apiKey = it },
+                                    maxLines = 1,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                IconButton(
+                                    variant = IconButtonVariant.SecondaryElevated,
+                                    enabled = apiKeyChanged,
+                                    onClick = {
+                                        update(settings.copy(apiKey = apiKey))
+                                    },
+                                    modifier = Modifier.align(Alignment.Bottom),
+                                ) {
+                                    Icon(
+                                        icon = AppIcons.Lucide.Check,
+                                        contentDescription = Res.string.save.get(),
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(32.dp))
         }
     }
 }
@@ -49,9 +213,11 @@ internal fun InternalSettingsScreen(
 @Preview
 @Composable
 private fun InternalSettingsScreenPreview() {
+    var settings by remember { mutableStateOf(InternalSettings(useDirectApi = true)) }
     AppPreview {
         InternalSettingsScreen(
-            settings = Settings(),
+            settings = settings,
+            update = { settings = it },
         )
     }
 }
