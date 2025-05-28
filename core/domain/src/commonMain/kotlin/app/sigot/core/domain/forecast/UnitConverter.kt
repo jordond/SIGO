@@ -19,6 +19,10 @@ public fun Forecast.convert(units: Units): Forecast {
     return copy(
         units = units,
         current = current.convert(this.units, units),
+        today = today.copy(
+            block = today.block.convert(this.units, units),
+            hours = today.hours.map { it.convert(this.units, units) },
+        ),
         days = days.map { day ->
             day.copy(
                 block = day.block.convert(this.units, units),

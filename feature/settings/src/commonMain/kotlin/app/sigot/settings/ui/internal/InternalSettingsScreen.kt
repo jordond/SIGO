@@ -160,8 +160,8 @@ internal fun InternalSettingsScreen(
                             trailingContent = {
                                 Switch(
                                     checked = settings.useDirectApi,
-                                    onCheckedChange = {
-                                        update(settings.copy(useDirectApi = it))
+                                    onCheckedChange = { value ->
+                                        update(settings.copy(useDirectApi = value))
                                     },
                                 )
                             },

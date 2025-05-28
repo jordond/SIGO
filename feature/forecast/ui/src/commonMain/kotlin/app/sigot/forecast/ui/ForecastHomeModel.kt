@@ -22,6 +22,7 @@ import app.sigot.core.resources.location_geolocation_error
 import app.sigot.core.resources.location_geolocation_not_allowed
 import app.sigot.core.resources.location_geolocation_not_found
 import app.sigot.core.resources.location_geolocation_not_supported
+import co.touchlab.kermit.Logger
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -62,14 +63,14 @@ internal class ForecastHomeModel(
 
     fun forceRefresh() {
         viewModelScope.launch {
-            getForecast(isRefresh = true)
+            getForecast()
         }
     }
 
-    private suspend fun getForecast(isRefresh: Boolean = false) {
-        if (state.value.loading || state.value.refreshing) return
+    private suspend fun getForecast() {
+        if (state.value.loading) return
 
-        updateState { it.copy(loading = true, refreshing = isRefresh) }
+        updateState { it.copy(loading = true) }
         val prefs = state.value.preferences
         val forecast = getForecastUseCase
             .forecastForCurrentLocation(prefs.units)
@@ -82,11 +83,7 @@ internal class ForecastHomeModel(
             val data =
                 if (forecast != null && score != null) ForecastData(forecast, score) else state.forecast
 
-            state.copy(
-                loading = false,
-                refreshing = false,
-                forecast = data,
-            )
+            state.copy(loading = false, forecast = data)
         }
     }
 
@@ -102,6 +99,7 @@ internal class ForecastHomeModel(
             else -> Res.string.forecast_error_generic
         }
 
+        Logger.e(this) { "Error getting forecast" }
         emit(Event.Error(message))
 
         if (this is LocationResult.NotAllowed) {
@@ -115,9 +113,9 @@ internal class ForecastHomeModel(
         val period: ForecastPeriod = ForecastPeriod.Today,
         val permissionStatus: LocationPermissionStatus = Unknown,
         val loading: Boolean = false,
-        val refreshing: Boolean = false,
         val forecast: ForecastData? = null,
     ) {
+        val refreshing: Boolean = loading && forecast != null
         val data: ForecastPeriodData? = forecast?.forPeriod(period)
     }
 

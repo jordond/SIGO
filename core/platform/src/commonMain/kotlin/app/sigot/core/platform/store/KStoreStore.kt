@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 public open class KStoreStore<T : @Serializable Any>(
     protected val store: KStore<T>,
 ) : Store<T> {
+    private val logger = Logger.withTag("KStoreStore")
     override val data: Flow<T> = store.updates.filterNotNull()
 
     public open fun createStoreData(data: T): T = data
@@ -19,7 +20,7 @@ public open class KStoreStore<T : @Serializable Any>(
             try {
                 store.get()
             } catch (cause: Throwable) {
-                Logger.w(cause) { "Failed to get value!" }
+                logger.w(cause) { "Failed to get value!" }
                 null
             }
 
@@ -27,14 +28,14 @@ public open class KStoreStore<T : @Serializable Any>(
     }
 
     override suspend fun set(data: T) {
-        Logger.d { "Setting data..." }
+        logger.d { "Saving data to the store..." }
         val storeData = createStoreData(data)
 
         try {
             store.update { storeData }
         } catch (cause: Throwable) {
             if (cause is CancellationException) throw cause
-            Logger.e(cause) { "Failed to set data: $data" }
+            logger.e(cause) { "Failed to set data: $data" }
             throw cause
         }
     }

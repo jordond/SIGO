@@ -192,6 +192,11 @@
     <string name="forecast_period_hour">at %1$s</string>
     <string name="forecast_period_tomorrow">Tomorrow</string>
 
+    <string name="score">Score</string>
+    <string name="score_yes">Yes</string>
+    <string name="score_maybe">Maybe</string>
+    <string name="score_no">No</string>
+
     <string name="settings_theme_title">Theme</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>

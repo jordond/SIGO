@@ -100,6 +100,19 @@ public object BrutalColor {
         onLowest = Color.Black,
     )
 
+    public val orange: BrutalColors = BrutalColors(
+        bright = Color(0xFFFF8C00),
+        onBright = Color.Black,
+        high = Color(0xFFff9500),
+        onHigh = Color.Black,
+        normal = Color(0xFFffa726),
+        onNormal = Color.Black,
+        low = Color(0xFFffb74d),
+        onLow = Color.Black,
+        lowest = Color(0xFFffe0b2),
+        onLowest = Color.Black,
+    )
+
     public val yellow: BrutalColors = BrutalColors(
         bright = Color(0xFFFFFF00),
         onBright = Color.Black,

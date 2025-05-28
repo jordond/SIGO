@@ -8,6 +8,7 @@ import app.sigot.forecast.data.source.ForecastCache
 import app.sigot.forecast.data.source.cache.entity.ForecastEntity
 import app.sigot.forecast.data.source.cache.entity.toEntity
 import app.sigot.forecast.data.source.cache.entity.toModel
+import co.touchlab.kermit.Logger
 import kotlinx.datetime.Instant
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -17,12 +18,24 @@ internal class StoreForecastCache(
     private val appConfigRepo: AppConfigRepo,
     private val nowProvider: NowProvider,
 ) : ForecastCache {
+    private val logger = Logger.withTag("StoreForecastCache")
     private val expiry: Duration get() = appConfigRepo.value.maxCacheAge - 1.minutes
 
     override suspend fun get(): Forecast? {
-        val saved = store.get() ?: return null
+        val saved = store.get()
+        if (saved == null) {
+            logger.d { "Cache is empty" }
+            return null
+        }
+
         val elapsed = nowProvider.durationFromNow(Instant.fromEpochMilliseconds(saved.updatedAt))
+        logger.d {
+            "Cache is not empty, last updated ${elapsed.inWholeSeconds}s ago, " +
+                "max is ${expiry.inWholeSeconds}s"
+        }
         if (elapsed > expiry) {
+            logger.d { "Cache is expired, returning null" }
+            clear()
             return null
         }
         return saved.toModel()
