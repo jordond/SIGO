@@ -234,6 +234,20 @@ public object ForecastPreviewData {
             alerts = alerts,
         )
 
+    public fun createWindyForecast(
+        instant: Instant = Clock.System.now(),
+        units: Units = Units.Metric,
+        location: Location = Location(-81.878, 42.7632, "London, ON"),
+        alerts: List<Alert> = emptyList(),
+    ): Forecast =
+        createForecastFrom(
+            block = windy(instant),
+            instant = instant,
+            units = units,
+            location = location,
+            alerts = alerts,
+        )
+
     public fun createForecastFrom(
         block: ForecastBlock,
         instant: Instant = Clock.System.now(),

@@ -13,6 +13,12 @@ public data class Precipitation(
     val types: Set<PrecipitationType>,
 ) {
     val type: PrecipitationType? = types.firstOrNull()
+
+    val isRain: Boolean = if (types.isEmpty()) {
+        true
+    } else {
+        types.contains(PrecipitationType.Rain) || types.contains(PrecipitationType.FreezingRain)
+    }
 }
 
 public enum class PrecipitationType {

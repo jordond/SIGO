@@ -26,8 +26,10 @@ import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalContentColor
+import app.sigot.core.ui.LocalHaptics
 import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.foundation.ripple
+import app.sigot.core.ui.wrap
 
 @Composable
 @NonRestartableComposable
@@ -75,12 +77,15 @@ public fun Surface(
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     indication: Indication? = ripple(color = contentColor),
+    enableHaptics: Boolean = LocalHaptics.current.enabled,
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
         LocalContainerColor provides color,
         LocalContentColor provides contentColor,
     ) {
+        val haptics = LocalHaptics.current
+        val clickHandler = if (enableHaptics) haptics.wrap(onClick) else onClick
         Box(
             modifier =
                 modifier
@@ -93,7 +98,7 @@ public fun Surface(
                         interactionSource = interactionSource,
                         indication = indication,
                         enabled = enabled,
-                        onClick = onClick,
+                        onClick = clickHandler,
                     ),
             propagateMinConstraints = true,
         ) {

@@ -23,6 +23,7 @@ import app.sigot.core.resources.settings_theme_light
 import app.sigot.core.resources.settings_theme_system
 import app.sigot.core.resources.settings_theme_title
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.LocalHaptics
 import app.sigot.core.ui.components.Icon
 import app.sigot.core.ui.components.SegmentedButton
 import app.sigot.core.ui.components.SegmentedButtonDefaults
@@ -47,6 +48,7 @@ internal fun ThemeSection(
     primary: Color = AppTheme.colors.success,
     secondary: Color = AppTheme.colors.primary,
 ) {
+    val haptics = LocalHaptics.current
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -65,7 +67,10 @@ internal fun ThemeSection(
                         index = index,
                         count = UnitPreset.entries.size,
                     ),
-                    onClick = { updateTheme(mode) },
+                    onClick = {
+                        haptics.click()
+                        updateTheme(mode)
+                    },
                     selected = selected == mode,
                     label = {
                         val text = remember(mode) {

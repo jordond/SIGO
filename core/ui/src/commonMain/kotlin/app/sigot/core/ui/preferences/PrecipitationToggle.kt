@@ -16,6 +16,7 @@ import app.sigot.core.ui.components.Icon
 import app.sigot.core.ui.components.Switch
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.card.ElevatedCard
+import app.sigot.core.ui.ktx.clickableWithoutRipple
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.mappers.units.colors
 import app.sigot.core.ui.switchColors
@@ -32,6 +33,7 @@ public fun PrecipitationToggle(
     val colors = PrecipitationUnit.colors()
     ElevatedCard(
         colors = colors.cardColors(),
+        modifier = Modifier.clickableWithoutRipple(onClick = { update(!checked) }),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

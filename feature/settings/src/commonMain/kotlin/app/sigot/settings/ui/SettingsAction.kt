@@ -16,6 +16,8 @@ internal sealed interface SettingsAction {
 
     data object ToggleHaptics : SettingsAction
 
+    data object Toggle24HourFormat : SettingsAction
+
     data object ToUnitsScreen : SettingsAction
 
     data object ToPreferencesScreen : SettingsAction

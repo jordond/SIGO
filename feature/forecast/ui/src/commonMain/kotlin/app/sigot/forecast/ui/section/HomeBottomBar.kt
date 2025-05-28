@@ -14,12 +14,14 @@ import app.sigot.core.resources.Res
 import app.sigot.core.resources.preferences
 import app.sigot.core.resources.settings
 import app.sigot.core.ui.AppTheme
-import app.sigot.core.ui.components.Button
-import app.sigot.core.ui.components.ButtonVariant
-import app.sigot.core.ui.components.brutalBorder
+import app.sigot.core.ui.components.Icon
+import app.sigot.core.ui.components.IconButton
+import app.sigot.core.ui.components.IconButtonVariant
+import app.sigot.core.ui.icons.AppIcons
+import app.sigot.core.ui.icons.lucide.Settings
+import app.sigot.core.ui.icons.lucide.SlidersHorizontal
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
-import app.sigot.core.ui.rounded
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -28,29 +30,33 @@ internal fun HomeBottomBar(
     toPreferences: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val shape = AppTheme.shapes.medium.rounded(bottom = false)
     Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
-            .background(
-                color = AppTheme.colors.surface,
-                shape = shape,
-            ).brutalBorder(shape = shape)
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 16.dp, top = 8.dp),
     ) {
-        Button(
-            text = Res.string.settings.get(),
-            variant = ButtonVariant.SecondaryElevated,
+        IconButton(
+            variant = IconButtonVariant.SecondaryElevated,
             onClick = toSettings,
-        )
+        ) {
+            Icon(
+                icon = AppIcons.Lucide.Settings,
+                contentDescription = Res.string.settings.get(),
+            )
+        }
 
-        Button(
-            text = Res.string.preferences.get(),
-            variant = ButtonVariant.SecondaryElevated,
+        IconButton(
+            variant = IconButtonVariant.SecondaryElevated,
             onClick = toPreferences,
-        )
+        ) {
+            Icon(
+                icon = AppIcons.Lucide.SlidersHorizontal,
+                contentDescription = Res.string.preferences.get(),
+            )
+        }
     }
 }
 

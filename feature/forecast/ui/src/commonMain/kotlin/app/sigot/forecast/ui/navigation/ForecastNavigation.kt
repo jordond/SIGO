@@ -14,6 +14,9 @@ public fun NavGraphBuilder.forecastNavigation(
 ) {
     composable<ForecastHomeRoute> {
         ForecastHomeScreen(
+            toViewDetails = {
+                // TODO : Implement details screen/sheet
+            },
             toPreferences = toPreferences,
             toSettings = toSettings,
         )

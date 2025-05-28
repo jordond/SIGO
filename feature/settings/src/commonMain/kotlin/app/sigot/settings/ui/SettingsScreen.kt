@@ -68,6 +68,7 @@ internal fun SettingsScreen(
                 is SettingsAction.Close -> onBack()
                 is SettingsAction.UpdateTheme -> model.updateTheme(action.mode)
                 is SettingsAction.ToggleHaptics -> model.toggleHaptics()
+                is SettingsAction.Toggle24HourFormat -> model.toggle24HourFormat()
                 is SettingsAction.ToUnitsScreen -> toUnits()
                 is SettingsAction.ToPreferencesScreen -> toPreferences()
                 is SettingsAction.RateApp -> {
@@ -144,8 +145,9 @@ internal fun SettingsScreen(
             )
 
             ExperienceSection(
-                haptics = settings.enableHaptics,
+                settings = settings,
                 toggleHaptics = dispatcher.rememberRelay(SettingsAction.ToggleHaptics),
+                toggle24HourFormat = dispatcher.rememberRelay(SettingsAction.Toggle24HourFormat),
                 unitsClick = dispatcher.rememberRelay(SettingsAction.ToUnitsScreen),
                 preferencesClick = dispatcher.rememberRelay(SettingsAction.ToPreferencesScreen),
                 primary = AppTheme.colors.secondary,

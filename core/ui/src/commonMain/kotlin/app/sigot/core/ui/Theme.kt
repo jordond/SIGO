@@ -32,6 +32,10 @@ public object AppTheme {
     public val shapes: Shapes
         @ReadOnlyComposable @Composable
         get() = LocalShapes.current
+
+    public val spacing: Spacing
+        @ReadOnlyComposable @Composable
+        get() = LocalSpacing.current
 }
 
 public val LocalThemeIsDark: ProvidableCompositionLocal<Boolean> = compositionLocalOf {

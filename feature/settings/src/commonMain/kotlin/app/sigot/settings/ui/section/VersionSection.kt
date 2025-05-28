@@ -38,6 +38,6 @@ internal fun VersionSection(
         },
         modifier = modifier
             .fillMaxWidth()
-            .clickableWithoutRipple(onClick = onClick),
+            .clickableWithoutRipple(onClick = onClick, haptics = false),
     )
 }

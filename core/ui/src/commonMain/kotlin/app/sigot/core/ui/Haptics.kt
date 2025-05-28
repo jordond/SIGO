@@ -9,6 +9,8 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 
 public interface Haptics {
+    public val enabled: Boolean
+
     public fun vibrate(
         count: Int,
         type: HapticFeedbackType = HapticFeedbackType.LongPress,
@@ -17,7 +19,20 @@ public interface Haptics {
     public fun vibrate(type: HapticFeedbackType = HapticFeedbackType.LongPress) {
         vibrate(1, type)
     }
+
+    public fun click() {
+        vibrate(1, HapticFeedbackType.Confirm)
+    }
 }
+
+@Composable
+public fun Haptics.wrap(onClick: () -> Unit): () -> Unit =
+    remember(onClick) {
+        {
+            click()
+            onClick()
+        }
+    }
 
 public fun Haptics?.vibrate(type: HapticFeedbackType = HapticFeedbackType.LongPress) {
     this?.vibrate(type)
@@ -28,6 +43,8 @@ public fun Haptics(
     hapticFeedback: HapticFeedback,
 ): Haptics =
     object : Haptics {
+        override val enabled: Boolean = enabled
+
         override fun vibrate(
             count: Int,
             type: HapticFeedbackType,
@@ -42,6 +59,8 @@ public fun Haptics(
 
 public val LocalHaptics: ProvidableCompositionLocal<Haptics> = compositionLocalOf {
     object : Haptics {
+        override val enabled: Boolean = false
+
         override fun vibrate(
             count: Int,
             type: HapticFeedbackType,
