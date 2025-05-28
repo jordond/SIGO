@@ -11,6 +11,9 @@ private const val HPA_TO_INCH_MERCURY = 0.02953
 public val Double.kelvin: Double
     get() = this + KELVIN_TO_CELSIUS
 
+public val Int.kelvin: Double
+    get() = this.toDouble().kelvin
+
 public fun convertTemperature(
     value: Double,
     from: TemperatureUnit,

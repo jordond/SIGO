@@ -99,13 +99,13 @@ public fun BaseUnit.rememberIcon(): ImageVector = remember(this) { icon() }
 public fun PrecipitationUnit.Companion.colors(): BrutalColors = AppTheme.colors.brutal.blue
 
 @Composable
-public fun PressureUnit.Companion.colors(): BrutalColors = AppTheme.colors.brutal.pink
+public fun PressureUnit.Companion.colors(): BrutalColors = AppTheme.colors.brutal.green
 
 @Composable
-public fun TemperatureUnit.Companion.colors(): BrutalColors = AppTheme.colors.brutal.red
+public fun TemperatureUnit.Companion.colors(): BrutalColors = AppTheme.colors.brutal.orange
 
 @Composable
-public fun WindSpeedUnit.Companion.colors(): BrutalColors = AppTheme.colors.brutal.green
+public fun WindSpeedUnit.Companion.colors(): BrutalColors = AppTheme.colors.brutal.pink
 
 @Composable
 public fun BaseUnit.colors(): BrutalColors =

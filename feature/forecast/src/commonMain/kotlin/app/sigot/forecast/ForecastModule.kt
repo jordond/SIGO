@@ -15,25 +15,28 @@ import app.sigot.forecast.data.source.cache.StoreForecastCache
 import app.sigot.forecast.data.source.visualcrossing.DefaultVisualCrossingApi
 import app.sigot.forecast.data.source.visualcrossing.VisualCrossingApi
 import app.sigot.forecast.data.source.visualcrossing.VisualCrossingForecastSource
+import app.sigot.forecast.domain.AppConfigScoreCalculator
 import app.sigot.forecast.domain.DefaultGetForecastUseCase
 import app.sigot.forecast.domain.DefaultGetScoreUseCast
-import app.sigot.forecast.domain.DefaultScoreCalculator
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.scope.Scope
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private fun forecastBaseModule(): Module =
     module {
-        factoryOf(::DefaultScoreCalculator) bind ScoreCalculator::class
+        factoryOf(::AppConfigScoreCalculator) bind ScoreCalculator::class
         factoryOf(::DefaultGetForecastUseCase) bind GetForecastUseCase::class
         factoryOf(::DefaultGetScoreUseCast) bind GetScoreUseCase::class
 
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
-        factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
         singleOf(::DefaultForecastRepo) bind ForecastRepo::class
     }
+
+public fun Scope.directApiFortuneSource(): ForecastSource =
+    VisualCrossingForecastSource(get(), get(), get(), get())
 
 public fun forecastAppModule(): Module =
     module {
@@ -57,6 +60,8 @@ public fun forecastBackendModule(): Module =
                 logger.log("Query cost", mapOf("cost" to cost.toString()))
             }
         }
+
+        factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
     }
 
 public fun forecastCliModule(): Module =
@@ -64,4 +69,5 @@ public fun forecastCliModule(): Module =
         includes(forecastBaseModule())
         factory<QueryCostLogger> { QueryCostLogger {} }
         single { StoreForecastCache(store = NoopStore(), get(), get()) } bind ForecastCache::class
+        factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
     }

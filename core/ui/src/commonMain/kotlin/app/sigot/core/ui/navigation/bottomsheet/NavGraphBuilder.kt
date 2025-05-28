@@ -12,7 +12,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.get
-import co.touchlab.kermit.Logger
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
@@ -77,9 +76,6 @@ public inline fun <reified T : Any> NavGraphBuilder.bottomSheet(
         deepLinks.forEach { deepLink -> deepLink(deepLink) }
     }
 
-    Logger.e {
-        "adding bottom sheet destination: ${destination.route}"
-    }
     destination(destination)
 }
 

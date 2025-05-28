@@ -1,0 +1,13 @@
+package app.sigot.forecast.ui.components.mappers
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import app.sigot.core.model.ForecastData
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+
+@Composable
+internal fun ForecastData?.rememberInstant(): Instant =
+    remember(this) {
+        this?.forecast?.instant ?: Clock.System.now()
+    }

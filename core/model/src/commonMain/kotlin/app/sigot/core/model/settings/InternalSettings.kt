@@ -10,5 +10,6 @@ public data class InternalSettings(
 ) {
     public companion object {
         public val DefaultBackendApiUrl: String = BuildKonfig.BACKEND_URL
+        public val DefaultWeatherApiToken: String? = BuildKonfig.WEATHER_API_TOKEN.takeIf { it.isNotBlank() }
     }
 }

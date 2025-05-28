@@ -20,8 +20,8 @@ internal data class InternalSettingsEntity(
 internal fun InternalSettingsEntity.toModel() =
     InternalSettings(
         enabled = isDebug || enabled,
-        backendApiUrl = backendApiUrl ?: InternalSettings.DefaultBackendApiUrl,
-        apiKey = apiKey,
+        backendApiUrl = backendApiUrl?.takeIf { it.isNotBlank() } ?: InternalSettings.DefaultBackendApiUrl,
+        apiKey = apiKey?.takeIf { it.isNotBlank() } ?: InternalSettings.DefaultWeatherApiToken,
         useDirectApi = useDirectApi,
     )
 

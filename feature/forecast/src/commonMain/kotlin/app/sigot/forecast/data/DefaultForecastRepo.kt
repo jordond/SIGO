@@ -6,6 +6,7 @@ import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.location.Location
 import app.sigot.forecast.data.source.ForecastCache
 import app.sigot.forecast.data.source.ForecastSource
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
@@ -15,17 +16,22 @@ internal class DefaultForecastRepo(
     private val source: ForecastSource,
     private val nowProvider: NowProvider,
 ) : ForecastRepo {
+    private val logger = Logger.withTag("DefaultForecastRepo")
+
     override suspend fun forecastFor(
         location: Location,
         force: Boolean,
     ): Result<Forecast> {
         if (!force) {
+            logger.d { "Checking cache for location=$location" }
             val cached = withContext(Dispatchers.Default) { cache.get() }
             if (cached != null && cached.location == location) {
+                logger.d { "Cache hit for location=$location" }
                 return Result.success(cached.copy(instant = nowProvider.now()))
             }
         }
 
+        logger.d { "Fetching fresh forecast for location=$location" }
         return runCatching {
             withContext(Dispatchers.Default) {
                 source.forecastFor(location).also { cache.save(it) }
@@ -40,12 +46,15 @@ internal class DefaultForecastRepo(
         force: Boolean,
     ): Result<Forecast> {
         if (!force) {
+            logger.d { "Checking cache for location=$location" }
             val cached = withContext(Dispatchers.Default) { cache.get() }
             if (cached != null && cached.location.name == location) {
+                logger.d { "Cache hit for location=$location" }
                 return Result.success(cached)
             }
         }
 
+        logger.d { "Fetching fresh forecast for location=$location" }
         return runCatching {
             withContext(Dispatchers.Default) {
                 source.forecastFor(location).also { cache.save(it) }

@@ -6,7 +6,7 @@ import app.sigot.core.model.settings.Settings
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
 
 internal class InternalSettingsModel(
-    settingsRepo: SettingsRepo,
+    private val settingsRepo: SettingsRepo,
 ) : UiStateViewModel<InternalSettingsModel.State, InternalSettingsModel.Event>(
         State(settingsRepo.settings.value),
     ) {
@@ -14,8 +14,10 @@ internal class InternalSettingsModel(
         settingsRepo.settings.mergeState { state, value -> state.copy(settings = value) }
     }
 
-    fun update(settings: InternalSettings) {
-        updateState { it.copy(settings = it.settings.copy(internalSettings = settings)) }
+    fun update(value: InternalSettings) {
+        settingsRepo.update { settings ->
+            settings.copy(internalSettings = value)
+        }
     }
 
     data class State(
