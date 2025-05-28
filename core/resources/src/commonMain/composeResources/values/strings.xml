@@ -129,10 +129,13 @@
     <string name="unit_wind_kph">km/h</string>
     <string name="unit_wind_ms">m/s</string>
     <string name="unit_temperature">Temperature</string>
+    <string name="unit_temperature_short">Temp</string>
     <string name="unit_temperature_celsius">°C</string>
     <string name="unit_temperature_fahrenheit">°F</string>
     <string name="unit_temperature_kelvin">K</string>
     <string name="unit_precipitation">Precipitation</string>
+    <string name="unit_precipitation_rain">Rain</string>
+    <string name="unit_precipitation_snow">Snow</string>
     <string name="unit_precipitation_mm">mm</string>
     <string name="unit_precipitation_inch">in</string>
     <string name="unit_pressure">Pressure</string>
@@ -191,11 +194,39 @@
     <string name="forecast_period_today">Today</string>
     <string name="forecast_period_hour">at %1$s</string>
     <string name="forecast_period_tomorrow">Tomorrow</string>
+    <string name="forecast_view_details">View Details</string>
 
     <string name="score">Score</string>
     <string name="score_yes">Yes</string>
     <string name="score_maybe">Maybe</string>
     <string name="score_no">No</string>
+    <string name="score_temperature_inside">The temperature is perfect!</string>
+    <string name="score_temperature_outside_high">The temperature is too hot</string>
+    <string name="score_temperature_outside_low">The temperature is too cold</string>
+    <string name="score_temperature_near">The temperature is close enough</string>
+    <string name="score_temperature_status_inside">Ideal</string>
+    <string name="score_temperature_status_outside_high">Hot</string>
+    <string name="score_temperature_status_outside_low">Cold</string>
+    <string name="score_temperature_status_near">Fine</string>
+    <string name="score_wind_inside">The wind is just right</string>
+    <string name="score_wind_outside">It's way too windy</string>
+    <string name="score_wind_near">It's a bit windy</string>
+    <string name="score_wind_status_inside">Low</string>
+    <string name="score_wind_status_outside">High</string>
+    <string name="score_wind_status_near">Some</string>
+    <string name="score_precipitation_rain_inside">Not rainy at all</string>
+    <string name="score_precipitation_rain_outside">It's rainy</string>
+    <string name="score_precipitation_rain_near">There's some rain</string>
+    <string name="score_precipitation_snow_inside">Not snowy at all</string>
+    <string name="score_precipitation_snow_outside">It's snowy</string>
+    <string name="score_precipitation_snow_near">There's some snow</string>
+    <string name="score_precipitation_status_inside">None</string>
+    <string name="score_precipitation_status_outside">Too much</string>
+    <string name="score_precipitation_status_near">Some</string>
+    <string name="score_severe_weather">Severe weather</string>
+    <string name="score_severe_weather_inside">No severe weather!</string>
+    <string name="score_severe_weather_outside">There is severe weather out there!</string>
+    <string name="score_severe_weather_near">A chance of severe weather</string>
 
     <string name="settings_theme_title">Theme</string>
     <string name="settings_theme_light">Light</string>
@@ -204,6 +235,8 @@
     <string name="settings_experience_title">Experience</string>
     <string name="settings_experience_haptics">Haptic feedback</string>
     <string name="settings_experience_haptics_desc">Enable or disable subtle vibrations for certain interactions within the app.</string>
+    <string name="settings_experience_24_hour_format">24 hour format</string>
+    <string name="settings_experience_24_hour_format_desc">Use 24 hour time instead of 12 hour time.</string>
     <string name="settings_experience_units">Units</string>
     <string name="settings_experience_units_desc">Update the units used in the app</string>
     <string name="settings_experience_preferences">Preferences</string>
@@ -219,6 +252,8 @@
     <string name="settings_internal_title">Internal Settings</string>
 
     <string name="settings_internal_backend">Backend</string>
+    <string name="settings_internal_backend_simulate_failure">Simulate failure</string>
+    <string name="settings_internal_backend_simulate_failure_desc">When enabled this will cause all backend and API calls to fail</string>
     <string name="settings_internal_backend_api">API Address</string>
     <string name="settings_internal_backend_api_desc">The address of the backend API to use</string>
     <string name="settings_internal_backend_direct_api">Direct API</string>

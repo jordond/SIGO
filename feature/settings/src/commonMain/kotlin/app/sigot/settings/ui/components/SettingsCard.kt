@@ -32,6 +32,7 @@ import app.sigot.core.resources.settings_experience_haptics
 import app.sigot.core.resources.settings_experience_haptics_desc
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalContainerColor
+import app.sigot.core.ui.LocalHaptics
 import app.sigot.core.ui.components.BrutalDefaults
 import app.sigot.core.ui.components.HorizontalDivider
 import app.sigot.core.ui.components.Icon
@@ -48,6 +49,7 @@ import app.sigot.core.ui.icons.lucide.Droplet
 import app.sigot.core.ui.icons.lucide.Share
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
+import app.sigot.core.ui.wrap
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -93,11 +95,11 @@ internal fun SettingsCard(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.small),
     ) {
         SettingsHeader(
             text = text,
-            modifier = Modifier.padding(bottom = 4.dp),
+            modifier = Modifier.padding(bottom = AppTheme.spacing.mini),
         )
 
         ElevatedCard(
@@ -166,7 +168,10 @@ internal fun SettingsTextRow(
                 text = description,
                 style = descriptionStyle,
                 maxLines = 2,
-                autoSize = TextAutoSize.StepBased(maxFontSize = descriptionStyle.fontSize),
+                autoSize = TextAutoSize.StepBased(
+                    minFontSize = 10.sp,
+                    maxFontSize = descriptionStyle.fontSize,
+                ),
             )
         }
     }
@@ -183,7 +188,7 @@ internal fun TrailingBorderedIcon(
         modifier = modifier
             .background(color, AppTheme.shapes.small)
             .border(BrutalDefaults.Border, AppTheme.shapes.small)
-            .padding(8.dp),
+            .padding(AppTheme.spacing.small),
     ) {
         Icon(
             icon = icon,
@@ -207,23 +212,24 @@ internal fun SettingsRow(
             .heightIn(min = 64.dp)
             .then(
                 if (onClick != null) {
-                    Modifier.clickable(onClick = onClick)
+                    val haptics = LocalHaptics.current
+                    Modifier.clickable(onClick = haptics.wrap(onClick))
                 } else {
                     Modifier
                 },
-            ).padding(horizontal = 16.dp, vertical = 12.dp),
+            ).padding(horizontal = AppTheme.spacing.standard, vertical = 12.dp),
     ) {
         if (icon != null) {
             Icon(
                 icon = icon,
                 contentDescription = contentDescription,
-                modifier = Modifier.padding(end = 16.dp),
+                modifier = Modifier.padding(end = AppTheme.spacing.small),
             )
         }
 
         Box(
             modifier = Modifier
-                .padding(end = 8.dp)
+                .padding(end = AppTheme.spacing.small)
                 .weight(1f),
         ) {
             content()
@@ -240,7 +246,7 @@ internal fun SettingsRow(
 private fun SettingsCardPreview() {
     AppPreview {
         Column(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(AppTheme.spacing.small),
         ) {
             SettingsCard(
                 text = Res.string.settings,

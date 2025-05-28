@@ -1,6 +1,7 @@
 package app.sigot.forecast.data
 
 import app.sigot.core.domain.forecast.ForecastRepo
+import app.sigot.core.domain.settings.SettingsRepo
 import app.sigot.core.foundation.NowProvider
 import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.location.Location
@@ -15,6 +16,7 @@ internal class DefaultForecastRepo(
     private val cache: ForecastCache,
     private val source: ForecastSource,
     private val nowProvider: NowProvider,
+    private val settingsRepo: SettingsRepo,
 ) : ForecastRepo {
     private val logger = Logger.withTag("DefaultForecastRepo")
 
@@ -22,6 +24,10 @@ internal class DefaultForecastRepo(
         location: Location,
         force: Boolean,
     ): Result<Forecast> {
+        if (settingsRepo.settings.value.internalSettings.simulateFailure) {
+            return Result.failure(RuntimeException("Simulated failure"))
+        }
+
         if (!force) {
             logger.d { "Checking cache for location=$location" }
             val cached = withContext(Dispatchers.Default) { cache.get() }
@@ -45,6 +51,10 @@ internal class DefaultForecastRepo(
         location: String,
         force: Boolean,
     ): Result<Forecast> {
+        if (settingsRepo.settings.value.internalSettings.simulateFailure) {
+            return Result.failure(RuntimeException("Simulated failure"))
+        }
+
         if (!force) {
             logger.d { "Checking cache for location=$location" }
             val cached = withContext(Dispatchers.Default) { cache.get() }

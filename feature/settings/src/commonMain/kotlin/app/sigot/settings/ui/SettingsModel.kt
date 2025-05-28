@@ -30,6 +30,10 @@ internal class SettingsModel(
         settingsRepo.update { settings -> settings.copy(enableHaptics = !settings.enableHaptics) }
     }
 
+    fun toggle24HourFormat() {
+        settingsRepo.update { settings -> settings.copy(use24HourFormat = !settings.use24HourFormat) }
+    }
+
     fun clickAbout() {
         updateState { it.copy(aboutClicks = it.aboutClicks + 1) }
         Logger.d { "About tapped: ${state.value.aboutClicks} times." }

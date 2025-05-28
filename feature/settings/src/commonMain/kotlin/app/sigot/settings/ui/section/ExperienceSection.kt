@@ -10,8 +10,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import app.sigot.core.model.settings.Settings
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.open
+import app.sigot.core.resources.settings_experience_24_hour_format
+import app.sigot.core.resources.settings_experience_24_hour_format_desc
 import app.sigot.core.resources.settings_experience_haptics
 import app.sigot.core.resources.settings_experience_haptics_desc
 import app.sigot.core.resources.settings_experience_preferences
@@ -25,6 +28,7 @@ import app.sigot.core.ui.components.SwitchDefaults
 import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.ArrowRight
+import app.sigot.core.ui.icons.lucide.Hourglass
 import app.sigot.core.ui.icons.lucide.Ruler
 import app.sigot.core.ui.icons.lucide.Vibrate
 import app.sigot.core.ui.icons.lucide.VibrateOff
@@ -45,8 +49,9 @@ private val trailingContent = @Composable {
 
 @Composable
 internal fun ExperienceSection(
-    haptics: Boolean,
+    settings: Settings,
     toggleHaptics: () -> Unit,
+    toggle24HourFormat: () -> Unit,
     unitsClick: () -> Unit,
     preferencesClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -58,8 +63,8 @@ internal fun ExperienceSection(
         colors = CardDefaults.fromColor(primary),
     ) {
         Item {
-            val icon = remember(haptics) {
-                if (haptics) AppIcons.Lucide.Vibrate else AppIcons.Lucide.VibrateOff
+            val icon = remember(settings.enableHaptics) {
+                if (settings.enableHaptics) AppIcons.Lucide.Vibrate else AppIcons.Lucide.VibrateOff
             }
             SettingsTextRow(
                 text = Res.string.settings_experience_haptics,
@@ -68,8 +73,24 @@ internal fun ExperienceSection(
                 onClick = { toggleHaptics() },
                 trailingContent = {
                     Switch(
-                        checked = haptics,
+                        checked = settings.enableHaptics,
                         onCheckedChange = { toggleHaptics() },
+                        colors = SwitchDefaults.colors(checkedTrackColor = secondary),
+                    )
+                },
+            )
+        }
+
+        Item {
+            SettingsTextRow(
+                text = Res.string.settings_experience_24_hour_format,
+                description = Res.string.settings_experience_24_hour_format_desc,
+                icon = AppIcons.Lucide.Hourglass,
+                onClick = toggle24HourFormat,
+                trailingContent = {
+                    Switch(
+                        checked = settings.use24HourFormat,
+                        onCheckedChange = { toggle24HourFormat() },
                         colors = SwitchDefaults.colors(checkedTrackColor = secondary),
                     )
                 },
@@ -101,14 +122,17 @@ internal fun ExperienceSection(
 @Preview
 @Composable
 private fun ExperienceSectionPreview() {
-    var haptics by remember { mutableStateOf(false) }
+    var settings by remember { mutableStateOf(Settings()) }
     AppPreview {
         Column(
             modifier = Modifier.padding(16.dp),
         ) {
             ExperienceSection(
-                haptics = haptics,
-                toggleHaptics = { haptics = !haptics },
+                settings = settings,
+                toggleHaptics = { settings = settings.copy(enableHaptics = !settings.enableHaptics) },
+                toggle24HourFormat = {
+                    settings = settings.copy(use24HourFormat = !settings.use24HourFormat)
+                },
                 unitsClick = {},
                 preferencesClick = {},
             )

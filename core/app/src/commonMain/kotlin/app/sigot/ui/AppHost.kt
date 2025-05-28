@@ -66,7 +66,7 @@ internal fun AppHost(
                 CompositionLocalProvider(
                     LocalWindowSizeClass provides windowSizeClass,
                     LocalHaptics provides haptics,
-                    LocalUse24HourTime provides state.settings.preferences.use24HourFormat,
+                    LocalUse24HourTime provides state.settings.use24HourFormat,
                 ) {
                     ModalBottomSheetLayout(
                         bottomSheetNavigator = bottomSheetNavigator,

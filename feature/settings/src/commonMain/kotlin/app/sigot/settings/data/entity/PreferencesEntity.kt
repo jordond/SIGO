@@ -8,8 +8,6 @@ import kotlinx.serialization.Serializable
 internal data class PreferencesEntity(
     @SerialName("units")
     val units: UnitsEntity,
-    @SerialName("use_24_hour_format")
-    val use24HourFormat: Boolean,
     @SerialName("min_temp")
     val minTemperature: Int,
     @SerialName("max_temp")
@@ -27,7 +25,6 @@ internal data class PreferencesEntity(
 internal fun Preferences.toEntity() =
     PreferencesEntity(
         units = units.toEntity(),
-        use24HourFormat = use24HourFormat,
         minTemperature = minTemperature,
         maxTemperature = maxTemperature,
         includeApparentTemperature = includeApparentTemperature,
@@ -39,7 +36,6 @@ internal fun Preferences.toEntity() =
 internal fun PreferencesEntity.toModel() =
     Preferences(
         units = units.toModel(),
-        use24HourFormat = use24HourFormat,
         minTemperature = minTemperature,
         maxTemperature = maxTemperature,
         includeApparentTemperature = includeApparentTemperature,

@@ -1,5 +1,6 @@
 import app.sigot.convention.Platforms
 import app.sigot.convention.configureMultiplatform
+import app.sigot.convention.testDependencies
 
 plugins {
     alias(libs.plugins.android.library)
@@ -12,6 +13,8 @@ configureMultiplatform(Platforms.All, name = "core.domain")
 
 kotlin {
     sourceSets {
+        testDependencies()
+
         commonMain.dependencies {
             implementation(projects.core.model)
 

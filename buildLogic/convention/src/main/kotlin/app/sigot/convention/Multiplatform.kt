@@ -13,9 +13,11 @@ fun Project.configureMultiplatform(
     platform: Platform,
     name: String = this.name,
     compose: Boolean = extensions.findByType(ComposeExtension::class.java) != null,
+    cocoapods: Boolean = false,
+    desugar: Boolean = false,
     log: Boolean = false,
 ) {
-    configureMultiplatform(listOf(platform), name, compose, log)
+    configureMultiplatform(listOf(platform), name, compose, cocoapods, desugar, log)
 }
 
 fun Project.configureMultiplatform(
@@ -24,6 +26,7 @@ fun Project.configureMultiplatform(
     compose: Boolean = extensions.findByType(ComposeExtension::class.java) != null,
     cocoapods: Boolean = false,
     desugar: Boolean = false,
+    tests: Boolean = false,
     log: Boolean = false,
 ) {
     if (log) {
@@ -36,7 +39,7 @@ fun Project.configureMultiplatform(
 
     extensions.configure<KotlinMultiplatformExtension> {
         configureKotlin()
-        configurePlatforms(platforms, name, cocoapods, log)
+        configurePlatforms(platforms, name, cocoapods, tests, log)
         if (platforms.contains(Platform.Ios)) {
             configureNativeOptIn()
         }
@@ -57,6 +60,7 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
     platforms: List<Platform> = Platforms.All,
     name: String,
     cocoapods: Boolean,
+    tests: Boolean,
     log: Boolean,
 ) {
     applyDefaultHierarchyTemplate()
@@ -128,8 +132,15 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
             }
     }
 
+    if (tests) {
+        testDependencies()
+    }
+}
+
+fun KotlinMultiplatformExtension.testDependencies() {
     sourceSets.commonTest.dependencies {
         implementation(kotlin("test"))
+        implementation(project.libs.findLibrary("kotest-assertions").get())
     }
 }
 

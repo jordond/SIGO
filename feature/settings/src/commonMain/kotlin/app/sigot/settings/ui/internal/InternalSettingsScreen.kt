@@ -30,6 +30,8 @@ import app.sigot.core.resources.settings_internal_backend_api_desc
 import app.sigot.core.resources.settings_internal_backend_direct_api
 import app.sigot.core.resources.settings_internal_backend_direct_api_desc
 import app.sigot.core.resources.settings_internal_backend_direct_api_token_placeholder
+import app.sigot.core.resources.settings_internal_backend_simulate_failure
+import app.sigot.core.resources.settings_internal_backend_simulate_failure_desc
 import app.sigot.core.resources.settings_internal_title
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Icon
@@ -96,13 +98,13 @@ internal fun InternalSettingsScreen(
     ) { innerPadding ->
         val layoutDirection = LocalLayoutDirection.current
         Column(
-            verticalArrangement = Arrangement.spacedBy(32.dp),
+            verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.large),
             modifier = Modifier
                 .padding(
                     top = innerPadding.calculateTopPadding(),
                     start = innerPadding.calculateStartPadding(layoutDirection),
                     end = innerPadding.calculateEndPadding(layoutDirection),
-                ).padding(horizontal = 16.dp)
+                ).padding(horizontal = AppTheme.spacing.standard)
                 .verticalScroll(rememberScrollState()),
         ) {
             Spacer(Modifier.height(4.dp))
@@ -111,6 +113,22 @@ internal fun InternalSettingsScreen(
                 text = Res.string.settings_internal_backend,
                 colors = CardDefaults.quaternaryColors,
             ) {
+                Item {
+                    SettingsTextRow(
+                        text = Res.string.settings_internal_backend_simulate_failure,
+                        description = Res.string.settings_internal_backend_simulate_failure_desc,
+                        icon = AppIcons.Lucide.Server,
+                        trailingContent = {
+                            Switch(
+                                checked = settings.simulateFailure,
+                                onCheckedChange = { value ->
+                                    update(settings.copy(simulateFailure = value))
+                                },
+                            )
+                        },
+                    )
+                }
+
                 Item {
                     Column {
                         SettingsTextRow(
@@ -121,10 +139,10 @@ internal fun InternalSettingsScreen(
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(AppTheme.spacing.small),
                             modifier = Modifier
-                                .padding(horizontal = 8.dp)
-                                .padding(bottom = 8.dp, end = 8.dp),
+                                .padding(horizontal = AppTheme.spacing.small)
+                                .padding(bottom = AppTheme.spacing.small, end = AppTheme.spacing.small),
                         ) {
                             TextField(
                                 value = backendApiUrl,
@@ -170,10 +188,10 @@ internal fun InternalSettingsScreen(
                         AnimatedVisibility(visible = settings.useDirectApi) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(AppTheme.spacing.small),
                                 modifier = Modifier
-                                    .padding(horizontal = 8.dp)
-                                    .padding(bottom = 8.dp, end = 8.dp),
+                                    .padding(horizontal = AppTheme.spacing.small)
+                                    .padding(bottom = AppTheme.spacing.small, end = AppTheme.spacing.small),
                             ) {
                                 TextField(
                                     value = apiKey ?: "",
@@ -205,7 +223,7 @@ internal fun InternalSettingsScreen(
                 }
             }
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(AppTheme.spacing.large))
         }
     }
 }
