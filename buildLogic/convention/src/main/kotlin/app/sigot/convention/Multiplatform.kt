@@ -15,9 +15,10 @@ fun Project.configureMultiplatform(
     compose: Boolean = extensions.findByType(ComposeExtension::class.java) != null,
     cocoapods: Boolean = false,
     desugar: Boolean = false,
+    tests: Boolean = false,
     log: Boolean = false,
 ) {
-    configureMultiplatform(listOf(platform), name, compose, cocoapods, desugar, log)
+    configureMultiplatform(listOf(platform), name, compose, cocoapods, desugar, tests, log)
 }
 
 fun Project.configureMultiplatform(
