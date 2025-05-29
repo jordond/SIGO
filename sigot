@@ -76,6 +76,9 @@ init)
     secrets | secret | s)
         "$ROOT"/scripts/init-secrets.sh "$@"
         ;;
+    api:worker)
+       "$ROOT"/scripts/api-worker.sh init
+      ;;
     *)
         echo "The command '$subcommand' is not a valid 'init' command. Use 'ktlint', 'secrets', or 'hooks'."
         exit 1
