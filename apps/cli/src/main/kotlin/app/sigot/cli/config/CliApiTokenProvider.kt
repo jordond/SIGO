@@ -1,8 +1,8 @@
 package app.sigot.cli.config
 
-import app.sigot.core.domain.forecast.VisualCrossingTokenProvider
+import app.sigot.core.domain.forecast.ApiTokenProvider
 
-class ApiTokenProvider : VisualCrossingTokenProvider {
+class CliApiTokenProvider : ApiTokenProvider {
     var token: String = ""
 
     override fun provide(): String = token.takeIf { it.isNotEmpty() } ?: error("Token not set")

@@ -76,6 +76,12 @@
     <string name="time_am">AM</string>
     <string name="time_pm">PM</string>
 
+    <string name="updated_at">updated %1$s</string>
+    <string name="time_ago_moments">moments ago</string>
+    <string name="time_ago_a_minute">a minute ago</string>
+    <string name="time_ago_minutes">%1$d minutes ago</string>
+    <string name="time_ago_at">at %1$s</string>
+
     <string name="month_january">January</string>
     <string name="month_february">February</string>
     <string name="month_march">March</string>

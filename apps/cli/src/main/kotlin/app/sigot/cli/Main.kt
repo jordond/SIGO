@@ -1,6 +1,6 @@
 package app.sigot.cli
 
-import app.sigot.cli.config.ApiTokenProvider
+import app.sigot.cli.config.CliApiTokenProvider
 import app.sigot.cli.config.CliConfigRepo
 import app.sigot.cli.di.initKoin
 import app.sigot.cli.util.BaseCommand
@@ -17,7 +17,7 @@ import kotlin.system.exitProcess
 
 class Cli(
     private val configRepo: CliConfigRepo,
-    private val apiTokenProvider: ApiTokenProvider,
+    private val apiTokenProvider: CliApiTokenProvider,
     private val forecastRepo: ForecastRepo,
 ) : BaseCommand() {
     private val token: String? by option(
