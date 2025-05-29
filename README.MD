@@ -75,3 +75,11 @@ If you want to deploy to staging or the dev environment you can pass `--env` lik
 ```
 
 Once that is successful the worker should be available at https://api.sigot.app (or dev/staging.api.sigot.app)
+
+### Misc
+
+Wrangler is installed to the `apps/api/worker/node_modules` folder. To run it easily for any other command you can use the wrapper command:
+
+```shell
+./sigot api:worker wrangler <command>
+```

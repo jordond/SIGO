@@ -66,7 +66,6 @@ public fun forecastBackendModule(): Module =
     module {
         factory<QueryCostLogger> {
             val logger = get<AnalyticsLogger>()
-            // TODO: Have a real solution to logging the cost
             QueryCostLogger { cost ->
                 logger.log("Query cost", mapOf("cost" to cost.toString()))
             }

@@ -28,6 +28,9 @@ kotlin {
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.js)
+            implementation(libs.kermit)
+            implementation(libs.kermit.koin)
+            implementation(libs.koin.core)
         }
     }
 }
