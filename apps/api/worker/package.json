@@ -1,0 +1,14 @@
+{
+  "name": "api-worker",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "private": "true",
+  "license": "ISC",
+  "author": "",
+  "main": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "wrangler": "^4.18.0"
+  }
+}

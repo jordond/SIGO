@@ -19,32 +19,36 @@ Now run the init scripts:
 ./sigot init secrets
 ```
 
-You are now ready to start developing.
+## Backend API
 
-### Android
-To run the application on android device/emulator:  
- - open project in Android Studio and run imported android run configuration
+The API handles all communication to the Weather API, there are three planned implementations:
 
-To build the application bundle:
- - run `./gradlew :composeApp:assembleDebug`
- - find `.apk` file in `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
-Run android UI tests on the connected device: `./gradlew :composeApp:connectedDebugAndroidTest`
+- Cloudflare Worker
+- Firebase Function
+- Standalone Ktor server
 
-### Desktop
-Run the desktop application: `./gradlew :composeApp:run`
-Run the desktop **hot reload** application: `./gradlew :composeApp:jvmRunHot`)
-Run desktop UI tests: `./gradlew :composeApp:jvmTest`
+## Cloudflare Worker
 
-### iOS
-To run the application on iPhone device/simulator:
- - Open `iosApp/iosApp.xcproject` in Xcode and run standard configuration
- - Or use [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio
-Run iOS simulator UI tests: `./gradlew :composeApp:iosSimulatorArm64Test`
+Located in the `apps/api/worker` directory.
 
-### JS Browser (Experimental)
-Run the browser application: `./gradlew :composeApp:jsBrowserDevelopmentRun --continue`
-Run browser UI tests: `./gradlew :composeApp:jsBrowserTest`
+### Deploy
 
-### Wasm Browser (Alpha)
-Run the browser application: `./gradlew :composeApp:wasmJsBrowserDevelopmentRun --continue`
-Run browser UI tests: `./gradlew :composeApp:wasmJsBrowserTest`
+```shell
+# Install wrangler for Cloudflare
+npm install -g wrangler
+
+# Install dependencies for the worker
+cd apps/api/worker
+npm install
+cd -
+
+# Build the worker
+./gradlew :apps:api:worker:compileProductionExecutableKotlinJs
+
+# Deploy
+wrangler deploy
+
+# Optionally deploy to dev/staging
+wrangler deploy --env dev
+wtangler deploy --env staging
+```

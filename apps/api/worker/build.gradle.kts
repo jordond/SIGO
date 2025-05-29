@@ -7,11 +7,15 @@ kotlin {
         nodejs()
         binaries.executable()
 
+        useEsModules()
+        generateTypeScriptDefinitions()
+        outputModuleName.set("index")
+
         compilations["main"].packageJson {
             version = "1.0.0"
+            main = "./index.mjs"
+            customField("type", "module")
         }
-
-        outputModuleName.set("index")
     }
 
     sourceSets {
