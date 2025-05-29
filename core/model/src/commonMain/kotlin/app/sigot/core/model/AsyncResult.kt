@@ -1,8 +1,8 @@
-package app.sigot.core.foundation
+package app.sigot.core.model
 
-import app.sigot.core.foundation.AsyncResult.Error
-import app.sigot.core.foundation.AsyncResult.Loading
-import app.sigot.core.foundation.AsyncResult.Success
+import app.sigot.core.model.AsyncResult.Error
+import app.sigot.core.model.AsyncResult.Loading
+import app.sigot.core.model.AsyncResult.Success
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.cancellation.CancellationException
@@ -29,6 +29,12 @@ public fun <T> AsyncResult<T>?.getOrNull(): T? =
         null -> null
     }
 
+public fun <T> Result<T>.toAsyncResult(): AsyncResult<T> =
+    fold(
+        onSuccess = { Success(it) },
+        onFailure = { Error(it) },
+    )
+
 public fun <T, R> AsyncResult<T>.mapSuccess(transform: (T) -> R): AsyncResult<R> =
     when (this) {
         is Loading -> Loading
@@ -42,7 +48,7 @@ public fun <T, R> AsyncResult<T>.mapSuccess(transform: (T) -> R): AsyncResult<R>
     }
 
 public fun <T, R> Flow<AsyncResult<T>>.mapSuccess(transform: (T) -> R): Flow<AsyncResult<R>> =
-    map { result -> result.mapSuccess(transform) }
+    this.map { result -> result.mapSuccess(transform) }
 
 public fun <T> T.asAsyncResult(): AsyncResult<T> = Success(this)
 

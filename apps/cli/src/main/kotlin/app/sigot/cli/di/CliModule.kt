@@ -1,10 +1,10 @@
 package app.sigot.cli.di
 
-import app.sigot.cli.config.ApiTokenProvider
+import app.sigot.cli.config.CliApiTokenProvider
 import app.sigot.cli.config.CliConfig
 import app.sigot.cli.config.CliConfigRepo
 import app.sigot.cli.config.DefaultCliConfigRepo
-import app.sigot.core.domain.forecast.VisualCrossingTokenProvider
+import app.sigot.core.domain.forecast.ApiTokenProvider
 import app.sigot.core.platform.store.Store
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -17,5 +17,5 @@ internal fun cliModule() =
             DefaultCliConfigRepo(store)
         } bind CliConfigRepo::class
 
-        singleOf(::ApiTokenProvider) bind VisualCrossingTokenProvider::class
+        singleOf(::ApiTokenProvider) bind CliApiTokenProvider::class
     }

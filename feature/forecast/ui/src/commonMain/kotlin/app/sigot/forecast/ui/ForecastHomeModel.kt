@@ -1,13 +1,15 @@
 package app.sigot.forecast.ui
 
 import androidx.lifecycle.viewModelScope
-import app.sigot.core.domain.forecast.GetForecastUseCase
+import app.sigot.core.domain.forecast.ForecastStateHolder
 import app.sigot.core.domain.forecast.ScoreCalculator
 import app.sigot.core.domain.forecast.convert
 import app.sigot.core.domain.location.LocationRepo
 import app.sigot.core.domain.settings.SettingsRepo
+import app.sigot.core.model.AsyncResult
 import app.sigot.core.model.ForecastData
 import app.sigot.core.model.ForecastPeriodData
+import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.forecast.ForecastPeriod
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
@@ -32,15 +34,18 @@ import org.jetbrains.compose.resources.StringResource
 internal class ForecastHomeModel(
     settingsRepo: SettingsRepo,
     locationRepo: LocationRepo,
-    private val getForecastUseCase: GetForecastUseCase,
+    private val forecastStateHolder: ForecastStateHolder,
     private val scoreCalculator: ScoreCalculator,
 ) : UiStateViewModel<ForecastHomeModel.State, ForecastHomeModel.Event>(
         State(
             location = settingsRepo.settings.value.lastLocation,
             preferences = settingsRepo.settings.value.preferences,
             permissionStatus = if (locationRepo.hasPermission()) Granted else Unknown,
+            status = forecastStateHolder.state.value,
         ),
     ) {
+    private val logger = Logger.withTag("ForecastHomeModel")
+
     init {
         settingsRepo.settings
             .map { it.lastLocation to it.preferences }
@@ -54,37 +59,30 @@ internal class ForecastHomeModel(
                 state.copy(location = lastLocation, preferences = preferences, forecast = data)
             }
 
-        viewModelScope.launch { getForecast() }
+        viewModelScope.launch {
+            forecastStateHolder.state.collect { status ->
+                when (status) {
+                    is AsyncResult.Error -> status.error.handleForecastError()
+                    is AsyncResult.Success -> {
+                        val score = scoreCalculator.calculate(status.data, state.value.preferences)
+                        updateState { it.copy(status = status, forecast = ForecastData(status.data, score)) }
+                    }
+                    else -> {
+                        updateState { it.copy(status = status) }
+                    }
+                }
+            }
+        }
+
+        fetch()
     }
 
     fun updatePeriod(period: ForecastPeriod) {
         updateState { it.copy(period = period) }
     }
 
-    fun forceRefresh() {
-        viewModelScope.launch {
-            getForecast()
-        }
-    }
-
-    private suspend fun getForecast() {
-        if (state.value.loading) return
-
-        updateState { it.copy(loading = true) }
-        val prefs = state.value.preferences
-        val forecast = getForecastUseCase
-            .forecastForCurrentLocation(prefs.units)
-            .onFailure { it.handleForecastError() }
-            .getOrNull()
-
-        val score = if (forecast == null) null else scoreCalculator.calculate(forecast, prefs)
-
-        updateState { state ->
-            val data =
-                if (forecast != null && score != null) ForecastData(forecast, score) else state.forecast
-
-            state.copy(loading = false, forecast = data)
-        }
+    fun fetch() {
+        forecastStateHolder.fetch()
     }
 
     private fun Throwable?.handleForecastError() {
@@ -99,7 +97,7 @@ internal class ForecastHomeModel(
             else -> Res.string.forecast_error_generic
         }
 
-        Logger.e(this) { "Error getting forecast" }
+        logger.e(this) { "Error getting forecast" }
         emit(Event.Error(message))
 
         if (this is LocationResult.NotAllowed) {
@@ -110,11 +108,12 @@ internal class ForecastHomeModel(
     data class State(
         val location: Location?,
         val preferences: Preferences,
+        val status: AsyncResult<Forecast>?,
         val period: ForecastPeriod = ForecastPeriod.Today,
         val permissionStatus: LocationPermissionStatus = Unknown,
-        val loading: Boolean = false,
         val forecast: ForecastData? = null,
     ) {
+        val loading: Boolean = status is AsyncResult.Loading
         val refreshing: Boolean = loading && forecast != null
         val data: ForecastPeriodData? = forecast?.forPeriod(period)
     }

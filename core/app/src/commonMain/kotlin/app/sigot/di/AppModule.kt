@@ -1,6 +1,6 @@
 package app.sigot.di
 
-import app.sigot.core.domain.forecast.VisualCrossingTokenProvider
+import app.sigot.core.domain.forecast.ApiTokenProvider
 import app.sigot.data.forecast.AppForecastSource
 import app.sigot.data.forecast.AppTokenProvider
 import app.sigot.data.forecast.BackendForecastSource
@@ -17,7 +17,7 @@ internal fun appModule() =
         includes(uiModule())
 
         factory<QueryCostLogger> { QueryCostLogger {} }
-        factoryOf(::AppTokenProvider) bind VisualCrossingTokenProvider::class
+        factoryOf(::AppTokenProvider) bind ApiTokenProvider::class
         factoryOf(::BackendForecastSource) bind ForecastSource::class
         factory {
             val directSource = directApiFortuneSource()

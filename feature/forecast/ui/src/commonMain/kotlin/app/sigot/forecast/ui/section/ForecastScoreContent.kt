@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +28,7 @@ import app.sigot.core.resources.forecast_view_details
 import app.sigot.core.resources.unit_precipitation_rain
 import app.sigot.core.resources.unit_precipitation_snow
 import app.sigot.core.resources.unit_temperature_short
+import app.sigot.core.resources.updated_at
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Button
 import app.sigot.core.ui.components.ButtonVariant
@@ -34,6 +36,7 @@ import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.components.card.ElevatedCard
 import app.sigot.core.ui.ktx.get
+import app.sigot.core.ui.ktx.rememberTimeAgo
 import app.sigot.core.ui.mappers.units.colors
 import app.sigot.core.ui.mappers.units.rememberTitle
 import app.sigot.core.ui.preview.AppPreview
@@ -44,14 +47,19 @@ import app.sigot.forecast.ui.components.mappers.precipitationStatus
 import app.sigot.forecast.ui.components.mappers.rememberScoreText
 import app.sigot.forecast.ui.components.mappers.temperatureStatus
 import app.sigot.forecast.ui.components.mappers.windStatus
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 internal fun ForecastScoreContent(
+    updatedAt: Instant,
     preferences: Preferences,
     periodData: ForecastPeriodData,
     onViewDetails: () -> Unit,
     modifier: Modifier = Modifier,
+    now: Instant = Clock.System.now(),
 ) {
     Column(
         modifier = modifier.height(IntrinsicSize.Min),
@@ -129,12 +137,25 @@ internal fun ForecastScoreContent(
                 )
             }
 
-            Button(
-                variant = ButtonVariant.PrimaryElevated,
-                text = Res.string.forecast_view_details.get(),
-                textStyle = AppTheme.typography.h2,
-                onClick = onViewDetails,
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.small),
+            ) {
+                Button(
+                    variant = ButtonVariant.PrimaryElevated,
+                    text = Res.string.forecast_view_details.get(),
+                    textStyle = AppTheme.typography.h2,
+                    onClick = onViewDetails,
+                )
+
+                val updatedText = Res.string.updated_at.get(updatedAt.rememberTimeAgo())
+                Text(
+                    text = updatedText,
+                    style = AppTheme.typography.label3.copy(
+                        fontStyle = FontStyle.Italic,
+                    ),
+                )
+            }
         }
     }
 }
@@ -150,6 +171,7 @@ private fun ForecastScoreContentPreview() {
                 .height(700.dp),
         ) {
             ForecastScoreContent(
+                updatedAt = Clock.System.now().minus(1.minutes),
                 preferences = Preferences.default.copy(units = Units.Metric),
                 periodData = data.forPeriod(ForecastPeriod.Today)!!,
                 onViewDetails = {},

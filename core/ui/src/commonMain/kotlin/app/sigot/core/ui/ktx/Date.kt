@@ -1,7 +1,12 @@
 package app.sigot.core.ui.ktx
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.blank
 import app.sigot.core.resources.day_of_week_friday
@@ -34,15 +39,32 @@ import app.sigot.core.resources.month_may
 import app.sigot.core.resources.month_november
 import app.sigot.core.resources.month_october
 import app.sigot.core.resources.month_september
+import app.sigot.core.resources.time_ago_a_minute
+import app.sigot.core.resources.time_ago_at
+import app.sigot.core.resources.time_ago_minutes
+import app.sigot.core.resources.time_ago_moments
 import app.sigot.core.resources.time_am
 import app.sigot.core.resources.time_pm
+import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalUse24HourTime
+import app.sigot.core.ui.asDisplay
+import app.sigot.core.ui.components.Text
+import app.sigot.core.ui.preview.AppPreview
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.Month
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.math.abs
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 public val Month.text: StringResource
     get() = when (this) {
@@ -174,6 +196,103 @@ public fun LocalTime.text(use24Hours: Boolean = LocalUse24HourTime.current): Str
         val suffixString = suffix.get()
         return remember(hour, minute, suffixString) {
             "$hour:$minute $suffixString"
+        }
+    }
+}
+
+@Composable
+public fun Instant.rememberTimeAgo(
+    now: Instant = Clock.System.now(),
+    use24Hours: Boolean = LocalUse24HourTime.current,
+): String {
+    val seconds = remember(this, now) {
+        val duration = now - this
+        abs(duration.inWholeSeconds)
+    }
+
+    return when {
+        seconds < 30 -> Res.string.time_ago_moments.get()
+        seconds < 120 -> Res.string.time_ago_a_minute.get()
+        seconds < 3600 -> {
+            val minutes = seconds / 60
+            if (minutes == 1L) {
+                Res.string.time_ago_a_minute.get()
+            } else {
+                Res.string.time_ago_minutes.get(minutes)
+            }
+        }
+        else -> {
+            val time = remember(this) {
+                toLocalDateTime(TimeZone.currentSystemDefault()).time
+            }
+
+            Res.string.time_ago_at.get(time.text(use24Hours))
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TimeAgoPreview() {
+    AppPreview {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(16.dp),
+        ) {
+            Column {
+                Text("Now", style = AppTheme.typography.h4.asDisplay)
+                Text(Clock.System.now().rememberTimeAgo())
+            }
+
+            Column {
+                Text("25 seconds ago", style = AppTheme.typography.h4.asDisplay)
+                Text(
+                    Clock.System
+                        .now()
+                        .minus(25.seconds)
+                        .rememberTimeAgo(),
+                )
+            }
+
+            Column {
+                Text("1 minute ago", style = AppTheme.typography.h4.asDisplay)
+                Text(
+                    Clock.System
+                        .now()
+                        .minus(1.minutes)
+                        .rememberTimeAgo(),
+                )
+            }
+
+            Column {
+                Text("13 minutes ago", style = AppTheme.typography.h4.asDisplay)
+                Text(
+                    Clock.System
+                        .now()
+                        .minus(13.minutes)
+                        .rememberTimeAgo(),
+                )
+            }
+
+            Column {
+                Text("1 hour ago", style = AppTheme.typography.h4.asDisplay)
+                Text(
+                    Clock.System
+                        .now()
+                        .minus(1.hours)
+                        .rememberTimeAgo(),
+                )
+            }
+
+            Column {
+                Text("1 day ago", style = AppTheme.typography.h4.asDisplay)
+                Text(
+                    Clock.System
+                        .now()
+                        .minus(1.hours)
+                        .rememberTimeAgo(),
+                )
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 package app.sigot.forecast.data.source.visualcrossing
 
-import app.sigot.core.domain.forecast.VisualCrossingTokenProvider
+import app.sigot.core.domain.forecast.ApiTokenProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -17,7 +17,7 @@ internal interface VisualCrossingApi {
 
 internal class DefaultVisualCrossingApi(
     private val httpClient: HttpClient,
-    private val tokenProvider: VisualCrossingTokenProvider,
+    private val tokenProvider: ApiTokenProvider,
 ) : VisualCrossingApi {
     private val params
         get() = listOf(
@@ -35,7 +35,7 @@ internal class DefaultVisualCrossingApi(
 
     private suspend fun makeRequest(location: String): VCForecastResponse =
         httpClient
-            .get(BASE_URL) {
+            .get(BaseUrl) {
                 url {
                     appendPathSegments(location)
                     params.forEach { (key, value) ->
@@ -45,7 +45,7 @@ internal class DefaultVisualCrossingApi(
             }.body()
 
     companion object {
-        private const val BASE_URL =
+        private const val BaseUrl =
             "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"
     }
 }

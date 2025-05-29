@@ -1,12 +1,13 @@
 package app.sigot.forecast
 
 import app.sigot.core.domain.forecast.ForecastRepo
+import app.sigot.core.domain.forecast.ForecastStateHolder
 import app.sigot.core.domain.forecast.GetForecastUseCase
 import app.sigot.core.domain.forecast.GetScoreUseCase
 import app.sigot.core.domain.forecast.ScoreCalculator
 import app.sigot.core.foundation.analytics.AnalyticsLogger
-import app.sigot.core.platform.store.NoopStore
 import app.sigot.core.platform.store.Store
+import app.sigot.forecast.data.CacheForecastRepo
 import app.sigot.forecast.data.DefaultForecastRepo
 import app.sigot.forecast.data.source.ForecastCache
 import app.sigot.forecast.data.source.ForecastSource
@@ -16,6 +17,7 @@ import app.sigot.forecast.data.source.visualcrossing.DefaultVisualCrossingApi
 import app.sigot.forecast.data.source.visualcrossing.VisualCrossingApi
 import app.sigot.forecast.data.source.visualcrossing.VisualCrossingForecastSource
 import app.sigot.forecast.domain.AppConfigScoreCalculator
+import app.sigot.forecast.domain.DefaultForecastStateHolder
 import app.sigot.forecast.domain.DefaultGetForecastUseCase
 import app.sigot.forecast.domain.DefaultGetScoreUseCast
 import org.koin.core.module.Module
@@ -32,7 +34,6 @@ private fun forecastBaseModule(): Module =
         factoryOf(::DefaultGetScoreUseCast) bind GetScoreUseCase::class
 
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
-        singleOf(::DefaultForecastRepo) bind ForecastRepo::class
     }
 
 public fun Scope.directApiFortuneSource(): ForecastSource =
@@ -49,6 +50,16 @@ public fun forecastAppModule(): Module =
                 nowProvider = get(),
             )
         } bind ForecastCache::class
+
+        factory {
+            CacheForecastRepo(
+                cache = get(),
+                nowProvider = get(),
+                delegate = DefaultForecastRepo(get(), get()),
+            )
+        } bind ForecastRepo::class
+
+        singleOf(::DefaultForecastStateHolder) bind ForecastStateHolder::class
     }
 
 public fun forecastBackendModule(): Module =
@@ -62,12 +73,13 @@ public fun forecastBackendModule(): Module =
         }
 
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
+        singleOf(::DefaultForecastRepo) bind ForecastRepo::class
     }
 
 public fun forecastCliModule(): Module =
     module {
         includes(forecastBaseModule())
         factory<QueryCostLogger> { QueryCostLogger {} }
-        single { StoreForecastCache(store = NoopStore(), get(), get()) } bind ForecastCache::class
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
+        singleOf(::DefaultForecastRepo) bind ForecastRepo::class
     }
