@@ -5,6 +5,7 @@ set -euo pipefail
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ROOT="$(cd "$CWD"/.. >/dev/null 2>&1 && pwd)"
 
+WRANGLER_COMMAND="$ROOT/apps/api/worker/node_modules/.bin/wrangler"
 KJS_BUILD_COMMAND="$ROOT/gradlew :apps:api:worker:compileProductionExecutableKotlinJs"
 KJS_OUTPUT_FILE="$ROOT/apps/api/worker/build/compileSync/js/main/productionExecutable/kotlin/index.mjs"
 
@@ -13,10 +14,11 @@ print_usage() {
     echo
     echo "Commands:"
     echo "  init                    Get the worker setup ready for dev or deploy"
-    echo "  build                   Compile the worker code to Javascript"
+    echo "  build [options]         Compile the worker code to Javascript"
+    echo "    --clean                   Clean the build directory before building"
     echo "  dev                     Compile source and watch for changes, and run the worker in dev mode"
-    echo "  deploy [env]            Deploy the worker to Cloudflare with specified env (default=prod)"
-    echo "    - prod,staging,dev"
+    echo "  deploy [env]            Deploy the worker to Cloudflare with specified env (default=empty)"
+    echo "    -staging,dev"
     echo "  wrangler [command]      Wrapper around Cloudflare's Wrangler"
 
     exit "${1:-0}"
@@ -63,7 +65,14 @@ initialize() {
     fi
 
     cd "$ROOT"
-    echo "✅ API worker initialization complete!"
+
+    echo "🔍 Checking if Wrangler is installed..."
+    if ! $WRANGLER_COMMAND --version >/dev/null; then
+        echo "❌ Wrangler not found. Something went wrong..."
+        exit 1
+    fi
+
+    echo "🎉 API worker initialization complete!"
 }
 
 build() {
@@ -105,9 +114,47 @@ build() {
     echo "✅ Build complete! Output: ${KJS_OUTPUT_FILE#"$ROOT/"}"
 }
 
+dev() {
+    # Trap to handle cleanup on exit/interrupt
+    cleanup() {
+        echo
+        if [[ -n "${GRADLE_PID:-}" ]]; then
+            echo "🔨 Stopping Kotlin/JS build watcher..."
+            # Kill the entire process group to ensure gradle and its children are terminated
+            kill -TERM "$GRADLE_PID" >/dev/null 2>&1 || true
+            sleep 3
+            # Force kill if still running
+            kill -KILL "$GRADLE_PID" >/dev/null 2>&1 || true
+
+            GRADLE_PID=""
+            echo "✅ Kotlin/JS build watcher stopped"
+            echo "👋 Goodbye!"
+        fi
+        exit 0
+    }
+
+    trap cleanup EXIT INT TERM
+
+    echo "🔨 Starting Kotlin/JS build watcher..."
+    $KJS_BUILD_COMMAND --quiet --continuous &
+    GRADLE_PID=$!
+    echo "🔧 Gradle/JS build watcher started with PID $GRADLE_PID"
+
+    echo "⏳ Delaying for 5 seconds to let gradle start..."
+    sleep 5
+
+    echo "🚀 Starting Wrangler dev server..."
+    echo "ℹ️ Press Ctrl+C to stop both processes"
+    echo
+
+    # 3. When wrangler exits (for any reason), cleanup will be called
+    "$WRANGLER_COMMAND" dev
+    cleanup
+}
+
 # Parse command line arguments
 COMMAND=""
-ENV="prod"
+ENV=""
 WRANGLER_ARGS=()
 BUILD_ARGS=()
 
@@ -150,7 +197,7 @@ while [[ $# -gt 0 ]]; do
         print_usage
         ;;
     *)
-        echo "Error: Unknown command '$1'"
+        echo "❌ Error: Unknown command '$1'"
         print_usage 1
         ;;
     esac
@@ -158,7 +205,7 @@ done
 
 # Validate that a command was provided
 if [[ -z "$COMMAND" ]]; then
-    echo "Error: Command required"
+    echo "❌ Error: Command required"
     print_usage 1
 fi
 
@@ -178,14 +225,27 @@ init)
     ;;
 dev)
     echo "🔥 Starting API worker in development mode..."
-    # TODO: Add dev mode logic
+    dev
     ;;
 deploy)
-    echo "🚀 Deploying API worker to environment: $ENV"
-    # TODO: Add deployment logic
+    echo "🚀 Deploying API worker..."
+    if [[ -n "$ENV" ]]; then
+        echo "🌍 Deploying to environment: $ENV"
+    fi
+
+    if [[ -n "$ENV" ]]; then
+        "$WRANGLER_COMMAND" deploy --env "$ENV"
+    else
+        "$WRANGLER_COMMAND" deploy
+    fi
     ;;
 wrangler)
-    echo "🔧 Running Wrangler with arguments: ${WRANGLER_ARGS[*]}"
-    # TODO: Add wrangler wrapper logic
+    if [[ ${#WRANGLER_ARGS[@]} -eq 0 ]]; then
+        echo "🔧 Running Wrangler..."
+        "$WRANGLER_COMMAND"
+    else
+        echo "🔧 Running Wrangler with arguments: ${WRANGLER_ARGS[*]}"
+        "$WRANGLER_COMMAND" "${WRANGLER_ARGS[@]}"
+    fi
     ;;
 esac

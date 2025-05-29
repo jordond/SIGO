@@ -91,14 +91,14 @@ gradle | g)
     "$ROOT"/gradlew "$@"
     ;;
 add)
-  shift
-  # Check if there is a component name:
-  if [ "$#" -eq 0 ]; then
-    echo "Error: No component name provided"
-    exit 1
-  fi
-  "$ROOT"/gradlew lumo --no-configuration-cache --add "$@"
-  ;;
+    shift
+    # Check if there is a component name:
+    if [ "$#" -eq 0 ]; then
+        echo "Error: No component name provided"
+        exit 1
+    fi
+    "$ROOT"/gradlew lumo --no-configuration-cache --add "$@"
+    ;;
 clean)
     "$ROOT"/scripts/cleanup
     ;;
@@ -157,13 +157,13 @@ generate-image-sizes)
     node "$ROOT"/scripts/image-resource.js "$@"
     ;;
 cli)
-  shift
-  "$ROOT"/scripts/cli.sh "$@"
-  ;;
+    shift
+    "$ROOT"/scripts/cli.sh "$@"
+    ;;
 api:worker)
-  shift
-  "$ROOT"/scripts/api-worker.sh "$@"
-  ;;
+    shift
+    "$ROOT"/scripts/api-worker.sh "$@"
+    ;;
 *)
     echo "Unknown command: $1"
     echo ""

@@ -11,7 +11,7 @@ fun fetch(request: Request): Response {
     headers["content-type"] = "text/plain"
 
     return Response(
-        "Kotlin Worker hello world: ${request.url}",
+        "Kotlin Worker FOO BAR: ${request.url}",
         ResponseInit(headers = headers),
     )
 }
