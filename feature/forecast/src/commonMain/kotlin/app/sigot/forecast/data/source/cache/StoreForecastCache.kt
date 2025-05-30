@@ -4,10 +4,10 @@ import app.sigot.core.config.AppConfigRepo
 import app.sigot.core.foundation.NowProvider
 import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.platform.store.Store
+import app.sigot.forecast.data.entity.ForecastEntity
+import app.sigot.forecast.data.entity.toEntity
+import app.sigot.forecast.data.entity.toModel
 import app.sigot.forecast.data.source.ForecastCache
-import app.sigot.forecast.data.source.cache.entity.ForecastEntity
-import app.sigot.forecast.data.source.cache.entity.toEntity
-import app.sigot.forecast.data.source.cache.entity.toModel
 import co.touchlab.kermit.Logger
 import kotlinx.datetime.Instant
 import kotlin.time.Duration

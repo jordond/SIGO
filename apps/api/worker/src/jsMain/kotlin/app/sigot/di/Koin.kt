@@ -35,10 +35,9 @@ internal fun initKoin(): Koin =
 
 private fun workerModule() =
     module {
-        singleOf(::WorkerTokenProvider) bind ApiTokenProvider::class
-
         factoryOf(::RootRoute) bind ApiRoute::class
         factoryOf(::ForecastRoute) bind ApiRoute::class
 
+        singleOf(::WorkerTokenProvider) bind ApiTokenProvider::class
         singleOf(::DefaultApp) bind App::class
     }

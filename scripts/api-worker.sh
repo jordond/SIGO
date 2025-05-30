@@ -35,7 +35,7 @@ fi
 
 check_prerequisites() {
     if ! command -v node &>/dev/null || ! command -v npm &>/dev/null; then
-        echo "❌ npm not found. Please run ./sigot init api:worker"
+        echo "❌ npm not found. Please install Node.js and npm first."
         exit 1
     fi
 
@@ -241,6 +241,8 @@ deploy() {
     fi
 
     echo "✅ FORECAST_API_KEY secret found"
+
+    build --clean
 
     if [[ -n "$1" ]]; then
         "$WRANGLER_COMMAND" deploy --env "$1"
