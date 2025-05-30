@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.w3c.fetch.Response
 import org.w3c.fetch.ResponseInit
+import kotlin.time.Duration
 
 public class BadRequestException(
     message: String = "Bad Request",
@@ -147,6 +148,17 @@ public fun serverError(
         status = 500,
         statusText = "Internal Server Error",
     )
+}
+
+public fun cached(
+    age: Duration,
+    block: () -> Response,
+): Response {
+    val headers: dynamic = object {}
+    headers["cache-control"] = "max-age=${age.inWholeSeconds}"
+    val response = block()
+    response.headers.append("cache-control", "max-age=${age.inWholeSeconds}")
+    return response
 }
 
 private fun Map<String, Any?>.forJson() = mapValues { it.value.toString() }

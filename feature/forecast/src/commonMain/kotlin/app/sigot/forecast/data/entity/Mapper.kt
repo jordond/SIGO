@@ -1,4 +1,4 @@
-package app.sigot.forecast.data.source.cache.entity
+package app.sigot.forecast.data.entity
 
 import app.sigot.core.model.forecast.Alert
 import app.sigot.core.model.forecast.Forecast
@@ -12,7 +12,7 @@ import app.sigot.core.model.forecast.Wind
 import app.sigot.core.model.location.Location
 import kotlinx.datetime.Instant
 
-internal fun ForecastEntity.toModel(): Forecast =
+public fun ForecastEntity.toModel(): Forecast =
     Forecast(
         location = Location(locationLat, locationLong, locationName),
         current = current.toModel(),
@@ -30,7 +30,7 @@ internal fun ForecastEntity.toModel(): Forecast =
         instant = Instant.fromEpochMilliseconds(updatedAt),
     )
 
-internal fun Forecast.toEntity(): ForecastEntity =
+public fun Forecast.toEntity(): ForecastEntity =
     ForecastEntity(
         locationLat = location.latitude,
         locationLong = location.longitude,

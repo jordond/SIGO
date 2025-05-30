@@ -36,8 +36,7 @@ private fun forecastBaseModule(): Module =
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
     }
 
-public fun Scope.directApiFortuneSource(): ForecastSource =
-    VisualCrossingForecastSource(get(), get(), get(), get())
+public fun Scope.directApiFortuneSource(): ForecastSource = VisualCrossingForecastSource(get(), get(), get())
 
 public fun forecastAppModule(): Module =
     module {
@@ -71,8 +70,8 @@ public fun forecastBackendModule(): Module =
             }
         }
 
+        factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
-        singleOf(::DefaultForecastRepo) bind ForecastRepo::class
     }
 
 public fun forecastCliModule(): Module =
