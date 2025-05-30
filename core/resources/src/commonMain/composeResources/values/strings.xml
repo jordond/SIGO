@@ -266,5 +266,6 @@
     <string name="settings_internal_backend_direct_api_desc">Bypass the SIGOT backend and use the weather API directly, this requires an API token</string>
     <string name="settings_internal_backend_direct_api_token">API Token</string>
     <string name="settings_internal_backend_direct_api_token_placeholder">Enter your API key</string>
+    <string name="settings_internal_reset">Reset internal settings</string>
 
 </resources>

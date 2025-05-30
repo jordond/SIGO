@@ -12,8 +12,6 @@ There is planned support for other API's down the line.
 
 ### Supported platforms
 
-The initial release is targeted at:
-
 - Android
 - iOS
 
