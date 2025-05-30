@@ -18,6 +18,7 @@ print_usage() {
     echo
     echo "Commands:"
     echo "  init                    Get the worker setup ready for dev or deploy"
+    echo "  secret <check|set>      Check or set secrets for the worker"
     echo "  build [options]         Compile the worker code to Javascript"
     echo "    --clean                   Clean the build directory before building"
     echo "  dev                     Compile source and watch for changes, and run the worker in dev mode"
@@ -263,6 +264,12 @@ while [[ $# -gt 0 ]]; do
         COMMAND="init"
         shift
         ;;
+    secret)
+        COMMAND="secret"
+        shift
+        WRANGLER_ARGS=("$@")
+        break
+        ;;
     build)
         COMMAND="build"
         shift
@@ -322,6 +329,42 @@ init)
     echo "🚀 Initializing API worker..."
     initialize
     ;;
+secret)
+    echo "🤫 Managing secrets..."
+    # Check for WRANGLER_ARGS for a subcommand check|set
+    if [[ ${#WRANGLER_ARGS[@]} -eq 0 ]]; then
+        echo "❌ Error: Secret command requires 'check' or 'set' subcommand"
+        echo "Usage: ./sigot api:worker secret <check|set>"
+        exit 1
+    fi
+
+    subcommand="${WRANGLER_ARGS[0]}"
+
+    case "$subcommand" in
+    check)
+        echo "🔍 Checking for $SECRET_FORECAST_API_KEY secret..."
+        secret_output=$("$WRANGLER_COMMAND" secret list 2>/dev/null || echo "[]")
+
+        if echo "$secret_output" | grep -q "$SECRET_FORECAST_API_KEY"; then
+            echo "✅ $SECRET_FORECAST_API_KEY secret found in Cloudflare"
+        else
+            echo "❌ $SECRET_FORECAST_API_KEY secret not found in Cloudflare"
+            echo "💡 Run './sigot api:worker secret set' to add it"
+            exit 1
+        fi
+        ;;
+    set)
+        echo "🔐 Setting $SECRET_FORECAST_API_KEY secret..."
+        "$WRANGLER_COMMAND" secret put "$SECRET_FORECAST_API_KEY"
+        ;;
+    *)
+        echo "❌ Error: Unknown secret subcommand '$subcommand'"
+        echo "Usage: ./sigot api:worker secret <check|set>"
+        exit 1
+        ;;
+    esac
+    ;;
+
 dev)
     echo "🔥 Starting API worker in development mode..."
     dev
