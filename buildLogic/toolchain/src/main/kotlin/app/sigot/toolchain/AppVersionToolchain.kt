@@ -14,8 +14,8 @@ class AppVersionToolchain : Plugin<Project> {
                 code.set(0)
             }
 
-        target.tasks.named("preBuild") {
-            dependsOn(task)
-        }
+        // target.tasks.named("preBuild") {
+        //     dependsOn(task)
+        // }
     }
 }
