@@ -1,7 +1,7 @@
 package app.sigot.api.routes.forecast
 
-import app.sigot.api.ApiRoute
-import app.sigot.api.queryParams
+import app.sigot.core.api.server.ApiRoute
+import app.sigot.core.api.server.queryParams
 import app.sigot.core.platform.http.ok
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json

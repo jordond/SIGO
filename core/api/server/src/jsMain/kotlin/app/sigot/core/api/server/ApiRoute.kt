@@ -1,26 +1,25 @@
-package app.sigot.api
+package app.sigot.core.api.server
 
-import app.sigot.api.util.getQueryParams
+import app.sigot.core.api.server.util.getQueryParams
 import app.sigot.core.platform.di.defaultJson
 import app.sigot.core.platform.http.BadRequestException
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.Json.Default.encodeToString
 import org.w3c.fetch.Request
 import org.w3c.fetch.Response
 
 /**
  * Represents an API route with a specific path and typed request/response handling
  */
-interface ApiRoute {
-    val path: String
+public interface ApiRoute {
+    public val path: String
 
     /**
      * Handle GET requests with typed response
      */
-    suspend fun get(
+    public suspend fun get(
         request: Request,
         parameters: Map<String, String> = emptyMap(),
     ): Response? = throw NotImplementedError()
@@ -28,7 +27,7 @@ interface ApiRoute {
     /**
      * Handle POST requests with typed body input and response
      */
-    suspend fun post(
+    public suspend fun post(
         request: Request,
         parameters: Map<String, String> = emptyMap(),
     ): Response? = throw NotImplementedError()
@@ -36,7 +35,7 @@ interface ApiRoute {
     /**
      * Handle PUT requests with typed body input and response
      */
-    suspend fun put(
+    public suspend fun put(
         request: Request,
         parameters: Map<String, String> = emptyMap(),
     ): Response? = throw NotImplementedError()
@@ -44,14 +43,14 @@ interface ApiRoute {
     /**
      * Handle DELETE requests with typed response
      */
-    suspend fun delete(
+    public suspend fun delete(
         request: Request,
         parameters: Map<String, String> = emptyMap(),
     ): Response? = throw NotImplementedError()
 }
 
 @OptIn(ExperimentalSerializationApi::class)
-inline fun <reified T : @Serializable Any> Request.queryParams(json: Json = defaultJson): T {
+public inline fun <reified T : @Serializable Any> Request.queryParams(json: Json = defaultJson): T {
     try {
         json.configuration.isLenient
         val params = getQueryParams(this)

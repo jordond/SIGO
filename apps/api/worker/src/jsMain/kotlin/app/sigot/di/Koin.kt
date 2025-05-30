@@ -2,11 +2,10 @@ package app.sigot.di
 
 import app.sigot.App
 import app.sigot.DefaultApp
-import app.sigot.api.ApiRoute
-import app.sigot.api.ApiRouter
-import app.sigot.api.DefaultApiRouter
 import app.sigot.api.routes.RootRoute
 import app.sigot.api.routes.forecast.ForecastRoute
+import app.sigot.core.api.server.ApiRoute
+import app.sigot.core.api.server.apiServerModule
 import app.sigot.core.foundation.di.foundationModule
 import app.sigot.core.platform.di.platformModule
 import app.sigot.forecast.forecastBackendModule
@@ -25,6 +24,7 @@ internal fun initKoin(): Koin =
 
         modules(
             workerModule(),
+            apiServerModule(),
             foundationModule(),
             forecastBackendModule(),
             platformModule(),
@@ -35,10 +35,6 @@ private fun workerModule() =
     module {
         factoryOf(::RootRoute) bind ApiRoute::class
         factoryOf(::ForecastRoute) bind ApiRoute::class
-
-        single {
-            DefaultApiRouter(getAll(), get())
-        } bind ApiRouter::class
 
         singleOf(::DefaultApp) bind App::class
     }

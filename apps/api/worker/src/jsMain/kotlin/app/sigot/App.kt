@@ -1,6 +1,6 @@
 package app.sigot
 
-import app.sigot.api.ApiRouter
+import app.sigot.core.api.server.ApiRouter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.promise
 import org.w3c.fetch.Request
