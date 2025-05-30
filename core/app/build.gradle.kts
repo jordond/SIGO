@@ -19,6 +19,7 @@ configureMultiplatform(Platforms.Compose, name = "app")
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.api.client)
             implementation(projects.core.config)
             implementation(projects.core.domain)
             implementation(projects.core.foundation)

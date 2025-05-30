@@ -1,11 +1,11 @@
 package app.sigot.core.api.server
 
-import app.sigot.core.platform.http.BadRequestException
-import app.sigot.core.platform.http.badRequest
-import app.sigot.core.platform.http.methodNotAllowed
-import app.sigot.core.platform.http.noContent
-import app.sigot.core.platform.http.notFound
-import app.sigot.core.platform.http.serverError
+import app.sigot.core.api.server.exception.BadRequestException
+import app.sigot.core.api.server.util.badRequest
+import app.sigot.core.api.server.util.methodNotAllowed
+import app.sigot.core.api.server.util.noContent
+import app.sigot.core.api.server.util.notFound
+import app.sigot.core.api.server.util.serverError
 import co.touchlab.kermit.Logger
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.CancellationException
@@ -66,7 +66,7 @@ internal class DefaultApiRouter(
 
     private fun findMatchingRoute(requestPath: String): RouteMatch? {
         for (route in routes) {
-            val parameters = matchRoute(route.path, requestPath)
+            val parameters = matchRoute(route.path.path, requestPath)
             if (parameters != null) {
                 return RouteMatch(route, parameters)
             }

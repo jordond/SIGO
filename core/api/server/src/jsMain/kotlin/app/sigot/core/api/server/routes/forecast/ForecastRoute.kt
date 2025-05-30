@@ -1,10 +1,11 @@
-package app.sigot.api.routes.forecast
+package app.sigot.core.api.server.routes.forecast
 
 import app.sigot.core.api.server.ApiRoute
+import app.sigot.core.api.server.ApiRoutePath
 import app.sigot.core.api.server.queryParams
+import app.sigot.core.api.server.util.cached
+import app.sigot.core.api.server.util.ok
 import app.sigot.core.model.location.Location
-import app.sigot.core.platform.http.cached
-import app.sigot.core.platform.http.ok
 import app.sigot.forecast.data.entity.ForecastRequestQuery
 import app.sigot.forecast.data.entity.ForecastResponse
 import app.sigot.forecast.data.entity.toEntity
@@ -15,12 +16,12 @@ import org.w3c.fetch.Request
 import org.w3c.fetch.Response
 import kotlin.time.Duration.Companion.minutes
 
-class ForecastRoute(
+public class ForecastRoute(
     private val json: Json,
     private val forecastSource: ForecastSource,
 ) : ApiRoute {
     private val logger = Logger.withTag("ForecastRoute")
-    override val path: String = "/forecast"
+    override val path: ApiRoutePath = ApiRoutePath.Forecast
 
     override suspend fun get(
         request: Request,

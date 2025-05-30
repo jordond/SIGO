@@ -1,30 +1,13 @@
-package app.sigot.core.platform.http
+package app.sigot.core.api.server.util
 
+import app.sigot.core.api.server.entity.ApiError
+import app.sigot.core.api.server.entity.ApiResponse
 import app.sigot.core.platform.di.defaultJson
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.w3c.fetch.Response
 import org.w3c.fetch.ResponseInit
 import kotlin.time.Duration
-
-public class BadRequestException(
-    message: String = "Bad Request",
-    public val validation: List<String> = emptyList(),
-) : Exception(message)
-
-@Serializable
-public data class ApiResponse<T : @Serializable Any?>(
-    val data: T,
-    val meta: Map<String, String> = emptyMap(),
-) {
-    public constructor(data: T, meta: Map<String, Any?>) : this(data, meta.forJson())
-}
-
-@Serializable
-public data class ApiError(
-    val error: String,
-    val meta: Map<String, String> = emptyMap(),
-)
 
 public fun respondText(
     text: String,
@@ -56,7 +39,7 @@ public fun respondJson(
     json: Json = defaultJson,
 ): Response {
     val map = data.mapValues { it.value.toString() }
-    val response = ApiResponse(data = map, meta = meta)
+    val response = ApiResponse(data = map, meta = meta.forJson())
     val json = json.encodeToString(response)
     return respondJson(json, statusText, status)
 }
@@ -68,7 +51,7 @@ public inline fun <reified T : @Serializable Any?> respondJson(
     status: Int = 200,
     json: Json = defaultJson,
 ): Response {
-    val response = ApiResponse(data = data, meta = meta)
+    val response = ApiResponse(data = data, meta = meta.forJson())
     val json = json.encodeToString(response)
     return respondJson(json, statusText, status)
 }
@@ -99,7 +82,6 @@ public fun noContent(
     )
 
 public fun badRequest(
-    validation: Map<String, String> = emptyMap(),
     meta: Map<String, Any?> = emptyMap(),
     json: Json = defaultJson,
 ): Response =
@@ -161,4 +143,5 @@ public fun cached(
     return response
 }
 
-private fun Map<String, Any?>.forJson() = mapValues { it.value.toString() }
+@PublishedApi
+internal fun Map<String, Any?>.forJson(): Map<String, String> = mapValues { it.value.toString() }

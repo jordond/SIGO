@@ -1,9 +1,11 @@
 package app.sigot.di
 
+import app.sigot.core.api.client.ApiUrlProvider
 import app.sigot.core.domain.forecast.ApiTokenProvider
+import app.sigot.data.AppApiUrlProvider
+import app.sigot.data.forecast.ApiForecastSource
 import app.sigot.data.forecast.AppForecastSource
 import app.sigot.data.forecast.AppTokenProvider
-import app.sigot.data.forecast.BackendForecastSource
 import app.sigot.forecast.data.source.ForecastSource
 import app.sigot.forecast.data.source.QueryCostLogger
 import app.sigot.forecast.directApiFortuneSource
@@ -18,12 +20,13 @@ internal fun appModule() =
 
         factory<QueryCostLogger> { QueryCostLogger {} }
         factoryOf(::AppTokenProvider) bind ApiTokenProvider::class
-        factoryOf(::BackendForecastSource) bind ForecastSource::class
+        factoryOf(::AppApiUrlProvider) bind ApiUrlProvider::class
+        factoryOf(::ApiForecastSource) bind ForecastSource::class
         factory {
             val directSource = directApiFortuneSource()
             AppForecastSource(
                 settingsRepo = get(),
-                backendSource = get<BackendForecastSource>(),
+                backendSource = get<ApiForecastSource>(),
                 directSource = directSource,
             )
         } bind ForecastSource::class
