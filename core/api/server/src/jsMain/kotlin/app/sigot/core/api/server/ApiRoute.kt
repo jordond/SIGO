@@ -1,8 +1,8 @@
 package app.sigot.core.api.server
 
+import app.sigot.core.api.server.exception.BadRequestException
 import app.sigot.core.api.server.util.getQueryParams
 import app.sigot.core.platform.di.defaultJson
-import app.sigot.core.platform.http.BadRequestException
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
@@ -14,7 +14,7 @@ import org.w3c.fetch.Response
  * Represents an API route with a specific path and typed request/response handling
  */
 public interface ApiRoute {
-    public val path: String
+    public val path: ApiRoutePath
 
     /**
      * Handle GET requests with typed response

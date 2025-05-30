@@ -1,5 +1,4 @@
-import app.sigot.App
-import app.sigot.di.initKoin
+import app.sigot.api.App
 import org.w3c.fetch.Request
 import org.w3c.fetch.Response
 import kotlin.js.Promise

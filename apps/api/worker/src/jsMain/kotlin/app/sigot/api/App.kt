@@ -1,7 +1,7 @@
-package app.sigot
+package app.sigot.api
 
 import app.sigot.core.api.server.ApiRouter
-import app.sigot.core.platform.http.serverError
+import app.sigot.core.api.server.util.serverError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.promise
 import kotlinx.serialization.ExperimentalSerializationApi

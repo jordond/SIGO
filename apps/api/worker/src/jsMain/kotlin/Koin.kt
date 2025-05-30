@@ -1,12 +1,9 @@
-package app.sigot.di
-
-import app.sigot.App
-import app.sigot.DefaultApp
-import app.sigot.WorkerTokenProvider
-import app.sigot.api.routes.RootRoute
-import app.sigot.api.routes.forecast.ForecastRoute
-import app.sigot.core.api.server.ApiRoute
-import app.sigot.core.api.server.apiServerModule
+import app.sigot.api.ApiVersionProvider
+import app.sigot.api.App
+import app.sigot.api.DefaultApp
+import app.sigot.api.WorkerTokenProvider
+import app.sigot.core.api.server.jsApiServerModule
+import app.sigot.core.domain.VersionProvider
 import app.sigot.core.domain.forecast.ApiTokenProvider
 import app.sigot.core.foundation.di.foundationModule
 import app.sigot.core.platform.di.platformModule
@@ -15,7 +12,6 @@ import co.touchlab.kermit.Logger
 import co.touchlab.kermit.koin.KermitKoinLogger
 import org.koin.core.Koin
 import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -26,7 +22,7 @@ internal fun initKoin(): Koin =
 
         modules(
             workerModule(),
-            apiServerModule(),
+            jsApiServerModule(),
             foundationModule(),
             forecastBackendModule(),
             platformModule(),
@@ -35,9 +31,7 @@ internal fun initKoin(): Koin =
 
 private fun workerModule() =
     module {
-        factoryOf(::RootRoute) bind ApiRoute::class
-        factoryOf(::ForecastRoute) bind ApiRoute::class
-
         singleOf(::WorkerTokenProvider) bind ApiTokenProvider::class
+        singleOf(::ApiVersionProvider) bind VersionProvider::class
         singleOf(::DefaultApp) bind App::class
     }

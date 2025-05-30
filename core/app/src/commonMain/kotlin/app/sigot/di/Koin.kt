@@ -1,5 +1,6 @@
 package app.sigot.di
 
+import app.sigot.core.api.client.apiClientModule
 import app.sigot.core.config.configModule
 import app.sigot.core.foundation.di.foundationModule
 import app.sigot.core.platform.di.platformModule
@@ -23,6 +24,7 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
         modules(
             appModule(),
             // Core
+            apiClientModule(),
             configModule(),
             foundationModule(),
             platformModule(),

@@ -1,4 +1,4 @@
-package app.sigot
+package app.sigot.api
 
 import app.sigot.core.domain.forecast.ApiTokenProvider
 

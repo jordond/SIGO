@@ -10,16 +10,16 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "core.api.server")
+configureMultiplatform(Platforms.All, name = "core.api.client")
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.api.server)
             implementation(projects.core.domain)
             implementation(projects.core.foundation)
             implementation(projects.core.model)
             implementation(projects.core.platform)
-
             implementation(projects.feature.forecast)
 
             implementation(libs.kermit)
@@ -27,6 +27,18 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.core)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
         }
 
         jsMain.dependencies {
