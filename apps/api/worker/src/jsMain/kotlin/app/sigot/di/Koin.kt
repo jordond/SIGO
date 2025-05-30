@@ -2,10 +2,12 @@ package app.sigot.di
 
 import app.sigot.App
 import app.sigot.DefaultApp
+import app.sigot.WorkerTokenProvider
 import app.sigot.api.routes.RootRoute
 import app.sigot.api.routes.forecast.ForecastRoute
 import app.sigot.core.api.server.ApiRoute
 import app.sigot.core.api.server.apiServerModule
+import app.sigot.core.domain.forecast.ApiTokenProvider
 import app.sigot.core.foundation.di.foundationModule
 import app.sigot.core.platform.di.platformModule
 import app.sigot.forecast.forecastBackendModule
@@ -33,6 +35,8 @@ internal fun initKoin(): Koin =
 
 private fun workerModule() =
     module {
+        singleOf(::WorkerTokenProvider) bind ApiTokenProvider::class
+
         factoryOf(::RootRoute) bind ApiRoute::class
         factoryOf(::ForecastRoute) bind ApiRoute::class
 

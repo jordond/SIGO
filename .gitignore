@@ -45,3 +45,4 @@ app/build
 *.apk
 .app
 *.key
+.dev.vars

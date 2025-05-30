@@ -2,6 +2,6 @@ import * as lib from "./build/compileSync/js/main/productionExecutable/kotlin/in
 
 export default {
     async fetch(request, env, ctx) {
-        return lib.fetch(request)
+        return lib.fetch(request, env)
     }
 }

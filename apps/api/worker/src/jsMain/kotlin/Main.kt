@@ -8,4 +8,7 @@ private val app = initKoin().get<App>()
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-fun fetch(request: Request): Promise<Response> = app.handle(request)
+fun fetch(
+    request: Request,
+    env: dynamic,
+): Promise<Response> = app.handle(request, env)
