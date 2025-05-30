@@ -1,7 +1,7 @@
 package app.sigot.api.routes
 
-import app.sigot.api.ApiRoute
 import app.sigot.build.BuildKonfig
+import app.sigot.core.api.server.ApiRoute
 import app.sigot.core.platform.http.ok
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

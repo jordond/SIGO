@@ -1,4 +1,4 @@
-package app.sigot.api
+package app.sigot.core.api.server
 
 import app.sigot.core.platform.http.BadRequestException
 import app.sigot.core.platform.http.badRequest
@@ -17,11 +17,11 @@ import org.w3c.fetch.Response
 /**
  * Router interface for managing multiple API routes
  */
-interface ApiRouter {
-    suspend fun handle(request: Request): Response
+public interface ApiRouter {
+    public suspend fun handle(request: Request): Response
 }
 
-class DefaultApiRouter(
+internal class DefaultApiRouter(
     private val routes: List<ApiRoute>,
     private val json: Json,
 ) : ApiRouter {

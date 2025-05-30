@@ -34,6 +34,7 @@ kotlin {
 
     sourceSets {
         jsMain.dependencies {
+            implementation(projects.core.api.server)
             implementation(projects.core.domain)
             implementation(projects.core.foundation)
             implementation(projects.core.model)

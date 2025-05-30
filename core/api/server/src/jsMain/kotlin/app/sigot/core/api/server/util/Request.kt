@@ -1,4 +1,4 @@
-package app.sigot.api.util
+package app.sigot.core.api.server.util
 
 import kotlinx.coroutines.await
 import kotlinx.serialization.json.Json
