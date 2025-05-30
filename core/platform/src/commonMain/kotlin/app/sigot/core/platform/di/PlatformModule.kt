@@ -33,17 +33,17 @@ public inline fun <reified T> getKoinInstance(): T =
         val value: T by inject()
     }.value
 
+public val defaultJson: Json = Json {
+    prettyPrint = true
+    isLenient = true
+    ignoreUnknownKeys = true
+}
+
 public fun platformModule(): Module =
     module {
         platformConfig()
 
-        single<Json> {
-            Json {
-                prettyPrint = true
-                isLenient = true
-                ignoreUnknownKeys = true
-            }
-        }
+        single<Json> { defaultJson }
 
         single {
             HttpClient {

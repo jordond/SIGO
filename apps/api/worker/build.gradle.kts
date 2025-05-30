@@ -1,5 +1,19 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+
 plugins {
     alias(libs.plugins.multiplatform)
+    alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.kotlinx.serialization)
+}
+
+buildkonfig {
+    packageName = "app.sigot.build"
+    val version = libs.versions.app.android.version
+        .get()
+
+    defaultConfigs {
+        buildConfigField(STRING, "API_VERSION", version, const = true)
+    }
 }
 
 kotlin {
@@ -28,6 +42,7 @@ kotlin {
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.js)
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.kermit)
             implementation(libs.kermit.koin)
             implementation(libs.koin.core)
