@@ -1,20 +1,51 @@
 package app.sigot
 
 import app.sigot.core.api.server.ApiRouter
+import app.sigot.core.platform.http.serverError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.promise
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromDynamic
 import org.w3c.fetch.Request
 import org.w3c.fetch.Response
 import kotlin.js.Promise
 
 interface App {
-    fun handle(request: Request): Promise<Response>
+    fun handle(
+        request: Request,
+        env: dynamic,
+    ): Promise<Response>
 }
 
+@Serializable
+data class Env(
+    @SerialName("FORECAST_API_KEY")
+    val forecastApiKey: String,
+)
+
+@OptIn(ExperimentalSerializationApi::class)
 class DefaultApp(
     scope: CoroutineScope,
-    val router: ApiRouter,
+    private val router: ApiRouter,
+    private val tokenProvider: WorkerTokenProvider,
+    private val json: Json,
 ) : App,
     CoroutineScope by scope {
-    override fun handle(request: Request): Promise<Response> = promise { router.handle(request) }
+    override fun handle(
+        request: Request,
+        env: dynamic,
+    ): Promise<Response> {
+        val parsedEnv = try {
+            json.decodeFromDynamic<Env>(env)
+        } catch (cause: SerializationException) {
+            return promise { serverError(cause, json = json) }
+        }
+
+        tokenProvider.apiToken = parsedEnv.forecastApiKey
+        return promise { router.handle(request) }
+    }
 }
