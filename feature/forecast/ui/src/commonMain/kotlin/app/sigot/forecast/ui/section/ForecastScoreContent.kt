@@ -12,7 +12,11 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
@@ -47,10 +51,14 @@ import app.sigot.forecast.ui.components.mappers.precipitationStatus
 import app.sigot.forecast.ui.components.mappers.rememberScoreText
 import app.sigot.forecast.ui.components.mappers.temperatureStatus
 import app.sigot.forecast.ui.components.mappers.windStatus
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 internal fun ForecastScoreContent(
@@ -148,16 +156,35 @@ internal fun ForecastScoreContent(
                     onClick = onViewDetails,
                 )
 
-                val updatedText = Res.string.updated_at.get(updatedAt.rememberTimeAgo())
-                Text(
-                    text = updatedText,
-                    style = AppTheme.typography.label3.copy(
-                        fontStyle = FontStyle.Italic,
-                    ),
-                )
+                UpdatedAtText(instant = updatedAt)
             }
         }
     }
+}
+
+@Composable
+internal fun UpdatedAtText(
+    instant: Instant,
+    modifier: Modifier = Modifier,
+    delay: Duration = 30.seconds,
+    nowProvider: () -> Instant = { Clock.System.now() },
+) {
+    var now by remember(nowProvider) { mutableStateOf(nowProvider()) }
+    LaunchedEffect(delay) {
+        while (isActive && delay > Duration.ZERO) {
+            delay(delay)
+            now = nowProvider()
+        }
+    }
+
+    val updatedText = Res.string.updated_at.get(instant.rememberTimeAgo(now = now))
+    Text(
+        text = updatedText,
+        style = AppTheme.typography.label3.copy(
+            fontStyle = FontStyle.Italic,
+        ),
+        modifier = modifier,
+    )
 }
 
 @Preview

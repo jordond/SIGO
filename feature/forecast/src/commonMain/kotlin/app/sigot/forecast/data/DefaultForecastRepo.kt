@@ -1,7 +1,7 @@
 package app.sigot.forecast.data
 
 import app.sigot.core.domain.forecast.ForecastRepo
-import app.sigot.core.domain.settings.SettingsRepo
+import app.sigot.core.domain.settings.IsSimulateFailureUseCase
 import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.location.Location
 import app.sigot.forecast.data.source.ForecastSource
@@ -12,7 +12,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 internal class DefaultForecastRepo(
     private val source: ForecastSource,
-    private val settingsRepo: SettingsRepo,
+    private val isSimulateFailure: IsSimulateFailureUseCase? = null,
 ) : ForecastRepo {
     private val logger = Logger.withTag("DefaultForecastRepo")
 
@@ -20,7 +20,7 @@ internal class DefaultForecastRepo(
         location: Location,
         force: Boolean,
     ): Result<Forecast> {
-        if (settingsRepo.settings.value.internalSettings.simulateFailure) {
+        if (isSimulateFailure?.invoke() == true) {
             return Result.failure(RuntimeException("Simulated failure"))
         }
 
@@ -38,7 +38,7 @@ internal class DefaultForecastRepo(
         location: String,
         force: Boolean,
     ): Result<Forecast> {
-        if (settingsRepo.settings.value.internalSettings.simulateFailure) {
+        if (isSimulateFailure?.invoke() == true) {
             return Result.failure(RuntimeException("Simulated failure"))
         }
 
