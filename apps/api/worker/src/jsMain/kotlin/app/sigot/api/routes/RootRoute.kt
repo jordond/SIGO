@@ -1,6 +1,6 @@
 package app.sigot.api.routes
 
-import app.sigot.build.BuildKonfig
+import app.sigot.core.Version
 import app.sigot.core.api.server.ApiRoute
 import app.sigot.core.platform.http.ok
 import kotlinx.serialization.SerialName
@@ -12,6 +12,8 @@ import org.w3c.fetch.Response
 data class RootResponse(
     @SerialName("version")
     val version: String,
+    @SerialName("sha")
+    val sha: String,
 )
 
 class RootRoute : ApiRoute {
@@ -20,5 +22,11 @@ class RootRoute : ApiRoute {
     override suspend fun get(
         request: Request,
         parameters: Map<String, String>,
-    ): Response = ok(RootResponse(version = BuildKonfig.API_VERSION))
+    ): Response {
+        val response = RootResponse(
+            version = Version.NAME,
+            sha = Version.GIT_SHA,
+        )
+        return ok(response)
+    }
 }
