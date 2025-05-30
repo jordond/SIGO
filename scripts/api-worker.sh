@@ -29,29 +29,24 @@ if [[ $# -eq 0 || "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
     print_usage
 fi
 
+check_prerequisites() {
+    if ! command -v node &>/dev/null || ! command -v npm &>/dev/null; then
+        echo "❌ npm not found. Please run ./sigot init api:worker"
+        exit 1
+    fi
+
+    if ! $WRANGLER_COMMAND --version >/dev/null; then
+        echo "❌ Wrangler not found. Please run ./sigot init api:worker"
+        exit 1
+    fi
+}
+
 initialize() {
-    echo "🔍 Checking if npm is installed..."
+    echo "🔍 Checking if node and npm are installed..."
 
-    if ! command -v npm &>/dev/null; then
-        echo "❌ npm not found. Attempting to use nvm..."
-        if ! command -v nvm &>/dev/null; then
-            echo "❌ nvm not found. Please install Node.js and npm first."
-            exit 1
-        fi
-
-        echo "🔄 Running 'nvm use latest'..."
-        if ! nvm use latest >/dev/null; then
-            echo "⚠️ nvm use latest failed. Trying to install latest Node.js version..."
-            if ! nvm install latest >/dev/null; then
-                echo "❌ Failed to install Node.js via nvm. Please install Node.js manually."
-                exit 1
-            fi
-        fi
-
-        if ! command -v npm &>/dev/null; then
-            echo "❌ npm still not available after nvm setup."
-            exit 1
-        fi
+    if ! command -v node &>/dev/null; then
+        echo "❌ node not found. Please install and re-run this script."
+        exit 1
     fi
 
     echo "✅ npm found: $(npm --version)"
@@ -115,6 +110,8 @@ build() {
 }
 
 dev() {
+    check_prerequisites
+
     # Trap to handle cleanup on exit/interrupt
     cleanup() {
         echo
@@ -140,8 +137,10 @@ dev() {
     GRADLE_PID=$!
     echo "🔧 Gradle/JS build watcher started with PID $GRADLE_PID"
 
-    echo "⏳ Delaying for 5 seconds to let gradle start..."
-    sleep 5
+    # TODO: Need a better solution than sleeping. If wrangler starts up and gradle isn't done
+    #      than the wrangler dev server will fail to start.
+    echo "⏳ Delaying for 15 seconds to let gradle start..."
+    sleep 15
 
     echo "🚀 Starting Wrangler dev server..."
     echo "ℹ️ Press Ctrl+C to stop both processes"
