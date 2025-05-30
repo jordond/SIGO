@@ -72,6 +72,13 @@ public fun forecastBackendModule(): Module =
 
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
+
+        // factory {
+        //     object : IsSimulateFailureUseCase {
+        //         override fun invoke(): Boolean = false
+        //     }
+        // } bind IsSimulateFailureUseCase::class
+        factoryOf(::DefaultForecastRepo) bind ForecastRepo::class
     }
 
 public fun forecastCliModule(): Module =
