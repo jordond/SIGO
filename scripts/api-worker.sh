@@ -5,6 +5,10 @@ set -euo pipefail
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ROOT="$(cd "$CWD"/.. >/dev/null 2>&1 && pwd)"
 
+APP_ENV_PROPERTIES="$ROOT/app-env.properties"
+SECRET_FORECAST_API_KEY="FORECAST_API_KEY"
+WRANGLER_VARS="$ROOT/.dev.vars"
+WRANGLER_VARS_SAMPLE="$ROOT/.dev.vars.sample"
 WRANGLER_COMMAND="$ROOT/apps/api/worker/node_modules/.bin/wrangler"
 KJS_BUILD_COMMAND="$ROOT/gradlew :apps:api:worker:compileProductionExecutableKotlinJs"
 KJS_OUTPUT_FILE="$ROOT/apps/api/worker/build/compileSync/js/main/productionExecutable/kotlin/index.mjs"
@@ -39,6 +43,68 @@ check_prerequisites() {
         echo "❌ Wrangler not found. Please run ./sigot init api:worker"
         exit 1
     fi
+
+    # Check if WRANGLER_VARS exists and 'FORECAST_API_KEY' is set
+    local api_key_set=false
+
+    if [[ -f "$WRANGLER_VARS" ]]; then
+        # Check if FORECAST_API_KEY is set and not empty
+        if grep -q "^FORECAST_API_KEY=.\+" "$WRANGLER_VARS"; then
+            api_key_set=true
+        fi
+    fi
+
+    if [[ "$api_key_set" == false ]]; then
+        echo "🔍 Setting up Wrangler environment variables..."
+
+        # Check if APP_ENV_PROPERTIES exists and has FORECAST_API_KEY
+        if [[ -f "$APP_ENV_PROPERTIES" ]] && grep -q "^$SECRET_FORECAST_API_KEY=.\+" "$APP_ENV_PROPERTIES"; then
+            # Extract the API key from app-env.properties
+            echo "🔍 Extracting $$SECRET_FORECAST_API_KEY from $APP_ENV_PROPERTIES..."
+
+            local forecast_key
+            forecast_key=$(grep "^$SECRET_FORECAST_API_KEY=" "$APP_ENV_PROPERTIES" | cut -d'=' -f2)
+
+            if [[ -n "$forecast_key" ]]; then
+                # Create .dev.vars from sample and set the API key
+                if [[ -f "$WRANGLER_VARS" ]]; then
+                    # Check if FORECAST_API_KEY line exists but is empty
+                    if grep -q "^$SECRET_FORECAST_API_KEY=$" "$WRANGLER_VARS"; then
+                        # Replace the empty line with the actual key
+                        if [[ "$OSTYPE" == "darwin"* ]]; then
+                            sed -i '' "s/^$SECRET_FORECAST_API_KEY=$/$SECRET_FORECAST_API_KEY=$forecast_key/" "$WRANGLER_VARS"
+                        else
+                            sed -i "s/^$SECRET_FORECAST_API_KEY=$/$SECRET_FORECAST_API_KEY=$forecast_key/" "$WRANGLER_VARS"
+                        fi
+                        echo "✅ Updated $SECRET_FORECAST_API_KEY in .dev.vars"
+                    else
+                        # Append the key if it doesn't exist at all
+                        echo "$SECRET_FORECAST_API_KEY=$forecast_key" >>"$WRANGLER_VARS"
+                        echo "✅ Appended $SECRET_FORECAST_API_KEY to .dev.vars"
+                    fi
+                else
+                    cp "$WRANGLER_VARS_SAMPLE" "$WRANGLER_VARS"
+                    # Replace the empty FORECAST_API_KEY with the actual key
+                    if [[ "$OSTYPE" == "darwin"* ]]; then
+                        sed -i '' "s/^$SECRET_FORECAST_API_KEY=$/$SECRET_FORECAST_API_KEY=$forecast_key/" "$WRANGLER_VARS"
+                    else
+                        sed -i "s/^$SECRET_FORECAST_API_KEY=$/$SECRET_FORECAST_API_KEY=$forecast_key/" "$WRANGLER_VARS"
+                    fi
+                    echo "✅ Created .dev.vars with FORECAST_API_KEY"
+                fi
+            else
+                echo "❌ $SECRET_FORECAST_API_KEY found but empty in $APP_ENV_PROPERTIES"
+                echo "Run './sigot init' to initialize the secrets first."
+                exit 1
+            fi
+        else
+            echo "❌ $SECRET_FORECAST_API_KEY not found in $APP_ENV_PROPERTIES"
+            echo "Run './sigot init' to initialize the secrets first."
+            exit 1
+        fi
+    fi
+
+    echo "✅ Prerequisites check passed!"
 }
 
 initialize() {
@@ -151,6 +217,38 @@ dev() {
     cleanup
 }
 
+deploy() {
+    # Check if the Cloudflare has the SECRET_FORECAST_API_KEY set
+    echo "🔍 Checking Cloudflare secrets..."
+
+    local secret_output
+    if [[ -n "$1" ]]; then
+        secret_output=$("$WRANGLER_COMMAND" secret list --env "$1" 2>/dev/null || echo "[]")
+    else
+        secret_output=$("$WRANGLER_COMMAND" secret list 2>/dev/null || echo "[]")
+    fi
+
+    # Check if FORECAST_API_KEY exists in the output
+    if ! echo "$secret_output" | grep -q "FORECAST_API_KEY"; then
+        echo "❌ FORECAST_API_KEY secret not found in Cloudflare"
+        echo "💡 Please run the following command to set it:"
+        if [[ -n "$1" ]]; then
+            echo "   ./sigot api:worker wrangler secret put FORECAST_API_KEY --env $1"
+        else
+            echo "   ./sigot api:worker wrangler secret put FORECAST_API_KEY"
+        fi
+        exit 1
+    fi
+
+    echo "✅ FORECAST_API_KEY secret found"
+
+    if [[ -n "$1" ]]; then
+        "$WRANGLER_COMMAND" deploy --env "$1"
+    else
+        "$WRANGLER_COMMAND" deploy
+    fi
+}
+
 # Parse command line arguments
 COMMAND=""
 ENV=""
@@ -232,11 +330,7 @@ deploy)
         echo "🌍 Deploying to environment: $ENV"
     fi
 
-    if [[ -n "$ENV" ]]; then
-        "$WRANGLER_COMMAND" deploy --env "$ENV"
-    else
-        "$WRANGLER_COMMAND" deploy
-    fi
+    deploy "$ENV"
     ;;
 wrangler)
     if [[ ${#WRANGLER_ARGS[@]} -eq 0 ]]; then

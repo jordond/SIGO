@@ -31,8 +31,8 @@ buildkonfig {
         }
         buildConfigField(STRING, "BACKEND_URL", backendUrl, const = true)
 
-        val apiToken = envProps.getProperty("APP_WEATHER_API_TOKEN", "")
-        buildConfigField(STRING, "WEATHER_API_TOKEN", apiToken, const = true)
+        val apiToken = envProps.getProperty("FORECAST_API_KEY", "")
+        buildConfigField(STRING, "FORECAST_API_KEY", apiToken, const = true)
     }
 }
 

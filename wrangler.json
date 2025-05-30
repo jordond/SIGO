@@ -1,6 +1,6 @@
 {
   "$schema": "apps/api/worker/node_modules/wrangler/config-schema.json",
-  "name": "api-worker",
+  "name": "sigot-api-worker",
   "main": "apps/api/worker/index.mjs",
   "compatibility_date": "2025-05-29",
   "observability": {
