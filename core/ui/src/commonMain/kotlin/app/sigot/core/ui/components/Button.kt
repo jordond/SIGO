@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -37,6 +38,7 @@ import app.sigot.core.ui.components.BrutalDefaults.DisabledAlpha
 import app.sigot.core.ui.components.progressindicators.CircularProgressIndicator
 import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.foundation.ButtonElevation
+import app.sigot.core.ui.foundation.ripple
 import app.sigot.core.ui.ktx.disabled
 import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -57,8 +59,9 @@ public fun Button(
     content: (@Composable () -> Unit)? = null,
 ) {
     ButtonComponent(
-        text = text,
         modifier = modifier,
+        text = text,
+        textStyle = textStyle,
         enabled = enabled,
         loading = loading,
         loadingContent = loadingContent,
@@ -173,10 +176,14 @@ internal fun ButtonComponent(
         color = style.colors.borderColor,
         modifier = modifier,
     ) {
+        val indication = remember(style, contentColor) {
+            if (style.elevation != null) null else ripple(color = contentColor)
+        }
+
         Surface(
             onClick = onClick,
             modifier =
-                Modifier
+                modifier
                     .defaultMinSize(minHeight = minHeight)
                     .semantics { role = Role.Button },
             enabled = enabled,
@@ -185,6 +192,7 @@ internal fun ButtonComponent(
             contentColor = contentColor,
             border = borderStroke,
             interactionSource = interactionSource,
+            indication = indication,
         ) {
             CompositionLocalProvider(
                 LocalContainerColor provides containerColor,
@@ -228,6 +236,7 @@ private fun DefaultButtonContent(
                     style = textStyle,
                     overflow = TextOverflow.Clip,
                     color = contentColor,
+                    autoSize = TextAutoSize.StepBased(maxFontSize = textStyle.fontSize),
                 )
             }
         }
@@ -248,8 +257,11 @@ public enum class ButtonVariant {
     SecondaryElevated,
     Tertiary,
     TertiaryElevated,
+    Quaternary,
+    QuaternaryElevated,
     Destructive,
     DestructiveElevated,
+    Elevated,
     Outlined,
     Ghost,
 }
@@ -263,8 +275,11 @@ internal fun buttonStyleFor(variant: ButtonVariant): ButtonStyle =
         ButtonVariant.SecondaryElevated -> ButtonDefaults.secondaryElevated()
         ButtonVariant.Tertiary -> ButtonDefaults.tertiary()
         ButtonVariant.TertiaryElevated -> ButtonDefaults.tertiaryElevated()
+        ButtonVariant.Quaternary -> ButtonDefaults.quaternary()
+        ButtonVariant.QuaternaryElevated -> ButtonDefaults.quaternaryElevated()
         ButtonVariant.Destructive -> ButtonDefaults.destructive()
         ButtonVariant.DestructiveElevated -> ButtonDefaults.destructiveElevated()
+        ButtonVariant.Elevated -> ButtonDefaults.elevated()
         ButtonVariant.Outlined -> ButtonDefaults.outlined()
         ButtonVariant.Ghost -> ButtonDefaults.ghost()
     }
@@ -272,6 +287,7 @@ internal fun buttonStyleFor(variant: ButtonVariant): ButtonStyle =
 @Suppress("ConstPropertyName")
 public object ButtonDefaults {
     internal val MinHeight = 44.dp
+    internal val MinWidth = 58.dp
     internal val OutlineHeight = BrutalDefaults.BorderWidth
     private val ButtonHorizontalPadding = 16.dp
     private val ButtonVerticalPadding = 8.dp
@@ -288,6 +304,9 @@ public object ButtonDefaults {
     private val filledShape @Composable get() = ButtonShape
     private val elevatedShape @Composable get() = ButtonShape
 
+    private val TextButtonHorizontalPadding = 12.dp
+
+    @Suppress("ComposableNaming")
     @Composable
     public fun LoadingIndicator(): @Composable () -> Unit =
         {
@@ -300,11 +319,11 @@ public object ButtonDefaults {
 
     @Composable
     public fun buttonElevation(
-        defaultElevation: Dp = BrutalElevationDefaults.Small.default,
-        pressedElevation: Dp = BrutalElevationDefaults.Small.pressed,
-        focusedElevation: Dp = BrutalElevationDefaults.Small.focused,
-        hoveredElevation: Dp = BrutalElevationDefaults.Small.hovered,
-        disabledElevation: Dp = BrutalElevationDefaults.Small.disabled,
+        defaultElevation: Dp = BrutalElevationDefaults.Medium.default,
+        pressedElevation: Dp = BrutalElevationDefaults.Medium.pressed,
+        focusedElevation: Dp = BrutalElevationDefaults.Medium.focused,
+        hoveredElevation: Dp = BrutalElevationDefaults.Medium.hovered,
+        disabledElevation: Dp = BrutalElevationDefaults.Medium.disabled,
     ): ButtonElevation =
         ButtonElevation(
             defaultElevation = defaultElevation,
@@ -411,6 +430,38 @@ public object ButtonDefaults {
         )
 
     @Composable
+    public fun quaternaryColors(
+        containerColor: Color = AppTheme.colors.quaternary,
+        contentColor: Color = contentColorFor(containerColor),
+        borderColor: Color = BrutalDefaults.Color,
+        disabledContainerColor: Color = AppTheme.colors.quaternary.disabled(DisabledAlpha),
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
+    ): ButtonColors =
+        ButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+            borderColor = borderColor,
+            disabledContainerColor = disabledContainerColor,
+            disabledContentColor = disabledContentColor,
+        )
+
+    @Composable
+    public fun quaternaryElevatedColors(
+        containerColor: Color = AppTheme.colors.quaternary,
+        contentColor: Color = contentColorFor(containerColor),
+        borderColor: Color = BrutalDefaults.Color,
+        disabledContainerColor: Color = AppTheme.colors.quaternary.disabled(DisabledAlpha),
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
+    ): ButtonColors =
+        ButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+            borderColor = borderColor,
+            disabledContainerColor = disabledContainerColor,
+            disabledContentColor = disabledContentColor,
+        )
+
+    @Composable
     public fun destructiveColors(
         containerColor: Color = AppTheme.colors.error,
         contentColor: Color = contentColorFor(containerColor),
@@ -432,6 +483,22 @@ public object ButtonDefaults {
         contentColor: Color = contentColorFor(containerColor),
         borderColor: Color = BrutalDefaults.Color,
         disabledContainerColor: Color = AppTheme.colors.error.disabled(DisabledAlpha),
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
+    ): ButtonColors =
+        ButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+            borderColor = borderColor,
+            disabledContainerColor = disabledContainerColor,
+            disabledContentColor = disabledContentColor,
+        )
+
+    @Composable
+    public fun elevatedColors(
+        containerColor: Color = LocalContainerColor.current,
+        contentColor: Color = contentColorFor(containerColor),
+        borderColor: Color = BrutalDefaults.Color,
+        disabledContainerColor: Color = LocalContainerColor.current.disabled(DisabledAlpha),
         disabledContentColor: Color = contentColorFor(disabledContainerColor),
     ): ButtonColors =
         ButtonColors(
@@ -523,6 +590,22 @@ public object ButtonDefaults {
     ): ButtonStyle = ButtonStyle(colors, shape, elevation, contentPadding)
 
     @Composable
+    public fun quaternary(
+        colors: ButtonColors = quaternaryColors(),
+        shape: Shape = filledShape,
+        elevation: ButtonElevation? = null,
+        contentPadding: PaddingValues = this.contentPadding,
+    ): ButtonStyle = ButtonStyle(colors, shape, elevation, contentPadding)
+
+    @Composable
+    public fun quaternaryElevated(
+        colors: ButtonColors = quaternaryElevatedColors(),
+        shape: Shape = elevatedShape,
+        elevation: ButtonElevation? = buttonElevation(),
+        contentPadding: PaddingValues = this.contentPadding,
+    ): ButtonStyle = ButtonStyle(colors, shape, elevation, contentPadding)
+
+    @Composable
     public fun destructive(
         colors: ButtonColors = destructiveColors(),
         shape: Shape = filledShape,
@@ -534,6 +617,14 @@ public object ButtonDefaults {
     public fun destructiveElevated(
         colors: ButtonColors = destructiveElevatedColors(),
         shape: Shape = elevatedShape,
+        elevation: ButtonElevation? = buttonElevation(),
+        contentPadding: PaddingValues = this.contentPadding,
+    ): ButtonStyle = ButtonStyle(colors, shape, elevation, contentPadding)
+
+    @Composable
+    public fun elevated(
+        colors: ButtonColors = elevatedColors(),
+        shape: Shape = filledShape,
         elevation: ButtonElevation? = buttonElevation(),
         contentPadding: PaddingValues = this.contentPadding,
     ): ButtonStyle = ButtonStyle(colors, shape, elevation, contentPadding)
@@ -654,6 +745,23 @@ internal fun ButtonTertiaryPreview() {
             title = "Tertiary",
             filled = ButtonVariant.Tertiary,
             elevated = ButtonVariant.TertiaryElevated,
+        )
+    }
+    Column {
+        AppPreview(isDarkTheme = false) { Preview() }
+        AppPreview(isDarkTheme = true) { Preview() }
+    }
+}
+
+@Composable
+@Preview
+internal fun ButtonQuaternaryPreview() {
+    @Composable
+    fun Preview() {
+        ButtonVariantPreview(
+            title = "Quaternary",
+            filled = ButtonVariant.Quaternary,
+            elevated = ButtonVariant.QuaternaryElevated,
         )
     }
     Column {

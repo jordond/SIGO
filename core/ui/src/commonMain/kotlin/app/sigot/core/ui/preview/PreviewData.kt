@@ -8,10 +8,33 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
+import app.sigot.core.model.location.Location
+import dev.jordond.compass.Coordinates
+import kotlinx.datetime.Clock
+import dev.jordond.compass.Location as CompassLocation
 
 public object PreviewData {
     public val Icon: ImageVector
         get() = PreviewIcon
+
+    public val location: Location = Location(
+        latitude = 51.5074,
+        longitude = -0.1278,
+        name = "London, ON",
+    )
+
+    public val compassLocation: CompassLocation = CompassLocation(
+        coordinates = Coordinates(latitude = 43.6532, longitude = -79.3832),
+        accuracy = 100.0,
+        azimuth = null,
+        speed = null,
+        altitude = null,
+        timestampMillis = Clock.System.now().toEpochMilliseconds(),
+    )
+
+    public val Score: ScorePreviewData = ScorePreviewData
+
+    public val Forecast: ForecastPreviewData = ForecastPreviewData
 }
 
 internal val PreviewIcon: ImageVector

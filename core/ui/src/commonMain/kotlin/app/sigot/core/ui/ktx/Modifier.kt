@@ -10,6 +10,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.layout.layout
@@ -17,6 +18,8 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.sigot.core.ui.LocalHaptics
+import app.sigot.core.ui.wrap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -67,14 +70,34 @@ public fun Modifier.clickable(
 
 public fun Modifier.nullableClip(shape: Shape?): Modifier = if (shape != null) clip(shape) else this
 
-public fun Modifier.clickableWithoutRipple(onClick: () -> Unit): Modifier =
+public fun Modifier.hapticClick(onClick: () -> Unit): Modifier =
+    composed {
+        val haptics = LocalHaptics.current
+        clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null,
+            onClick = remember {
+                {
+                    haptics.vibrate(HapticFeedbackType.LongPress)
+                    onClick()
+                }
+            },
+        )
+    }
+
+public fun Modifier.clickableWithoutRipple(
+    onClick: () -> Unit,
+    haptics: Boolean? = null,
+): Modifier =
     composed(
         factory = {
+            val localHaptics = LocalHaptics.current
+            val callback = if (haptics ?: localHaptics.enabled) localHaptics.wrap(onClick) else onClick
             this.then(
                 Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                    onClick = { onClick() },
+                    onClick = callback,
                 ),
             )
         },

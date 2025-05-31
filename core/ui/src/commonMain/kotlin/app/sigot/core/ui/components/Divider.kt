@@ -60,7 +60,7 @@ public fun VerticalDivider(
 }
 
 public object DividerDefaults {
-    public val Thickness: Dp = BrutalDefaults.BorderWidth * 2
+    public val Thickness: Dp = BrutalDefaults.BorderWidth
     public val color: Color @Composable get() = BrutalDefaults.Color
 }
 

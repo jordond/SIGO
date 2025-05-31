@@ -35,6 +35,9 @@ import app.sigot.core.ui.foundation.slider.BasicSlider
 import app.sigot.core.ui.foundation.slider.RangeSliderState
 import app.sigot.core.ui.foundation.slider.SliderColors
 import app.sigot.core.ui.foundation.slider.SliderFoundationDefaults
+import app.sigot.core.ui.foundation.slider.SliderFoundationDefaults.ThumbHeight
+import app.sigot.core.ui.foundation.slider.SliderFoundationDefaults.ThumbSizeOnPress
+import app.sigot.core.ui.foundation.slider.SliderFoundationDefaults.ThumbWidth
 import app.sigot.core.ui.foundation.slider.SliderState
 import app.sigot.core.ui.ktx.disabled
 import app.sigot.core.ui.preview.AppPreview
@@ -79,7 +82,7 @@ public fun Slider(
     )
 }
 
-private val thumbSize = 24.dp
+private val thumbSize = 28.dp
 
 @Composable
 public fun Slider(
@@ -99,17 +102,17 @@ public fun Slider(
         enabled = enabled,
         trackInsideCornerSize = 1.dp,
         trackHeight = 32.dp,
-        thumbWidth = thumbSize,
-        thumbHeight = thumbSize,
+        thumbWidth = ThumbWidth,
+        thumbHeight = ThumbHeight,
         interactionSource = interactionSource,
         thumb = {
             SliderFoundationDefaults.Thumb(
                 interactionSource = interactionSource,
                 colors = colors,
                 enabled = enabled,
-                thumbWidth = thumbSize,
-                thumbHeight = thumbSize,
-                thumbSizeOnPress = DpSize(thumbSize, thumbSize),
+                thumbWidth = ThumbWidth,
+                thumbHeight = ThumbHeight,
+                thumbSizeOnPress = ThumbSizeOnPress,
                 modifier = Modifier.border(
                     width = BrutalDefaults.BorderWidth,
                     color = BrutalDefaults.Color,
@@ -196,9 +199,9 @@ public fun RangeSlider(
             interactionSource = interactionSource,
             colors = colors,
             enabled = enabled,
-            thumbWidth = thumbSize,
-            thumbHeight = thumbSize,
-            thumbSizeOnPress = DpSize(thumbSize, thumbSize),
+            thumbWidth = SliderFoundationDefaults.ThumbWidth,
+            thumbHeight = SliderFoundationDefaults.ThumbHeight,
+            thumbSizeOnPress = SliderFoundationDefaults.ThumbSizeOnPress,
             modifier = Modifier.border(
                 width = BrutalDefaults.BorderWidth,
                 color = BrutalDefaults.Color,
@@ -256,6 +259,27 @@ public object SliderDefaults {
         } else {
             AppTheme.colors.disabled.darken(2f)
         }
+
+    @Composable
+    public fun Thumb(
+        colors: SliderColors,
+        enabled: Boolean,
+        interactionSource: MutableInteractionSource,
+    ) {
+        SliderFoundationDefaults.Thumb(
+            interactionSource = interactionSource,
+            colors = colors,
+            enabled = enabled,
+            thumbWidth = thumbSize,
+            thumbHeight = thumbSize,
+            thumbSizeOnPress = DpSize(thumbSize, thumbSize),
+            modifier = Modifier.border(
+                width = BrutalDefaults.BorderWidth,
+                color = BrutalDefaults.Color,
+                shape = SliderFoundationDefaults.ThumbShape,
+            ),
+        )
+    }
 
     @Composable
     public fun colors(

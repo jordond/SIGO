@@ -1,19 +1,67 @@
 package app.sigot.core.ui.components
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.ktx.whenNotNull
+
+@Composable
+public fun BrutalCircle(
+    color: Color,
+    size: Dp,
+    modifier: Modifier = Modifier,
+) {
+    BrutalShape(
+        shape = CircleShape,
+        color = color,
+        size = DpSize(size, size),
+        border = true,
+        modifier = modifier,
+    )
+}
+
+@Composable
+public fun BrutalShape(
+    shape: Shape,
+    color: Color,
+    modifier: Modifier = Modifier,
+    size: DpSize? = null,
+    elevation: BrutalElevation = BrutalElevationDefaults.Small,
+    shadowColor: Color = BrutalDefaults.Color,
+    border: Boolean = true,
+    extraY: Boolean = false,
+) {
+    BrutalContainer(
+        shape = shape,
+        elevation = BrutalElevationDefaults.Small.default,
+        color = shadowColor,
+        border = true,
+    ) {
+        Box(
+            modifier = Modifier
+                .background(color, shape)
+                .whenNotNull(size) { value -> Modifier.size(value) }
+                .then(modifier),
+        )
+    }
+}
 
 @Composable
 public fun BrutalContainer(
@@ -23,7 +71,7 @@ public fun BrutalContainer(
     color: Color = BrutalDefaults.Color,
     extraY: Boolean = false,
     border: Boolean = false,
-    content: @Composable () -> Unit,
+    content: @Composable BoxScope.() -> Unit,
 ) {
     val yOffset by animateDpAsState(if (elevation == 0.dp) 0.dp else elevation + 2.dp)
     Box(modifier = modifier) {
@@ -50,12 +98,27 @@ public fun BrutalContainer(
     }
 }
 
+@Composable
+public fun Modifier.brutalBorder(
+    color: Color = BrutalDefaults.Color,
+    width: Dp = BrutalDefaults.BorderWidth * 2,
+    shape: Shape = RectangleShape,
+): Modifier =
+    border(
+        width = BrutalDefaults.BorderWidth,
+        color = color,
+        shape = shape,
+    )
+
 @Suppress("ConstPropertyName")
 public object BrutalDefaults {
     public const val DisabledAlpha: Float = 0.8f
     public val BorderWidth: Dp = 2.dp
     public val Color: Color
         @Composable get() = AppTheme.colors.outline
+
+    public val Border: BorderStroke
+        @Composable get() = BorderStroke(width = BorderWidth, color = Color)
 }
 
 @Immutable

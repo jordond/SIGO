@@ -41,6 +41,7 @@ public interface SnackbarVisuals {
     public val actionLabel: String?
     public val withDismissAction: Boolean
     public val duration: SnackbarDuration
+    public val type: SnackbarType
 }
 
 @Stable
@@ -63,6 +64,13 @@ public enum class SnackbarDuration {
     Indefinite,
 }
 
+public enum class SnackbarType {
+    Primary,
+    Secondary,
+    Tertiary,
+    Error,
+}
+
 internal fun SnackbarDuration.toMillis(
     hasAction: Boolean,
     accessibilityManager: AccessibilityManager?,
@@ -74,7 +82,7 @@ internal fun SnackbarDuration.toMillis(
             SnackbarDuration.Short -> 4000L
         }
     return accessibilityManager?.calculateRecommendedTimeoutMillis(
-        original,
+        originalTimeoutMillis = original,
         containsIcons = true,
         containsText = true,
         containsControls = hasAction,
@@ -84,23 +92,22 @@ internal fun SnackbarDuration.toMillis(
 @Stable
 public class SnackbarHostState {
     private val mutex: Mutex = Mutex()
-    public var currentSnackbarData: SnackbarData? by mutableStateOf<SnackbarData?>(null)
+    public var currentSnackbarData: SnackbarData? by mutableStateOf(null)
         private set
 
     public suspend fun show(
         message: String,
         actionLabel: String? = null,
         withDismissAction: Boolean = false,
-        duration: SnackbarDuration = if (actionLabel ==
-            null
-        ) {
+        duration: SnackbarDuration = if (actionLabel == null) {
             SnackbarDuration.Short
         } else {
             SnackbarDuration.Indefinite
         },
+        type: SnackbarType = SnackbarType.Primary,
     ): SnackbarResult =
         show(
-            SnackbarVisualsImpl(message, actionLabel, withDismissAction, duration),
+            SnackbarVisualsImpl(message, actionLabel, withDismissAction, duration, type),
         )
 
     public suspend fun show(visuals: SnackbarVisuals): SnackbarResult =
@@ -119,6 +126,7 @@ public class SnackbarHostState {
         override val actionLabel: String?,
         override val withDismissAction: Boolean,
         override val duration: SnackbarDuration,
+        override val type: SnackbarType,
     ) : SnackbarVisuals {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -127,6 +135,7 @@ public class SnackbarHostState {
             if (actionLabel != other.actionLabel) return false
             if (withDismissAction != other.withDismissAction) return false
             if (duration != other.duration) return false
+            if (type != other.type) return false
             return true
         }
 
@@ -135,6 +144,7 @@ public class SnackbarHostState {
             result = 31 * result + (actionLabel?.hashCode() ?: 0)
             result = 31 * result + withDismissAction.hashCode()
             result = 31 * result + duration.hashCode()
+            result = 31 * result + type.hashCode()
             return result
         }
     }
@@ -179,8 +189,8 @@ public fun SnackbarHost(
         if (currentSnackbarData != null) {
             val duration =
                 currentSnackbarData.visuals.duration.toMillis(
-                    currentSnackbarData.visuals.actionLabel != null,
-                    accessibilityManager,
+                    hasAction = currentSnackbarData.visuals.actionLabel != null,
+                    accessibilityManager = accessibilityManager,
                 )
             delay(duration)
             currentSnackbarData.dismiss()

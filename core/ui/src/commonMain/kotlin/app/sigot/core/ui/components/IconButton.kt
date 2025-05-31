@@ -40,6 +40,7 @@ import app.sigot.core.ui.components.BrutalDefaults.DisabledAlpha
 import app.sigot.core.ui.components.progressindicators.CircularProgressIndicator
 import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.foundation.ButtonElevation
+import app.sigot.core.ui.foundation.ripple
 import app.sigot.core.ui.ktx.disabled
 import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -148,10 +149,14 @@ private fun IconButtonComponent(
         color = style.colors.borderColor,
         modifier = modifier,
     ) {
+        val indication = remember(style, contentColor) {
+            if (style.elevation != null) null else ripple(color = contentColor)
+        }
+
         Surface(
             onClick = onClick,
             modifier =
-                Modifier
+                modifier
                     .defaultMinSize(
                         minWidth = IconButtonDefaults.ButtonSize,
                         minHeight = IconButtonDefaults.ButtonSize,
@@ -162,6 +167,7 @@ private fun IconButtonComponent(
             contentColor = contentColor,
             border = borderStroke,
             interactionSource = interactionSource,
+            indication = indication,
         ) {
             Box(
                 modifier = Modifier.padding(contentPadding),
@@ -197,6 +203,8 @@ public enum class IconButtonVariant {
     SecondaryElevated,
     Tertiary,
     TertiaryElevated,
+    Quaternary,
+    QuaternaryElevated,
     Destructive,
     DestructiveElevated,
     Outlined,
@@ -238,6 +246,8 @@ public object IconButtonDefaults {
             IconButtonVariant.SecondaryElevated -> secondaryElevated(shape)
             IconButtonVariant.Tertiary -> tertiary(shape)
             IconButtonVariant.TertiaryElevated -> tertiaryElevated(shape)
+            IconButtonVariant.Quaternary -> quaternary(shape)
+            IconButtonVariant.QuaternaryElevated -> quaternaryElevated(shape)
             IconButtonVariant.Destructive -> destructive(shape)
             IconButtonVariant.DestructiveElevated -> destructiveElevated(shape)
             IconButtonVariant.Outlined -> outlined(shape)
@@ -330,6 +340,38 @@ public object IconButtonDefaults {
         contentColor: Color = contentColorFor(containerColor),
         borderColor: Color = BrutalDefaults.Color,
         disabledContainerColor: Color = AppTheme.colors.tertiary.disabled(DisabledAlpha),
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
+    ): IconButtonColors =
+        IconButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+            borderColor = borderColor,
+            disabledContainerColor = disabledContainerColor,
+            disabledContentColor = disabledContentColor,
+        )
+
+    @Composable
+    public fun quaternaryColors(
+        containerColor: Color = AppTheme.colors.quaternary,
+        contentColor: Color = contentColorFor(containerColor),
+        borderColor: Color = BrutalDefaults.Color,
+        disabledContainerColor: Color = AppTheme.colors.quaternary.disabled(DisabledAlpha),
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
+    ): IconButtonColors =
+        IconButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+            borderColor = borderColor,
+            disabledContainerColor = disabledContainerColor,
+            disabledContentColor = disabledContentColor,
+        )
+
+    @Composable
+    public fun quaternaryElevatedColors(
+        containerColor: Color = AppTheme.colors.quaternary,
+        contentColor: Color = contentColorFor(containerColor),
+        borderColor: Color = BrutalDefaults.Color,
+        disabledContainerColor: Color = AppTheme.colors.quaternary.disabled(DisabledAlpha),
         disabledContentColor: Color = contentColorFor(disabledContainerColor),
     ): IconButtonColors =
         IconButtonColors(
@@ -443,6 +485,20 @@ public object IconButtonDefaults {
     public fun tertiaryElevated(
         shape: Shape,
         colors: IconButtonColors = tertiaryElevatedColors(),
+        elevation: ButtonElevation? = buttonElevation(),
+    ): IconButtonStyle = IconButtonStyle(colors, shape, elevation)
+
+    @Composable
+    public fun quaternary(
+        shape: Shape,
+        colors: IconButtonColors = quaternaryColors(),
+        elevation: ButtonElevation? = null,
+    ): IconButtonStyle = IconButtonStyle(colors, shape, elevation)
+
+    @Composable
+    public fun quaternaryElevated(
+        shape: Shape,
+        colors: IconButtonColors = quaternaryElevatedColors(),
         elevation: ButtonElevation? = buttonElevation(),
     ): IconButtonStyle = IconButtonStyle(colors, shape, elevation)
 
@@ -582,6 +638,24 @@ internal fun IconButtonTertiaryPreview() {
             title = "Tertiary",
             filled = IconButtonVariant.Tertiary,
             elevated = IconButtonVariant.TertiaryElevated,
+        )
+    }
+
+    Column {
+        AppPreview(isDarkTheme = false) { Preview() }
+        AppPreview(isDarkTheme = true) { Preview() }
+    }
+}
+
+@Composable
+@Preview
+internal fun IconButtonQuaternaryPreview() {
+    @Composable
+    fun Preview() {
+        IconButtonVariantPreview(
+            title = "Quaternary",
+            filled = IconButtonVariant.Quaternary,
+            elevated = IconButtonVariant.QuaternaryElevated,
         )
     }
 

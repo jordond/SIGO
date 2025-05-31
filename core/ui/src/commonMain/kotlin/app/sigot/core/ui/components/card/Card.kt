@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -33,6 +34,7 @@ import app.sigot.core.ui.components.BrutalDefaults
 import app.sigot.core.ui.components.BrutalElevationDefaults
 import app.sigot.core.ui.components.Surface
 import app.sigot.core.ui.components.Text
+import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -41,7 +43,7 @@ public fun Card(
     modifier: Modifier = Modifier,
     shape: Shape = CardDefaults.Shape,
     colors: CardColors = CardDefaults.cardColors(),
-    border: BorderStroke = CardDefaults.cardBorder(),
+    border: BorderStroke? = CardDefaults.cardBorder(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
@@ -66,7 +68,7 @@ public fun Card(
     enabled: Boolean = true,
     shape: Shape = CardDefaults.Shape,
     colors: CardColors = CardDefaults.cardColors(),
-    border: BorderStroke = CardDefaults.cardBorder(),
+    border: BorderStroke? = CardDefaults.cardBorder(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -94,7 +96,7 @@ public fun ElevatedCard(
     shape: Shape = CardDefaults.ElevatedShape,
     colors: CardColors = CardDefaults.elevatedCardColors(),
     elevation: CardElevation = CardDefaults.cardElevation(),
-    border: BorderStroke = CardDefaults.cardBorder(),
+    border: BorderStroke? = CardDefaults.cardBorder(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val elevationValue by elevation.shadowElevation(enabled = true, interactionSource = null)
@@ -103,9 +105,9 @@ public fun ElevatedCard(
         elevation = elevationValue,
         color = CardDefaults.BorderColor,
         extraY = true,
+        modifier = modifier,
     ) {
         Card(
-            modifier = modifier,
             shape = shape,
             border = border,
             colors = colors,
@@ -146,10 +148,44 @@ public fun ElevatedCard(
 }
 
 public object CardDefaults {
-    public val Shape: Shape @Composable get() = AppTheme.shapes.large
-    public val ElevatedShape: Shape @Composable get() = Shape
+    public val Shape: CornerBasedShape @Composable get() = AppTheme.shapes.medium
+    public val ElevatedShape: CornerBasedShape @Composable get() = Shape
     public val BorderColor: Color @Composable get() = BrutalDefaults.Color
     private val BorderWidth = BrutalDefaults.BorderWidth
+
+    public val primaryColors: CardColors
+        @Composable get() = cardColors(
+            containerColor = AppTheme.colors.primary,
+            contentColor = AppTheme.colors.onPrimary,
+        )
+
+    public val secondaryColors: CardColors
+        @Composable get() = cardColors(
+            containerColor = AppTheme.colors.secondary,
+            contentColor = AppTheme.colors.onSecondary,
+        )
+
+    public val tertiaryColors: CardColors
+        @Composable get() = cardColors(
+            containerColor = AppTheme.colors.tertiary,
+            contentColor = AppTheme.colors.onTertiary,
+        )
+
+    public val quaternaryColors: CardColors
+        @Composable get() = cardColors(
+            containerColor = AppTheme.colors.quaternary,
+            contentColor = AppTheme.colors.onQuaternary,
+        )
+
+    @Composable
+    public fun fromColor(containerColor: Color): CardColors =
+        when (containerColor) {
+            AppTheme.colors.primary -> primaryColors
+            AppTheme.colors.secondary -> secondaryColors
+            AppTheme.colors.tertiary -> tertiaryColors
+            AppTheme.colors.quaternary -> quaternaryColors
+            else -> cardColors()
+        }
 
     @Composable
     public fun cardElevation(
@@ -172,9 +208,9 @@ public object CardDefaults {
     @Composable
     public fun cardColors(
         containerColor: Color = AppTheme.colors.surface,
-        contentColor: Color = AppTheme.colors.onSurface,
+        contentColor: Color = contentColorFor(containerColor),
         disabledContainerColor: Color = AppTheme.colors.disabled,
-        disabledContentColor: Color = AppTheme.colors.onDisabled,
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
     ): CardColors =
         CardColors(
             containerColor = containerColor,
@@ -186,9 +222,9 @@ public object CardDefaults {
     @Composable
     public fun elevatedCardColors(
         containerColor: Color = AppTheme.colors.surface,
-        contentColor: Color = AppTheme.colors.onSurface,
+        contentColor: Color = contentColorFor(containerColor),
         disabledContainerColor: Color = AppTheme.colors.disabled,
-        disabledContentColor: Color = AppTheme.colors.onDisabled,
+        disabledContentColor: Color = contentColorFor(disabledContainerColor),
     ): CardColors =
         CardColors(
             containerColor = containerColor,

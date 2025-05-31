@@ -1,6 +1,7 @@
 package app.sigot.core.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,7 +15,6 @@ import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -26,8 +26,10 @@ import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalContentColor
+import app.sigot.core.ui.LocalHaptics
 import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.foundation.ripple
+import app.sigot.core.ui.wrap
 
 @Composable
 @NonRestartableComposable
@@ -74,12 +76,16 @@ public fun Surface(
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication? = ripple(color = contentColor),
+    enableHaptics: Boolean = LocalHaptics.current.enabled,
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
         LocalContainerColor provides color,
         LocalContentColor provides contentColor,
     ) {
+        val haptics = LocalHaptics.current
+        val clickHandler = if (enableHaptics) haptics.wrap(onClick) else onClick
         Box(
             modifier =
                 modifier
@@ -90,9 +96,9 @@ public fun Surface(
                         shadowElevation = shadowElevation,
                     ).clickable(
                         interactionSource = interactionSource,
-                        indication = ripple(color = contentColor),
+                        indication = indication,
                         enabled = enabled,
-                        onClick = onClick,
+                        onClick = clickHandler,
                     ),
             propagateMinConstraints = true,
         ) {
@@ -114,6 +120,7 @@ public fun Surface(
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication? = ripple(),
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
@@ -131,7 +138,7 @@ public fun Surface(
                     ).selectable(
                         selected = selected,
                         interactionSource = interactionSource,
-                        indication = ripple(),
+                        indication = indication,
                         enabled = enabled,
                         onClick = onClick,
                     ),
@@ -155,6 +162,7 @@ public fun Surface(
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication? = ripple(),
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
@@ -172,7 +180,7 @@ public fun Surface(
                     ).toggleable(
                         value = checked,
                         interactionSource = interactionSource,
-                        indication = ripple(),
+                        indication = indication,
                         enabled = enabled,
                         onValueChange = onCheckedChange,
                     ),
@@ -190,12 +198,6 @@ private fun Modifier.surface(
     border: BorderStroke?,
     shadowElevation: Dp,
 ) = this
-    .shadow(
-        ambientColor = AppTheme.colors.elevation,
-        spotColor = AppTheme.colors.elevation,
-        elevation = shadowElevation,
-        shape = shape,
-        clip = false,
-    ).then(if (border != null) Modifier.border(border, shape) else Modifier)
+    .then(if (border != null) Modifier.border(border, shape) else Modifier)
     .background(color = backgroundColor, shape = shape)
     .clip(shape)
