@@ -9,6 +9,7 @@ on:
       - '.github/**'
       - 'art/**'
       - 'LICENSE'
+      - 'scripts/**'
 
 jobs:
   verify:

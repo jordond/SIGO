@@ -10,7 +10,7 @@ SECRET_FORECAST_API_KEY="FORECAST_API_KEY"
 WRANGLER_VARS="$ROOT/.dev.vars"
 WRANGLER_VARS_SAMPLE="$ROOT/.dev.vars.sample"
 WRANGLER_COMMAND="$ROOT/apps/api/worker/node_modules/.bin/wrangler"
-KJS_BUILD_COMMAND="$ROOT/gradlew :apps:api:worker:compileProductionExecutableKotlinJs"
+API_SCRIPT="$ROOT/scripts/api.sh"
 KJS_OUTPUT_FILE="$ROOT/apps/api/worker/build/compileSync/js/main/productionExecutable/kotlin/index.mjs"
 
 print_usage() {
@@ -139,45 +139,6 @@ initialize() {
     echo "🎉 API worker initialization complete!"
 }
 
-build() {
-    local clean_flag=false
-
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-        --clean)
-            clean_flag=true
-            shift
-            ;;
-        *)
-            echo "⚠️ Warning: Unknown build option '$1'"
-            ;;
-        esac
-    done
-
-    # 0. If --clean is passed run ./gradlew clean first
-    if [[ "$clean_flag" == true ]]; then
-        echo "🧹 Running gradle clean..."
-        if ! ./gradlew clean >/dev/null; then
-            echo "❌ Gradle clean failed"
-            exit 1
-        fi
-        echo "✅ Clean complete"
-    fi
-
-    echo "🔨 Compiling Kotlin/JS worker..."
-    if ! $KJS_BUILD_COMMAND >/dev/null; then
-        echo "❌ Kotlin/JS compilation failed"
-        exit 1
-    fi
-
-    if [[ ! -f "$KJS_OUTPUT_FILE" ]]; then
-        echo "❌ Expected output file not found: $KJS_OUTPUT_FILE"
-        exit 1
-    fi
-
-    echo "✅ Build complete! Output: ${KJS_OUTPUT_FILE#"$ROOT/"}"
-}
-
 check_secrets_for_env() {
     local env="$1"
 
@@ -239,7 +200,7 @@ dev() {
     trap cleanup EXIT INT TERM
 
     echo "🔨 Starting Kotlin/JS build watcher..."
-    $KJS_BUILD_COMMAND --quiet --continuous &
+    "$ROOT/gradlew" :apps:api:worker:compileProductionExecutableKotlinJs --quiet --continuous &
     GRADLE_PID=$!
     echo "🔧 Gradle/JS build watcher started with PID $GRADLE_PID"
 
@@ -291,13 +252,13 @@ deploy() {
             # Build: clean only on first deploy if --no-clean is not specified
             if [[ "$first_deploy" == "true" ]]; then
                 if [[ "$no_clean_flag" == "true" ]]; then
-                    build
+                    "$API_SCRIPT" build
                 else
-                    build --clean
+                    "$API_SCRIPT" build --clean
                 fi
                 first_deploy=false
             else
-                build
+                "$API_SCRIPT" build
             fi
 
             deploy_to_env "$target_env"
@@ -313,12 +274,22 @@ deploy() {
         check_secrets_for_env "$env"
 
         if [[ "$no_clean_flag" == "true" ]]; then
-            build
+            "$API_SCRIPT" build
         else
-            build --clean
+            "$API_SCRIPT" build --clean
         fi
 
         deploy_to_env "$env"
+    fi
+}
+
+build() {
+    local clean_flag="$1"
+
+    if [[ "$clean_flag" == "true" ]]; then
+        "$API_SCRIPT" build --clean
+    else
+        "$API_SCRIPT" build
     fi
 }
 
@@ -328,7 +299,6 @@ ENV="prod"
 NO_CLEAN_FLAG="false"
 ALL_FLAG="false"
 WRANGLER_ARGS=()
-BUILD_ARGS=()
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -345,11 +315,9 @@ while [[ $# -gt 0 ]]; do
     build)
         COMMAND="build"
         shift
-        # Collect build-specific arguments
-        while [[ $# -gt 0 ]] && { [[ "$1" != -* ]] || [[ "$1" == "--clean" ]]; }; do
-            BUILD_ARGS+=("$1")
-            shift
-        done
+        # SEnd remaining args to build script
+        "$API_SCRIPT" build "$@"
+        exit $?
         ;;
     dev)
         COMMAND="dev"
@@ -410,14 +378,6 @@ fi
 
 # Execute the appropriate command
 case "$COMMAND" in
-build)
-    echo "🔨 Building API worker..."
-    if [[ ${#BUILD_ARGS[@]} -eq 0 ]]; then
-        build
-    else
-        build "${BUILD_ARGS[@]}"
-    fi
-    ;;
 init)
     echo "🚀 Initializing API worker..."
     initialize
@@ -457,7 +417,6 @@ secret)
         ;;
     esac
     ;;
-
 dev)
     echo "🔥 Starting API worker in development mode..."
     dev
