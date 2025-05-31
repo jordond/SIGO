@@ -7,6 +7,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Shapes
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
@@ -31,6 +32,10 @@ public object AppTheme {
     public val shapes: Shapes
         @ReadOnlyComposable @Composable
         get() = LocalShapes.current
+
+    public val spacing: Spacing
+        @ReadOnlyComposable @Composable
+        get() = LocalSpacing.current
 }
 
 public val LocalThemeIsDark: ProvidableCompositionLocal<Boolean> = compositionLocalOf {
@@ -39,6 +44,14 @@ public val LocalThemeIsDark: ProvidableCompositionLocal<Boolean> = compositionLo
 
 public val LocalSharedTransitionScope: ProvidableCompositionLocal<SharedTransitionScope> =
     compositionLocalOf { error("SharedTransitionScope not provided") }
+
+public val LocalWindowSizeClass: ProvidableCompositionLocal<WindowSizeClass> = compositionLocalOf {
+    error("WindowSizeClass not provided")
+}
+
+public val LocalUse24HourTime: ProvidableCompositionLocal<Boolean> = compositionLocalOf {
+    false
+}
 
 @Composable
 public fun AppTheme(
@@ -58,6 +71,7 @@ public fun AppTheme(
             LocalSharedTransitionScope provides this,
             LocalThemeIsDark provides isDarkTheme,
             LocalPlatformIcon provides platformIcon,
+            LocalUse24HourTime provides false,
             LocalColors provides colors.animate(),
             LocalTypography provides typography,
             LocalShapes provides Shapes,

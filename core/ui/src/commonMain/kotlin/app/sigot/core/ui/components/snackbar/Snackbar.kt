@@ -41,6 +41,7 @@ import app.sigot.core.ui.components.snackbar.SnackbarDefaults.SingleLineContaine
 import app.sigot.core.ui.components.snackbar.SnackbarDefaults.SnackbarVerticalPadding
 import app.sigot.core.ui.components.snackbar.SnackbarDefaults.TextEndExtraSpacing
 import app.sigot.core.ui.components.snackbar.SnackbarDefaults.TwoLinesContainerHeight
+import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.ktx.get
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.max
@@ -51,10 +52,10 @@ public fun Snackbar(
     snackbarData: SnackbarData,
     modifier: Modifier = Modifier,
     shape: Shape = SnackbarDefaults.shape,
-    containerColor: Color = SnackbarDefaults.color,
-    contentColor: Color = SnackbarDefaults.contentColor,
+    containerColor: Color = snackbarData.visuals.type.containerColor(),
+    contentColor: Color = contentColorFor(containerColor),
     actionColor: Color = SnackbarDefaults.actionColor,
-    actionContentColor: Color = SnackbarDefaults.actionContentColor,
+    actionContentColor: Color = contentColorFor(actionColor),
     actionVariant: ButtonVariant = SnackbarDefaults.ActionButtonVariant,
     dismissActionContentColor: Color = SnackbarDefaults.dismissActionContentColor,
     dismissActionVariant: ButtonVariant = SnackbarDefaults.DismissButtonVariant,
@@ -87,7 +88,7 @@ public fun Snackbar(
             null
         }
     Snackbar(
-        modifier = modifier.padding(12.dp),
+        modifier = modifier,
         action = actionComposable,
         dismissAction = dismissActionComposable,
         shape = shape,
@@ -115,9 +116,10 @@ public fun Snackbar(
         shape = shape,
         elevation = ContainerElevation,
         border = true,
+        modifier = modifier.padding(horizontal = 8.dp),
     ) {
         Surface(
-            modifier = modifier,
+            modifier = Modifier,
             shape = shape,
             color = containerColor,
             contentColor = contentColor,
@@ -141,6 +143,15 @@ public fun Snackbar(
         }
     }
 }
+
+@Composable
+private fun SnackbarType.containerColor(): Color =
+    when (this) {
+        SnackbarType.Primary -> AppTheme.colors.primary
+        SnackbarType.Secondary -> AppTheme.colors.secondary
+        SnackbarType.Tertiary -> AppTheme.colors.tertiary
+        SnackbarType.Error -> AppTheme.colors.error
+    }
 
 @Composable
 private fun SnackbarLayout(
@@ -267,8 +278,8 @@ private fun SnackbarLayout(
 
 public object SnackbarDefaults {
     public val ContainerMaxWidth: Dp = 600.dp
-    public val SingleLineContainerHeight: Dp = 56.dp
-    public val TwoLinesContainerHeight: Dp = 68.dp
+    public val SingleLineContainerHeight: Dp = 60.dp
+    public val TwoLinesContainerHeight: Dp = 70.dp
     public val HeightToFirstLine: Dp = 30.dp
     public val HorizontalSpacing: Dp = 16.dp
     public val HorizontalSpacingButtonSide: Dp = 8.dp
@@ -308,6 +319,7 @@ public object SnackbarDefaults {
         Button(
             modifier = modifier,
             variant = variant,
+            onClick = onClick,
             shape = AppTheme.shapes.small,
             contentPadding = contentPadding,
             minHeight = Dp.Unspecified,

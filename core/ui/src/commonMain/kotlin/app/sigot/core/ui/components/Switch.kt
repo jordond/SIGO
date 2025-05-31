@@ -198,11 +198,11 @@ private fun SwitchComponent(
 }
 
 public object SwitchDefaults {
-    public val ThumbSize: Dp = 16.dp
-    public val UncheckedThumbSize: Dp = 16.dp
+    public val ThumbSize: Dp = 20.dp
+    public val UncheckedThumbSize: Dp = 20.dp
     public val ThumbSizeStateOffset: Dp = ThumbSize - UncheckedThumbSize
-    public val SwitchWidth: Dp = 48.dp
-    public val SwitchHeight: Dp = 24.dp
+    public val SwitchWidth: Dp = 50.dp
+    public val SwitchHeight: Dp = 28.dp
     public val TrackBorderWidth: Dp = 2.dp
     public val ThumbBorderWidth: Dp = TrackBorderWidth
     public val TrackShape: Shape @Composable get() = AppTheme.shapes.medium
@@ -270,6 +270,9 @@ public object SwitchDefaults {
 
     @Composable
     public fun tertiaryColors(): SwitchColors = colors(checkedTrackColor = AppTheme.colors.tertiary)
+
+    @Composable
+    public fun quaternaryColors(): SwitchColors = colors(checkedTrackColor = AppTheme.colors.quaternary)
 }
 
 @Stable

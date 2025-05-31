@@ -22,6 +22,9 @@ ROOT="$(cd "$CWD"/.. >/dev/null 2>&1 && pwd)"
 SECRETS_DIR="$ROOT/secrets"
 DECRYPT_DIR="$ROOT/.app/secrets"
 
+GOOGLE_SERVICES_JSON_DECRYPT_PATH="$ROOT/apps/android"
+GOOGLE_SERVICES_PLIST_DECRYPT_PATH="$ROOT/apps/ios/iosApp"
+
 print_usage() {
     echo "Usage: ./sigot crypt <command> [options] [file]"
     echo
@@ -80,7 +83,25 @@ decrypt_file() {
     fi
 
     # Construct output path
-    local output_path="$DECRYPT_DIR/$filename"
+    local output_path
+
+    # Special handling for google-services.json
+    if [[ $filename == "google-services.json" ]]; then
+        output_path="$GOOGLE_SERVICES_JSON_DECRYPT_PATH/$filename"
+        # Check if Android app directory exists
+        if [[ ! -d "$GOOGLE_SERVICES_JSON_DECRYPT_PATH" ]]; then
+            echo "Error: Android app directory '$GOOGLE_SERVICES_JSON_DECRYPT_PATH' does not exist"
+            exit 1
+        fi
+    elif [[ $filename == "GoogleService-Info.plist" ]]; then
+        output_path="$GOOGLE_SERVICES_PLIST_DECRYPT_PATH/$filename"
+        if [[ ! -d "$GOOGLE_SERVICES_PLIST_DECRYPT_PATH" ]]; then
+            echo "Error: iOS app directory '$GOOGLE_SERVICES_PLIST_DECRYPT_PATH' does not exist"
+            exit 1
+        fi
+    else
+        output_path="$DECRYPT_DIR/$filename"
+    fi
 
     echo "🔐 Decrypting file: $input_file"
     echo "📝 Output will be written to: $output_path"

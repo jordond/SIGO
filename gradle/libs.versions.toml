@@ -4,6 +4,7 @@ app-name = "app.sigot"
 app-desktop-version = "1.0.0"
 app-ios-version = "0.1.0"
 app-android-version = "0.1.0"
+api-worker-version = "1.0.0"
 # App code for development, the real app code is set by release process
 app-android-code = "99999"
 sdk-target = "36"
@@ -12,34 +13,47 @@ sdk-min = "30"
 jvmTarget = "17"
 ############################
 
-kotlin = "2.1.20"
-compose = "1.8.0"
+kotlin = "2.2.0-RC"
+compose = "1.8.1"
 agp = "8.10.0"
 androidx-activity = "1.10.1"
+androidx-compose-ui-tooling = "1.8.2"
 androidx-core = "1.16.0"
-androidx-compose-ui-tooling = "1.8.1"
-androidx-ui-test = "1.8.1"
-compose-windowSizeClass = "1.8.0"
+androidx-lifecycle = "2.9.0"
+androidx-navigation = "2.9.0-beta02"
+androidx-ui-test = "1.8.2"
+buildKonfig = "0.17.1"
+clikt = "5.0.3"
+compose-windowSizeClass = "1.8.1"
 composables = "1.1.0"
-hotReload = "1.0.0-alpha09"
-kotlinx-collections = "0.3.8"
+composeWebviewMultiplatform = "1.9.40"
+desugar = "2.1.5"
+hotReload = "1.0.0-alpha10"
+kotlinx-collections = "0.4.0"
 kotlinx-coroutines = "1.10.2"
+kotlinx-atomicfu = "0.27.0"
+koin = "4.0.4"
+kotest = "5.9.1"
+kstore = "0.9.1"
 ktor = "3.1.3"
-filekit = "0.10.0-beta03"
-androidx-lifecycle = "2.9.0-beta01"
-androidx-navigation = "2.9.0-beta01"
+filekit = "0.10.0-beta04"
+firebase-bom = "33.14.0"
+firebase-kmp = "2.1.0"
+google-services = "4.4.2"
 kotlinx-serialization = "1.8.1"
-coil = "3.1.0"
+coil = "3.2.0"
 multiplatformSettings = "1.3.0"
 kotlinx-datetime = "0.6.2"
 room = "2.7.1"
-ksp = "2.1.20-2.0.1"
+ksp = "2.2.0-RC-2.0.1"
 materialKolor = "3.0.0-beta01"
 kermit = "2.0.5"
-stateHolder = "2.0.0-rc02"
-compass = "2.0.1"
-connectivity = "2.0.0"
+slf4jNop = "2.0.17"
+stateHolder = "2.0.0-rc03"
+compass = "2.3.0"
+connectivity = "2.0.2"
 lumo = "1.2.5"
+mordant = "3.0.2"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
@@ -52,12 +66,15 @@ androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycl
 androidx-navigation-composee = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 androidx-uitest-testManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-ui-test" }
 androidx-uitest-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-ui-test" }
+clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
 coil = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 compass-geocoder = { module = "dev.jordond.compass:geocoder", version.ref = "compass" }
 compass-geocoder-mobile = { module = "dev.jordond.compass:geocoder-mobile", version.ref = "compass" }
+compass-permissions-mobile = { module = "dev.jordond.compass:permissions-mobile", version.ref = "compass" }
 compass-geolocation = { module = "dev.jordond.compass:geolocation", version.ref = "compass" }
 compass-geolocation-mobile = { module = "dev.jordond.compass:geolocation-mobile", version.ref = "compass" }
+compass-geolocation-browser = { module = "dev.jordond.compass:geolocation-browser", version.ref = "compass" }
 compose-windowSizeClass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-windowSizeClass" }
 composables = { module = "com.nomanr:composables", version.ref = "composables" }
 connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
@@ -65,8 +82,29 @@ connectivity-device = { module = "dev.jordond.connectivity:connectivity-device",
 connectivity-http = { module = "dev.jordond.connectivity:connectivity-http", version.ref = "connectivity" }
 connectivity-compose-device = { module = "dev.jordond.connectivity:connectivity-compose-device", version.ref = "connectivity" }
 connectivity-compose-http = { module = "dev.jordond.connectivity:connectivity-compose-http", version.ref = "connectivity" }
+composeWebviewMultiplatform = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "composeWebviewMultiplatform" }
+desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
+filekit-coil = { module = "io.github.vinceglb:filekit-coil", version.ref = "filekit" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
+firebase-common = { module = "com.google.firebase:firebase-common-ktx" }
+firebase-config = { module = "com.google.firebase:firebase-config-ktx" }
+firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
+firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debug" }
+firebase-kmp-analytics = { module = "dev.gitlive:firebase-analytics", version.ref = "firebase-kmp" }
+firebase-kmp-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebase-kmp" }
+firebase-kmp-config = { module = "dev.gitlive:firebase-config", version.ref = "firebase-kmp" }
+firebase-kmp-functions = { module = "dev.gitlive:firebase-functions", version.ref = "firebase-kmp" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+kermit-koin = { module = "co.touchlab:kermit-koin", version.ref = "kermit" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotlinx-collections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-collections" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
@@ -74,17 +112,25 @@ kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinx-atomicfu" }
+kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
+kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
+kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
+ktor-client-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+mordant = { module = "com.github.ajalt.mordant:mordant", version.ref = "mordant" }
+mordant-coroutines = { module = "com.github.ajalt.mordant:mordant-coroutines", version.ref = "mordant" }
 multiplatformSettings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4jNop" }
 stateHolder = { module = "dev.jordond.stateholder:core", version.ref = "stateHolder" }
 stateHolder-dispatcher = { module = "dev.jordond.stateholder:dispatcher-compose", version.ref = "stateHolder" }
 stateHolder-compose = { module = "dev.jordond.stateholder:extensions-compose", version.ref = "stateHolder" }
@@ -100,6 +146,17 @@ stateHolder = [
     "stateHolder-compose",
     "stateHolder-viewmodel",
 ]
+kotlinx = [
+    "kotlinx-collections",
+    "kotlinx-coroutines-core",
+    "kotlinx-datetime",
+]
+koin-compose = [
+    "koin-core",
+    "koin-compose",
+    "koin-compose-viewmodel",
+    "koin-compose-viewmodel-navigation",
+]
 logic-plugins = [
     "gradlePlugin-android",
     "gradlePlugin-kotlin",
@@ -107,15 +164,18 @@ logic-plugins = [
 ]
 
 [plugins]
+jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hotReload" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 lumo = {id="com.nomanr.plugin.lumo", version.ref="lumo"}
+buildKonfig = {id="com.codingfeline.buildkonfig", version.ref="buildKonfig"}
 convention-multiplatform = { id = "convention.multiplatform", version = "0" }
 toolchain-version = { id = "toolchain.version", version = "0" }

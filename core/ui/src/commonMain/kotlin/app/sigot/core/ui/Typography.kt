@@ -51,12 +51,13 @@ public val TextStyle.asDisplay: TextStyle
 
 public val TextStyle.asContent: TextStyle
     @Composable
-    get() = copy(fontFamily = contentFont)
+    get() = copy(fontFamily = contentFont, letterSpacing = 0.sp)
 
 @Composable
 public fun fontFamily(): FontFamily = contentFont
 
 public data class Typography(
+    val header: TextStyle,
     val h1: TextStyle,
     val h2: TextStyle,
     val h3: TextStyle,
@@ -73,11 +74,18 @@ public data class Typography(
 
 private val defaultTypography =
     Typography(
+        header =
+            TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 64.sp,
+                lineHeight = 58.sp,
+                letterSpacing = (-10).sp,
+            ),
         h1 =
             TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontSize = 40.sp,
-                lineHeight = 32.sp,
+                lineHeight = 58.sp,
                 letterSpacing = (-7).sp,
             ),
         h2 =
@@ -90,14 +98,14 @@ private val defaultTypography =
         h3 =
             TextStyle(
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 lineHeight = 24.sp,
-                letterSpacing = (-4).sp,
+                letterSpacing = (-3).sp,
             ),
         h4 =
             TextStyle(
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
+                fontSize = 18.sp,
                 lineHeight = 24.sp,
                 letterSpacing = 0.sp,
             ),
@@ -164,6 +172,7 @@ public fun provideTypography(): Typography {
     val display = displayFont
     val content = contentFont
     return defaultTypography.copy(
+        header = defaultTypography.header.copy(fontFamily = display),
         h1 = defaultTypography.h1.copy(fontFamily = display),
         h2 = defaultTypography.h2.copy(fontFamily = display),
         h3 = defaultTypography.h3.copy(fontFamily = display),

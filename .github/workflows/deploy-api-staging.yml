@@ -1,0 +1,45 @@
+name: Deploy Staging API
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - 'art/**'
+      - 'LICENSE'
+      - 'scripts/**'
+
+jobs:
+  verify:
+    name: "Deploy"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: setup-java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: adopt
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Gradle Wrapper Validation
+        uses: gradle/wrapper-validation-action@v3
+
+      - name: Initialize
+        run: ./sigot api:worker init
+
+      - name: Deploy to Cloudflare
+        run: ./sigot api:worker deploy staging
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

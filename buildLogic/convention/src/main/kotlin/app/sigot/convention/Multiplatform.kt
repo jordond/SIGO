@@ -8,15 +8,17 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import kotlin.text.set
 
 fun Project.configureMultiplatform(
     platform: Platform,
     name: String = this.name,
     compose: Boolean = extensions.findByType(ComposeExtension::class.java) != null,
+    cocoapods: Boolean = false,
+    desugar: Boolean = false,
+    tests: Boolean = false,
     log: Boolean = false,
 ) {
-    configureMultiplatform(listOf(platform), name, compose, log)
+    configureMultiplatform(listOf(platform), name, compose, cocoapods, desugar, tests, log)
 }
 
 fun Project.configureMultiplatform(
@@ -24,6 +26,8 @@ fun Project.configureMultiplatform(
     name: String = this.name,
     compose: Boolean = extensions.findByType(ComposeExtension::class.java) != null,
     cocoapods: Boolean = false,
+    desugar: Boolean = false,
+    tests: Boolean = false,
     log: Boolean = false,
 ) {
     if (log) {
@@ -36,18 +40,19 @@ fun Project.configureMultiplatform(
 
     extensions.configure<KotlinMultiplatformExtension> {
         configureKotlin()
-        configurePlatforms(platforms, name, cocoapods, log)
+        configurePlatforms(platforms, name, cocoapods, tests, log)
         if (platforms.contains(Platform.Ios)) {
             configureNativeOptIn()
         }
     }
 
-    if (platforms.contains(Platform.Android)) {
-        configureAndroid(name, compose)
+    val hasAndroid = platforms.contains(Platform.Android)
+    if (hasAndroid) {
+        configureAndroid(name, compose, desugar)
     }
 
     if (compose) {
-        composeDependencies()
+        composeDependencies(hasAndroid)
     }
 }
 
@@ -56,6 +61,7 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
     platforms: List<Platform> = Platforms.All,
     name: String,
     cocoapods: Boolean,
+    tests: Boolean,
     log: Boolean,
 ) {
     applyDefaultHierarchyTemplate()
@@ -64,13 +70,11 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
         freeCompilerArgs.add("-Xexpect-actual-classes")
         optIn.add("kotlinx.cinterop.ExperimentalForeignApi")
         optIn.add("kotlinx.coroutines.ExperimentalCoroutinesApi")
-        optIn.add("org.jetbrains.compose.resources.ExperimentalResourceApi")
     }
 
     if (platforms.contains(Platform.Android)) {
         androidTarget {
-            publishAllLibraryVariants()
-            //https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
+            // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
             @Suppress("OPT_IN_USAGE")
             instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
         }
@@ -91,12 +95,18 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
     }
 
     if (platforms.contains(Platform.Ios)) {
+        if (log) {
+            println("Configuring iOS...")
+        }
         if (!cocoapods) {
             listOf(
                 iosX64(),
                 iosArm64(),
                 iosSimulatorArm64(),
             ).forEach { target ->
+                if (log) {
+                    println("Configuring iOS target: ${target.name}")
+                }
                 target.binaries.framework {
                     baseName = name
                     isStatic = true
@@ -123,8 +133,15 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
             }
     }
 
+    if (tests) {
+        testDependencies()
+    }
+}
+
+fun KotlinMultiplatformExtension.testDependencies() {
     sourceSets.commonTest.dependencies {
         implementation(kotlin("test"))
+        implementation(project.libs.findLibrary("kotest-assertions").get())
     }
 }
 
