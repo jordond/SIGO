@@ -243,10 +243,27 @@ dev() {
     GRADLE_PID=$!
     echo "🔧 Gradle/JS build watcher started with PID $GRADLE_PID"
 
-    # TODO: Need a better solution than sleeping. If wrangler starts up and gradle isn't done
-    #      than the wrangler dev server will fail to start.
-    echo "⏳ Delaying for 15 seconds to let gradle start..."
-    sleep 15
+    # Wait for the initial build to complete by checking for the output file
+    echo "⏳ Waiting for initial Kotlin/JS build to complete..."
+    local wait_count=0
+    local max_wait=60 # Maximum wait time in seconds
+
+    while [[ ! -f "$KJS_OUTPUT_FILE" && $wait_count -lt $max_wait ]]; do
+        sleep 1
+        wait_count=$((wait_count + 1))
+        if ((wait_count % 10 == 0)); then
+            echo "⏳ Still waiting for build... (${wait_count}s elapsed)"
+        fi
+    done
+
+    if [[ ! -f "$KJS_OUTPUT_FILE" ]]; then
+        echo "❌ Initial build failed or timed out after ${max_wait}s"
+        echo "💡 Check the Gradle build output for errors"
+        cleanup
+        exit 1
+    fi
+
+    echo "✅ Initial build complete!"
 
     echo "🚀 Starting Wrangler dev server..."
     echo "ℹ️ Press Ctrl+C to stop both processes"
