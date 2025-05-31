@@ -39,10 +39,13 @@ plugins {
 }
 
 include(":apps:android")
+include(":apps:api:worker")
 include(":apps:cli")
 include(":apps:desktop")
 include(":apps:ios")
 
+include(":core:api:client")
+include(":core:api:server")
 include(":core:app")
 include(":core:config")
 include(":core:domain")

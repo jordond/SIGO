@@ -4,8 +4,6 @@ import app.sigot.convention.configureMultiplatform
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.multiplatform)
-    alias(libs.plugins.compose)
-    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.convention.multiplatform)
 }
@@ -23,9 +21,8 @@ kotlin {
 
             implementation(libs.kermit)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.bundles.koin.compose)
+            implementation(libs.stateHolder)
             implementation(libs.bundles.kotlinx)
-            implementation(libs.bundles.stateHolder)
         }
     }
 }

@@ -8,6 +8,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Ensure that a coroutine takes at least [timeInMillis] milliseconds to execute.
@@ -26,14 +28,33 @@ import kotlinx.coroutines.flow.map
 public suspend inline fun <T> ensureExecutionTime(
     timeInMillis: Long,
     crossinline block: suspend () -> T,
+): T = ensureExecutionTime(timeInMillis.milliseconds, block)
+
+/**
+ * Ensure that a coroutine takes at least [duration] to execute.
+ *
+ * This is useful when showing a loading UI state, it will ensure the loading UI is visible for at
+ * least [duration].
+ *
+ * If [block] takes longer than [duration] then the thread will not delay at all. However if
+ * [block] takes less that [duration], it will calculate the remaining required delay.
+ *
+ * @param[T] Return type of your async [block] call.
+ * @param[duration] Ensure the execution of [block] takes _at least_ this duration.
+ * @param[block] The async operation you want to delay.
+ * @return The result of the call to [block] after at least [duration] has passed..
+ */
+public suspend inline fun <T> ensureExecutionTime(
+    duration: Duration,
+    crossinline block: suspend () -> T,
 ): T {
     val startTime = currentTimeMillis()
 
     val result = block()
 
     val executionTime = currentTimeMillis() - startTime
-    val delayTime = timeInMillis - executionTime
-    if (delayTime > 0) {
+    val delayTime = duration - executionTime.milliseconds
+    if (delayTime.inWholeMilliseconds > 0) {
         Logger.d { "Execution took $executionTime, delaying for $delayTime ms" }
         delay(delayTime)
     } else {

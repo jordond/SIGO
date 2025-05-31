@@ -65,9 +65,9 @@ internal fun ForecastHomeScreen(
         snackbarHostState = snackbar.hostState,
         dispatcher = rememberDebounceDispatcher { action ->
             when (action) {
-                is ForecastHomeAction.Refresh -> model.forceRefresh()
+                is ForecastHomeAction.Refresh -> model.fetch()
                 is ForecastHomeAction.ChangePeriod -> model.updatePeriod(action.period)
-                is ForecastHomeAction.ToViewDetails -> toViewDetails()
+                is ForecastHomeAction.ToViewDetails -> model.fetch()
                 is ForecastHomeAction.ToPreferences -> toPreferences()
                 is ForecastHomeAction.ToSettings -> toSettings()
             }
@@ -138,6 +138,7 @@ internal fun ForecastHomeScreen(
                         // TODO: No data state
                     } else {
                         ForecastScoreContent(
+                            updatedAt = instant,
                             preferences = preferences,
                             periodData = periodData,
                             onViewDetails = {},

@@ -3,11 +3,13 @@ package app.sigot.settings.ui.internal
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -32,8 +34,11 @@ import app.sigot.core.resources.settings_internal_backend_direct_api_desc
 import app.sigot.core.resources.settings_internal_backend_direct_api_token_placeholder
 import app.sigot.core.resources.settings_internal_backend_simulate_failure
 import app.sigot.core.resources.settings_internal_backend_simulate_failure_desc
+import app.sigot.core.resources.settings_internal_reset
 import app.sigot.core.resources.settings_internal_title
 import app.sigot.core.ui.AppTheme
+import app.sigot.core.ui.components.Button
+import app.sigot.core.ui.components.ButtonVariant
 import app.sigot.core.ui.components.Icon
 import app.sigot.core.ui.components.IconButton
 import app.sigot.core.ui.components.IconButtonVariant
@@ -221,6 +226,22 @@ internal fun InternalSettingsScreen(
                         }
                     }
                 }
+            }
+
+            Box(Modifier.padding(top = AppTheme.spacing.small)) {
+                Button(
+                    variant = ButtonVariant.DestructiveElevated,
+                    text = Res.string.settings_internal_reset.get(),
+                    onClick = {
+                        val newValue = InternalSettings()
+                        update(InternalSettings())
+                        if (!newValue.enabled) {
+                            onBack()
+                        }
+                    },
+                    textStyle = AppTheme.typography.h4,
+                    modifier = Modifier.fillMaxWidth(),
+                )
             }
 
             Spacer(Modifier.height(AppTheme.spacing.large))

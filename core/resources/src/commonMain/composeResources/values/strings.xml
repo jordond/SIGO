@@ -76,6 +76,12 @@
     <string name="time_am">AM</string>
     <string name="time_pm">PM</string>
 
+    <string name="updated_at">updated %1$s</string>
+    <string name="time_ago_moments">moments ago</string>
+    <string name="time_ago_a_minute">a minute ago</string>
+    <string name="time_ago_minutes">%1$d minutes ago</string>
+    <string name="time_ago_at">at %1$s</string>
+
     <string name="month_january">January</string>
     <string name="month_february">February</string>
     <string name="month_march">March</string>
@@ -260,5 +266,6 @@
     <string name="settings_internal_backend_direct_api_desc">Bypass the SIGOT backend and use the weather API directly, this requires an API token</string>
     <string name="settings_internal_backend_direct_api_token">API Token</string>
     <string name="settings_internal_backend_direct_api_token_placeholder">Enter your API key</string>
+    <string name="settings_internal_reset">Reset internal settings</string>
 
 </resources>

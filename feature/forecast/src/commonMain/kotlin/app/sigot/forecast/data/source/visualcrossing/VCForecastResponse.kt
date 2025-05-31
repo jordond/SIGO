@@ -198,7 +198,6 @@ internal fun VCForecastResponse.toModel(
         ?: error("There was no forecast for today!")
 
     val currentTime = currentConditions.datetime // ex: 13:30:00
-    logger.d { "Current time: $currentTime" }
 
     // We want the next five hours from today, filter out all before and after
     val filteredHours = todayBlock.hours?.takeIf { it.isNotEmpty() }?.let { hours ->
@@ -213,9 +212,6 @@ internal fun VCForecastResponse.toModel(
                     .toInt()
                 hourTime >= currentHour
             }.takeIf { it >= 0 } ?: 0
-
-        logger.d { "Start index: $startIndex -> ${hours[startIndex]}" }
-
         hours.subList(startIndex, minOf(startIndex + 5, hours.size))
     } ?: emptyList()
 

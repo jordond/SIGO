@@ -6,6 +6,7 @@ import app.sigot.convention.configureMultiplatform
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.multiplatform)
+    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.convention.multiplatform)
 }
 

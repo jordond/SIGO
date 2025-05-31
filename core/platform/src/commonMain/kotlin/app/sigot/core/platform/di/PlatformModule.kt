@@ -33,17 +33,17 @@ public inline fun <reified T> getKoinInstance(): T =
         val value: T by inject()
     }.value
 
+public val defaultJson: Json = Json {
+    prettyPrint = true
+    isLenient = true
+    ignoreUnknownKeys = true
+}
+
 public fun platformModule(): Module =
     module {
         platformConfig()
 
-        single<Json> {
-            Json {
-                prettyPrint = true
-                isLenient = true
-                ignoreUnknownKeys = true
-            }
-        }
+        single<Json> { defaultJson }
 
         single {
             HttpClient {
@@ -54,7 +54,7 @@ public fun platformModule(): Module =
                 }
 
                 install(Logging) {
-                    level = if (isDebug) LogLevel.INFO else LogLevel.HEADERS
+                    level = if (isDebug) LogLevel.INFO else LogLevel.NONE
                     logger = object : Logger {
                         override fun log(message: String) {
                             taggedLogger.d { message }

@@ -1,0 +1,38 @@
+{
+  "$schema": "apps/api/worker/node_modules/wrangler/config-schema.json",
+  "name": "sigot-api-worker",
+  "main": "apps/api/worker/index.mjs",
+  "compatibility_date": "2025-05-29",
+  "observability": {
+    "enabled": true
+  },
+  "routes": [
+    {
+      "pattern": "api.sigot.app",
+      "custom_domain": true,
+      "zone_name": "sigot.app"
+    },
+  ],
+  "env": {
+    "staging": {
+      "name": "api-staging",
+      "routes": [
+        {
+          "pattern": "staging.api.sigot.app",
+          "custom_domain": true,
+          "zone_name": "sigot.app"
+        }
+      ]
+    },
+    "dev": {
+      "name": "api-dev",
+      "routes": [
+        {
+          "pattern": "dev.api.sigot.app",
+          "custom_domain": true,
+          "zone_name": "sigot.app"
+        }
+      ]
+    }
+  }
+}

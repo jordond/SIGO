@@ -6,10 +6,8 @@ import app.sigot.core.foundation.NowProvider
 import app.sigot.core.foundation.TimezoneProvider
 import app.sigot.core.foundation.analytics.AnalyticsLogger
 import app.sigot.core.foundation.analytics.KermitAnalyticsLogger
-import app.sigot.core.foundation.analytics.NoopAnalyticsLogger
 import app.sigot.core.foundation.initalize.DefaultInitializer
 import app.sigot.core.foundation.initalize.Initializer
-import app.sigot.core.platform.isDebug
 import co.touchlab.kermit.LogWriter
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.Severity
@@ -27,12 +25,7 @@ public fun foundationModule(): Module =
         factory { CoroutineScope(Dispatchers.Default + SupervisorJob()) }
 
         single {
-            val logger = if (isDebug) {
-                KermitAnalyticsLogger()
-            } else {
-                // TODO: Replace with real analytics
-                NoopAnalyticsLogger()
-            }
+            val logger = KermitAnalyticsLogger()
 
             Logger.addLogWriter(
                 object : LogWriter() {

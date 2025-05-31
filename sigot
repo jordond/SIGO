@@ -17,6 +17,7 @@ print_usage() {
     echo "          secrets|s [--empty]      Generate the secrets.properties file, pass --empty to use 'empty' for all secrets"
     echo "          ktlint|k [arguments]     Install ktlint and integrate it with the project"
     echo "          hooks|h [--output]       Install the git hooks, pass --output to display the contents of the hooks"
+    echo "          api:worker               Install required dependencies for the api worker"
     echo "    gradle <command>               Run any gradle command"
     echo "    add <component>                Add a lumo ui component"
     echo "    clean                          Cleans all the build files"
@@ -24,6 +25,8 @@ print_usage() {
     echo "    fix [--all] [--staged]         Fixes only staged files if --all is not passed"
     echo "    commit|c [options]             Stage changes, run fix, and commit"
     echo "    cli [args]                     Run the CLI version of SIGOT"
+    echo "    api                            Commands for the API"
+    echo "    api:worker <command>           Run command helpers for the api worker"
 }
 
 check_directory() {
@@ -74,6 +77,9 @@ init)
     secrets | secret | s)
         "$ROOT"/scripts/init-secrets.sh "$@"
         ;;
+    api:worker)
+        "$ROOT"/scripts/api-worker.sh init
+        ;;
     *)
         echo "The command '$subcommand' is not a valid 'init' command. Use 'ktlint', 'secrets', or 'hooks'."
         exit 1
@@ -89,14 +95,14 @@ gradle | g)
     "$ROOT"/gradlew "$@"
     ;;
 add)
-  shift
-  # Check if there is a component name:
-  if [ "$#" -eq 0 ]; then
-    echo "Error: No component name provided"
-    exit 1
-  fi
-  "$ROOT"/gradlew lumo --no-configuration-cache --add "$@"
-  ;;
+    shift
+    # Check if there is a component name:
+    if [ "$#" -eq 0 ]; then
+        echo "Error: No component name provided"
+        exit 1
+    fi
+    "$ROOT"/gradlew lumo --no-configuration-cache --add "$@"
+    ;;
 clean)
     "$ROOT"/scripts/cleanup
     ;;
@@ -155,9 +161,17 @@ generate-image-sizes)
     node "$ROOT"/scripts/image-resource.js "$@"
     ;;
 cli)
-  shift
-  "$ROOT"/scripts/cli.sh "$@"
-  ;;
+    shift
+    "$ROOT"/scripts/cli.sh "$@"
+    ;;
+api)
+    shift
+    "$ROOT"/scripts/api.sh "$@"
+    ;;
+api:worker)
+    shift
+    "$ROOT"/scripts/api-worker.sh "$@"
+    ;;
 *)
     echo "Unknown command: $1"
     echo ""

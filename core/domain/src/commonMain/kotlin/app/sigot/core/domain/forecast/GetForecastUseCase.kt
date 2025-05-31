@@ -2,7 +2,6 @@ package app.sigot.core.domain.forecast
 
 import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.location.Location
-import app.sigot.core.model.location.LocationResult
 import app.sigot.core.model.units.Units
 
 public interface GetForecastUseCase {
@@ -29,15 +28,4 @@ public interface GetForecastUseCase {
         location: String,
         units: Units? = null,
     ): Result<Forecast>
-
-    /**
-     * Get the forecast for the current location, then convert it to the given units.
-     *
-     * The location is requested from the geolocation provider, but if that fails it will throw
-     * a [LocationResult.Failed] exception.
-     *
-     * @param units The units to convert the forecast to.
-     * @return The forecast for the current location, then converted to the given units.
-     */
-    public suspend fun forecastForCurrentLocation(units: Units? = null): Result<Forecast>
 }
