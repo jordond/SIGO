@@ -25,6 +25,7 @@ print_usage() {
     echo "    fix [--all] [--staged]         Fixes only staged files if --all is not passed"
     echo "    commit|c [options]             Stage changes, run fix, and commit"
     echo "    cli [args]                     Run the CLI version of SIGOT"
+    echo "    api                            Commands for the API"
     echo "    api:worker <command>           Run command helpers for the api worker"
 }
 
@@ -77,8 +78,8 @@ init)
         "$ROOT"/scripts/init-secrets.sh "$@"
         ;;
     api:worker)
-       "$ROOT"/scripts/api-worker.sh init
-      ;;
+        "$ROOT"/scripts/api-worker.sh init
+        ;;
     *)
         echo "The command '$subcommand' is not a valid 'init' command. Use 'ktlint', 'secrets', or 'hooks'."
         exit 1
@@ -162,6 +163,10 @@ generate-image-sizes)
 cli)
     shift
     "$ROOT"/scripts/cli.sh "$@"
+    ;;
+api)
+    shift
+    "$ROOT"/scripts/api.sh "$@"
     ;;
 api:worker)
     shift
