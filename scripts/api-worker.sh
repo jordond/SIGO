@@ -22,8 +22,10 @@ print_usage() {
     echo "  build [options]         Compile the worker code to Javascript"
     echo "    --clean                   Clean the build directory before building"
     echo "  dev                     Compile source and watch for changes, and run the worker in dev mode"
-    echo "  deploy [env]            Deploy the worker to Cloudflare with specified env (default=empty)"
-    echo "    -staging,dev"
+    echo "  deploy [env] [options]  Deploy the worker to Cloudflare with specified env (default=prod)"
+    echo "    -prod,staging,dev"
+    echo "    --no-clean                Skip cleaning before building"
+    echo "    --all                     Deploy to all environments (prod, staging, dev)"
     echo "  wrangler [command]      Wrapper around Cloudflare's Wrangler"
 
     exit "${1:-0}"
@@ -219,12 +221,75 @@ dev() {
 }
 
 deploy() {
+    local no_clean_flag="$1"
+    local env="$2"
+    local all_flag="$3"
+    
+    if [[ "$all_flag" == "true" ]]; then
+        local environments=("prod" "staging" "dev")
+        local first_deploy=true
+        
+        for target_env in "${environments[@]}"; do
+            echo "🚀 Deploying to $target_env environment..."
+            
+            # Check if the Cloudflare has the SECRET_FORECAST_API_KEY set
+            echo "🔍 Checking Cloudflare secrets for $target_env..."
+
+            local secret_output
+            if [[ "$target_env" != "prod" ]]; then
+                secret_output=$("$WRANGLER_COMMAND" secret list --env "$target_env" 2>/dev/null || echo "[]")
+            else
+                secret_output=$("$WRANGLER_COMMAND" secret list 2>/dev/null || echo "[]")
+            fi
+
+            # Check if FORECAST_API_KEY exists in the output
+            if ! echo "$secret_output" | grep -q "FORECAST_API_KEY"; then
+                echo "❌ FORECAST_API_KEY secret not found in Cloudflare for $target_env"
+                echo "💡 Please run the following command to set it:"
+                if [[ "$target_env" != "prod" ]]; then
+                    echo "   ./sigot api:worker wrangler secret put FORECAST_API_KEY --env $target_env"
+                else
+                    echo "   ./sigot api:worker wrangler secret put FORECAST_API_KEY"
+                fi
+                exit 1
+            fi
+
+            echo "✅ FORECAST_API_KEY secret found for $target_env"
+
+            # Build: clean only on first deploy if --no-clean is not specified
+            if [[ "$first_deploy" == "true" ]]; then
+                if [[ "$no_clean_flag" == "true" ]]; then
+                    build
+                else
+                    build --clean
+                fi
+                first_deploy=false
+            else
+                build
+            fi
+
+            # Deploy to the environment
+            if [[ "$target_env" != "prod" ]]; then
+                "$WRANGLER_COMMAND" deploy --env "$target_env"
+            else
+                "$WRANGLER_COMMAND" deploy
+            fi
+            
+            echo "✅ Successfully deployed to $target_env"
+            echo
+        done
+        
+        echo "🎉 All environments deployed successfully!"
+        return
+    fi
+    
+    # Single environment deployment (original logic)
     # Check if the Cloudflare has the SECRET_FORECAST_API_KEY set
     echo "🔍 Checking Cloudflare secrets..."
 
     local secret_output
-    if [[ -n "$1" ]]; then
-        secret_output=$("$WRANGLER_COMMAND" secret list --env "$1" 2>/dev/null || echo "[]")
+    if [[ -n "$env" && "$env" != "prod" ]]; then
+        secret_output=$("$WRANGLER_COMMAND" secret list --env "$env" 2>/dev/null || echo "[]")
     else
         secret_output=$("$WRANGLER_COMMAND" secret list 2>/dev/null || echo "[]")
     fi
@@ -233,20 +298,20 @@ deploy() {
     if ! echo "$secret_output" | grep -q "FORECAST_API_KEY"; then
         echo "❌ FORECAST_API_KEY secret not found in Cloudflare"
         echo "💡 Please run the following command to set it:"
-        if [[ -n "$1" ]]; then
-            echo "   ./sigot api:worker wrangler secret put FORECAST_API_KEY --env $1"
-        else
-            echo "   ./sigot api:worker wrangler secret put FORECAST_API_KEY"
-        fi
+        echo "   ./sigot api:worker secret put"
         exit 1
     fi
 
     echo "✅ FORECAST_API_KEY secret found"
 
-    build --clean
+    if [[ "$no_clean_flag" == "true" ]]; then
+        build
+    else
+        build --clean
+    fi
 
-    if [[ -n "$1" ]]; then
-        "$WRANGLER_COMMAND" deploy --env "$1"
+    if [[ -n "$env" && "$env" != "prod" ]]; then
+        "$WRANGLER_COMMAND" deploy --env "$env"
     else
         "$WRANGLER_COMMAND" deploy
     fi
@@ -254,7 +319,9 @@ deploy() {
 
 # Parse command line arguments
 COMMAND=""
-ENV=""
+ENV="prod"
+NO_CLEAN_FLAG="false"
+ALL_FLAG="false"
 WRANGLER_ARGS=()
 BUILD_ARGS=()
 
@@ -286,11 +353,27 @@ while [[ $# -gt 0 ]]; do
     deploy)
         COMMAND="deploy"
         shift
-        # Check if next argument is an environment
-        if [[ $# -gt 0 && "$1" =~ ^(prod|staging|dev)$ ]]; then
-            ENV="$1"
-            shift
-        fi
+        # Check for --no-clean flag and environment
+        while [[ $# -gt 0 ]]; do
+            case "$1" in
+            --no-clean)
+                NO_CLEAN_FLAG="true"
+                shift
+                ;;
+            --all)
+                ALL_FLAG="true"
+                shift
+                ;;
+            prod|staging|dev)
+                ENV="$1"
+                shift
+                ;;
+            *)
+                echo "❌ Error: Unknown deploy option '$1'"
+                print_usage 1
+                ;;
+            esac
+        done
         ;;
     wrangler)
         COMMAND="wrangler"
@@ -371,11 +454,15 @@ dev)
     ;;
 deploy)
     echo "🚀 Deploying API worker..."
-    if [[ -n "$ENV" ]]; then
-        echo "🌍 Deploying to environment: $ENV"
+    if [[ "$ALL_FLAG" == "true" ]]; then
+        echo "🌍 Deploying to all environments (prod, staging, dev)"
+    elif [[ "$ENV" == "prod" ]]; then
+        echo "🌍 Deploying to Production"
+    else
+        echo "🌍 Deploying to '$ENV' environment"
     fi
 
-    deploy "$ENV"
+    deploy "$NO_CLEAN_FLAG" "$ENV" "$ALL_FLAG"
     ;;
 wrangler)
     if [[ ${#WRANGLER_ARGS[@]} -eq 0 ]]; then

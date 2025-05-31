@@ -52,7 +52,6 @@ public interface ApiRoute {
 @OptIn(ExperimentalSerializationApi::class)
 public inline fun <reified T : @Serializable Any> Request.queryParams(json: Json = defaultJson): T {
     try {
-        json.configuration.isLenient
         val params = getQueryParams(this)
         val mapJson = json.encodeToString(params)
         return json.decodeFromString<T>(mapJson)

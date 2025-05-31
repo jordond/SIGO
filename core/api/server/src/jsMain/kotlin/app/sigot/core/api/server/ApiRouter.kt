@@ -37,15 +37,15 @@ internal class DefaultApiRouter(
         val path = url.pathname
         val method = request.method.uppercase()
 
-        val routeMatch = findMatchingRoute(path)
+        val match = findMatchingRoute(path)
             ?: return notFound(meta = mapOf("path" to path))
 
         return try {
             when (method) {
-                HttpMethod.Get.value -> get(routeMatch.route, request, routeMatch.parameters)
-                HttpMethod.Post.value -> post(routeMatch.route, request, routeMatch.parameters)
-                HttpMethod.Put.value -> put(routeMatch.route, request, routeMatch.parameters)
-                HttpMethod.Delete.value -> delete(routeMatch.route, request, routeMatch.parameters)
+                HttpMethod.Get.value -> get(match.route, request, match.parameters)
+                HttpMethod.Post.value -> post(match.route, request, match.parameters)
+                HttpMethod.Put.value -> put(match.route, request, match.parameters)
+                HttpMethod.Delete.value -> delete(match.route, request, match.parameters)
                 else -> methodNotAllowed()
             }
         } catch (cancellation: CancellationException) {

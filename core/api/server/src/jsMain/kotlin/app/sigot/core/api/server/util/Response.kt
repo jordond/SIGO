@@ -136,10 +136,9 @@ public fun cached(
     age: Duration,
     block: () -> Response,
 ): Response {
-    val headers: dynamic = object {}
-    headers["cache-control"] = "max-age=${age.inWholeSeconds}"
-    val response = block()
-    response.headers.append("cache-control", "max-age=${age.inWholeSeconds}")
+    val response = block().apply {
+        headers.append("cache-control", "max-age=${age.inWholeSeconds}")
+    }
     return response
 }
 
