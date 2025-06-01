@@ -43,6 +43,7 @@ import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.ktx.rememberTimeAgo
 import app.sigot.core.ui.mappers.units.colors
 import app.sigot.core.ui.mappers.units.rememberTitle
+import app.sigot.core.ui.mappers.units.rememberUnit
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.PreviewData
 import app.sigot.forecast.ui.components.PreferenceResultCard
@@ -119,6 +120,10 @@ internal fun ForecastScoreContent(
                         max = preferences.maxTemperature.toDouble(),
                     ),
                     colors = preferences.units.temperature.colors(),
+                    value = {
+                        val unit = preferences.units.temperature.rememberUnit()
+                        "${periodData.forecast.temperature.value} $unit"
+                    },
                     modifier = Modifier.weight(1f),
                 )
 
@@ -126,6 +131,10 @@ internal fun ForecastScoreContent(
                     title = preferences.units.windSpeed.rememberTitle(),
                     text = periodData.score.reasons.windStatus(),
                     colors = preferences.units.windSpeed.colors(),
+                    value = {
+                        val unit = preferences.units.windSpeed.rememberUnit()
+                        "${periodData.forecast.wind.speed} $unit"
+                    },
                     modifier = Modifier.weight(1f),
                 )
 
@@ -141,6 +150,9 @@ internal fun ForecastScoreContent(
                     title = precipitationTitle,
                     text = periodData.score.reasons.precipitationStatus(),
                     colors = preferences.units.precipitation.colors(),
+                    value = {
+                        "${periodData.forecast.precipitation.probability}%"
+                    },
                     modifier = Modifier.weight(1f),
                 )
             }
