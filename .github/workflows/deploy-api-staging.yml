@@ -37,7 +37,7 @@ jobs:
         run: ./sigot api:worker init
 
       - name: Deploy to Cloudflare
-        run: ./sigot api:worker deploy staging
+        run: ./sigot api:worker deploy --env staging
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
