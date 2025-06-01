@@ -6,11 +6,11 @@ on:
     branches:
       - main
     paths-ignore:
-      - '**.md'
-      - '.github/**'
-      - 'art/**'
-      - 'LICENSE'
-      - 'scripts/**'
+      - "**.md"
+      - ".github/**"
+      - "art/**"
+      - "LICENSE"
+      - "scripts/**"
 
 jobs:
   verify:
@@ -39,5 +39,6 @@ jobs:
       - name: Deploy to Cloudflare
         run: ./sigot api:worker deploy --env staging
         env:
+          APP_BACKEND_URL: ${{ env.APP_BACKEND_URL }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
