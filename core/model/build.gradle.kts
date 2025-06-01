@@ -26,7 +26,6 @@ buildkonfig {
     }
 
     defaultConfigs {
-
         val useDirectApi = envProps.getProperty("USE_DIRECT_API", "false")
         buildConfigField(BOOLEAN, "USE_DIRECT_API", useDirectApi, const = true)
 
@@ -36,12 +35,14 @@ buildkonfig {
         val apiToken = envProps.getProperty("FORECAST_API_KEY", "")
         buildConfigField(STRING, "FORECAST_API_KEY", apiToken, const = true)
 
-        val backendUrl = envProps.getProperty("APP_BACKEND_URL", "")
+        val backendUrl = envProps
+            .getProperty("APP_BACKEND_URL", "")
+            .takeIf { it.isNotBlank() } ?: System.getenv("APP_BACKEND_URL") ?: ""
         if (backendUrl.isBlank()) {
             if (!useDirectApi.toBoolean() && apiToken.isNullOrEmpty()) {
                 error(
                     """
-                    APP_BACKEND_URL not set in ${envPropsFile.absolutePath}. 
+                    APP_BACKEND_URL not set in ${envPropsFile.absolutePath} or environment variables. 
                     Either set `APP_BACKEND_URL` or set `USE_DIRECT_API` to `true`, 
                     and provide an API key value for `FORECAST_API_KEY`.
                     """.trimIndent(),
