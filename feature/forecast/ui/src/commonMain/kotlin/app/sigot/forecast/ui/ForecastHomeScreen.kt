@@ -1,18 +1,24 @@
 package app.sigot.forecast.ui
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.ForecastData
 import app.sigot.core.model.forecast.ForecastPeriod
+import app.sigot.core.model.forecast.SevereWeatherRisk
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
 import app.sigot.core.model.preferences.Preferences
@@ -22,10 +28,13 @@ import app.sigot.core.ui.components.snackbar.Snackbar
 import app.sigot.core.ui.components.snackbar.SnackbarHost
 import app.sigot.core.ui.components.snackbar.SnackbarHostState
 import app.sigot.core.ui.components.snackbar.rememberSnackbarProvider
+import app.sigot.core.ui.ktx.conditional
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.PreviewData
 import app.sigot.forecast.ui.ForecastHomeModel.Event
 import app.sigot.forecast.ui.components.Header
+import app.sigot.forecast.ui.components.LoadingBox
+import app.sigot.forecast.ui.components.NoDataForPeriod
 import app.sigot.forecast.ui.components.mappers.rememberInstant
 import app.sigot.forecast.ui.section.ForecastScoreContent
 import app.sigot.forecast.ui.section.HomeBottomBar
@@ -51,6 +60,11 @@ internal fun ForecastHomeScreen(
         when (event) {
             is Event.Error -> snackbar.error(event.message)
         }
+    }
+
+    LaunchedEffect(Unit) {
+        // Try to fetch on the first load, this could hit the cache, or a fresh forecast.
+        model.fetch()
     }
 
     val state by model.collectAsState()
@@ -104,49 +118,80 @@ internal fun ForecastHomeScreen(
         },
         bottomBar = {
             HomeBottomBar(
+                canGoToDetails = !loading && data != null,
+                toDetails = dispatcher.rememberRelay(ForecastHomeAction.ToViewDetails),
                 toSettings = dispatcher.rememberRelay(ForecastHomeAction.ToSettings),
                 toPreferences = dispatcher.rememberRelay(ForecastHomeAction.ToPreferences),
             )
         },
         modifier = modifier,
     ) { innerPadding ->
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = AppTheme.spacing.standard)
-                .fillMaxSize(),
+        PullToRefreshBox(
+            isRefreshing = refreshing,
+            onRefresh = dispatcher.rememberRelay(ForecastHomeAction.Refresh),
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.standard),
+                modifier = Modifier
+                    .padding(horizontal = AppTheme.spacing.standard)
+                    .fillMaxSize()
+                    .conditional(!loading) {
+                        Modifier.verticalScroll(rememberScrollState())
+                    }.height(IntrinsicSize.Max)
+                    .padding(innerPadding),
             ) {
                 Header(
                     data = data,
                     period = period,
                     changePeriod = dispatcher.rememberRelayOf(ForecastHomeAction::ChangePeriod),
                     instant = instant,
+                    modifier = Modifier.padding(top = AppTheme.spacing.standard),
                 )
 
-                if (loading && data == null) {
-                    // TODO: Initial loading status
-                } else if (data != null) {
-                    val periodData = remember(data, period) {
-                        data.forPeriod(period)
-                    }
+                val crossfadeTarget = remember(data, loading) { loading to data }
+                Crossfade(
+                    targetState = crossfadeTarget,
+                    modifier = Modifier.padding(top = AppTheme.spacing.standard),
+                ) { target ->
+                    if (target.first && target.second == null) {
+                        Box(
+                            // contentAlignment = Alignment.Center,
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            LoadingBox()
+                        }
+                    } else if (target.second != null) {
+                        val periodData = remember(target.second, period) {
+                            target.second?.forPeriod(period)
+                        }
 
-                    if (periodData == null) {
-                        // TODO: No data state
-                    } else {
-                        ForecastScoreContent(
-                            updatedAt = instant,
-                            preferences = preferences,
-                            periodData = periodData,
-                            onViewDetails = {},
-                        )
+                        if (periodData == null) {
+                            NoDataForPeriod()
+                        } else {
+                            ForecastScoreContent(
+                                updatedAt = instant,
+                                preferences = preferences,
+                                periodData = periodData,
+                                modifier = Modifier.padding(end = 2.dp),
+                            )
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun LoadingPreview() {
+    AppPreview {
+        ForecastHomeScreen(
+            location = null,
+            data = null,
+            loading = true,
+            preferences = Preferences.default,
+            dispatcher = rememberDispatcher { },
+        )
     }
 }
 
@@ -184,4 +229,22 @@ private fun ColdPreview() {
 @Composable
 private fun WindyPreview() {
     ScreenPreview(PreviewData.Forecast.forecastData(PreviewData.Forecast.createWindyForecast()))
+}
+
+@Preview
+@Composable
+private fun SevereWeatherLowPreview() {
+    val forecast = PreviewData.Forecast.createForecastFrom(
+        PreviewData.Forecast.severeWeather(
+            SevereWeatherRisk.Low,
+        ),
+    )
+    ScreenPreview(PreviewData.Forecast.forecastData(forecast))
+}
+
+@Preview
+@Composable
+private fun SevereWeatherHighPreview() {
+    val forecast = PreviewData.Forecast.createForecastFrom(PreviewData.Forecast.severeWeather())
+    ScreenPreview(PreviewData.Forecast.forecastData(forecast))
 }

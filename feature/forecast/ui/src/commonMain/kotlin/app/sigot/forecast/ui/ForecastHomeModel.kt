@@ -26,6 +26,7 @@ import app.sigot.core.resources.location_geolocation_not_found
 import app.sigot.core.resources.location_geolocation_not_supported
 import co.touchlab.kermit.Logger
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -60,12 +61,22 @@ internal class ForecastHomeModel(
             }
 
         viewModelScope.launch {
+            updateState { it.copy(status = AsyncResult.Loading) }
+
             forecastStateHolder.state.collect { status ->
                 when (status) {
                     is AsyncResult.Error -> status.error.handleForecastError()
                     is AsyncResult.Success -> {
                         val score = scoreCalculator.calculate(status.data, state.value.preferences)
-                        updateState { it.copy(status = status, forecast = ForecastData(status.data, score)) }
+                        val isFirstLoad = state.value.forecast == null
+                        if (isFirstLoad) {
+                            logger.d { "Delaying first load for loading effect" }
+                            delay(3000)
+                        }
+
+                        updateState { state ->
+                            state.copy(status = status, forecast = ForecastData(status.data, score))
+                        }
                     }
                     else -> {
                         updateState { it.copy(status = status) }
@@ -74,7 +85,7 @@ internal class ForecastHomeModel(
             }
         }
 
-        fetch()
+        forecastStateHolder.start()
     }
 
     fun updatePeriod(period: ForecastPeriod) {
@@ -83,6 +94,11 @@ internal class ForecastHomeModel(
 
     fun fetch() {
         forecastStateHolder.fetch()
+    }
+
+    override fun onCleared() {
+        forecastStateHolder.stop()
+        super.onCleared()
     }
 
     private fun Throwable?.handleForecastError() {

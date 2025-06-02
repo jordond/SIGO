@@ -10,10 +10,13 @@ import app.sigot.core.model.AsyncResult
 import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.location.LocationResult
 import app.sigot.core.model.toAsyncResult
+import co.touchlab.kermit.Logger
 import dev.stateholder.stateContainer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 internal class DefaultForecastStateHolder(
@@ -23,18 +26,41 @@ internal class DefaultForecastStateHolder(
     private val appConfigRepo: AppConfigRepo,
     private val scope: CoroutineScope,
 ) : ForecastStateHolder {
+    private val logger = Logger.withTag("ForecastStateHolder")
+    private val delayDuration = appConfigRepo.value.maxCacheAge
+
     private val container = stateContainer<AsyncResult<Forecast>?>(null)
     override val state: StateFlow<AsyncResult<Forecast>?> = container.state
 
     private var fetchJob: Job? = null
+    private var refreshJob: Job? = null
 
     override fun fetch() {
         if (fetchJob?.isActive == true) return
         fetchJob = scope.launch {
             ensureExecutionTime(appConfigRepo.value.minimumExecutionDelay) {
+                logger.d { "Fetching forecast..." }
                 getForecast()
             }
         }
+    }
+
+    override fun start() {
+        if (refreshJob?.isActive == true) return
+
+        logger.d { "Starting refresh ticker" }
+        refreshJob = scope.launch {
+            while (isActive) {
+                fetch()
+                delay(delayDuration)
+                logger.d { "Refreshing forecast..." }
+            }
+        }
+    }
+
+    override fun stop() {
+        logger.d { "Stopping refresh ticker" }
+        refreshJob?.cancel()
     }
 
     private suspend fun getForecast() {

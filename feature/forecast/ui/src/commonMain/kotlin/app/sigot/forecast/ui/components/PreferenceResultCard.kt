@@ -63,21 +63,23 @@ internal fun PreferenceResultCard(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 Text(
-                    text = value(),
-                    maxLines = 1,
-                    autoSize = TextAutoSize.StepBased(maxFontSize = 18.sp),
-                    style = AppTheme.typography.body1.copy(fontSize = 18.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 2.dp),
-                )
-                HorizontalDivider()
-                Text(
                     text = text,
                     maxLines = 1,
                     autoSize = TextAutoSize.StepBased(maxFontSize = 32.sp),
                     style = AppTheme.typography.h2.copy(fontSize = 32.sp),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 8.dp),
+                )
+
+                HorizontalDivider()
+
+                Text(
+                    text = value(),
+                    maxLines = 1,
+                    autoSize = TextAutoSize.StepBased(maxFontSize = 18.sp),
+                    style = AppTheme.typography.body1.copy(fontSize = 18.sp),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 2.dp),
                 )
             }
         }
