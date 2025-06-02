@@ -1,10 +1,11 @@
 package app.sigot.forecast.ui.section
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,20 +26,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.sigot.core.model.ForecastPeriodData
 import app.sigot.core.model.forecast.ForecastPeriod
+import app.sigot.core.model.forecast.SevereWeatherRisk
 import app.sigot.core.model.preferences.Preferences
+import app.sigot.core.model.score.ReasonValue
 import app.sigot.core.model.units.Units
 import app.sigot.core.resources.Res
-import app.sigot.core.resources.forecast_view_details
+import app.sigot.core.resources.percent
+import app.sigot.core.resources.score_severe_weather_near
+import app.sigot.core.resources.score_severe_weather_outside
 import app.sigot.core.resources.unit_precipitation_rain
 import app.sigot.core.resources.unit_precipitation_snow
 import app.sigot.core.resources.unit_temperature_short
 import app.sigot.core.resources.updated_at
 import app.sigot.core.ui.AppTheme
-import app.sigot.core.ui.components.Button
-import app.sigot.core.ui.components.ButtonVariant
+import app.sigot.core.ui.components.Icon
 import app.sigot.core.ui.components.Text
+import app.sigot.core.ui.components.card.Card
 import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.components.card.ElevatedCard
+import app.sigot.core.ui.icons.AppIcons
+import app.sigot.core.ui.icons.lucide.OctagonAlert
+import app.sigot.core.ui.icons.lucide.TriangleAlert
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.ktx.rememberTimeAgo
 import app.sigot.core.ui.mappers.units.colors
@@ -57,6 +65,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -66,24 +75,27 @@ internal fun ForecastScoreContent(
     updatedAt: Instant,
     preferences: Preferences,
     periodData: ForecastPeriodData,
-    onViewDetails: () -> Unit,
     modifier: Modifier = Modifier,
     now: Instant = Clock.System.now(),
 ) {
+    val elevation = CardDefaults.cardElevation()
     Column(
-        modifier = modifier.height(IntrinsicSize.Min),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.standard),
+        modifier = modifier
+            .padding(horizontal = elevation.default)
+            .padding(bottom = elevation.default),
     ) {
         val (containerColor, contentColor) = periodData.colors()
         ElevatedCard(
+            elevation = elevation,
             colors = CardDefaults.elevatedCardColors(
                 containerColor = containerColor,
                 contentColor = contentColor,
             ),
             modifier = Modifier
-                .weight(2f)
-                .heightIn(min = 200.dp, max = 400.dp),
+                .weight(2f, fill = false)
+                .heightIn(min = 100.dp, max = 300.dp),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -104,11 +116,53 @@ internal fun ForecastScoreContent(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.standard),
-            modifier = Modifier
-                .weight(1f)
-                .padding(top = AppTheme.spacing.small),
+            modifier = Modifier.weight(1f),
         ) {
+            val text = remember(periodData.score.reasons.severeWeather) {
+                when (periodData.score.reasons.severeWeather) {
+                    ReasonValue.Inside -> null
+                    ReasonValue.Near -> Res.string.score_severe_weather_near
+                    ReasonValue.Outside -> Res.string.score_severe_weather_outside
+                }
+            }
+            AnimatedVisibility(
+                visible = text != null,
+                modifier = Modifier.padding(top = AppTheme.spacing.small),
+            ) {
+                val colors = when (periodData.score.reasons.severeWeather) {
+                    ReasonValue.Inside -> CardDefaults.cardColors()
+                    ReasonValue.Near -> CardDefaults.primaryColors
+                    ReasonValue.Outside -> CardDefaults.errorColors
+                }
+
+                Card(
+                    colors = colors,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier
+                            .padding(
+                                vertical = AppTheme.spacing.small,
+                                horizontal = AppTheme.spacing.standard,
+                            ),
+                    ) {
+                        val icon = remember(periodData.score.reasons.severeWeather) {
+                            if (periodData.score.reasons.severeWeather == ReasonValue.Outside) {
+                                AppIcons.Lucide.OctagonAlert
+                            } else {
+                                AppIcons.Lucide.TriangleAlert
+                            }
+                        }
+                        Icon(icon)
+                        Text(text = text?.get() ?: "")
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(AppTheme.spacing.standard))
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth(),
@@ -122,7 +176,7 @@ internal fun ForecastScoreContent(
                     colors = preferences.units.temperature.colors(),
                     value = {
                         val unit = preferences.units.temperature.rememberUnit()
-                        "${periodData.forecast.temperature.value} $unit"
+                        "${periodData.forecast.temperature.value.roundToInt()}$unit"
                     },
                     modifier = Modifier.weight(1f),
                 )
@@ -133,7 +187,7 @@ internal fun ForecastScoreContent(
                     colors = preferences.units.windSpeed.colors(),
                     value = {
                         val unit = preferences.units.windSpeed.rememberUnit()
-                        "${periodData.forecast.wind.speed} $unit"
+                        "${periodData.forecast.wind.speed.roundToInt()} $unit"
                     },
                     modifier = Modifier.weight(1f),
                 )
@@ -151,25 +205,15 @@ internal fun ForecastScoreContent(
                     text = periodData.score.reasons.precipitationStatus(),
                     colors = preferences.units.precipitation.colors(),
                     value = {
-                        "${periodData.forecast.precipitation.probability}%"
+                        Res.string.percent.get(periodData.forecast.precipitation.probability)
                     },
                     modifier = Modifier.weight(1f),
                 )
             }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.small),
-            ) {
-                Button(
-                    variant = ButtonVariant.PrimaryElevated,
-                    text = Res.string.forecast_view_details.get(),
-                    textStyle = AppTheme.typography.h2,
-                    onClick = onViewDetails,
-                )
+            Spacer(modifier = Modifier.height(AppTheme.spacing.small))
 
-                UpdatedAtText(instant = updatedAt)
-            }
+            UpdatedAtText(instant = updatedAt)
         }
     }
 }
@@ -201,6 +245,30 @@ internal fun UpdatedAtText(
 
 @Preview
 @Composable
+private fun SevereWeatherPreview() {
+    val forecast = PreviewData.Forecast.createForecastFrom(
+        PreviewData.Forecast.severeWeather(
+            level = SevereWeatherRisk.Low,
+        ),
+    )
+    val data = PreviewData.Forecast.forecastData(forecast)
+    AppPreview {
+        Box(
+            modifier = Modifier
+                .padding(horizontal = AppTheme.spacing.standard, vertical = AppTheme.spacing.standard)
+                .height(700.dp),
+        ) {
+            ForecastScoreContent(
+                updatedAt = Clock.System.now().minus(1.minutes),
+                preferences = Preferences.default.copy(units = Units.Metric),
+                periodData = data.forPeriod(ForecastPeriod.Today)!!,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
 private fun ForecastScoreContentPreview() {
     val data = PreviewData.Forecast.forecastData(PreviewData.Forecast.createWindyForecast())
     AppPreview {
@@ -213,7 +281,6 @@ private fun ForecastScoreContentPreview() {
                 updatedAt = Clock.System.now().minus(1.minutes),
                 preferences = Preferences.default.copy(units = Units.Metric),
                 periodData = data.forPeriod(ForecastPeriod.Today)!!,
-                onViewDetails = {},
             )
         }
     }

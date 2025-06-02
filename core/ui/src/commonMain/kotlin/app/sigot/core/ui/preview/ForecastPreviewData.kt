@@ -152,7 +152,10 @@ public object ForecastPreviewData {
             visibility = 15.0,
         )
 
-    public fun severeWeather(instant: Instant = Clock.System.now()): ForecastBlock =
+    public fun severeWeather(
+        level: SevereWeatherRisk = SevereWeatherRisk.High,
+        instant: Instant = Clock.System.now(),
+    ): ForecastBlock =
         rainy(instant).copy(
             temperature = Temperature(
                 value = 25.kelvin, // approx 25°C
@@ -174,7 +177,7 @@ public object ForecastPreviewData {
                 meanSpeed = 40.0,
                 minSpeed = 20.0,
             ),
-            severeWeatherRisk = SevereWeatherRisk.Moderate,
+            severeWeatherRisk = level,
             uvIndex = 4, // Can be high before storms
             visibility = 3.0, // Reduced visibility
         )

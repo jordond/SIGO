@@ -28,6 +28,8 @@ public class CardElevation internal constructor(
     private val draggedElevation: Dp,
     private val disabledElevation: Dp,
 ) {
+    public val default: Dp = defaultElevation
+
     @Composable
     internal fun shadowElevation(
         enabled: Boolean,

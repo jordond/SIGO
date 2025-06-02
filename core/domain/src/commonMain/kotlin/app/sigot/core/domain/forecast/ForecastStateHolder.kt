@@ -9,4 +9,8 @@ public interface ForecastStateHolder : StateHolder<AsyncResult<Forecast>?> {
     public override val state: StateFlow<AsyncResult<Forecast>?>
 
     public fun fetch()
+
+    public fun start()
+
+    public fun stop()
 }

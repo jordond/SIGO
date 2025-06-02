@@ -177,6 +177,12 @@ public object CardDefaults {
             contentColor = AppTheme.colors.onQuaternary,
         )
 
+    public val errorColors: CardColors
+        @Composable get() = cardColors(
+            containerColor = AppTheme.colors.error,
+            contentColor = AppTheme.colors.onError,
+        )
+
     @Composable
     public fun fromColor(containerColor: Color): CardColors =
         when (containerColor) {
