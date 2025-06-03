@@ -1,7 +1,6 @@
-package app.toebean.feature.webview
+package app.sigot.webview
 
 import androidx.compose.runtime.Composable
-import app.sigot.webview.WebViewContent
 import com.multiplatform.webview.web.rememberWebViewState
 
 @Composable

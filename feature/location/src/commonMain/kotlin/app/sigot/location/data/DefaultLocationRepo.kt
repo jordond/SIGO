@@ -8,6 +8,7 @@ import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
 import app.sigot.core.model.location.LocationResult
 import app.sigot.core.model.location.LocationResult.Success
+import app.sigot.core.platform.IO
 import app.sigot.core.platform.LocationManager
 import co.touchlab.kermit.Logger
 import dev.jordond.compass.Coordinates
@@ -17,7 +18,6 @@ import dev.jordond.compass.geolocation.hasPermission
 import dev.jordond.compass.permissions.PermissionState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 

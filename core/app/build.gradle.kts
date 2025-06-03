@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.room)
     alias(libs.plugins.ksp)
     alias(libs.plugins.convention.multiplatform)
     alias(libs.plugins.toolchain.version)
@@ -51,7 +50,6 @@ kotlin {
             implementation(libs.coil.network.ktor)
             implementation(libs.multiplatformSettings)
             implementation(libs.kotlinx.datetime)
-            implementation(libs.room.runtime)
             implementation(libs.materialKolor)
             implementation(libs.bundles.koin.compose)
             implementation(libs.bundles.stateHolder)
@@ -75,18 +73,4 @@ kotlin {
 dependencies {
     androidTestImplementation(libs.androidx.uitest.junit4)
     debugImplementation(libs.androidx.uitest.testManifest)
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
-}
-
-dependencies {
-    with(libs.room.compiler) {
-        add("kspAndroid", this)
-        add("kspJvm", this)
-        add("kspIosX64", this)
-        add("kspIosArm64", this)
-        add("kspIosSimulatorArm64", this)
-    }
 }

@@ -28,6 +28,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.navigation.composee)
             api(libs.compass.geolocation)
@@ -45,6 +46,7 @@ kotlin {
             dependsOn(commonMain.get())
             nativeMain.get().dependsOn(this)
             jvmMain.get().dependsOn(this)
+            jsMain.get().dependsOn(this)
 
             dependencies {
                 implementation(libs.kotlinx.atomicfu)

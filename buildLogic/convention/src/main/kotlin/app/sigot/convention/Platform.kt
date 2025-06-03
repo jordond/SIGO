@@ -18,5 +18,5 @@ object Platforms {
     val All: List<Platform> = listOf(Android, Ios, Jvm, Js, NodeJs)
     val Mobile: List<Platform> = listOf(Android, Ios)
     val Javascript: List<Platform> = listOf(Js, NodeJs)
-    val Compose: List<Platform> = listOf(Android, Ios, Jvm)
+    val Compose: List<Platform> = listOf(Android, Ios, Js, Jvm)
 }

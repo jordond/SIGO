@@ -87,6 +87,7 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
     if (platforms.contains(Platform.Js)) {
         js {
             browser()
+            binaries.executable()
 
             if (platforms.contains(Platform.NodeJs)) {
                 nodejs()

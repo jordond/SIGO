@@ -11,7 +11,7 @@ import app.sigot.onboarding.ui.navigation.onboardingNavigation
 import app.sigot.settings.ui.navigation.PreferencesBottomSheet
 import app.sigot.settings.ui.navigation.SettingsRoute
 import app.sigot.settings.ui.navigation.settingsNavigation
-import app.sigot.webview.navigation.WebViewRoute
+import app.sigot.webview.navigation.navigateToWebview
 import app.sigot.webview.navigation.webViewNavigation
 
 @Composable
@@ -38,7 +38,7 @@ internal fun AppNavHost(
         settingsNavigation(
             navController = navController,
             toWebView = { title, url ->
-                navController.navigate(WebViewRoute(title, url))
+                navController.navigateToWebview(title, url)
             },
         )
 

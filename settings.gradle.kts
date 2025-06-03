@@ -40,6 +40,7 @@ plugins {
 
 include(":apps:android")
 include(":apps:api:worker")
+include(":apps:browser")
 include(":apps:cli")
 include(":apps:desktop")
 include(":apps:ios")

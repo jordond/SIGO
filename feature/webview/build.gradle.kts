@@ -28,10 +28,19 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.navigation.composee)
-            implementation(libs.composeWebviewMultiplatform)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kermit)
+        }
+
+        val nonBrowserMain by creating {
+            dependsOn(commonMain.get())
+            androidMain.get().dependsOn(this)
+            iosMain.get().dependsOn(this)
+            jvmMain.get().dependsOn(this)
+            dependencies {
+                implementation(libs.composeWebviewMultiplatform)
+            }
         }
     }
 }

@@ -1,24 +1,15 @@
 package app.sigot.webview.navigation
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.toRoute
-import app.sigot.core.ui.navigation.popUpScreen
-import app.toebean.feature.webview.WebViewScreen
+import androidx.navigation.NavHostController
 import kotlinx.serialization.Serializable
 
 @Serializable
-public data class WebViewRoute(
-    public val title: String,
-    public val url: String,
+internal data class WebViewRoute(
+    val title: String,
+    val url: String,
 )
 
-public fun NavGraphBuilder.webViewNavigation(onBack: () -> Unit) {
-    popUpScreen<WebViewRoute> { entry ->
-        val link = entry.toRoute<WebViewRoute>()
-        WebViewScreen(
-            onBack = onBack,
-            title = link.title,
-            url = link.url,
-        )
-    }
-}
+public expect fun NavGraphBuilder.webViewNavigation(onBack: () -> Unit)
+
+public expect fun NavHostController.navigateToWebview(title: String, url: String)
