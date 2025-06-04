@@ -1,5 +1,6 @@
 package app.sigot.forecast
 
+import app.sigot.core.domain.forecast.DefaultScoreCalculator
 import app.sigot.core.domain.forecast.ForecastRepo
 import app.sigot.core.domain.forecast.ForecastStateHolder
 import app.sigot.core.domain.forecast.GetForecastUseCase
@@ -70,15 +71,11 @@ public fun forecastBackendModule(): Module =
             }
         }
 
+        factory { DefaultScoreCalculator() } bind ScoreCalculator::class
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
-
-        // factory {
-        //     object : IsSimulateFailureUseCase {
-        //         override fun invoke(): Boolean = false
-        //     }
-        // } bind IsSimulateFailureUseCase::class
-        factoryOf(::DefaultForecastRepo) bind ForecastRepo::class
+        factory { DefaultForecastRepo(get(), null) } bind ForecastRepo::class
+        factoryOf(::DefaultGetForecastUseCase) bind GetForecastUseCase::class
     }
 
 public fun forecastCliModule(): Module =
@@ -86,5 +83,5 @@ public fun forecastCliModule(): Module =
         includes(forecastBaseModule())
         factory<QueryCostLogger> { QueryCostLogger {} }
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
-        singleOf(::DefaultForecastRepo) bind ForecastRepo::class
+        factory { DefaultForecastRepo(get(), null) } bind ForecastRepo::class
     }
