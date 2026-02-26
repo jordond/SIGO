@@ -62,13 +62,13 @@ import app.sigot.forecast.ui.components.mappers.temperatureStatus
 import app.sigot.forecast.ui.components.mappers.windStatus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.roundToInt
+import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 
 @Composable
 internal fun ForecastScoreContent(

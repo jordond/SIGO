@@ -9,9 +9,9 @@ import app.sigot.forecast.data.entity.toEntity
 import app.sigot.forecast.data.entity.toModel
 import app.sigot.forecast.data.source.ForecastCache
 import co.touchlab.kermit.Logger
-import kotlinx.datetime.Instant
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Instant
 
 internal class StoreForecastCache(
     private val store: Store<ForecastEntity>,

@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.Compose)
+configureMultiplatform(Platforms.Compose, name = "core.resources")
 
 kotlin {
     sourceSets {
@@ -23,10 +23,5 @@ compose.resources {
     publicResClass = true
     generateResClass = always
     packageOfResClass = libs.versions.app.name
-        .get() + ".core.resources"
-}
-
-android {
-    namespace = libs.versions.app.name
         .get() + ".core.resources"
 }

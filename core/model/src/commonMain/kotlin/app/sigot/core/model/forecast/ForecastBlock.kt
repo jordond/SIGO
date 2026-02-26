@@ -1,6 +1,6 @@
 package app.sigot.core.model.forecast
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * A block of forecast data for a specific time, could be current, day, or hourly.

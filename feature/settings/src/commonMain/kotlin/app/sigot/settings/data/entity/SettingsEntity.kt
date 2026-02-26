@@ -2,9 +2,9 @@ package app.sigot.settings.data.entity
 
 import app.sigot.core.model.settings.Settings
 import app.sigot.core.model.ui.ThemeMode
-import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 @Serializable
 internal data class SettingsEntity(

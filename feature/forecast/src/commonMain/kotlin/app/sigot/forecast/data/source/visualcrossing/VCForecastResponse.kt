@@ -12,10 +12,10 @@ import app.sigot.core.model.forecast.Temperature
 import app.sigot.core.model.forecast.Wind
 import app.sigot.core.model.location.Location
 import co.touchlab.kermit.Logger
-import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.math.roundToInt
+import kotlin.time.Instant
 
 @Serializable
 internal data class VCForecastResponse(

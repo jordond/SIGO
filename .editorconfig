@@ -9,6 +9,7 @@ ktlint_standard_multiline-expression-wrapping = disabled
 ktlint_standard_function-naming = disabled
 ktlint_function_naming_ignore_when_annotated_with = Composable
 ktlint_property_naming_constant_naming = pascal_case
+ktlint_standard_property_naming = disabled
 ij_continuation_indent_size = 4
 ij_kotlin_allow_trailing_comma = true
 ij_kotlin_blank_lines_around_block_when_branches = 0
