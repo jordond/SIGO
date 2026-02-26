@@ -5,15 +5,15 @@ rootProject.name = "SIGOT"
 pluginManagement {
     repositories {
         google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-                includeGroupByRegex("android.*")
+            @Suppress("UnstableApiUsage")
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
             }
         }
-        gradlePluginPortal()
         mavenCentral()
+        gradlePluginPortal()
     }
 
     includeBuild("buildLogic")
@@ -23,19 +23,18 @@ dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
         google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-                includeGroupByRegex("android.*")
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
             }
         }
         mavenCentral()
     }
 }
+
 plugins {
-    // https://github.com/JetBrains/compose-hot-reload?tab=readme-ov-file#set-up-automatic-provisioning-of-the-jetbrains-runtime-jbr-via-gradle
-    id("org.gradle.toolchains.foojay-resolver-convention").version("0.10.0")
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
 include(":apps:android")
@@ -55,7 +54,6 @@ include(":core:platform")
 include(":core:resources")
 include(":core:ui")
 include(":core:ui-icons")
-
 include(":feature:forecast")
 include(":feature:forecast:ui")
 include(":feature:location")
