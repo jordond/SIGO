@@ -34,11 +34,11 @@ import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.mappers.rememberText
 import app.sigot.core.ui.preview.AppPreview
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.Instant
 
 private const val INLINE_CONTENT_ID = "inlineContentId"
 

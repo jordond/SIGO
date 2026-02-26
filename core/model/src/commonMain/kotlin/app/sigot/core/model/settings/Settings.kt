@@ -5,8 +5,8 @@ import app.sigot.core.model.preferences.Preferences
 import app.sigot.core.model.ui.ThemeMode
 import app.sigot.core.model.units.convertTemperature
 import app.sigot.core.model.units.convertWindSpeed
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 public class Settings(
     public val firstLaunch: Instant = Clock.System.now(),

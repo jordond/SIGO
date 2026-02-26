@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.location.Location
 import dev.jordond.compass.Coordinates
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import dev.jordond.compass.Location as CompassLocation
 
 public object PreviewData {
@@ -28,7 +28,8 @@ public object PreviewData {
         accuracy = 100.0,
         azimuth = null,
         speed = null,
-        altitude = null,
+        mslAltitude = null,
+        ellipsoidalAltitude = null,
         timestampMillis = Clock.System.now().toEpochMilliseconds(),
     )
 

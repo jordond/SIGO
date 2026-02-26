@@ -6,6 +6,7 @@ import org.gradle.kotlin.dsl.configure
 import org.jetbrains.compose.ComposePlugin.Dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
+@Suppress("DEPRECATION")
 fun Project.composeDependencies(hasAndroid: Boolean) {
     extensions.configure<KotlinMultiplatformExtension> {
         compilerOptions {
@@ -15,7 +16,9 @@ fun Project.composeDependencies(hasAndroid: Boolean) {
             implementation(compose.runtime)
             implementation(compose.runtimeSaveable)
             implementation(compose.foundation)
+            implementation(compose.material3)
             implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
         }
 
         if (hasAndroid) {
@@ -30,6 +33,7 @@ fun Project.composeDependencies(hasAndroid: Boolean) {
     }
 }
 
+@Suppress("DEPRECATION")
 private val KotlinMultiplatformExtension.compose: Dependencies
     get() =
         (this as ExtensionAware).extensions.getByName("compose") as Dependencies

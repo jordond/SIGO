@@ -28,7 +28,7 @@ compose-windowSizeClass = "1.9.0"
 composables = "1.1.1"
 composeWebviewMultiplatform = "2.0.3"
 desugar = "2.1.5"
-hotReload = "1.0.0"
+composeHotReload = "1.0.0"
 kotlinx-collections = "0.4.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-atomicfu = "0.31.0"
@@ -169,9 +169,9 @@ multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotl
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 android-application = { id = "com.android.application", version.ref = "agp" }
-android-library = { id = "com.android.library", version.ref = "agp" }
+android-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
-hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hotReload" }
+hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

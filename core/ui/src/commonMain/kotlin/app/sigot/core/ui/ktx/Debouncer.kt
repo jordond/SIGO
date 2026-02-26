@@ -9,7 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import app.sigot.core.platform.currentTimeMillis
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 public class Debouncer<T>(
     private val millis: Long,
