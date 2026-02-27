@@ -26,6 +26,7 @@ print_usage() {
     echo "    --env <env>               Environment to deploy to (prod, staging, dev)"
     echo "    --no-clean                Skip cleaning before building"
     echo "    --all                     Deploy to all environments (prod, staging, dev)"
+    echo "  update-wrangler         Update Wrangler to the latest version"
     echo "  wrangler [command]      Wrapper around Cloudflare's Wrangler"
 
     exit "${1:-0}"
@@ -323,6 +324,10 @@ while [[ $# -gt 0 ]]; do
         COMMAND="dev"
         shift
         ;;
+    update-wrangler)
+        COMMAND="update-wrangler"
+        shift
+        ;;
     deploy)
         COMMAND="deploy"
         shift
@@ -432,6 +437,14 @@ deploy)
     fi
 
     deploy "$NO_CLEAN_FLAG" "$ENV" "$ALL_FLAG"
+    ;;
+update-wrangler)
+    WORKER_DIR="$ROOT/apps/api/worker"
+    echo "📦 Updating Wrangler..."
+    cd "$WORKER_DIR"
+    npm i -D wrangler@latest
+    cd "$ROOT"
+    echo "✅ Wrangler updated to $($WRANGLER_COMMAND --version)"
     ;;
 wrangler)
     if [[ ${#WRANGLER_ARGS[@]} -eq 0 ]]; then
