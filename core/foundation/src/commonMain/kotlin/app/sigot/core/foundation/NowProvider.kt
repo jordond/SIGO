@@ -6,15 +6,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.isActive
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
 import kotlin.coroutines.coroutineContext
+import kotlin.time.Clock
 import kotlin.time.Duration
+import kotlin.time.Instant
 
 public interface NowProvider {
     public fun now(): Instant

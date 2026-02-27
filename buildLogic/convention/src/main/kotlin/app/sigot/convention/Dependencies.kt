@@ -6,23 +6,31 @@ import org.gradle.kotlin.dsl.configure
 import org.jetbrains.compose.ComposePlugin.Dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
+@Suppress("DEPRECATION")
 fun Project.composeDependencies(hasAndroid: Boolean) {
     extensions.configure<KotlinMultiplatformExtension> {
         compilerOptions {
             optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
         }
         sourceSets.commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.runtimeSaveable)
-            implementation(compose.foundation)
-            implementation(compose.components.resources)
+            implementation(libs.findLibrary("androidx-lifecycle-viewmodel").get())
+            implementation(libs.findLibrary("androidx-lifecycle-runtime-compose").get())
+            implementation(libs.findLibrary("compose-material3").get())
+            implementation(libs.findLibrary("compose-runtime").get())
+            implementation(libs.findLibrary("compose-foundation").get())
+            implementation(libs.findLibrary("compose-resources").get())
+            implementation(libs.findLibrary("compose-ui").get())
+            implementation(libs.findLibrary("compose-ui-tooling-preview").get())
+        }
+
+        sourceSets.commonTest.dependencies {
+            implementation(libs.findLibrary("compose-ui-test").get())
         }
 
         if (hasAndroid) {
             sourceSets.androidMain.dependencies {
-                implementation(compose.preview)
-                implementation(libs.findLibrary("androidx-compose-ui-tooling").get())
-                implementation(libs.findLibrary("androidx-compose-ui-tooling-preview").get())
+                implementation(libs.findLibrary("compose-ui-tooling").get())
+                implementation(libs.findLibrary("compose-ui-tooling-preview").get())
             }
         }
 
@@ -30,6 +38,7 @@ fun Project.composeDependencies(hasAndroid: Boolean) {
     }
 }
 
+@Suppress("DEPRECATION")
 private val KotlinMultiplatformExtension.compose: Dependencies
     get() =
         (this as ExtensionAware).extensions.getByName("compose") as Dependencies

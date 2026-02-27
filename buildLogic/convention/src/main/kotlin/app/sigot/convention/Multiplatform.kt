@@ -1,12 +1,14 @@
 package app.sigot.convention
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 fun Project.configureMultiplatform(
@@ -14,11 +16,10 @@ fun Project.configureMultiplatform(
     name: String = this.name,
     compose: Boolean = extensions.findByType(ComposeExtension::class.java) != null,
     cocoapods: Boolean = false,
-    desugar: Boolean = false,
     tests: Boolean = false,
     log: Boolean = false,
 ) {
-    configureMultiplatform(listOf(platform), name, compose, cocoapods, desugar, tests, log)
+    configureMultiplatform(listOf(platform), name, compose, cocoapods, tests, log)
 }
 
 fun Project.configureMultiplatform(
@@ -26,7 +27,6 @@ fun Project.configureMultiplatform(
     name: String = this.name,
     compose: Boolean = extensions.findByType(ComposeExtension::class.java) != null,
     cocoapods: Boolean = false,
-    desugar: Boolean = false,
     tests: Boolean = false,
     log: Boolean = false,
 ) {
@@ -40,17 +40,20 @@ fun Project.configureMultiplatform(
 
     extensions.configure<KotlinMultiplatformExtension> {
         configureKotlin()
-        configurePlatforms(platforms, name, cocoapods, tests, log)
+        configurePlatforms(
+            project = this@configureMultiplatform,
+            platforms = platforms,
+            name = name,
+            cocoapods = cocoapods,
+            tests = tests,
+            log = log,
+        )
         if (platforms.contains(Platform.Ios)) {
             configureNativeOptIn()
         }
     }
 
     val hasAndroid = platforms.contains(Platform.Android)
-    if (hasAndroid) {
-        configureAndroid(name, compose, desugar)
-    }
-
     if (compose) {
         composeDependencies(hasAndroid)
     }
@@ -58,6 +61,7 @@ fun Project.configureMultiplatform(
 
 @OptIn(ExperimentalWasmDsl::class)
 internal fun KotlinMultiplatformExtension.configurePlatforms(
+    project: Project,
     platforms: List<Platform> = Platforms.All,
     name: String,
     cocoapods: Boolean,
@@ -73,11 +77,27 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
     }
 
     if (platforms.contains(Platform.Android)) {
-        androidTarget {
-            // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
-            @Suppress("OPT_IN_USAGE")
-            instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-        }
+        (this as ExtensionAware)
+            .extensions
+            .findByType(KotlinMultiplatformAndroidLibraryTarget::class.java)
+            ?.apply {
+                namespace = project.buildNamespace(name)
+                compileSdk = project.libs
+                    .findVersion("sdk-compile")
+                    .get()
+                    .toString()
+                    .toInt()
+
+                minSdk = project.libs
+                    .findVersion("sdk-min")
+                    .get()
+                    .toString()
+                    .toInt()
+
+                compilerOptions.jvmTarget.set(
+                    JvmTarget.fromTarget(project.jvmTargetVersion.toString()),
+                )
+            }
     }
 
     if (platforms.contains(Platform.Jvm)) {
@@ -100,7 +120,6 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
         }
         if (!cocoapods) {
             listOf(
-                iosX64(),
                 iosArm64(),
                 iosSimulatorArm64(),
             ).forEach { target ->
@@ -116,7 +135,6 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
             if (log) {
                 println("Cocoapods is enabled, skipping iOS framework generation.")
             }
-            iosX64()
             iosArm64()
             iosSimulatorArm64()
         }

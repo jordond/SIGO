@@ -23,7 +23,6 @@ kotlin {
             implementation(projects.core.ui)
             implementation(projects.core.uiIcons)
 
-            implementation(compose.components.uiToolingPreview)
             implementation(libs.compass.geolocation)
             implementation(libs.kermit)
             implementation(libs.kotlinx.serialization.json)

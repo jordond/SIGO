@@ -10,6 +10,7 @@ import app.sigot.App
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.app_name
 import app.sigot.core.resources.ic_cyclone
+import app.sigot.di.initKoin
 import co.touchlab.kermit.Logger
 import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.compose.resources.painterResource
@@ -36,15 +37,16 @@ private val sizes = mapOf(
 
 private val minimumSize = Dimension(350, 600)
 
-fun main(args: Array<String>) =
-    application {
-        val mode = args
+fun main(args: Array<String>) {
+    val mode =
+        args
             .toList()
             .windowed(2, 1, false)
             .find { it.first() == "--mode" }
             ?.getOrNull(1) ?: "desktop"
 
-        val (width, height, placement) = if (mode == "fullscreen") {
+    val (width, height, placement) =
+        if (mode == "fullscreen") {
             calculateFullScreenSize()
         } else {
             val windowWidth = sizes[mode]?.first ?: defaultWidth
@@ -52,11 +54,13 @@ fun main(args: Array<String>) =
             Triple(windowWidth, windowHeight, WindowPlacement.Floating)
         }
 
-        Logger.i { "Starting application in mode: $mode" }
-        Logger.i { "Window size: $width x $height" }
+    Logger.i { "Starting application in mode: $mode" }
+    Logger.i { "Window size: $width x $height" }
 
-        FileKit.init("app.sigot.desktop")
+    FileKit.init("app.sigot.desktop")
+    initKoin()
 
+    application {
         Window(
             title = stringResource(Res.string.app_name),
             icon = painterResource(Res.drawable.ic_cyclone),
@@ -72,6 +76,7 @@ fun main(args: Array<String>) =
             App()
         }
     }
+}
 
 private fun calculateFullScreenSize(): Triple<Dp, Dp, WindowPlacement> {
     // Get the current width and height of the screen

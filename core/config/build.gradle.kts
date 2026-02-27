@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "core.config", desugar = true)
+configureMultiplatform(Platforms.All, name = "core.config")
 
 kotlin {
     sourceSets {
@@ -29,8 +29,7 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation(libs.firebase.common)
-            implementation(libs.firebase.config)
+            implementation(project.dependencies.platform(libs.firebase.bom))
         }
     }
 }

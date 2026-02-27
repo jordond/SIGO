@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import app.sigot.core.ui.AppTheme
@@ -56,7 +57,6 @@ import app.sigot.core.ui.components.CheckboxDefaults.RadiusSize
 import app.sigot.core.ui.components.CheckboxDefaults.StrokeWidth
 import app.sigot.core.ui.foundation.ripple
 import app.sigot.core.ui.preview.AppPreview
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.floor
 import kotlin.math.max
 

@@ -19,7 +19,7 @@ import app.sigot.core.ui.components.HorizontalDivider
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.mappers.rememberText
 import app.sigot.forecast.ui.components.mappers.rememberInstant
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 @Composable
 internal fun Header(

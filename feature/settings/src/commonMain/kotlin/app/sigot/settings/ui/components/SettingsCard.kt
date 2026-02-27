@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.sigot.core.resources.Res
@@ -51,7 +52,6 @@ import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.wrap
 import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val itemScope = object : SettingsCardItemScope {}
 

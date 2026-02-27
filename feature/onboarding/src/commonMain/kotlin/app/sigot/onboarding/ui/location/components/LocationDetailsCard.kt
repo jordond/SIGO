@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationResult
@@ -48,7 +49,6 @@ import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.PreviewData
 import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun LocationDetailsCard(

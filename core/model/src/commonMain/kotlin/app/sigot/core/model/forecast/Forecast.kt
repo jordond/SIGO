@@ -2,7 +2,7 @@ package app.sigot.core.model.forecast
 
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.units.Units
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * Represents a weather forecast.

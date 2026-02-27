@@ -21,6 +21,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.forecast.ForecastPeriod
@@ -34,11 +35,10 @@ import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.mappers.rememberText
 import app.sigot.core.ui.preview.AppPreview
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.Instant
 
 private const val INLINE_CONTENT_ID = "inlineContentId"
 
@@ -129,8 +129,8 @@ private fun HeaderTextPreview() {
                         HeaderText(
                             instant = LocalDateTime(
                                 year = 2025,
-                                monthNumber = 5,
-                                dayOfMonth = 15,
+                                month = 5,
+                                day = 15,
                                 hour = 15,
                                 minute = 30,
                             ).toInstant(TimeZone.currentSystemDefault()),
