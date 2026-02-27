@@ -60,7 +60,8 @@ pick up on the changes.
 
 ### Deploying
 
-Now that you have a new kick-ass feature, you can deploy the worker to Cloudflare with the following command:
+Now that you have a new kick-ass feature, you can deploy the worker to Cloudflare with the following
+command:
 
 ```shell
 ./sigot api:worker deploy
@@ -76,11 +77,13 @@ If you want to deploy to staging or the dev environment you can pass `--env` lik
 ./sigot api:worker deploy --env dev
 ```
 
-Once that is successful the worker should be available at https://api.sigot.app (or dev/staging.api.sigot.app)
+Once that is successful the worker should be available at https://api.sigot.app (or
+dev/staging.api.sigot.app)
 
 ### Misc
 
-Wrangler is installed to the `apps/api/worker/node_modules` folder. To run it easily for any other command you can use the wrapper command:
+Wrangler is installed to the `apps/api/worker/node_modules` folder. To run it easily for any other
+command you can use the wrapper command:
 
 ```shell
 ./sigot api:worker wrangler <command>
