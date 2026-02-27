@@ -1,4 +1,4 @@
-package app.sigot.api
+package app.sigot.api.provider
 
 import app.sigot.core.domain.VersionProvider
 import app.sigot.core.model.Version

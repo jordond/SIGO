@@ -74,4 +74,5 @@ internal val Lucide.ShareIos: ImageVector
         return _ShareIos!!
     }
 
+@Suppress("ObjectPropertyName")
 private var _ShareIos: ImageVector? = null

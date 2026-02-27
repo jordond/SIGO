@@ -19,8 +19,10 @@ public data class ForecastScoreRequestQuery(
     public val minTemp: Int? = null,
     @SerialName("max_wind")
     public val maxWind: Int? = null,
-    @SerialName("allow")
-    public val allow: List<String>? = null,
+    @SerialName("allow_rain")
+    public val allowRain: Boolean? = null,
+    @SerialName("allow_snow")
+    public val allowSnow: Boolean? = null,
 )
 
 public fun ForecastScoreRequestQuery.toModels(): Pair<Location, Preferences> {
@@ -35,8 +37,8 @@ private fun ForecastScoreRequestQuery.toPreferences(): Preferences {
         minTemperature = minTemp ?: default.minTemperature,
         maxTemperature = maxTemp ?: default.maxTemperature,
         windSpeed = maxWind ?: default.windSpeed,
-        rain = allow?.contains("rain") ?: default.rain,
-        snow = allow?.contains("snow") ?: default.snow,
+        rain = allowRain ?: default.rain,
+        snow = allowSnow ?: default.snow,
         includeApparentTemperature = default.includeApparentTemperature,
     )
 }
