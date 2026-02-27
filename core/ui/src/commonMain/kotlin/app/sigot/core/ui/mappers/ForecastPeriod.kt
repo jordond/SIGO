@@ -11,11 +11,11 @@ import app.sigot.core.resources.forecast_period_today
 import app.sigot.core.resources.forecast_period_tomorrow
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.ktx.text
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Instant
 
 private val hours = listOf(
     ForecastPeriod.NextHour,

@@ -10,6 +10,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.back
@@ -30,7 +31,6 @@ import app.sigot.core.ui.icons.lucide.X
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
 import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 internal enum class SettingsTopBarNav {
     Back,
@@ -78,7 +78,7 @@ internal fun SettingsTopBar(
                 )
             }
         },
-        colors = TopAppBarDefaults.largeTopAppBarColors(
+        colors = TopAppBarDefaults.topAppBarColors(
             containerColor = LocalContainerColor.current,
             navigationIconContentColor = LocalContentColor.current,
             titleContentColor = LocalContentColor.current,

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.open
@@ -31,7 +32,6 @@ import app.sigot.settings.ui.components.TrailingBorderedIcon
 import dev.stateholder.dispatcher.Dispatcher
 import dev.stateholder.dispatcher.rememberDispatcher
 import dev.stateholder.dispatcher.rememberRelay
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private fun trailingContent(color: Color) =
     @Composable {

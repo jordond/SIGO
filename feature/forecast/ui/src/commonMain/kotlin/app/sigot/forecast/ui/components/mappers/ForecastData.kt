@@ -3,8 +3,8 @@ package app.sigot.forecast.ui.components.mappers
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import app.sigot.core.model.ForecastData
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 @Composable
 internal fun ForecastData?.rememberInstant(): Instant =

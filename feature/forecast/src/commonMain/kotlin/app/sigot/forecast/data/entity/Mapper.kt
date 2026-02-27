@@ -10,7 +10,7 @@ import app.sigot.core.model.forecast.SevereWeatherRisk
 import app.sigot.core.model.forecast.Temperature
 import app.sigot.core.model.forecast.Wind
 import app.sigot.core.model.location.Location
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 public fun ForecastEntity.toModel(): Forecast =
     Forecast(

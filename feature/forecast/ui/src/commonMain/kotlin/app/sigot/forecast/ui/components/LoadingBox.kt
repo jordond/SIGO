@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.loading_ellipses
@@ -35,7 +36,6 @@ import app.sigot.core.ui.components.card.ElevatedCard
 import app.sigot.core.ui.components.progressindicators.LinearProgressIndicator
 import app.sigot.core.ui.components.progressindicators.ProgressTextPosition
 import app.sigot.core.ui.preview.AppPreview
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun LoadingBox(

@@ -23,13 +23,9 @@ kotlin {
             implementation(projects.core.model)
             implementation(projects.core.platform)
             implementation(projects.core.resources)
-            implementation(projects.core.uiIcons)
+            api(projects.core.uiIcons)
 
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.navigation.composee)
+            implementation(libs.compose.navigation)
             api(libs.compass.geolocation)
             api(libs.compose.windowSizeClass)
             api(libs.composables)
@@ -39,6 +35,10 @@ kotlin {
             implementation(libs.kermit)
             implementation(libs.coil)
             implementation(libs.materialKolor)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
         }
 
         val skikoMain by creating {

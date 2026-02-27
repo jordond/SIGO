@@ -24,6 +24,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
@@ -36,7 +37,6 @@ import app.sigot.core.ui.components.Surface
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.preview.AppPreview
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 public fun Card(

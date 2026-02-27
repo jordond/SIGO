@@ -16,10 +16,10 @@ import app.sigot.core.model.preferences.Preferences
 import app.sigot.core.model.score.ForecastScore
 import app.sigot.core.model.units.Units
 import app.sigot.core.model.units.kelvin
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Instant
 
 public object ForecastPreviewData {
     public fun sunny(instant: Instant = Clock.System.now()): ForecastBlock =

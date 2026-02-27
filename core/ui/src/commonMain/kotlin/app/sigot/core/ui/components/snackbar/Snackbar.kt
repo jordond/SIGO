@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
@@ -43,7 +44,6 @@ import app.sigot.core.ui.components.snackbar.SnackbarDefaults.TextEndExtraSpacin
 import app.sigot.core.ui.components.snackbar.SnackbarDefaults.TwoLinesContainerHeight
 import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.ktx.get
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.max
 import kotlin.math.min
 
