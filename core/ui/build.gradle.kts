@@ -25,7 +25,7 @@ kotlin {
             implementation(projects.core.resources)
             api(projects.core.uiIcons)
 
-            implementation(libs.androidx.navigation.composee)
+            implementation(libs.compose.navigation)
             api(libs.compass.geolocation)
             api(libs.compose.windowSizeClass)
             api(libs.composables)

@@ -39,7 +39,7 @@ kotlin {
             implementation(libs.kermit.koin)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.androidx.navigation.composee)
+            implementation(libs.compose.navigation)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.coil)
             implementation(libs.coil.network.ktor)
@@ -47,7 +47,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.room.runtime)
             implementation(libs.materialKolor)
-            implementation(libs.bundles.koin.compose)
+            api(libs.bundles.koin.compose)
             implementation(libs.bundles.stateHolder)
         }
 

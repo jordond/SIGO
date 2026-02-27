@@ -2,7 +2,6 @@ import app.sigot.convention.Platform
 import app.sigot.convention.configureMultiplatform
 import app.sigot.convention.disableExplicitApi
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -51,9 +50,4 @@ compose.desktop {
             }
         }
     }
-}
-
-// https://github.com/JetBrains/compose-hot-reload
-composeCompiler {
-    featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
 }
