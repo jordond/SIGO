@@ -24,7 +24,6 @@ kotlin {
             implementation(projects.core.ui)
             implementation(projects.core.uiIcons)
 
-            implementation(compose.components.uiToolingPreview)
             implementation(libs.compass.geolocation)
             implementation(libs.compass.geocoder)
             implementation(libs.kermit)

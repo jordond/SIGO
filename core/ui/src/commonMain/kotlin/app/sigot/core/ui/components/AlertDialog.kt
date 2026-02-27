@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
@@ -48,7 +49,6 @@ import app.sigot.core.ui.components.AlertDialogDefaults.TitlePadding
 import app.sigot.core.ui.foundation.ProvideContentColorTextStyle
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.max
 
 @Composable

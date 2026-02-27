@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -65,7 +66,6 @@ import app.sigot.onboarding.ui.units.OnboardingUnitsScreen
 import app.sigot.onboarding.ui.welcome.WelcomeScreen
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
