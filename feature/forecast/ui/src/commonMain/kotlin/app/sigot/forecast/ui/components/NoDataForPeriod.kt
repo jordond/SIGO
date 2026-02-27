@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.forecast_period_no_data
@@ -19,7 +20,6 @@ import app.sigot.core.ui.components.card.ElevatedCard
 import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.TriangleAlert
 import app.sigot.core.ui.preview.AppPreview
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun NoDataForPeriod(modifier: Modifier = Modifier) {

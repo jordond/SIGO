@@ -13,19 +13,24 @@ fun Project.composeDependencies(hasAndroid: Boolean) {
             optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
         }
         sourceSets.commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.runtimeSaveable)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
+            implementation(libs.findLibrary("androidx-lifecycle-viewmodel").get())
+            implementation(libs.findLibrary("androidx-lifecycle-runtime-compose").get())
+            implementation(libs.findLibrary("compose-material3").get())
+            implementation(libs.findLibrary("compose-runtime").get())
+            implementation(libs.findLibrary("compose-foundation").get())
+            implementation(libs.findLibrary("compose-resources").get())
+            implementation(libs.findLibrary("compose-ui").get())
+            implementation(libs.findLibrary("compose-ui-tooling-preview").get())
+        }
+
+        sourceSets.commonTest.dependencies {
+            implementation(libs.findLibrary("compose-ui-test").get())
         }
 
         if (hasAndroid) {
             sourceSets.androidMain.dependencies {
-                implementation(compose.preview)
-                implementation(libs.findLibrary("androidx-compose-ui-tooling").get())
-                implementation(libs.findLibrary("androidx-compose-ui-tooling-preview").get())
+                implementation(libs.findLibrary("compose-ui-tooling").get())
+                implementation(libs.findLibrary("compose-ui-tooling-preview").get())
             }
         }
 

@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.sigot.core.resources.Res
@@ -25,7 +26,6 @@ import app.sigot.core.ui.components.card.ElevatedCard
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.onboarding.ui.OnboardingScreenPreview
 import app.sigot.onboarding.ui.navigation.OnboardingDestination
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun WelcomeScreen(modifier: Modifier = Modifier) {

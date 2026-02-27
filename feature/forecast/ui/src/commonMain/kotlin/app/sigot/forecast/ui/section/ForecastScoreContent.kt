@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.sigot.core.model.ForecastPeriodData
@@ -62,7 +63,6 @@ import app.sigot.forecast.ui.components.mappers.temperatureStatus
 import app.sigot.forecast.ui.components.mappers.windStatus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.roundToInt
 import kotlin.time.Clock
 import kotlin.time.Duration

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.blank
@@ -58,7 +59,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.abs
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.hours
@@ -123,7 +123,7 @@ public val DayOfWeek.textShort: StringResource
 
 private val LocalDate.dayWithOrdinal: StringResource
     get() {
-        val day = dayOfMonth
+        val day = day
         return when (day % 10) {
             1 -> if (day != 11) Res.string.day_of_week_ordinal_first else Res.string.day_of_week_ordinal_th
             2 -> if (day != 12) Res.string.day_of_week_ordinal_second else Res.string.day_of_week_ordinal_th
@@ -141,7 +141,7 @@ public fun LocalDate.monthText(short: Boolean = false): String {
 @Composable
 public fun LocalDate.dayWithOrdinalText(): String {
     val res = remember(this) { dayWithOrdinal }
-    return "${dayOfMonth}${stringResource(res)}"
+    return "${day}${stringResource(res)}"
 }
 
 @Composable
@@ -161,7 +161,7 @@ public fun LocalDate.rememberMonthDayString(
     }.get()
 
     val monthText = monthText(shortMonth)
-    val dayText = if (ordinal) dayWithOrdinalText() else dayOfMonth.toString()
+    val dayText = if (ordinal) dayWithOrdinalText() else day.toString()
     return remember(dayOfWeekText, monthText, dayText) {
         "$dayOfWeekText$separator$monthText$separator$dayText"
     }
