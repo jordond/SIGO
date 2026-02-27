@@ -1,5 +1,6 @@
 package app.sigot.api
 
+import app.sigot.api.provider.WorkerTokenProvider
 import app.sigot.core.api.server.ApiRouter
 import app.sigot.core.api.server.util.serverError
 import kotlinx.coroutines.CoroutineScope

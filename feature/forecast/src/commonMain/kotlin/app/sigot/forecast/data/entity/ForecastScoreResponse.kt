@@ -4,7 +4,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-public data class ForecastResponse(
+public data class ForecastScoreResponse(
     @SerialName("forecast")
     val forecast: ForecastEntity,
+    @SerialName("score")
+    val score: ForecastScoreEntity,
 )

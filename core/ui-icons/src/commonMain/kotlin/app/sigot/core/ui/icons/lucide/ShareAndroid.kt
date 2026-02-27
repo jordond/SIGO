@@ -106,4 +106,5 @@ internal val Lucide.ShareAndroid: ImageVector
         return _ShareAndroid!!
     }
 
+@Suppress("ObjectPropertyName")
 private var _ShareAndroid: ImageVector? = null
