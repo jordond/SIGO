@@ -2,7 +2,7 @@
   "$schema": "apps/api/worker/node_modules/wrangler/config-schema.json",
   "name": "sigot-api-worker",
   "main": "apps/api/worker/index.mjs",
-  "compatibility_date": "2025-05-25",
+  "compatibility_date": "2026-02-25",
   "observability": {
     "enabled": true
   },
