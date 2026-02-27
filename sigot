@@ -111,7 +111,7 @@ lint | l)
     "$ROOT"/scripts/ktlint "$@"
     ;;
 fix | f)
-    if [[ "$2" == "--all" ]]; then
+    if [[ "${2:-}" == "--all" ]]; then
         set +e
         echo "Linting and fixing all kotlin files"
         "$ROOT"/scripts/ktlint.sh --all -F

@@ -12,7 +12,7 @@ plugins {
     alias(libs.plugins.toolchain.version)
 }
 
-configureMultiplatform(Platforms.Compose, name = "settings", desugar = true)
+configureMultiplatform(Platforms.Compose, name = "settings")
 
 kotlin {
     sourceSets {
@@ -26,13 +26,9 @@ kotlin {
             implementation(projects.core.ui)
             implementation(projects.core.uiIcons)
 
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.androidx.navigation.composee)
+            implementation(libs.compose.navigation)
             implementation(libs.kotlinx.collections)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)

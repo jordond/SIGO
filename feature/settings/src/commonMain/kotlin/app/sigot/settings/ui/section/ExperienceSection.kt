@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.settings.Settings
 import app.sigot.core.resources.Res
@@ -37,7 +38,6 @@ import app.sigot.core.ui.preview.AppPreview
 import app.sigot.settings.ui.components.SettingsCard
 import app.sigot.settings.ui.components.SettingsTextRow
 import app.sigot.settings.ui.components.TrailingBorderedIcon
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val trailingContent = @Composable {
     TrailingBorderedIcon(

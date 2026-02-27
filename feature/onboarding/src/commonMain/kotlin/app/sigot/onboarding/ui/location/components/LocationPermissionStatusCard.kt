@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.location.LocationPermissionStatus
 import app.sigot.core.resources.Res
@@ -29,7 +30,6 @@ import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.rememberIcon
 import app.sigot.core.ui.rememberText
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun LocationPermissionStatusCard(

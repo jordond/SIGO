@@ -29,6 +29,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
@@ -41,7 +42,6 @@ import app.sigot.core.ui.foundation.ButtonElevation
 import app.sigot.core.ui.foundation.ripple
 import app.sigot.core.ui.ktx.disabled
 import app.sigot.core.ui.preview.AppPreview
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 public fun Button(

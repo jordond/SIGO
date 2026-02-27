@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.settings.InternalSettings
 import app.sigot.core.resources.Res
@@ -57,7 +58,6 @@ import app.sigot.settings.ui.components.SettingsCard
 import app.sigot.settings.ui.components.SettingsTextRow
 import app.sigot.settings.ui.components.SettingsTopBar
 import dev.stateholder.extensions.collectAsState
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.preferences.Preferences
 import app.sigot.core.resources.Res
@@ -21,7 +22,6 @@ import app.sigot.core.ui.preferences.PreferencesList
 import app.sigot.onboarding.ui.OnboardingScreenPreview
 import app.sigot.onboarding.ui.navigation.OnboardingDestination
 import dev.stateholder.extensions.collectAsState
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

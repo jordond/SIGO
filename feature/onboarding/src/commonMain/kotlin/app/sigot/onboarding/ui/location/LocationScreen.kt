@@ -11,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
@@ -37,7 +38,6 @@ import dev.stateholder.dispatcher.rememberDispatcher
 import dev.stateholder.dispatcher.rememberRelay
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 internal sealed interface LocationScreenAction {

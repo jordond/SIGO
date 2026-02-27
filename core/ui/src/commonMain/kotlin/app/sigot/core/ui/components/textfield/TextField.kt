@@ -31,6 +31,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.sigot.core.ui.AppTheme
@@ -54,7 +55,6 @@ import app.sigot.core.ui.components.textfield.base.containerOutline
 import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.PreviewData
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 public fun TextField(

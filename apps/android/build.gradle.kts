@@ -1,45 +1,43 @@
-import app.sigot.convention.Platform
-import app.sigot.convention.configureMultiplatform
-import app.sigot.convention.disableExplicitApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
-    alias(libs.plugins.multiplatform)
-    alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platform.Android)
-
 kotlin {
-    disableExplicitApi()
-
-    sourceSets {
-        androidMain.dependencies {
-            implementation(projects.core.app)
-
-            implementation(compose.preview)
-            implementation(libs.androidx.activity)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.core)
-            implementation(libs.androidx.compose.ui.tooling)
-            implementation(libs.androidx.compose.ui.tooling.preview)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.koin.core)
-            implementation(libs.koin.android)
-            implementation(libs.kotlinx.coroutines.android)
-        }
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
-dependencies {
-    coreLibraryDesugaring(libs.desugar)
-}
-
 android {
+    namespace = libs.versions.app.name
+        .get() + ".android"
+    compileSdk = libs.versions.sdk.compile
+        .get()
+        .toInt()
+
+    defaultConfig {
+        minSdk = libs.versions.sdk.min
+            .get()
+            .toInt()
+        targetSdk = libs.versions.sdk.target
+            .get()
+            .toInt()
+
+        applicationId = libs.versions.app.name
+            .get() + ".android"
+
+        versionCode = libs.versions.app.android.code
+            .get()
+            .toInt()
+        versionName = libs.versions.app.android.version
+            .get()
+    }
+
     val secretsFile = File(".app/secrets/secrets.properties")
     val releaseKeyFile = project.rootDir.resolve(".app/secrets/sigot_release.key")
 
@@ -73,9 +71,6 @@ android {
             isShrinkResources = true
 
             proguardFiles(
-                // Includes the default ProGuard rules files that are packaged with
-                // the Android Gradle plugin. To learn more, go to the section about
-                // R8 configuration files.
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
@@ -84,5 +79,29 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+
+    buildFeatures {
+        compose = true
+    }
+}
+
+dependencies {
+    implementation(projects.core.app)
+
+    coreLibraryDesugaring(libs.desugar)
+
+    implementation(platform(libs.firebase.bom))
+
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.kotlinx.coroutines.android)
 }
