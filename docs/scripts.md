@@ -206,6 +206,7 @@ Manages the Cloudflare Worker that serves the SIGOT API.
 | `build [--clean]`  | Compile the worker (delegates to `api.sh build`) |
 | `dev`              | Start Kotlin/JS watcher + Wrangler dev server    |
 | `deploy [options]` | Deploy to Cloudflare                             |
+| `update-wrangler`  | Update Wrangler to the latest version            |
 | `wrangler [args]`  | Pass-through to the Wrangler CLI                 |
 
 #### Deploy options
