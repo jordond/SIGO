@@ -162,7 +162,8 @@ private fun HourlyForecastStripPreview() {
     }
 }
 
-@Preview
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
 private fun HourCardSelectedPreview() {
     AppPreview {
@@ -176,7 +177,8 @@ private fun HourCardSelectedPreview() {
     }
 }
 
-@Preview
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
 private fun HourCardUnselectedPreview() {
     AppPreview {
