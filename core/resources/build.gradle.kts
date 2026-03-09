@@ -12,6 +12,10 @@ plugins {
 configureMultiplatform(Platforms.Compose, name = "core.resources")
 
 kotlin {
+    android {
+        androidResources.enable = true
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kermit)
