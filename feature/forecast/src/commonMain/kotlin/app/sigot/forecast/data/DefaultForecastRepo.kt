@@ -27,7 +27,7 @@ internal class DefaultForecastRepo(
         logger.d { "Fetching fresh forecast for location=$location" }
         return runCatching {
             withContext(Dispatchers.Default) {
-                source.forecastFor(location)
+                source.forecastFor(location).copy(location = location)
             }
         }.onFailure { cause ->
             if (cause is CancellationException) throw cause

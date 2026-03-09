@@ -272,18 +272,20 @@
     <string name="settings_internal_reset">Reset internal settings</string>
 
     <string name="forecast_details_title">Details</string>
-    <string name="forecast_details_feels_like">Feels like</string>
-    <string name="forecast_details_high">H</string>
-    <string name="forecast_details_low">L</string>
+    <string name="forecast_details_temperature_value">%1$d%2$s</string>
+    <string name="forecast_details_feels_like">Feels like %1$d%2$s</string>
+    <string name="forecast_details_high">H %1$d%2$s</string>
+    <string name="forecast_details_low">L %1$d%2$s</string>
+    <string name="forecast_details_value_with_unit">%1$s %2$s</string>
     <string name="forecast_details_humidity">Humidity</string>
     <string name="forecast_details_wind">Wind</string>
-    <string name="forecast_details_wind_gust">Gust</string>
+    <string name="forecast_details_wind_gust">Gust %1$d %2$s %3$s</string>
     <string name="forecast_details_uv_index">UV Index</string>
     <string name="forecast_details_pressure">Pressure</string>
     <string name="forecast_details_visibility">Visibility</string>
     <string name="forecast_details_cloud_cover">Cloud Cover</string>
     <string name="forecast_details_precipitation">Precipitation</string>
-    <string name="forecast_details_precipitation_chance">chance</string>
+    <string name="forecast_details_precipitation_chance">%1$d%% chance - %2$s</string>
     <string name="forecast_details_now">Now</string>
     <string name="forecast_details_wind_direction_n">N</string>
     <string name="forecast_details_wind_direction_ne">NE</string>
@@ -293,5 +295,18 @@
     <string name="forecast_details_wind_direction_sw">SW</string>
     <string name="forecast_details_wind_direction_w">W</string>
     <string name="forecast_details_wind_direction_nw">NW</string>
+
+    <string name="forecast_details_uv_low">Low</string>
+    <string name="forecast_details_uv_moderate">Moderate</string>
+    <string name="forecast_details_uv_high">High</string>
+    <string name="forecast_details_uv_very_high">Very High</string>
+    <string name="forecast_details_uv_extreme">Extreme</string>
+
+    <string name="forecast_details_visibility_miles">%1$d mi</string>
+    <string name="forecast_details_visibility_km">%1$d km</string>
+
+    <string name="forecast_details_precipitation_type_default">Rain</string>
+
+    <string name="forecast_details_percent">%1$d%%</string>
 
 </resources>
