@@ -296,6 +296,7 @@
     <string name="forecast_details_wind_direction_w">W</string>
     <string name="forecast_details_wind_direction_nw">NW</string>
 
+    <string name="forecast_details_uv">%1$d - %2$s</string>
     <string name="forecast_details_uv_low">Low</string>
     <string name="forecast_details_uv_moderate">Moderate</string>
     <string name="forecast_details_uv_high">High</string>
@@ -307,6 +308,6 @@
 
     <string name="forecast_details_precipitation_type_default">Rain</string>
 
-    <string name="forecast_details_percent">%1$d%%</string>
+    <string name="forecast_details_percent">%1$d%</string>
 
 </resources>
