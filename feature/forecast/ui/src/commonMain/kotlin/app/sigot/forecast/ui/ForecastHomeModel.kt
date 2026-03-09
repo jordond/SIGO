@@ -125,7 +125,7 @@ internal class ForecastHomeModel(
         val location: Location?,
         val preferences: Preferences,
         val status: AsyncResult<Forecast>?,
-        val period: ForecastPeriod = ForecastPeriod.Today,
+        val period: ForecastPeriod = ForecastPeriod.Now,
         val permissionStatus: LocationPermissionStatus = Unknown,
         val forecast: ForecastData? = null,
     ) {
