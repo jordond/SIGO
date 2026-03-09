@@ -24,7 +24,7 @@ print_usage() {
     echo "    lint --all | --staged [args]   Lint the codebase using ktlint"
     echo "    fix [--all] [--staged]         Fixes only staged files if --all is not passed"
     echo "    commit|c [options]             Stage changes, run fix, and commit"
-    echo "    cli [args]                     Run the CLI version of SIGOT"
+    echo "    cli [args]                     Run the CLI version of SIGO"
     echo "    api                            Commands for the API"
     echo "    api:worker <command>           Run command helpers for the api worker"
 }
@@ -34,7 +34,7 @@ check_directory() {
     current_dir="$(pwd)"
 
     if [ "$ROOT" != "$current_dir" ]; then
-        echo "Error: This script must be run from the directory containing the 'sigot' script."
+        echo "Error: This script must be run from the directory containing the 'sigo' script."
         echo "Please navigate to $ROOT and try again."
         exit 1
     fi

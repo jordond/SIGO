@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import app.sigot.core.ui.navigation.Route
 import app.sigot.core.ui.navigation.popUpScreen
-import app.sigot.forecast.ui.ForecastDetailsScreen
 import app.sigot.forecast.ui.ForecastHomeScreen
+import app.sigot.forecast.ui.details.ForecastDetailsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

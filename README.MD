@@ -1,6 +1,6 @@
-# Should I go outside today?
+# Should I go outside?
 
-"Should I go outside today?" or **SIGOT** is a Kotlin Multiplatform weather app. The inspiration
+"Should I go outside?" or **SIGO** is a Kotlin Multiplatform weather app. The inspiration
 behind this app was a dead simple weather app that answer that simple question.
 
 When opened the app will fetch the forecast for your current location then display a simple answer
@@ -42,8 +42,8 @@ Go to [VisualCrossing](https://www.visualcrossing.com/) and grab your API key.
 Clone the repository:
 
 ```shell
-git clone git@github.com:jordond/sigot
-cd sigot
+git clone git@github.com:jordond/sigo
+cd sigo
 ```
 
 Now run the init script:
@@ -51,11 +51,11 @@ Now run the init script:
 ```shell
 # Initialize the app properties and secrets
 # You will be prompted for an API key for the Forecast aPI
-./sigot init
+./sigo init
 
-# Optional, for development of sigot
-./sigot init ktlint
-./sigot init hooks
+# Optional, for development of sigo
+./sigo init ktlint
+./sigo init hooks
 ```
 
 The `init` script will prompt you for your API token and store it in the `app-env.properties` file.
