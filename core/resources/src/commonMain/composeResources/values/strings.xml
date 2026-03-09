@@ -271,4 +271,27 @@
     <string name="settings_internal_backend_direct_api_token_placeholder">Enter your API key</string>
     <string name="settings_internal_reset">Reset internal settings</string>
 
+    <string name="forecast_details_title">Details</string>
+    <string name="forecast_details_feels_like">Feels like</string>
+    <string name="forecast_details_high">H</string>
+    <string name="forecast_details_low">L</string>
+    <string name="forecast_details_humidity">Humidity</string>
+    <string name="forecast_details_wind">Wind</string>
+    <string name="forecast_details_wind_gust">Gust</string>
+    <string name="forecast_details_uv_index">UV Index</string>
+    <string name="forecast_details_pressure">Pressure</string>
+    <string name="forecast_details_visibility">Visibility</string>
+    <string name="forecast_details_cloud_cover">Cloud Cover</string>
+    <string name="forecast_details_precipitation">Precipitation</string>
+    <string name="forecast_details_precipitation_chance">chance</string>
+    <string name="forecast_details_now">Now</string>
+    <string name="forecast_details_wind_direction_n">N</string>
+    <string name="forecast_details_wind_direction_ne">NE</string>
+    <string name="forecast_details_wind_direction_e">E</string>
+    <string name="forecast_details_wind_direction_se">SE</string>
+    <string name="forecast_details_wind_direction_s">S</string>
+    <string name="forecast_details_wind_direction_sw">SW</string>
+    <string name="forecast_details_wind_direction_w">W</string>
+    <string name="forecast_details_wind_direction_nw">NW</string>
+
 </resources>

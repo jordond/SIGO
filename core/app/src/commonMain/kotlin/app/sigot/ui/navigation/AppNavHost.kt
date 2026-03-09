@@ -31,6 +31,7 @@ internal fun AppNavHost(
         )
 
         forecastNavigation(
+            navController = navController,
             toPreferences = { navController.navigate(PreferencesBottomSheet) },
             toSettings = { navController.navigate(SettingsRoute) },
         )

@@ -7,4 +7,5 @@ import org.koin.dsl.module
 public fun forecastUiModule(): Module =
     module {
         viewModelOf(::ForecastHomeModel)
+        viewModelOf(::ForecastDetailsModel)
     }

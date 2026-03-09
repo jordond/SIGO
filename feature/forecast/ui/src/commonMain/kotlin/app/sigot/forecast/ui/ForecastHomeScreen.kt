@@ -81,7 +81,7 @@ internal fun ForecastHomeScreen(
             when (action) {
                 is ForecastHomeAction.Refresh -> model.fetch()
                 is ForecastHomeAction.ChangePeriod -> model.updatePeriod(action.period)
-                is ForecastHomeAction.ToViewDetails -> model.fetch()
+                is ForecastHomeAction.ToViewDetails -> toViewDetails()
                 is ForecastHomeAction.ToPreferences -> toPreferences()
                 is ForecastHomeAction.ToSettings -> toSettings()
             }
