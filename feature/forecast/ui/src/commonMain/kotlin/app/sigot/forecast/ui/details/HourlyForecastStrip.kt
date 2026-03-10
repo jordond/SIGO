@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,15 +25,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.sigot.core.model.forecast.ForecastBlock
 import app.sigot.core.model.units.Units
+import app.sigot.core.resources.Res
+import app.sigot.core.resources.forecast_period_now
 import app.sigot.core.ui.AppTheme
-import app.sigot.core.ui.BrutalColors
 import app.sigot.core.ui.brutal
 import app.sigot.core.ui.components.Icon
 import app.sigot.core.ui.components.Text
+import app.sigot.core.ui.components.autoSize
 import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.components.card.ElevatedCard
 import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.Droplet
+import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.ktx.text
 import app.sigot.core.ui.mappers.units.rememberUnit
 import app.sigot.core.ui.preview.AppPreview
@@ -45,31 +50,50 @@ import kotlin.time.Duration.Companion.hours
 
 @Composable
 internal fun HourlyForecastStrip(
+    now: ForecastBlock,
     hours: PersistentList<ForecastBlock>,
-    selected: ForecastBlock,
+    selected: ForecastBlock?,
     units: Units,
-    onHourSelected: (ForecastBlock) -> Unit,
+    onHourSelected: (ForecastBlock?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val tempUnit = units.temperature.rememberUnit()
 
+    val initialFirst = remember {
+        hours.indexOfFirst { it == (selected ?: now) }.takeIf { it != -1 } ?: 0
+    }
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialFirst)
+
+    LaunchedEffect(selected) {
+        if (selected != null) {
+            hours.indexOf(selected).takeIf { it != -1 }?.let { index ->
+                listState.animateScrollToItem(index)
+            }
+        }
+    }
+
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(AppTheme.spacing.small),
+        contentPadding = PaddingValues(horizontal = AppTheme.spacing.standard),
+        state = listState,
         modifier = modifier.fillMaxWidth(),
     ) {
+        item {
+            HourCard(
+                block = now,
+                tempUnit = tempUnit,
+                isSelected = now == selected || selected == null,
+                isNow = true,
+                onClick = { onHourSelected(null) },
+            )
+        }
+
         items(hours, key = { it.instant.toString() }) { hour ->
             val isSelected = selected == hour
-            val colors = if (isSelected) {
-                AppTheme.colors.brutal.yellow
-            } else {
-                AppTheme.colors.brutal.blue
-            }
 
             HourCard(
                 block = hour,
                 tempUnit = tempUnit,
-                colors = colors,
                 isSelected = isSelected,
                 onClick = { onHourSelected(hour) },
             )
@@ -81,22 +105,28 @@ internal fun HourlyForecastStrip(
 internal fun HourCard(
     block: ForecastBlock,
     tempUnit: String,
-    colors: BrutalColors,
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isNow: Boolean = false,
 ) {
     val localTime = remember(block.instant) {
         LocalTime(hour = block.instant.toLocalDateTime(TimeZone.currentSystemDefault()).hour, minute = 0)
     }
-    val hour = localTime.text()
+    val text = if (isNow) Res.string.forecast_period_now.get() else localTime.text()
+
+    val colors = if (isSelected) {
+        AppTheme.colors.brutal.yellow
+    } else {
+        AppTheme.colors.brutal.blue
+    }
 
     ElevatedCard(
         onClick = onClick,
         colors = CardDefaults.elevatedCardColors(
             containerColor = if (isSelected) colors.bright else AppTheme.colors.surface,
         ),
-        modifier = modifier.width(80.dp),
+        modifier = modifier.width(100.dp),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -105,9 +135,10 @@ internal fun HourCard(
                 .padding(vertical = 12.dp, horizontal = 4.dp),
         ) {
             Text(
-                text = hour,
-                style = AppTheme.typography.h4,
+                text = text,
+                style = AppTheme.typography.body1,
                 maxLines = 1,
+                autoSize = AppTheme.typography.body1.autoSize(),
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -119,21 +150,19 @@ internal fun HourCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            if (block.precipitation.probability > 0) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                ) {
-                    Icon(
-                        icon = AppIcons.Lucide.Droplet,
-                        contentDescription = null,
-                        modifier = Modifier.size(12.dp),
-                    )
-                    Text(
-                        text = block.precipitation.probability.formatPercent(),
-                        style = AppTheme.typography.body1.copy(fontSize = 11.sp),
-                    )
-                }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                Icon(
+                    icon = AppIcons.Lucide.Droplet,
+                    contentDescription = null,
+                    modifier = Modifier.size(12.dp),
+                )
+                Text(
+                    text = block.precipitation.probability.formatPercent(),
+                    style = AppTheme.typography.body1.copy(fontSize = 11.sp),
+                )
             }
         }
     }
@@ -147,6 +176,7 @@ private fun HourlyForecastStripPreview() {
         .now()
     AppPreview {
         HourlyForecastStrip(
+            now = ForecastPreviewData.sunny(now),
             hours = persistentListOf(
                 ForecastPreviewData.sunny(now.plus(1.hours)),
                 ForecastPreviewData.rainy(now.plus(2.hours)),
@@ -170,7 +200,6 @@ private fun HourCardSelectedPreview() {
         HourCard(
             block = ForecastPreviewData.rainy(),
             tempUnit = "°C",
-            colors = AppTheme.colors.brutal.yellow,
             isSelected = true,
             onClick = {},
         )
@@ -185,7 +214,6 @@ private fun HourCardUnselectedPreview() {
         HourCard(
             block = ForecastPreviewData.sunny(),
             tempUnit = "°C",
-            colors = AppTheme.colors.brutal.blue,
             isSelected = false,
             onClick = {},
         )

@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import app.sigot.core.model.forecast.ForecastBlock
 import app.sigot.core.model.forecast.ForecastDay
 import app.sigot.core.model.location.Location
+import app.sigot.core.model.score.ScoreResult
 import app.sigot.core.model.units.Units
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.something_went_wrong
@@ -53,7 +54,8 @@ internal fun ForecastDetailsScreen(
             location = forecast.location,
             current = forecast.current,
             today = forecast.today,
-            selected = state.selected ?: forecast.current,
+            selected = state.selected,
+            scoreResult = state.scoreResult,
             units = state.preferences.units,
             onHourSelected = model::selectHour,
             onBack = onBack,
@@ -66,9 +68,10 @@ internal fun ForecastDetailsScreen(
     location: Location,
     current: ForecastBlock,
     today: ForecastDay,
-    selected: ForecastBlock,
+    selected: ForecastBlock?,
+    scoreResult: ScoreResult?,
     units: Units,
-    onHourSelected: (ForecastBlock) -> Unit,
+    onHourSelected: (ForecastBlock?) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -85,15 +88,16 @@ internal fun ForecastDetailsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(innerPadding)
-                .padding(horizontal = AppTheme.spacing.standard),
+                .padding(innerPadding),
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
             CurrentConditionsHero(
                 block = current,
                 today = today.block,
+                scoreResult = scoreResult,
                 units = units,
+                modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -102,6 +106,7 @@ internal fun ForecastDetailsScreen(
                 today.hours.toPersistentList()
             }
             HourlyForecastStrip(
+                now = current,
                 hours = hours,
                 selected = selected,
                 units = units,
@@ -110,14 +115,11 @@ internal fun ForecastDetailsScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            selected?.let { block ->
-                WeatherDetailsGrid(
-                    block = block,
-                    units = units,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
+            WeatherDetailsGrid(
+                block = selected ?: current,
+                units = units,
+                modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
+            )
         }
     }
 }
@@ -134,6 +136,7 @@ private fun ForecastDetailsScreenPreview() {
             current = sunny,
             today = ForecastPreviewData.createSunnyForecast().today,
             selected = sunny,
+            scoreResult = ScoreResult.Yes,
             units = Units.Metric,
             onHourSelected = {},
             onBack = {},
