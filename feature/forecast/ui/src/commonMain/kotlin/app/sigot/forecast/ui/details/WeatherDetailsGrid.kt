@@ -70,6 +70,7 @@ internal fun WeatherDetailsGrid(
         FlowRow(
             verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.standard),
             horizontalArrangement = Arrangement.spacedBy(AppTheme.spacing.standard),
+            maxItemsInEachRow = 2,
             modifier = Modifier.fillMaxWidth(),
         ) {
             val precipType = block.precipitation.defaultType()
@@ -93,7 +94,8 @@ internal fun WeatherDetailsGrid(
 
             WeatherDetailTile(
                 title = Res.string.forecast_details_uv_index.get(),
-                value = Res.string.forecast_details_uv.get(block.uvIndex, uvIndexLabel(block.uvIndex)),
+                value = Res.string.forecast_details_uv.get(block.uvIndex),
+                subtitle = uvIndexLabel(block.uvIndex),
                 icon = AppIcons.Lucide.Sun,
                 colors = AppTheme.colors.brutal.yellow,
                 modifier = Modifier.weight(1f),
@@ -122,6 +124,7 @@ internal fun WeatherDetailsGrid(
                 colors = AppTheme.colors.brutal.purple,
                 modifier = Modifier.weight(1f),
             )
+
             WeatherDetailTile(
                 title = Res.string.forecast_details_cloud_cover.get(),
                 value = block.cloudCoverPercent.formatPercent(),
@@ -129,6 +132,9 @@ internal fun WeatherDetailsGrid(
                 colors = AppTheme.colors.brutal.blue,
                 modifier = Modifier.weight(1f),
             )
+
+            // Odd number of tiles
+            Spacer(Modifier.weight(1f))
         }
     }
 }
