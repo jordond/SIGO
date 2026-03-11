@@ -15,7 +15,7 @@
   ],
   "env": {
     "staging": {
-      "name": "api-staging",
+      "name": "sigo-api-staging",
       "routes": [
         {
           "pattern": "staging.api.shouldigooutside.now",
@@ -25,7 +25,7 @@
       ]
     },
     "dev": {
-      "name": "api-dev",
+      "name": "sigo-api-dev",
       "routes": [
         {
           "pattern": "dev.api.shouldigooutside.now",

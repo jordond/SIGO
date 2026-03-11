@@ -46,11 +46,12 @@ public fun platformModule(): Module =
         single<Json> { defaultJson }
 
         single {
+            val json = get<Json>()
             HttpClient {
                 expectSuccess = true
 
                 install(ContentNegotiation) {
-                    json(get<Json>())
+                    json(json)
                 }
 
                 install(Logging) {
