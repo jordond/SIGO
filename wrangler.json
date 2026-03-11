@@ -1,6 +1,6 @@
 {
   "$schema": "apps/api/worker/node_modules/wrangler/config-schema.json",
-  "name": "sigot-api-worker",
+  "name": "sigo-api-worker",
   "main": "apps/api/worker/index.mjs",
   "compatibility_date": "2026-02-25",
   "observability": {
@@ -8,9 +8,9 @@
   },
   "routes": [
     {
-      "pattern": "api.sigot.app",
+      "pattern": "api.shouldigooutside.now",
       "custom_domain": true,
-      "zone_name": "sigot.app"
+      "zone_name": "shouldigooutside.now"
     },
   ],
   "env": {
@@ -18,9 +18,9 @@
       "name": "api-staging",
       "routes": [
         {
-          "pattern": "staging.api.sigot.app",
+          "pattern": "staging.api.shouldigooutside.now",
           "custom_domain": true,
-          "zone_name": "sigot.app"
+          "zone_name": "shouldigooutside.now"
         }
       ]
     },
@@ -28,9 +28,9 @@
       "name": "api-dev",
       "routes": [
         {
-          "pattern": "dev.api.sigot.app",
+          "pattern": "dev.api.shouldigooutside.now",
           "custom_domain": true,
-          "zone_name": "sigot.app"
+          "zone_name": "shouldigooutside.now"
         }
       ]
     }
