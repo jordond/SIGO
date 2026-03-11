@@ -270,6 +270,8 @@
     <string name="settings_internal_backend_direct_api_token">API Token</string>
     <string name="settings_internal_backend_direct_api_token_placeholder">Enter your API key</string>
     <string name="settings_internal_reset">Reset internal settings</string>
+    <string name="settings_internal_clear_forecast_cache">Clear Forecast Cache</string>
+    <string name="settings_internal_clear_forecast_cache_desc">Delete any cached forecast data</string>
 
     <string name="forecast_details_title">Details</string>
     <string name="forecast_details_temperature_value">%1$d%2$s</string>

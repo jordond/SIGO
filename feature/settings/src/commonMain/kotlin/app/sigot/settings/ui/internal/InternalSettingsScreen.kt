@@ -35,6 +35,8 @@ import app.sigot.core.resources.settings_internal_backend_direct_api_desc
 import app.sigot.core.resources.settings_internal_backend_direct_api_token_placeholder
 import app.sigot.core.resources.settings_internal_backend_simulate_failure
 import app.sigot.core.resources.settings_internal_backend_simulate_failure_desc
+import app.sigot.core.resources.settings_internal_clear_forecast_cache
+import app.sigot.core.resources.settings_internal_clear_forecast_cache_desc
 import app.sigot.core.resources.settings_internal_reset
 import app.sigot.core.resources.settings_internal_title
 import app.sigot.core.ui.AppTheme
@@ -52,6 +54,7 @@ import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.Check
 import app.sigot.core.ui.icons.lucide.Link
 import app.sigot.core.ui.icons.lucide.Server
+import app.sigot.core.ui.icons.lucide.Trash
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.settings.ui.components.SettingsCard
@@ -71,6 +74,7 @@ internal fun InternalSettingsScreen(
         settings = state.settings.internalSettings,
         update = model::update,
         onBack = onBack,
+        onClearCache = model::clearCache,
     )
 }
 
@@ -80,6 +84,7 @@ internal fun InternalSettingsScreen(
     modifier: Modifier = Modifier,
     update: (InternalSettings) -> Unit,
     onBack: () -> Unit = {},
+    onClearCache: () -> Unit = {},
 ) {
     var backendApiUrl by remember(settings.backendApiUrl) { mutableStateOf(settings.backendApiUrl) }
     val backendApiUrlChanged = remember(backendApiUrl, settings.backendApiUrl) {
@@ -131,6 +136,15 @@ internal fun InternalSettingsScreen(
                                 },
                             )
                         },
+                    )
+                }
+
+                Item {
+                    SettingsTextRow(
+                        text = Res.string.settings_internal_clear_forecast_cache,
+                        description = Res.string.settings_internal_clear_forecast_cache_desc,
+                        icon = AppIcons.Lucide.Trash,
+                        onClick = onClearCache,
                     )
                 }
 
