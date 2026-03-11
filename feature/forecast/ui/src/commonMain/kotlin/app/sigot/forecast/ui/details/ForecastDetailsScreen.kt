@@ -15,11 +15,8 @@ import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.sigot.core.model.ForecastData
 import app.sigot.core.model.forecast.ForecastBlock
-import app.sigot.core.model.forecast.ForecastDay
-import app.sigot.core.model.location.Location
-import app.sigot.core.model.score.ScoreResult
-import app.sigot.core.model.units.Units
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.something_went_wrong
 import app.sigot.core.ui.AppTheme
@@ -28,10 +25,10 @@ import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.card.Card
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.ForecastPreviewData
+import app.sigot.core.ui.preview.PreviewData.location
 import dev.stateholder.extensions.collectAsState
 import kotlinx.collections.immutable.toPersistentList
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.time.Clock
 
 @Composable
 internal fun ForecastDetailsScreen(
@@ -39,9 +36,9 @@ internal fun ForecastDetailsScreen(
     model: ForecastDetailsModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
-    val forecast = state.forecast
+    val data = state.data
 
-    if (forecast == null) {
+    if (data == null) {
         Card {
             Column(
                 modifier = Modifier.padding(AppTheme.spacing.standard),
@@ -51,12 +48,8 @@ internal fun ForecastDetailsScreen(
         }
     } else {
         ForecastDetailsScreen(
-            location = forecast.location,
-            current = forecast.current,
-            today = forecast.today,
+            data = data,
             selected = state.selected,
-            scoreResult = state.scoreResult,
-            units = state.preferences.units,
             onHourSelected = model::selectHour,
             onBack = onBack,
         )
@@ -65,12 +58,8 @@ internal fun ForecastDetailsScreen(
 
 @Composable
 internal fun ForecastDetailsScreen(
-    location: Location,
-    current: ForecastBlock,
-    today: ForecastDay,
+    data: ForecastData,
     selected: ForecastBlock?,
-    scoreResult: ScoreResult?,
-    units: Units,
     onHourSelected: (ForecastBlock?) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -92,32 +81,33 @@ internal fun ForecastDetailsScreen(
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            CurrentConditionsHero(
-                block = current,
-                today = today.block,
-                scoreResult = scoreResult,
-                units = units,
+            SelectedConditionsHero(
+                block = selected ?: data.forecast.current,
+                today = data.forecast.today.block,
+                scoreResult = data.score.current.result,
+                units = data.forecast.units,
                 modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            val hours = remember(today.hours) {
-                today.hours.toPersistentList()
+            val hours = remember(data.forecast.today.hours) {
+                data.forecast.today.hours
+                    .toPersistentList()
             }
             HourlyForecastStrip(
-                now = current,
+                now = data.forecast.current,
                 hours = hours,
                 selected = selected,
-                units = units,
+                units = data.forecast.units,
                 onHourSelected = onHourSelected,
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             WeatherDetailsGrid(
-                block = selected ?: current,
-                units = units,
+                block = selected ?: data.forecast.current,
+                units = data.forecast.units,
                 modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
             )
         }
@@ -128,16 +118,11 @@ internal fun ForecastDetailsScreen(
 @Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
 private fun ForecastDetailsScreenPreview() {
-    val now = Clock.System.now()
-    val sunny = ForecastPreviewData.sunny(now)
+    val data = ForecastPreviewData.forecastData(ForecastPreviewData.createSunnyForecast())
     AppPreview {
         ForecastDetailsScreen(
-            location = Location(43.6532, -79.3832, "London, ON"),
-            current = sunny,
-            today = ForecastPreviewData.createSunnyForecast().today,
-            selected = sunny,
-            scoreResult = ScoreResult.Yes,
-            units = Units.Metric,
+            data = data,
+            selected = data.forecast.current,
             onHourSelected = {},
             onBack = {},
         )

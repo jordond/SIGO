@@ -32,7 +32,7 @@ import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.ForecastPreviewData
 
 @Composable
-internal fun CurrentConditionsHero(
+internal fun SelectedConditionsHero(
     block: ForecastBlock,
     today: ForecastBlock,
     scoreResult: ScoreResult?,
@@ -104,11 +104,11 @@ private class ScoreResultPreviewParameterProvider : PreviewParameterProvider<Sco
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
-private fun CurrentConditionsHeroPreview(
+private fun SelectedConditionsHeroPreview(
     @PreviewParameter(ScoreResultPreviewParameterProvider::class) scoreResult: ScoreResult,
 ) {
     AppPreview {
-        CurrentConditionsHero(
+        SelectedConditionsHero(
             block = ForecastPreviewData.sunny(),
             today = ForecastPreviewData.sunny(),
             scoreResult = scoreResult,

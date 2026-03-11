@@ -2,14 +2,12 @@ package app.sigot.forecast.ui
 
 import androidx.lifecycle.viewModelScope
 import app.sigot.core.domain.forecast.ForecastStateHolder
-import app.sigot.core.domain.forecast.ScoreCalculator
-import app.sigot.core.domain.forecast.convert
 import app.sigot.core.domain.location.LocationRepo
 import app.sigot.core.domain.settings.SettingsRepo
 import app.sigot.core.model.AsyncResult
 import app.sigot.core.model.ForecastData
 import app.sigot.core.model.ForecastPeriodData
-import app.sigot.core.model.forecast.Forecast
+import app.sigot.core.model.errorOrNull
 import app.sigot.core.model.forecast.ForecastPeriod
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
@@ -24,9 +22,11 @@ import app.sigot.core.resources.location_geolocation_error
 import app.sigot.core.resources.location_geolocation_not_allowed
 import app.sigot.core.resources.location_geolocation_not_found
 import app.sigot.core.resources.location_geolocation_not_supported
+import app.sigot.forecast.ui.ForecastHomeModel.Event
+import app.sigot.forecast.ui.ForecastHomeModel.State
 import co.touchlab.kermit.Logger
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
-import kotlinx.coroutines.delay
+import dev.stateholder.provider.composedStateProvider
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -36,56 +36,24 @@ internal class ForecastHomeModel(
     settingsRepo: SettingsRepo,
     locationRepo: LocationRepo,
     private val forecastStateHolder: ForecastStateHolder,
-    private val scoreCalculator: ScoreCalculator,
-) : UiStateViewModel<ForecastHomeModel.State, ForecastHomeModel.Event>(
-        State(
-            location = settingsRepo.settings.value.lastLocation,
-            preferences = settingsRepo.settings.value.preferences,
-            permissionStatus = if (locationRepo.hasPermission()) Granted else Unknown,
-            status = forecastStateHolder.state.value,
+) : UiStateViewModel<State, Event>(
+        state(
+            settingsRepo = settingsRepo,
+            locationRepo = locationRepo,
+            forecastStateHolder = forecastStateHolder,
         ),
     ) {
     private val logger = Logger.withTag("ForecastHomeModel")
 
     init {
-        settingsRepo.settings
-            .map { it.lastLocation to it.preferences }
-            .distinctUntilChanged()
-            .mergeState { state, (lastLocation, preferences) ->
-                val data = state.forecast?.copy(
-                    forecast = state.forecast.forecast.convert(preferences.units),
-                    score = scoreCalculator.calculate(state.forecast.forecast, preferences),
-                )
-
-                state.copy(location = lastLocation, preferences = preferences, forecast = data)
-            }
+        forecastStateHolder.start()
 
         viewModelScope.launch {
-            updateState { it.copy(status = AsyncResult.Loading) }
-
-            forecastStateHolder.state.collect { status ->
-                when (status) {
-                    is AsyncResult.Error -> status.error.handleForecastError()
-                    is AsyncResult.Success -> {
-                        val score = scoreCalculator.calculate(status.data, state.value.preferences)
-                        val isFirstLoad = state.value.forecast == null
-                        if (isFirstLoad) {
-                            logger.d { "Delaying first load for loading effect" }
-                            delay(3000)
-                        }
-
-                        updateState { state ->
-                            state.copy(status = status, forecast = ForecastData(status.data, score))
-                        }
-                    }
-                    else -> {
-                        updateState { it.copy(status = status) }
-                    }
-                }
-            }
+            state
+                .map { it.status.errorOrNull() }
+                .distinctUntilChanged()
+                .collect { error -> error.handleForecastError() }
         }
-
-        forecastStateHolder.start()
     }
 
     fun updatePeriod(period: ForecastPeriod) {
@@ -124,7 +92,7 @@ internal class ForecastHomeModel(
     data class State(
         val location: Location?,
         val preferences: Preferences,
-        val status: AsyncResult<Forecast>?,
+        val status: AsyncResult<ForecastData>,
         val period: ForecastPeriod = ForecastPeriod.Now,
         val permissionStatus: LocationPermissionStatus = Unknown,
         val forecast: ForecastData? = null,
@@ -138,5 +106,30 @@ internal class ForecastHomeModel(
         data class Error(
             val message: StringResource,
         ) : Event
+    }
+}
+
+private fun state(
+    settingsRepo: SettingsRepo,
+    locationRepo: LocationRepo,
+    forecastStateHolder: ForecastStateHolder,
+) = composedStateProvider(
+    initialState = State(
+        location = settingsRepo.settings.value.lastLocation,
+        preferences = settingsRepo.settings.value.preferences,
+        permissionStatus = if (locationRepo.hasPermission()) Granted else Unknown,
+        status = forecastStateHolder.state.value,
+    ),
+) {
+    settingsRepo.settings
+        .map { it.lastLocation to it.preferences }
+        .distinctUntilChanged()
+        .into { (lastLocation, preferences) -> copy(location = lastLocation, preferences = preferences) }
+
+    forecastStateHolder.state.into { status ->
+        when (status) {
+            is AsyncResult.Success -> copy(status = status, forecast = status.data)
+            else -> copy(status = status)
+        }
     }
 }

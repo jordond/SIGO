@@ -285,7 +285,7 @@
     <string name="forecast_details_visibility">Visibility</string>
     <string name="forecast_details_cloud_cover">Cloud Cover</string>
     <string name="forecast_details_precipitation">Precipitation</string>
-    <string name="forecast_details_precipitation_chance">%1$d%% chance - %2$s</string>
+    <string name="forecast_details_precipitation_chance">%1$d% chance - %2$s</string>
     <string name="forecast_details_now">Now</string>
     <string name="forecast_details_wind_direction_n">N</string>
     <string name="forecast_details_wind_direction_ne">NE</string>
