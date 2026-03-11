@@ -16,7 +16,6 @@ import app.sigot.core.model.location.Location
 import app.sigot.core.model.preferences.Preferences
 import app.sigot.core.model.score.ForecastScore
 import app.sigot.core.model.units.Units
-import app.sigot.core.model.units.kelvin
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -29,7 +28,7 @@ public object ForecastPreviewData {
             humidity = 20.0,
             cloudCoverPercent = 0,
             temperature = Temperature(
-                value = 20.0, // approx 28°C
+                value = 20.0,
                 feelsLike = 25.0,
                 max = 25.0,
                 min = 20.0,
@@ -57,7 +56,7 @@ public object ForecastPreviewData {
         sunny(instant).copy(
             cloudCoverPercent = 80,
             temperature = Temperature(
-                value = 15.0, // approx 15°C
+                value = 15.0,
                 feelsLike = 14.0,
                 max = 18.0,
                 min = 12.0,
@@ -75,7 +74,7 @@ public object ForecastPreviewData {
         sunny(instant).copy(
             cloudCoverPercent = 90,
             temperature = Temperature(
-                value = (-2.0), // approx -2°C
+                value = (-2.0),
                 feelsLike = (-5.0),
                 max = 0.0,
                 min = (-4.0),
@@ -102,7 +101,7 @@ public object ForecastPreviewData {
         sunny(instant).copy(
             temperature = Temperature(
                 // Cooler due to wind
-                value = 10.0, // approx 10°C
+                value = 10.0,
                 feelsLike = 7.0,
                 max = 12.0,
                 min = 8.0,
@@ -122,7 +121,7 @@ public object ForecastPreviewData {
         sunny(instant).copy(
             humidity = 60.0, // Higher humidity can make it feel hotter
             temperature = Temperature(
-                value = 35.0, // approx 35°C
+                value = 35.0,
                 feelsLike = 38.0, // Feels hotter due to humidity or other factors
                 max = 37.0,
                 min = 28.0,
@@ -135,7 +134,7 @@ public object ForecastPreviewData {
             humidity = 30.0,
             cloudCoverPercent = 10, // Can be cold and clear
             temperature = Temperature(
-                value = (-10.0), // approx -10°C
+                value = (-10.0),
                 feelsLike = (-15.0), // Wind chill can make it feel colder
                 max = (-8.0),
                 min = (-12.0),
@@ -159,10 +158,10 @@ public object ForecastPreviewData {
     ): ForecastBlock =
         rainy(instant).copy(
             temperature = Temperature(
-                value = 25.kelvin, // approx 25°C
-                feelsLike = 27.kelvin,
-                max = 28.kelvin,
-                min = 22.kelvin,
+                value = 25.0,
+                feelsLike = 27.0,
+                max = 28.0,
+                min = 22.0,
             ),
             precipitation = Precipitation(
                 amount = 15.0, // Heavier rain
