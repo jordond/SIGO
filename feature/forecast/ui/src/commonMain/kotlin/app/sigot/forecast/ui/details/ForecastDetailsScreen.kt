@@ -97,9 +97,7 @@ internal fun ForecastDetailsScreen(
             }
             HourlyForecastStrip(
                 now = data.forecast.current,
-                tomorrow = data.forecast.days
-                    .getOrNull(0)
-                    ?.block,
+                tomorrow = data.forecast.tomorrow?.block,
                 hours = hours,
                 selected = selected,
                 units = data.forecast.units,
