@@ -50,7 +50,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun ForecastHomeScreen(
-    toViewDetails: () -> Unit,
+    toViewDetails: (period: ForecastPeriod) -> Unit,
     toPreferences: () -> Unit,
     toSettings: () -> Unit,
     model: ForecastHomeModel = koinViewModel(),
@@ -81,7 +81,7 @@ internal fun ForecastHomeScreen(
             when (action) {
                 is ForecastHomeAction.Refresh -> model.fetch()
                 is ForecastHomeAction.ChangePeriod -> model.updatePeriod(action.period)
-                is ForecastHomeAction.ToViewDetails -> toViewDetails()
+                is ForecastHomeAction.ToViewDetails -> toViewDetails(state.period)
                 is ForecastHomeAction.ToPreferences -> toPreferences()
                 is ForecastHomeAction.ToSettings -> toSettings()
             }

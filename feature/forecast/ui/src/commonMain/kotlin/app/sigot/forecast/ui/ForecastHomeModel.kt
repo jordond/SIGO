@@ -1,5 +1,6 @@
 package app.sigot.forecast.ui
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
 import app.sigot.core.domain.forecast.ForecastStateHolder
 import app.sigot.core.domain.location.LocationRepo
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 
+@Stable
 internal class ForecastHomeModel(
     settingsRepo: SettingsRepo,
     locationRepo: LocationRepo,

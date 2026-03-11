@@ -27,6 +27,7 @@ import app.sigot.core.model.forecast.ForecastBlock
 import app.sigot.core.model.units.Units
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.forecast_period_now
+import app.sigot.core.resources.forecast_period_tomorrow
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.brutal
 import app.sigot.core.ui.components.Icon
@@ -37,24 +38,24 @@ import app.sigot.core.ui.components.card.ElevatedCard
 import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.Droplet
 import app.sigot.core.ui.ktx.get
-import app.sigot.core.ui.ktx.text
+import app.sigot.core.ui.ktx.scrollToBottom
+import app.sigot.core.ui.ktx.scrollToTop
 import app.sigot.core.ui.mappers.units.rememberUnit
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.ForecastPreviewData
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
 @Composable
 internal fun HourlyForecastStrip(
     now: ForecastBlock,
+    tomorrow: ForecastBlock?,
     hours: PersistentList<ForecastBlock>,
     selected: ForecastBlock?,
     units: Units,
-    onHourSelected: (ForecastBlock?) -> Unit,
+    onSelected: (ForecastBlock?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val tempUnit = units.temperature.rememberUnit()
@@ -65,9 +66,13 @@ internal fun HourlyForecastStrip(
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialFirst)
 
     LaunchedEffect(selected) {
-        if (selected != null) {
-            hours.indexOf(selected).takeIf { it != -1 }?.let { index ->
-                listState.animateScrollToItem(index)
+        when (selected) {
+            null, now -> listState.scrollToTop()
+            tomorrow -> listState.scrollToBottom()
+            else -> {
+                hours.indexOf(selected).takeIf { it != -1 }?.let { index ->
+                    listState.animateScrollToItem(index)
+                }
             }
         }
     }
@@ -80,11 +85,11 @@ internal fun HourlyForecastStrip(
     ) {
         item {
             HourCard(
+                text = Res.string.forecast_period_now.get(),
                 block = now,
                 tempUnit = tempUnit,
                 isSelected = now == selected || selected == null,
-                isNow = true,
-                onClick = { onHourSelected(null) },
+                onClick = { onSelected(null) },
             )
         }
 
@@ -95,8 +100,21 @@ internal fun HourlyForecastStrip(
                 block = hour,
                 tempUnit = tempUnit,
                 isSelected = isSelected,
-                onClick = { onHourSelected(hour) },
+                onClick = { onSelected(hour) },
             )
+        }
+
+        if (tomorrow != null) {
+            item {
+                HourCard(
+                    text = Res.string.forecast_period_tomorrow.get(),
+                    block = tomorrow,
+                    tempUnit = tempUnit,
+                    isSelected = tomorrow == selected,
+                    onClick = { onSelected(tomorrow) },
+                    modifier = modifier.animateItem(),
+                )
+            }
         }
     }
 }
@@ -108,12 +126,9 @@ internal fun HourCard(
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isNow: Boolean = false,
+    text: String? = null,
 ) {
-    val localTime = remember(block.instant) {
-        LocalTime(hour = block.instant.toLocalDateTime(TimeZone.currentSystemDefault()).hour, minute = 0)
-    }
-    val text = if (isNow) Res.string.forecast_period_now.get() else localTime.text()
+    val title = text ?: Res.string.forecast_period_now.get()
 
     val colors = if (isSelected) {
         AppTheme.colors.brutal.yellow
@@ -135,7 +150,7 @@ internal fun HourCard(
                 .padding(vertical = 12.dp, horizontal = 4.dp),
         ) {
             Text(
-                text = text,
+                text = title,
                 style = AppTheme.typography.body1,
                 maxLines = 1,
                 autoSize = AppTheme.typography.body1.autoSize(),
@@ -185,8 +200,9 @@ private fun HourlyForecastStripPreview() {
                 ForecastPreviewData.hot(now.plus(5.hours)),
             ),
             selected = ForecastPreviewData.sunny(now.plus(1.hours)),
+            tomorrow = ForecastPreviewData.sunny(now.plus(1.days)),
             units = Units.Metric,
-            onHourSelected = {},
+            onSelected = {},
             modifier = Modifier.padding(16.dp),
         )
     }

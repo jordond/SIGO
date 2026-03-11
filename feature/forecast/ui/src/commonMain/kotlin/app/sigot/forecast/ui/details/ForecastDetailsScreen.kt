@@ -50,7 +50,7 @@ internal fun ForecastDetailsScreen(
         ForecastDetailsScreen(
             data = data,
             selected = state.selected,
-            onHourSelected = model::selectHour,
+            onSelected = model::select,
             onBack = onBack,
         )
     }
@@ -60,7 +60,7 @@ internal fun ForecastDetailsScreen(
 internal fun ForecastDetailsScreen(
     data: ForecastData,
     selected: ForecastBlock?,
-    onHourSelected: (ForecastBlock?) -> Unit,
+    onSelected: (ForecastBlock?) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -97,10 +97,13 @@ internal fun ForecastDetailsScreen(
             }
             HourlyForecastStrip(
                 now = data.forecast.current,
+                tomorrow = data.forecast.days
+                    .getOrNull(0)
+                    ?.block,
                 hours = hours,
                 selected = selected,
                 units = data.forecast.units,
-                onHourSelected = onHourSelected,
+                onSelected = onSelected,
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -123,7 +126,7 @@ private fun ForecastDetailsScreenPreview() {
         ForecastDetailsScreen(
             data = data,
             selected = data.forecast.current,
-            onHourSelected = {},
+            onSelected = {},
             onBack = {},
         )
     }
