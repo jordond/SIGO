@@ -1,6 +1,7 @@
 package app.sigot.core.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import app.sigot.core.ui.components.SliderDefaults
 import app.sigot.core.ui.components.SwitchColors
@@ -9,6 +10,7 @@ import app.sigot.core.ui.components.card.CardColors
 import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.foundation.slider.SliderColors
 
+@Stable
 public data class BrutalColors(
     val bright: Color,
     val onBright: Color,

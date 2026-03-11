@@ -50,6 +50,12 @@ public fun <T, R> AsyncResult<T>.mapSuccess(transform: (T) -> R): AsyncResult<R>
 public fun <T, R> Flow<AsyncResult<T>>.mapSuccess(transform: (T) -> R): Flow<AsyncResult<R>> =
     this.map { result -> result.mapSuccess(transform) }
 
+public fun <T> AsyncResult<T>?.errorOrNull(): Throwable? =
+    when (this) {
+        is Error -> error
+        else -> null
+    }
+
 public fun <T> T.asAsyncResult(): AsyncResult<T> = Success(this)
 
 public fun <T> T?.asAsyncResultOrNull(): AsyncResult<T>? = this?.asAsyncResult()

@@ -1,5 +1,6 @@
 package app.sigot.core.ui.preview
 
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import app.sigot.core.domain.forecast.DefaultScoreCalculator
 import app.sigot.core.model.ForecastData
 import app.sigot.core.model.forecast.Alert
@@ -15,7 +16,6 @@ import app.sigot.core.model.location.Location
 import app.sigot.core.model.preferences.Preferences
 import app.sigot.core.model.score.ForecastScore
 import app.sigot.core.model.units.Units
-import app.sigot.core.model.units.kelvin
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -28,7 +28,7 @@ public object ForecastPreviewData {
             humidity = 20.0,
             cloudCoverPercent = 0,
             temperature = Temperature(
-                value = 20.0, // approx 28°C
+                value = 20.0,
                 feelsLike = 25.0,
                 max = 25.0,
                 min = 20.0,
@@ -56,10 +56,10 @@ public object ForecastPreviewData {
         sunny(instant).copy(
             cloudCoverPercent = 80,
             temperature = Temperature(
-                value = 15.kelvin, // approx 15°C
-                feelsLike = 14.kelvin,
-                max = 18.kelvin,
-                min = 12.kelvin,
+                value = 15.0,
+                feelsLike = 14.0,
+                max = 18.0,
+                min = 12.0,
             ),
             precipitation = Precipitation(
                 amount = 5.0, // 5 mm of rain
@@ -74,10 +74,10 @@ public object ForecastPreviewData {
         sunny(instant).copy(
             cloudCoverPercent = 90,
             temperature = Temperature(
-                value = (-2).kelvin, // approx -2°C
-                feelsLike = (-5).kelvin,
-                max = 0.kelvin,
-                min = (-4).kelvin,
+                value = (-2.0),
+                feelsLike = (-5.0),
+                max = 0.0,
+                min = (-4.0),
             ),
             precipitation = Precipitation(
                 amount = 10.0, // 10 mm of snow (water equivalent)
@@ -101,10 +101,10 @@ public object ForecastPreviewData {
         sunny(instant).copy(
             temperature = Temperature(
                 // Cooler due to wind
-                value = 10.kelvin, // approx 10°C
-                feelsLike = 7.kelvin,
-                max = 12.kelvin,
-                min = 8.kelvin,
+                value = 10.0,
+                feelsLike = 7.0,
+                max = 12.0,
+                min = 8.0,
             ),
             wind = Wind(
                 speed = 40.0, // km/h, significantly windy
@@ -121,10 +121,10 @@ public object ForecastPreviewData {
         sunny(instant).copy(
             humidity = 60.0, // Higher humidity can make it feel hotter
             temperature = Temperature(
-                value = 35.kelvin, // approx 35°C
-                feelsLike = 38.kelvin, // Feels hotter due to humidity or other factors
-                max = 37.kelvin,
-                min = 28.kelvin,
+                value = 35.0,
+                feelsLike = 38.0, // Feels hotter due to humidity or other factors
+                max = 37.0,
+                min = 28.0,
             ),
             uvIndex = 10, // High UV index
         )
@@ -134,10 +134,10 @@ public object ForecastPreviewData {
             humidity = 30.0,
             cloudCoverPercent = 10, // Can be cold and clear
             temperature = Temperature(
-                value = (-10).kelvin, // approx -10°C
-                feelsLike = (-15).kelvin, // Wind chill can make it feel colder
-                max = (-8).kelvin,
-                min = (-12).kelvin,
+                value = (-10.0),
+                feelsLike = (-15.0), // Wind chill can make it feel colder
+                max = (-8.0),
+                min = (-12.0),
             ),
             wind = Wind(
                 // Add some wind for wind chill effect
@@ -158,10 +158,10 @@ public object ForecastPreviewData {
     ): ForecastBlock =
         rainy(instant).copy(
             temperature = Temperature(
-                value = 25.kelvin, // approx 25°C
-                feelsLike = 27.kelvin,
-                max = 28.kelvin,
-                min = 22.kelvin,
+                value = 25.0,
+                feelsLike = 27.0,
+                max = 28.0,
+                min = 22.0,
             ),
             precipitation = Precipitation(
                 amount = 15.0, // Heavier rain
@@ -319,4 +319,8 @@ public object ForecastPreviewData {
             forecast = forecast,
             score = score(forecast, preferences),
         )
+
+    public class ForecastBlockPreviewParameterProvider : PreviewParameterProvider<ForecastBlock> {
+        override val values: Sequence<ForecastBlock> = sequenceOf(sunny(), rainy(), snowy(), hot(), cold())
+    }
 }

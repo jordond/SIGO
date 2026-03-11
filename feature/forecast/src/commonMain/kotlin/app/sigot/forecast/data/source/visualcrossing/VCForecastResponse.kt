@@ -239,7 +239,7 @@ private fun List<VCForecastBlock>?.toModels(): List<ForecastBlock> = this?.map {
 
 private fun VCForecastBlock.toModel(): ForecastBlock =
     ForecastBlock(
-        instant = Instant.fromEpochMilliseconds(datetimeEpoch),
+        instant = Instant.fromEpochSeconds(datetimeEpoch),
         humidity = humidity,
         cloudCoverPercent = cloudCover.toInt(),
         temperature = Temperature(
