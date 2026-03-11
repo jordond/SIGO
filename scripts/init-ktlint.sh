@@ -287,7 +287,7 @@ finish() {
     # Make sure script are executable
     chmod +x "$KTLINT_SCRIPT"
 
-    echo "If you haven't already you should run ./sigot init hooks"
+    echo "If you haven't already you should run ./sigo init hooks"
 }
 
 # DEBUG - Print all passed in flags

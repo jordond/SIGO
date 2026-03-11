@@ -9,7 +9,7 @@ KJS_BUILD_COMMAND="$ROOT/gradlew :apps:api:worker:compileProductionExecutableKot
 KJS_OUTPUT_FILE="$ROOT/apps/api/worker/build/compileSync/js/main/productionExecutable/kotlin/index.mjs"
 
 print_usage() {
-    echo "Usage: ./sigot api <command> [options]"
+    echo "Usage: ./sigo api <command> [options]"
     echo
     echo "Commands:"
     echo "  build [options]         Compile the Kotlin/JS code"

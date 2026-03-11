@@ -14,7 +14,7 @@ API_SCRIPT="$ROOT/scripts/api.sh"
 KJS_OUTPUT_FILE="$ROOT/apps/api/worker/build/compileSync/js/main/productionExecutable/kotlin/index.mjs"
 
 print_usage() {
-    echo "Usage: ./sigot api:worker <command> [options]"
+    echo "Usage: ./sigo api:worker <command> [options]"
     echo
     echo "Commands:"
     echo "  init                    Get the worker setup ready for dev or deploy"
@@ -44,7 +44,7 @@ check_prerequisites() {
     fi
 
     if ! $WRANGLER_COMMAND --version >/dev/null; then
-        echo "❌ Wrangler not found. Please run ./sigot init api:worker"
+        echo "❌ Wrangler not found. Please run ./sigo init api:worker"
         exit 1
     fi
 
@@ -98,12 +98,12 @@ check_prerequisites() {
                 fi
             else
                 echo "❌ $SECRET_FORECAST_API_KEY found but empty in $APP_ENV_PROPERTIES"
-                echo "Run './sigot init' to initialize the secrets first."
+                echo "Run './sigo init' to initialize the secrets first."
                 exit 1
             fi
         else
             echo "❌ $SECRET_FORECAST_API_KEY not found in $APP_ENV_PROPERTIES"
-            echo "Run './sigot init' to initialize the secrets first."
+            echo "Run './sigo init' to initialize the secrets first."
             exit 1
         fi
     fi
@@ -157,9 +157,9 @@ check_secrets_for_env() {
         echo "❌ FORECAST_API_KEY secret not found in Cloudflare for $env"
         echo "💡 Please run the following command to set it:"
         if [[ "$env" != "prod" ]]; then
-            echo "   ./sigot api:worker wrangler secret put FORECAST_API_KEY --env $env"
+            echo "   ./sigo api:worker wrangler secret put FORECAST_API_KEY --env $env"
         else
-            echo "   ./sigot api:worker wrangler secret put FORECAST_API_KEY"
+            echo "   ./sigo api:worker wrangler secret put FORECAST_API_KEY"
         fi
         exit 1
     fi
@@ -392,7 +392,7 @@ secret)
     # Check for WRANGLER_ARGS for a subcommand check|set
     if [[ ${#WRANGLER_ARGS[@]} -eq 0 ]]; then
         echo "❌ Error: Secret command requires 'check' or 'set' subcommand"
-        echo "Usage: ./sigot api:worker secret <check|set>"
+        echo "Usage: ./sigo api:worker secret <check|set>"
         exit 1
     fi
 
@@ -407,7 +407,7 @@ secret)
             echo "✅ $SECRET_FORECAST_API_KEY secret found in Cloudflare"
         else
             echo "❌ $SECRET_FORECAST_API_KEY secret not found in Cloudflare"
-            echo "💡 Run './sigot api:worker secret set' to add it"
+            echo "💡 Run './sigo api:worker secret set' to add it"
             exit 1
         fi
         ;;
@@ -417,7 +417,7 @@ secret)
         ;;
     *)
         echo "❌ Error: Unknown secret subcommand '$subcommand'"
-        echo "Usage: ./sigot api:worker secret <check|set>"
+        echo "Usage: ./sigo api:worker secret <check|set>"
         exit 1
         ;;
     esac
