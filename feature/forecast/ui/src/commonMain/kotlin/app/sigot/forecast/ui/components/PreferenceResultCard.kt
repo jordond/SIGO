@@ -3,15 +3,21 @@ package app.sigot.forecast.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -22,8 +28,11 @@ import app.sigot.core.ui.BrutalColors
 import app.sigot.core.ui.brutal
 import app.sigot.core.ui.cardColors
 import app.sigot.core.ui.components.HorizontalDivider
+import app.sigot.core.ui.components.Icon
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.card.Card
+import app.sigot.core.ui.icons.AppIcons
+import app.sigot.core.ui.icons.lucide.Droplet
 import app.sigot.core.ui.preview.AppPreview
 
 @Composable
@@ -33,27 +42,53 @@ internal fun PreferenceResultCard(
     colors: BrutalColors,
     value: @Composable () -> String,
     modifier: Modifier = Modifier,
-    height: Dp = 100.dp,
+    icon: ImageVector? = null,
+    height: Dp? = 100.dp,
 ) {
     Card(
         colors = colors.cardColors(),
-        modifier = modifier.height(height),
+        modifier = modifier
+            .widthIn(min = 150.dp)
+            .width(IntrinsicSize.Min)
+            .then(if (height != null) Modifier.height(height) else Modifier),
     ) {
         Column(
-            modifier = Modifier.widthIn(max = 150.dp).fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(
-                text = title,
-                maxLines = 1,
-                style = AppTheme.typography.h4,
-                textAlign = TextAlign.Center,
-                autoSize = TextAutoSize.StepBased(maxFontSize = AppTheme.typography.h4.fontSize),
-                modifier = Modifier
-                    .background(colors.bright)
-                    .padding(top = 4.dp, bottom = 2.dp)
-                    .padding(horizontal = 8.dp)
-                    .fillMaxWidth(),
-            )
+            if (icon != null) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .background(colors.bright)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .fillMaxWidth(),
+                ) {
+                    Icon(
+                        icon = icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = title,
+                        maxLines = 1,
+                        style = AppTheme.typography.h4,
+                    )
+                }
+            } else {
+                Text(
+                    text = title,
+                    maxLines = 1,
+                    style = AppTheme.typography.h4,
+                    textAlign = TextAlign.Center,
+                    autoSize = TextAutoSize.StepBased(maxFontSize = AppTheme.typography.h4.fontSize),
+                    modifier = Modifier
+                        .background(colors.bright)
+                        .padding(top = 4.dp, bottom = 2.dp)
+                        .padding(horizontal = 8.dp)
+                        .fillMaxWidth(),
+                )
+            }
 
             HorizontalDivider()
 
@@ -71,15 +106,18 @@ internal fun PreferenceResultCard(
                     modifier = Modifier.padding(horizontal = 8.dp),
                 )
 
-                HorizontalDivider()
+                val valueString = value()
+                if (valueString.isNotBlank()) {
+                    HorizontalDivider()
+                }
 
                 Text(
-                    text = value(),
+                    text = valueString,
                     maxLines = 1,
-                    autoSize = TextAutoSize.StepBased(maxFontSize = 18.sp),
-                    style = AppTheme.typography.body1.copy(fontSize = 18.sp),
+                    autoSize = TextAutoSize.StepBased(maxFontSize = 16.sp),
+                    style = AppTheme.typography.body1.copy(fontSize = 16.sp),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 2.dp),
+                    modifier = Modifier.padding(bottom = 2.dp, top = 1.dp),
                 )
             }
         }
@@ -95,6 +133,21 @@ private fun PreferenceResultCardPreview() {
             text = "Too Hot",
             colors = AppTheme.colors.brutal.orange,
             value = { "30°C" },
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreferenceResultCardWithIconPreview() {
+    AppPreview {
+        PreferenceResultCard(
+            title = "Wind",
+            text = "9km/h",
+            colors = AppTheme.colors.brutal.blue,
+            value = { "Gust 18 km/h" },
+            icon = AppIcons.Lucide.Droplet,
             modifier = Modifier.padding(16.dp),
         )
     }
