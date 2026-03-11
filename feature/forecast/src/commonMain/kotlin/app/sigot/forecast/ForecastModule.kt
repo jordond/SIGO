@@ -1,5 +1,6 @@
 package app.sigot.forecast
 
+import app.sigot.core.domain.forecast.ClearForecastUseCase
 import app.sigot.core.domain.forecast.DefaultScoreCalculator
 import app.sigot.core.domain.forecast.ForecastRepo
 import app.sigot.core.domain.forecast.ForecastStateHolder
@@ -18,6 +19,7 @@ import app.sigot.forecast.data.source.visualcrossing.DefaultVisualCrossingApi
 import app.sigot.forecast.data.source.visualcrossing.VisualCrossingApi
 import app.sigot.forecast.data.source.visualcrossing.VisualCrossingForecastSource
 import app.sigot.forecast.domain.AppConfigScoreCalculator
+import app.sigot.forecast.domain.DefaultClearForecastUseCase
 import app.sigot.forecast.domain.DefaultForecastStateHolder
 import app.sigot.forecast.domain.DefaultGetForecastUseCase
 import app.sigot.forecast.domain.DefaultGetScoreUseCast
@@ -35,6 +37,8 @@ private fun forecastBaseModule(): Module =
         factoryOf(::DefaultGetScoreUseCast) bind GetScoreUseCase::class
 
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
+
+        factoryOf(::DefaultClearForecastUseCase) bind ClearForecastUseCase::class
     }
 
 public fun Scope.directApiFortuneSource(): ForecastSource = VisualCrossingForecastSource(get(), get(), get())

@@ -9,6 +9,8 @@ import app.sigot.forecast.data.entity.toEntity
 import app.sigot.forecast.data.entity.toModel
 import app.sigot.forecast.data.source.ForecastCache
 import co.touchlab.kermit.Logger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
@@ -47,6 +49,8 @@ internal class StoreForecastCache(
     }
 
     override suspend fun clear() {
-        store.clear()
+        withContext(Dispatchers.Default) {
+            store.clear()
+        }
     }
 }
