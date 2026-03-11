@@ -43,10 +43,7 @@ internal class ForecastDetailsModel(
                         ForecastPeriod.NextHour3 ->
                             data.forecast.today.hours
                                 .getOrNull(2)
-                        ForecastPeriod.Tomorrow ->
-                            data.forecast.days
-                                .getOrNull(0)
-                                ?.block
+                        ForecastPeriod.Tomorrow -> data.forecast.tomorrow?.block
                     }
                 }
 

@@ -21,4 +21,6 @@ public data class Forecast(
     val alerts: List<Alert>,
     val units: Units = Units.SI,
     val instant: Instant,
-)
+) {
+    val tomorrow: ForecastDay? get() = days.getOrNull(0)
+}
