@@ -34,10 +34,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Initialize
-        run: ./sigot api:worker init
+        run: ./sigo api:worker init
 
       - name: Deploy to Cloudflare
-        run: ./sigot api:worker deploy --env staging
+        run: ./sigo api:worker deploy --env staging
         env:
           APP_BACKEND_URL: staging.${{ vars.APP_BACKEND_URL }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

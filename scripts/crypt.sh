@@ -26,7 +26,7 @@ GOOGLE_SERVICES_JSON_DECRYPT_PATH="$ROOT/apps/android"
 GOOGLE_SERVICES_PLIST_DECRYPT_PATH="$ROOT/apps/ios/iosApp"
 
 print_usage() {
-    echo "Usage: ./sigot crypt <command> [options] [file]"
+    echo "Usage: ./sigo crypt <command> [options] [file]"
     echo
     echo "Commands:"
     echo "  encrypt    Encrypt a file"
