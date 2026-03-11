@@ -12,6 +12,8 @@ import app.sigot.core.model.forecast.Temperature
 import app.sigot.core.model.forecast.Wind
 import app.sigot.core.model.location.Location
 import co.touchlab.kermit.Logger
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.math.roundToInt
@@ -197,11 +199,10 @@ internal fun VCForecastResponse.toModel(
     val todayBlock = days.firstOrNull()
         ?: error("There was no forecast for today!")
 
-    val currentTime = currentConditions.datetime // ex: 13:30:00
-
     // We want the next five hours from today, filter out all before and after
     val filteredHours = todayBlock.hours?.takeIf { it.isNotEmpty() }?.let { hours ->
-        val currentHour = currentTime.split(":").first().toInt()
+        val tz = TimeZone.of(timezone)
+        val currentHour = nowProvider.now().toLocalDateTime(tz).hour
 
         // Find the current hour's index and take the next 5 hours
         val startIndex = hours

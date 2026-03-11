@@ -7,9 +7,7 @@ public data class InternalSettings(
     val simulateFailure: Boolean = false,
     val backendApiUrl: String = DefaultBackendApiUrl,
     val apiKey: String? = BuildKonfig.FORECAST_API_KEY.takeIf { it.isNotBlank() },
-    // This is configured via app-env.properties
-    @Suppress("SimplifyBooleanWithConstants")
-    val useDirectApi: Boolean = BuildKonfig.USE_DIRECT_API || apiKey != null,
+    val useDirectApi: Boolean = BuildKonfig.USE_DIRECT_API,
 ) {
     public companion object {
         public const val DefaultBackendApiUrl: String = BuildKonfig.BACKEND_URL
