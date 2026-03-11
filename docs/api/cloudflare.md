@@ -75,10 +75,11 @@ If you want to deploy to staging or the dev environment you can pass `--env` lik
 
 # Deploy to dev
 ./sigot api:worker deploy --env dev
+
 ```
 
-Once that is successful the worker should be available at https://api.sigot.app (or
-dev/staging.api.sigot.app)
+Once that is successful the worker should be available at https://api.shouldigooutside.now (or
+dev/staging.api.shouldigooutside.now)
 
 ### Misc
 
