@@ -281,7 +281,7 @@
     <string name="forecast_details_value_with_unit">%1$s %2$s</string>
     <string name="forecast_details_humidity">Humidity</string>
     <string name="forecast_details_wind">Wind</string>
-    <string name="forecast_details_wind_gust">Gust %1$d %2$s %3$s</string>
+    <string name="forecast_details_wind_gust">Gust %1$d %2$s</string>
     <string name="forecast_details_uv_index">UV Index</string>
     <string name="forecast_details_pressure">Pressure</string>
     <string name="forecast_details_visibility">Visibility</string>

@@ -59,10 +59,8 @@ internal fun formatValueWithUnit(
 ): String = Res.string.forecast_details_value_with_unit.get(value.toString(), unit)
 
 @Composable
-internal fun Wind.formatGust(
-    unit: String,
-    direction: String,
-): String = Res.string.forecast_details_wind_gust.get(gust.roundToInt(), unit, direction)
+internal fun Wind.formatGust(unit: String): String =
+    Res.string.forecast_details_wind_gust.get(gust.roundToInt(), unit)
 
 @Composable
 internal fun Precipitation.formatChance(type: String): String =
