@@ -1,8 +1,5 @@
 ---
-import screenshotHome from "../assets/screenshot_home.png"
-// TODO: replace with actual iPhone screenshot
-const screenshotIos = screenshotHome
-const screenshotAndroid = screenshotHome
+import screenshotYes from "../assets/screenshot_yes.png"
 ---
 
 <section class="preview-section">
@@ -19,31 +16,15 @@ const screenshotAndroid = screenshotHome
       <div class="stage-blob stage-blob--yellow" aria-hidden="true"></div>
       <div class="stage-blob stage-blob--coral" aria-hidden="true"></div>
 
-      <!-- iPhone -->
-      <div class="phone-wrap phone-wrap--iphone reveal reveal-delay-1">
-        <div class="phone phone--iphone">
-          <!-- Dynamic Island overlay -->
-          <div class="dynamic-island" aria-hidden="true"></div>
-          <img
-            src={screenshotIos.src}
-            alt="Should I Go Outside app on iPhone showing a YES answer with sunny weather"
-            class="phone-screenshot"
-            width={screenshotIos.width}
-            height={screenshotIos.height}
-            loading="lazy"
-          />
-        </div>
-      </div>
-
       <!-- Android -->
       <div class="phone-wrap phone-wrap--android reveal reveal-delay-2">
         <div class="phone phone--android">
           <img
-            src={screenshotAndroid.src}
+            src={screenshotYes.src}
             alt="Should I Go Outside app on Android showing a YES answer with sunny weather"
             class="phone-screenshot"
-            width={screenshotAndroid.width}
-            height={screenshotAndroid.height}
+            width={screenshotYes.width}
+            height={screenshotYes.height}
             loading="lazy"
           />
         </div>
