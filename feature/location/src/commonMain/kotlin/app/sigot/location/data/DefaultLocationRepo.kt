@@ -45,8 +45,14 @@ internal class DefaultLocationRepo(
     }
 
     override suspend fun location(): LocationResult {
-        val (savedLocation, timestamp) =
-            settingsRepo.settings.value.run { lastLocation to lastLocationUpdate }
+        val settings = settingsRepo.settings.value
+        val customLocation = settings.customLocation
+        if (settings.useCustomLocation && customLocation != null) {
+            logger.d { "Using custom location: ${customLocation.name}" }
+            return Success(customLocation)
+        }
+
+        val (savedLocation, timestamp) = settings.run { lastLocation to lastLocationUpdate }
 
         if (savedLocation != null && timestamp != null) {
             val age = nowProvider.now() - timestamp
@@ -82,42 +88,53 @@ internal class DefaultLocationRepo(
 
         logger.d { "Location result: $result" }
 
-        if (result is Success && manager.isGeocoderSupported && manager.geocoder.isAvailable()) {
-            val place = withContext(Dispatchers.IO) {
-                manager.geocoder
-                    .reverse(result.location.coordinates())
-                    .onFailed { error -> logger.e { "Failed to reverse geocode location: $error" } }
-                    .getFirstOrNull()
+        if (result is LocationResult.Failed && savedLocation != null) {
+            when (result) {
+                is LocationResult.NotFound ->
+                    logger.w { "GPS not ready, falling back to stale cached location: ${savedLocation.name}" }
+                is LocationResult.Error ->
+                    logger.w { "GPS error, falling back to stale cached location: ${savedLocation.name}" }
+                else -> return result // NotAllowed / NotSupported should not fall back
             }
-
-            if (place != null && !place.isEmpty) {
-                logger.d { "Geocoding result: $place" }
-
-                val name = place.locality ?: place.subAdministrativeArea ?: place.firstValue
-                val updated = result.location.copy(name = name)
-                settingsRepo.update { state ->
-                    state.copy(
-                        lastLocation = updated,
-                        lastLocationUpdate = nowProvider.now(),
-                    )
-                }
-
-                return Success(updated)
-            } else {
-                logger.i { "No geocoding result found for location: ${result.location}" }
-            }
+            val enriched = enrichWithGeocoding(savedLocation)
+            return Success(enriched)
         }
 
         if (result is Success) {
+            val enriched = enrichWithGeocoding(result.location)
             settingsRepo.update { state ->
                 state.copy(
-                    lastLocation = result.location,
+                    lastLocation = enriched,
                     lastLocationUpdate = nowProvider.now(),
                 )
             }
+            return Success(enriched)
         }
 
         return result
+    }
+
+    private suspend fun enrichWithGeocoding(location: Location): Location {
+        if (!manager.isGeocoderSupported || !manager.geocoder.isAvailable()) return location
+
+        val place = withContext(Dispatchers.IO) {
+            manager.geocoder
+                .reverse(location.coordinates())
+                .onFailed { error -> logger.e { "Failed to reverse geocode location: $error" } }
+                .getFirstOrNull()
+        }
+
+        if (place == null || place.isEmpty) {
+            logger.i { "No geocoding result found for location: $location" }
+            return location
+        }
+
+        logger.d { "Geocoding result: $place" }
+        return location.copy(
+            name = place.locality ?: place.subAdministrativeArea ?: place.firstValue,
+            administrativeArea = place.administrativeArea,
+            country = place.country,
+        )
     }
 
     private suspend fun canGeolocate(): Boolean =

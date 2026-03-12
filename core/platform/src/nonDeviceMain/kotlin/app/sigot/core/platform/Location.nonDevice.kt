@@ -3,11 +3,21 @@ package app.sigot.core.platform
 import dev.jordond.compass.Coordinates
 import dev.jordond.compass.Place
 import dev.jordond.compass.Priority
+import dev.jordond.compass.autocomplete.Autocomplete
+import dev.jordond.compass.autocomplete.AutocompleteResult
 import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geocoder.GeocoderResult
 import dev.jordond.compass.geocoder.PlatformGeocoder
 import dev.jordond.compass.permissions.LocationPermissionController
 import dev.jordond.compass.permissions.PermissionState
+
+internal actual fun createAutocomplete(): Autocomplete<Place> =
+    object : Autocomplete<Place> {
+        override val options get() = error("Not supported on this platform")
+
+        override suspend fun search(query: String): AutocompleteResult<Place> =
+            AutocompleteResult.NotSupported
+    }
 
 internal actual val geocoderSupported: Boolean = false
 

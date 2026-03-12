@@ -25,6 +25,7 @@ kotlin {
             api(libs.kotlinx.coroutines.core)
             implementation(libs.kstore)
             api(libs.ktor.client.core)
+            implementation(libs.compass.autocomplete)
             implementation(libs.compass.geolocation)
             implementation(libs.compass.geocoder)
 
@@ -63,6 +64,7 @@ kotlin {
             iosMain.get().dependsOn(this)
             dependencies {
                 implementation(libs.connectivity.device)
+                implementation(libs.compass.autocomplete.mobile)
                 implementation(libs.compass.geocoder.mobile)
                 implementation(libs.compass.geolocation.mobile)
                 implementation(libs.compass.permissions.mobile)
