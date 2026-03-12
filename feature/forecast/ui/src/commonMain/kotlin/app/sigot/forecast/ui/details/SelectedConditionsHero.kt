@@ -23,13 +23,13 @@ import app.sigot.core.model.forecast.ForecastBlock
 import app.sigot.core.model.score.ScoreResult
 import app.sigot.core.model.units.Units
 import app.sigot.core.ui.AppTheme
-import app.sigot.core.ui.brutal
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.components.card.ElevatedCard
 import app.sigot.core.ui.mappers.units.rememberUnit
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.ForecastPreviewData
+import app.sigot.forecast.ui.components.mappers.color
 
 @Composable
 internal fun SelectedConditionsHero(
@@ -41,12 +41,7 @@ internal fun SelectedConditionsHero(
 ) {
     val tempUnit = units.temperature.rememberUnit()
 
-    val brutalColors = when (scoreResult) {
-        ScoreResult.Yes -> AppTheme.colors.brutal.green
-        ScoreResult.Maybe -> AppTheme.colors.brutal.yellow
-        ScoreResult.No -> AppTheme.colors.brutal.red
-        null -> null
-    }
+    val brutalColors = scoreResult?.color()
     val containerColor by animateColorAsState(
         targetValue = brutalColors?.container ?: AppTheme.colors.surface,
     )
