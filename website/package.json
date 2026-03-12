@@ -8,10 +8,10 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro build && wrangler dev",
+    "preview": "astro build && wrangler dev --config ./wrangler.jsonc",
     "astro": "astro",
-    "deploy:staging": "astro build && wrangler deploy --env staging",
-    "deploy": "astro build && wrangler deploy --env prod",
+    "deploy:staging": "astro build && wrangler deploy --env staging --config ./wrangler.jsonc",
+    "deploy": "astro build && wrangler deploy --env prod --config ./wrangler.jsonc",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "cf-typegen": "wrangler types"
