@@ -1,11 +1,66 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Hero from '../components/Hero.astro';
+import AppPreview from '../components/AppPreview.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import Footer from '../components/Footer.astro';
 ---
 
 <Layout>
-	<Welcome />
+	<main>
+		<Hero />
+		<AppPreview />
+		<HowItWorks />
+	</main>
+	<Footer />
 </Layout>
+
+<style>
+	:global(.reveal) {
+		opacity: 0;
+		transform: translateY(30px);
+		transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+					transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	:global(.reveal.visible) {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	:global(.reveal-delay-1) { transition-delay: 0.1s; }
+	:global(.reveal-delay-2) { transition-delay: 0.2s; }
+	:global(.reveal-delay-3) { transition-delay: 0.3s; }
+	:global(.reveal-delay-4) { transition-delay: 0.4s; }
+
+	@media (prefers-reduced-motion: reduce) {
+		:global(.reveal) {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const revealElements = document.querySelectorAll('.reveal');
+
+	if (revealElements.length > 0) {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('visible');
+						observer.unobserve(entry.target);
+					}
+				});
+			},
+			{
+				threshold: 0.15,
+				rootMargin: '0px 0px -50px 0px',
+			}
+		);
+
+		revealElements.forEach((el) => observer.observe(el));
+	}
+</script>

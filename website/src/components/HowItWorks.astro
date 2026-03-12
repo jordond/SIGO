@@ -1,0 +1,217 @@
+---
+const steps = [
+  {
+    number: "1",
+    badgeColor: "var(--color-primary)",
+    title: "Open the App",
+    desc: "That's literally the hardest part. We promise.",
+    rotate: "-1.5deg",
+  },
+  {
+    number: "2",
+    badgeColor: "var(--color-coral)",
+    title: "Get Your Answer",
+    desc: "YES, NO, or MAYBE — plus a snarky explanation of why.",
+    rotate: "1deg",
+  },
+  {
+    number: "3",
+    badgeColor: "var(--color-mint)",
+    title: "Go Live Your Life",
+    desc: "Close the app. You're done. See you tomorrow.",
+    rotate: "-0.8deg",
+  },
+];
+---
+
+<section class="how-it-works">
+  <div class="container">
+    <h2 class="section-title reveal">How It Works</h2>
+
+    <div class="steps-track">
+      <div class="connector" aria-hidden="true"></div>
+
+      <div class="steps-grid">
+        {steps.map((step, i) => (
+          <article
+            class={`step-card reveal reveal-delay-${i + 1}`}
+            style={`--card-rotate: ${step.rotate};`}
+          >
+            <div
+              class="badge"
+              style={`--badge-bg: ${step.badgeColor};`}
+              aria-label={`Step ${step.number}`}
+            >
+              {step.number}
+            </div>
+
+            <div class="step-body">
+              <h3 class="step-title">{step.title}</h3>
+              <p class="step-desc">{step.desc}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .how-it-works {
+    padding: 6rem 1.5rem 7rem;
+    background-color: var(--color-bg);
+  }
+
+  .container {
+    max-width: 1040px;
+    margin-inline: auto;
+  }
+
+  .section-title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+
+    /* Underline drawn as a solid block beneath the text */
+    display: block;
+    width: fit-content;
+    margin-inline: auto;
+    margin-bottom: 5rem;
+  }
+
+  .section-title::after {
+    content: "";
+    display: block;
+    height: 6px;
+    background-color: var(--color-text);
+    margin-top: 0.3rem;
+    border-radius: 2px;
+  }
+
+  .steps-track {
+    position: relative;
+  }
+
+  /*
+   * The dashed line sits at the vertical midpoint of the badges (30px = half
+   * of the 60px badge). We push it up from the top of the step-card: the card
+   * has 1.5rem top padding (24px) so the badge center sits at ~54px from the
+   * card top. We position relative to .steps-track.
+   */
+  .connector {
+    display: none; /* hidden on mobile */
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .step-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+
+    background-color: var(--color-surface);
+    border: var(--border-width) solid var(--color-outline);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--color-shadow);
+
+    padding: 2rem 1.5rem 2.25rem;
+
+    transform: rotate(var(--card-rotate, 0deg));
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    cursor: default;
+  }
+
+  .step-card:hover {
+    transform: rotate(0deg) translateY(-4px);
+    box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0 var(--color-shadow);
+  }
+
+  .badge {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: var(--border-width) solid var(--color-outline);
+    box-shadow: 3px 3px 0 0 var(--color-shadow);
+    background-color: var(--badge-bg, var(--color-primary));
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.625rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-text);
+
+    /* Slight counter-rotation so the number stays upright */
+    transform: rotate(calc(var(--card-rotate, 0deg) * -1));
+    transition: transform 0.18s ease;
+  }
+
+  .step-card:hover .badge {
+    transform: rotate(0deg) scale(1.08);
+    box-shadow: 4px 4px 0 0 var(--color-shadow);
+  }
+
+  .step-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .step-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: -0.01em;
+  }
+
+  .step-desc {
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+  @media (min-width: 720px) {
+    .steps-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /*
+     * Connector: absolutely positioned, spans the full width of the track.
+     * top value = card top padding (2rem = 32px) + half badge height (30px) = 62px
+     * Subtract border (3px) to sit cleanly at badge center-line = ~59px.
+     */
+    .connector {
+      display: block;
+      position: absolute;
+      top: 59px;
+      left: calc(50% / 3 + 30px);     /* start at center of first badge */
+      right: calc(50% / 3 + 30px);    /* end at center of last badge */
+      height: 0;
+      border-top: 3px dashed var(--color-outline);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.45;
+    }
+
+    /* Cards sit above the connector line */
+    .step-card {
+      position: relative;
+      z-index: 1;
+    }
+  }
+</style>
