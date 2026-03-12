@@ -2,6 +2,7 @@ package app.sigot.core.platform.di
 
 import app.sigot.core.platform.DefaultLocationManager
 import app.sigot.core.platform.LocationManager
+import app.sigot.core.platform.createAutocomplete
 import app.sigot.core.platform.createGeocoder
 import app.sigot.core.platform.createGeolocator
 import app.sigot.core.platform.isDebug
@@ -67,6 +68,7 @@ public fun platformModule(): Module =
 
         single<Connectivity> { getConnectivity() }
 
+        single { createAutocomplete() }
         single<Geocoder> { createGeocoder() }
         single<Geolocator> { createGeolocator() }
         single<LocationPermissionController> { locationPermissionController() }

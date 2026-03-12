@@ -35,6 +35,7 @@ import app.sigot.core.ui.preview.PreviewData
 import app.sigot.forecast.ui.ForecastHomeModel.Event
 import app.sigot.forecast.ui.components.Header
 import app.sigot.forecast.ui.components.LoadingBox
+import app.sigot.forecast.ui.components.LocationSearchSheet
 import app.sigot.forecast.ui.components.NoDataForPeriod
 import app.sigot.forecast.ui.components.mappers.rememberInstant
 import app.sigot.forecast.ui.section.ForecastScoreContent
@@ -46,6 +47,8 @@ import dev.stateholder.dispatcher.rememberRelay
 import dev.stateholder.dispatcher.rememberRelayOf
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -77,6 +80,10 @@ internal fun ForecastHomeScreen(
         refreshing = state.refreshing,
         permissionStatus = state.permissionStatus,
         snackbarHostState = snackbar.hostState,
+        showLocationSheet = state.showLocationSheet,
+        searchQuery = state.searchQuery,
+        searchResults = state.searchResults,
+        searching = state.searching,
         dispatcher = rememberDebounceDispatcher { action ->
             when (action) {
                 is ForecastHomeAction.Refresh -> model.fetch()
@@ -84,6 +91,11 @@ internal fun ForecastHomeScreen(
                 is ForecastHomeAction.ToViewDetails -> toViewDetails(state.period)
                 is ForecastHomeAction.ToPreferences -> toPreferences()
                 is ForecastHomeAction.ToSettings -> toSettings()
+                is ForecastHomeAction.OpenLocationSheet -> model.openLocationSheet()
+                is ForecastHomeAction.CloseLocationSheet -> model.closeLocationSheet()
+                is ForecastHomeAction.SearchLocation -> model.searchLocation(action.query)
+                is ForecastHomeAction.SelectLocation -> model.selectLocation(action.location)
+                is ForecastHomeAction.UseCurrentLocation -> model.useCurrentLocation()
             }
         },
     )
@@ -101,6 +113,10 @@ internal fun ForecastHomeScreen(
     refreshing: Boolean = false,
     permissionStatus: LocationPermissionStatus = LocationPermissionStatus.Unknown,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    showLocationSheet: Boolean = false,
+    searchQuery: String = "",
+    searchResults: PersistentList<Location> = persistentListOf(),
+    searching: Boolean = false,
 ) {
     val instant = data.rememberInstant()
 
@@ -143,6 +159,8 @@ internal fun ForecastHomeScreen(
                     data = data,
                     period = period,
                     changePeriod = dispatcher.rememberRelayOf(ForecastHomeAction::ChangePeriod),
+                    location = location,
+                    onLocationClick = dispatcher.rememberRelay(ForecastHomeAction.OpenLocationSheet),
                     instant = instant,
                     modifier = Modifier.padding(top = AppTheme.spacing.standard),
                 )
@@ -179,6 +197,17 @@ internal fun ForecastHomeScreen(
             }
         }
     }
+
+    LocationSearchSheet(
+        isVisible = showLocationSheet,
+        query = searchQuery,
+        results = searchResults,
+        searching = searching,
+        onQueryChange = dispatcher.rememberRelayOf(ForecastHomeAction::SearchLocation),
+        onSelectLocation = dispatcher.rememberRelayOf(ForecastHomeAction::SelectLocation),
+        onUseCurrentLocation = dispatcher.rememberRelay(ForecastHomeAction.UseCurrentLocation),
+        onDismiss = dispatcher.rememberRelay(ForecastHomeAction.CloseLocationSheet),
+    )
 }
 
 @Preview

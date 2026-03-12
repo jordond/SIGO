@@ -1,10 +1,13 @@
 package app.sigot.core.platform
 
+import dev.jordond.compass.Place
+import dev.jordond.compass.autocomplete.Autocomplete
 import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.permissions.LocationPermissionController
 
 public interface LocationManager {
+    public val autocomplete: Autocomplete<Place>
     public val geocoder: Geocoder
     public val geolocator: Geolocator
     public val permissions: LocationPermissionController
@@ -14,6 +17,7 @@ public interface LocationManager {
 }
 
 internal class DefaultLocationManager(
+    override val autocomplete: Autocomplete<Place>,
     override val geocoder: Geocoder,
     override val geolocator: Geolocator,
     override val permissions: LocationPermissionController,
@@ -25,6 +29,8 @@ internal class DefaultLocationManager(
 internal expect val geolocationSupported: Boolean
 
 internal expect val geocoderSupported: Boolean
+
+internal expect fun createAutocomplete(): Autocomplete<Place>
 
 internal expect fun createGeolocator(): Geolocator
 

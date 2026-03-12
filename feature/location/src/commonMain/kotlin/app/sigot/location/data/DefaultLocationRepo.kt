@@ -45,8 +45,14 @@ internal class DefaultLocationRepo(
     }
 
     override suspend fun location(): LocationResult {
-        val (savedLocation, timestamp) =
-            settingsRepo.settings.value.run { lastLocation to lastLocationUpdate }
+        val settings = settingsRepo.settings.value
+        val customLocation = settings.customLocation
+        if (settings.useCustomLocation && customLocation != null) {
+            logger.d { "Using custom location: ${customLocation.name}" }
+            return Success(customLocation)
+        }
+
+        val (savedLocation, timestamp) = settings.run { lastLocation to lastLocationUpdate }
 
         if (savedLocation != null && timestamp != null) {
             val age = nowProvider.now() - timestamp
@@ -81,6 +87,17 @@ internal class DefaultLocationRepo(
             }
 
         logger.d { "Location result: $result" }
+
+        if (result is LocationResult.Failed && savedLocation != null) {
+            when (result) {
+                is LocationResult.NotFound ->
+                    logger.w { "GPS not ready, falling back to stale cached location: ${savedLocation.name}" }
+                is LocationResult.Error ->
+                    logger.w { "GPS error, falling back to stale cached location: ${savedLocation.name}" }
+                else -> return result // NotAllowed / NotSupported should not fall back
+            }
+            return Success(savedLocation)
+        }
 
         if (result is Success && manager.isGeocoderSupported && manager.geocoder.isAvailable()) {
             val place = withContext(Dispatchers.IO) {
