@@ -11,6 +11,7 @@ on:
       - "art/**"
       - "LICENSE"
       - "scripts/**"
+      - "website/**"
 
 jobs:
   verify:
