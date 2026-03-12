@@ -1,78 +1,59 @@
+---
+import screenshotHome from "../assets/screenshot_home.png"
+// TODO: replace with actual iPhone screenshot
+const screenshotIos = screenshotHome
+const screenshotAndroid = screenshotHome
+---
+
 <section class="preview-section">
   <div class="container">
-  <!-- Section header -->
-  <div class="preview-header">
-    <span class="preview-eyebrow">No fluff. No forecast maps.</span>
-    <h2 class="preview-title reveal">See It In Action</h2>
-  </div>
+    <!-- Section header -->
+    <div class="preview-header">
+      <span class="preview-eyebrow">No fluff. No forecast maps.</span>
+      <h2 class="preview-title reveal">See It In Action</h2>
+    </div>
 
-  <!-- Stage: colored swatch + tilted phone -->
-  <div class="preview-stage">
-    <!-- Decorative blobs behind the phone -->
-    <div class="stage-blob stage-blob--yellow" aria-hidden="true"></div>
-    <div class="stage-blob stage-blob--coral" aria-hidden="true"></div>
+    <!-- Stage: two phones side by side -->
+    <div class="preview-stage">
+      <!-- Decorative blobs behind the phones -->
+      <div class="stage-blob stage-blob--yellow" aria-hidden="true"></div>
+      <div class="stage-blob stage-blob--coral" aria-hidden="true"></div>
 
-    <!-- Phone frame -->
-    <div class="phone-wrap reveal reveal-delay-1">
-      <div class="phone">
-        <!-- Notch -->
-        <div class="phone-notch" aria-hidden="true"></div>
-
-        <!-- Status bar -->
-        <div class="phone-statusbar" aria-hidden="true">
-          <span class="statusbar-time">9:41</span>
-          <div class="statusbar-icons">
-            <span class="signal-dot"></span>
-            <span class="signal-dot"></span>
-            <span class="signal-dot"></span>
-            <span class="battery">▮▯</span>
-          </div>
+      <!-- iPhone -->
+      <div class="phone-wrap phone-wrap--iphone reveal reveal-delay-1">
+        <div class="phone phone--iphone">
+          <!-- Dynamic Island overlay -->
+          <div class="dynamic-island" aria-hidden="true"></div>
+          <img
+            src={screenshotIos.src}
+            alt="Should I Go Outside app on iPhone showing a YES answer with sunny weather"
+            class="phone-screenshot"
+            width={screenshotIos.width}
+            height={screenshotIos.height}
+            loading="lazy"
+          />
         </div>
+      </div>
 
-        <!-- App screen content -->
-        <div class="phone-screen">
-          <!-- Location pill -->
-          <div class="screen-location">
-            <span class="location-dot"></span>
-            <span>Brooklyn, NY</span>
-          </div>
-
-          <!-- The big answer -->
-          <div class="screen-answer">
-            <div class="answer-emoji">☀️</div>
-            <div class="answer-word">YES!</div>
-            <p class="answer-subtext">
-              It's 72° and gorgeous outside.<br />Go touch some grass.
-            </p>
-          </div>
-
-          <!-- Mini weather stats card -->
-          <div class="screen-statscard">
-            <div class="stat-item">
-              <span class="stat-label">Temp</span>
-              <span class="stat-value">72°</span>
-            </div>
-            <div class="stat-divider" aria-hidden="true"></div>
-            <div class="stat-item">
-              <span class="stat-label">Humidity</span>
-              <span class="stat-value">45%</span>
-            </div>
-            <div class="stat-divider" aria-hidden="true"></div>
-            <div class="stat-item">
-              <span class="stat-label">Wind</span>
-              <span class="stat-value">5 mph</span>
-            </div>
-          </div>
+      <!-- Android -->
+      <div class="phone-wrap phone-wrap--android reveal reveal-delay-2">
+        <div class="phone phone--android">
+          <img
+            src={screenshotAndroid.src}
+            alt="Should I Go Outside app on Android showing a YES answer with sunny weather"
+            class="phone-screenshot"
+            width={screenshotAndroid.width}
+            height={screenshotAndroid.height}
+            loading="lazy"
+          />
         </div>
-
-        <!-- Home bar -->
-        <div class="phone-homebar" aria-hidden="true"></div>
       </div>
     </div>
-  </div>
 
-  <!-- Caption -->
-  <p class="preview-caption">Real answer. Real weather. Really that simple.</p>
+    <!-- Caption -->
+    <p class="preview-caption">
+      Available on iOS and Android. Really that simple.
+    </p>
   </div><!-- /container -->
 </section>
 
@@ -104,7 +85,7 @@
     display: inline-block;
     font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--color-text-secondary);
     background-color: var(--color-primary);
@@ -115,12 +96,12 @@
   }
 
   .preview-title {
+    font-family: "Lexend Mega", sans-serif;
     font-size: clamp(2.25rem, 5vw, 3.5rem);
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 0.93;
     color: var(--color-text);
-    letter-spacing: -0.02em;
-    /* Match section-title convention from HowItWorks */
+    letter-spacing: -0.2em;
     display: inline-block;
     position: relative;
   }
@@ -134,17 +115,19 @@
     border-radius: 2px;
   }
 
+  /* ── Stage ── */
   .preview-stage {
     position: relative;
     width: 100%;
-    max-width: 480px;
+    max-width: 700px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 3rem 2rem;
+    padding: 3rem 1rem;
+    gap: 4rem;
   }
 
-  /* Decorative painted blobs sitting behind the phone */
+  /* Decorative blobs */
   .stage-blob {
     position: absolute;
     border-radius: 50%;
@@ -152,249 +135,151 @@
   }
 
   .stage-blob--yellow {
-    width: 220px;
-    height: 220px;
+    width: 260px;
+    height: 260px;
     background-color: var(--color-primary);
     border: var(--border-width) solid var(--color-outline);
-    top: 10px;
+    top: -10px;
     left: 50%;
-    transform: translateX(-65%) rotate(-8deg);
+    transform: translateX(-75%) rotate(-8deg);
   }
 
   .stage-blob--coral {
-    width: 140px;
-    height: 140px;
+    width: 180px;
+    height: 180px;
     background-color: var(--color-accent);
     border: var(--border-width) solid var(--color-outline);
-    bottom: 20px;
-    right: 8%;
-    border-radius: 50%;
+    bottom: 0;
+    right: 3%;
   }
 
+  /* ── Phone wrappers ── */
   .phone-wrap {
     position: relative;
     z-index: 1;
-    transform: rotate(3deg);
   }
 
-  .phone {
-    width: 280px;
-    /* 9:19 aspect ratio */
-    height: calc(280px * 19 / 9);
-    border-radius: 40px;
-    border: 4px solid var(--color-outline);
-    box-shadow:
-      var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0 var(--color-shadow),
-      /* inner highlight */ inset 0 0 0 2px rgba(255,255,255,0.6);
-    background-color: var(--color-outline);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-    /* subtle side-button bumps via outline */
-    outline: 2px solid rgba(0,0,0,0.08);
-    outline-offset: -6px;
-  }
-
-  .phone-notch {
-    width: 90px;
-    height: 22px;
-    background-color: var(--color-outline);
-    border-radius: 0 0 18px 18px;
-    flex-shrink: 0;
+  .phone-wrap--iphone {
+    transform: rotate(-2deg) translateY(-12px);
     z-index: 2;
   }
 
-  .phone-statusbar {
-    width: 100%;
-    padding: 0.3rem 1.2rem 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--color-bg);
-    flex-shrink: 0;
+  .phone-wrap--android {
+    transform: rotate(2.5deg) translateY(12px);
+    z-index: 1;
   }
 
-  .statusbar-time {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--color-text);
-    letter-spacing: 0.04em;
-  }
-
-  .statusbar-icons {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-
-  .signal-dot {
-    display: inline-block;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background-color: var(--color-text);
-  }
-
-  .signal-dot:last-of-type {
-    opacity: 0.35;
-  }
-
-  .battery {
-    font-size: 0.55rem;
-    font-weight: 700;
-    color: var(--color-text);
-    letter-spacing: -0.06em;
-    margin-left: 2px;
-  }
-
-  .phone-screen {
-    flex: 1;
-    width: 100%;
-    background-color: var(--color-bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0.75rem 1rem 0.5rem;
-    gap: 0;
+  /* ── Shared phone base ── */
+  .phone {
+    position: relative;
+    background-color: var(--color-outline);
     overflow: hidden;
   }
 
-  .screen-location {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: 0.6rem;
-    font-weight: 600;
-    color: var(--color-text-secondary);
-    background-color: var(--color-surface);
-    border: 1.5px solid var(--color-outline);
-    border-radius: 999px;
-    padding: 0.18rem 0.6rem;
-    box-shadow: 2px 2px 0 0 var(--color-shadow);
-    margin-bottom: 0.6rem;
-    letter-spacing: 0.03em;
-  }
-
-  .location-dot {
-    display: inline-block;
-    width: 5px;
-    height: 5px;
-    background-color: var(--color-coral);
-    border-radius: 50%;
-    border: 1px solid var(--color-outline);
-  }
-
-  .screen-answer {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.3rem;
-    text-align: center;
-    padding: 0 0.25rem;
-  }
-
-  .answer-emoji {
-    font-size: 3.2rem;
-    line-height: 1;
-    /* Subtle float animation */
-    animation: float 3s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50%       { transform: translateY(-6px); }
-  }
-
-  .answer-word {
-    font-size: 3.4rem;
-    font-weight: 700;
-    line-height: 1;
-    /* Vivid green using mint slightly darkened — stays in token spirit */
-    color: #2db82d;
-    letter-spacing: -0.03em;
-    /* Brutal text stroke */
-    -webkit-text-stroke: 2px var(--color-outline);
-    paint-order: stroke fill;
-  }
-
-  .answer-subtext {
-    font-size: 0.62rem;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    line-height: 1.45;
-    max-width: 180px;
-    text-align: center;
-  }
-
-  .screen-statscard {
+  .phone-screenshot {
+    display: block;
     width: 100%;
-    background-color: var(--color-surface);
+    height: auto;
+    position: relative;
+  }
+
+  /* ══════════════════════════════
+     iPhone — thick bezel, big radius, Dynamic Island
+     ══════════════════════════════ */
+  .phone--iphone {
+    width: 240px;
+    border-radius: 36px;
+    border: 3px solid var(--color-outline);
+    padding: 5px;
+    box-shadow: -6px 8px 0 0 var(--color-shadow);
+  }
+
+  .phone--iphone .phone-screenshot {
+    border-radius: 31px;
+  }
+
+  /* Dynamic Island — sits on top of the screenshot */
+  .dynamic-island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 72px;
+    height: 20px;
+    background-color: var(--color-outline);
+    border-radius: 20px;
+    z-index: 3;
+  }
+
+  /* Volume buttons (left side) */
+  .phone--iphone::before {
+    content: "";
+    position: absolute;
+    top: 110px;
+    left: -7px;
+    width: 4px;
+    height: 28px;
+    background-color: var(--color-outline);
+    border-radius: 3px 0 0 3px;
+    /* Second volume button + silent switch via shadows */
+    box-shadow:
+      0 -14px 0 0 var(--color-outline),
+      0 36px 0 0 var(--color-outline);
+  }
+
+  /* Power button (right side) */
+  .phone--iphone::after {
+    content: "";
+    position: absolute;
+    top: 120px;
+    right: -7px;
+    width: 4px;
+    height: 44px;
+    background-color: var(--color-outline);
+    border-radius: 0 3px 3px 0;
+  }
+
+  /* ══════════════════════════════
+     Android — thin bezel, tight radius, minimal frame
+     ══════════════════════════════ */
+  .phone--android {
+    width: 240px;
+    border-radius: 20px;
     border: 2px solid var(--color-outline);
-    border-radius: var(--radius-md);
-    box-shadow: 3px 3px 0 0 var(--color-shadow);
-    display: flex;
-    align-items: stretch;
-    justify-content: space-between;
-    padding: 0.55rem 0.5rem;
-    margin-bottom: 0.3rem;
+    padding: 4px;
+    box-shadow: 6px 8px 0 0 var(--color-shadow);
   }
 
-  .stat-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.1rem;
+  .phone--android .phone-screenshot {
+    border-radius: 16px;
   }
 
-  .stat-label {
-    font-size: 0.5rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-text-secondary);
-  }
-
-  .stat-value {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--color-text);
-  }
-
-  .stat-divider {
-    width: 1.5px;
+  /* Power button (right side) */
+  .phone--android::after {
+    content: "";
+    position: absolute;
+    top: 90px;
+    right: -4px;
+    width: 3px;
+    height: 36px;
     background-color: var(--color-outline);
-    opacity: 0.2;
-    align-self: stretch;
-    margin: 0 0.2rem;
+    border-radius: 0 2px 2px 0;
   }
 
-  .phone-homebar {
-    width: 80px;
-    height: 4px;
-    background-color: var(--color-outline);
-    border-radius: 999px;
-    opacity: 0.5;
-    margin: 0.4rem auto 0.6rem;
-    flex-shrink: 0;
-  }
-
+  /* ── Caption ── */
   .preview-caption {
     font-size: 1rem;
     font-weight: 600;
     color: var(--color-text-secondary);
     text-align: center;
-    letter-spacing: 0.01em;
-    /* Underline decoration */
+    line-height: 1.5;
+    letter-spacing: 0;
     position: relative;
     display: inline-block;
   }
 
   .preview-caption::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     bottom: -3px;
@@ -404,18 +289,36 @@
     border-radius: 2px;
   }
 
-  @media (max-width: 420px) {
-    .phone {
-      width: 240px;
-      height: calc(240px * 19 / 9);
+  /* ── Responsive ── */
+  @media (max-width: 580px) {
+    .preview-stage {
+      gap: 2.5rem;
     }
 
-    .answer-word {
-      font-size: 2.8rem;
+    .phone--iphone {
+      width: 170px;
+      border-radius: 28px;
+      padding: 4px;
     }
 
-    .answer-emoji {
-      font-size: 2.6rem;
+    .phone--iphone .phone-screenshot {
+      border-radius: 24px;
+    }
+
+    .dynamic-island {
+      width: 50px;
+      height: 14px;
+      top: 9px;
+    }
+
+    .phone--android {
+      width: 170px;
+      border-radius: 16px;
+      padding: 3px;
+    }
+
+    .phone--android .phone-screenshot {
+      border-radius: 13px;
     }
 
     .stage-blob--yellow {
@@ -426,13 +329,7 @@
     .stage-blob--coral {
       width: 110px;
       height: 110px;
-      right: 2%;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .answer-emoji {
-      animation: none;
+      right: 0;
     }
   }
 </style>
