@@ -1,5 +1,7 @@
 ---
-import screenshotYes from "../assets/screenshot_yes.png"
+import { Image } from "astro:assets"
+import screenshotNo from "../assets/screenshot_no.jpg"
+import screenshotDetails from "../assets/screenshot_yes_details.jpg"
 ---
 
 <section class="preview-section">
@@ -16,15 +18,28 @@ import screenshotYes from "../assets/screenshot_yes.png"
       <div class="stage-blob stage-blob--yellow" aria-hidden="true"></div>
       <div class="stage-blob stage-blob--coral" aria-hidden="true"></div>
 
-      <!-- Android -->
+      <!-- "No" answer -->
+      <div class="phone-wrap phone-wrap--iphone reveal reveal-delay-1">
+        <div class="phone phone--iphone">
+          <div class="dynamic-island" aria-hidden="true"></div>
+          <Image
+            src={screenshotNo}
+            alt="Should I Go Outside app showing a NO answer — too windy to go out"
+            class="phone-screenshot"
+            width={240}
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <!-- Details view -->
       <div class="phone-wrap phone-wrap--android reveal reveal-delay-2">
         <div class="phone phone--android">
-          <img
-            src={screenshotYes.src}
-            alt="Should I Go Outside app on Android showing a YES answer with sunny weather"
+          <Image
+            src={screenshotDetails}
+            alt="Should I Go Outside app details view showing wind, precipitation, UV index, humidity, and more"
             class="phone-screenshot"
-            width={screenshotYes.width}
-            height={screenshotYes.height}
+            width={240}
             loading="lazy"
           />
         </div>
