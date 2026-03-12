@@ -1,14 +1,10 @@
-package app.sigot.forecast.ui.components
+package app.sigot.forecast.ui.section.search
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,12 +15,7 @@ import app.sigot.core.model.location.Location
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.location_change
 import app.sigot.core.resources.location_search_placeholder
-import app.sigot.core.resources.location_searching
-import app.sigot.core.resources.location_use_current
 import app.sigot.core.ui.AppTheme
-import app.sigot.core.ui.components.Button
-import app.sigot.core.ui.components.ButtonVariant
-import app.sigot.core.ui.components.HorizontalDivider
 import app.sigot.core.ui.components.ModalBottomSheet
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.textfield.TextField
@@ -36,6 +27,7 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 internal fun LocationSearchSheet(
     isVisible: Boolean,
+    usingCurrentLocation: Boolean,
     query: String,
     results: PersistentList<Location>,
     searching: Boolean,
@@ -75,56 +67,22 @@ internal fun LocationSearchSheet(
                 },
             )
 
+            Spacer(modifier = Modifier.height(12.dp))
+
+            LocationResultsList(
+                query = query,
+                results = results,
+                searching = searching,
+                onSelectLocation = onSelectLocation,
+            )
+
             Spacer(modifier = Modifier.height(8.dp))
 
-            Button(
+            UseCurrentLocationButton(
+                usingCurrentLocation = usingCurrentLocation,
                 onClick = onUseCurrentLocation,
-                variant = ButtonVariant.Secondary,
                 modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = Res.string.location_use_current.get(),
-                    style = AppTheme.typography.button,
-                )
-            }
-
-            if (searching && results.isEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = Res.string.location_searching.get(),
-                    style = AppTheme.typography.body2,
-                    color = AppTheme.colors.textSecondary,
-                )
-            }
-
-            if (results.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(0.dp),
-                ) {
-                    items(results) { location ->
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onSelectLocation(location) }
-                                .padding(vertical = 12.dp),
-                        ) {
-                            Text(
-                                text = location.name,
-                                style = AppTheme.typography.body1,
-                            )
-                            Text(
-                                text = "${location.roundedLatitude}, ${location.roundedLongitude}",
-                                style = AppTheme.typography.body2,
-                                color = AppTheme.colors.textSecondary,
-                            )
-                        }
-                        HorizontalDivider()
-                    }
-                }
-            }
+            )
         }
     }
 }
@@ -133,20 +91,23 @@ private data class LocationSearchSheetState(
     val query: String,
     val results: PersistentList<Location>,
     val searching: Boolean,
+    val usingCurrentLocation: Boolean,
 )
 
-private class Params : PreviewParameterProvider<LocationSearchSheetState> {
+private class SheetParams : PreviewParameterProvider<LocationSearchSheetState> {
     override val values: Sequence<LocationSearchSheetState>
         get() = sequenceOf(
             LocationSearchSheetState(
                 query = "",
                 results = persistentListOf(),
                 searching = false,
+                usingCurrentLocation = true,
             ),
             LocationSearchSheetState(
                 query = "New York",
                 results = persistentListOf(),
                 searching = true,
+                usingCurrentLocation = true,
             ),
             LocationSearchSheetState(
                 query = "New York",
@@ -155,6 +116,13 @@ private class Params : PreviewParameterProvider<LocationSearchSheetState> {
                     Location(40.7282, -73.7949, "New York Mills"),
                 ),
                 searching = false,
+                usingCurrentLocation = false,
+            ),
+            LocationSearchSheetState(
+                query = "xyzzy",
+                results = persistentListOf(),
+                searching = false,
+                usingCurrentLocation = true,
             ),
         )
 }
@@ -162,11 +130,12 @@ private class Params : PreviewParameterProvider<LocationSearchSheetState> {
 @Preview
 @Composable
 private fun LocationSearchSheetPreview(
-    @PreviewParameter(Params::class) state: LocationSearchSheetState,
+    @PreviewParameter(SheetParams::class) state: LocationSearchSheetState,
 ) {
     AppPreview {
         LocationSearchSheet(
             isVisible = true,
+            usingCurrentLocation = state.usingCurrentLocation,
             query = state.query,
             results = state.results,
             searching = state.searching,

@@ -199,6 +199,7 @@
     <string name="location_search_placeholder">Search for a city…</string>
     <string name="location_use_current">Use current location</string>
     <string name="location_searching">Searching…</string>
+    <string name="location_no_results">No results found</string>
 
     <string name="forecast_error_generic">Unable to get the current forecast for your location, please try again.</string>
     <string name="forecast_title">Should I go outside</string>

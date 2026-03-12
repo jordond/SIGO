@@ -6,6 +6,7 @@ import app.sigot.core.domain.forecast.ForecastStateHolder
 import app.sigot.core.domain.location.LocationRepo
 import app.sigot.core.domain.location.SearchLocationUseCase
 import app.sigot.core.domain.settings.SettingsRepo
+import app.sigot.core.foundation.ktx.ensureExecutionTime
 import app.sigot.core.model.AsyncResult
 import app.sigot.core.model.ForecastData
 import app.sigot.core.model.ForecastPeriodData
@@ -38,6 +39,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
+import kotlin.coroutines.cancellation.CancellationException
+
+private const val DEBOUNCE_MS = 500L
+private const val MIN_SEARCH_INDICATOR_MS = 500L
 
 @Stable
 internal class ForecastHomeModel(
@@ -97,9 +102,18 @@ internal class ForecastHomeModel(
             return
         }
         searchJob = viewModelScope.launch {
-            delay(300)
-            val results = searchLocationUseCase.search(query).toPersistentList()
-            updateState { it.copy(searchResults = results, searching = false) }
+            delay(DEBOUNCE_MS)
+            try {
+                val results = ensureExecutionTime(MIN_SEARCH_INDICATOR_MS) {
+                    searchLocationUseCase.search(query).toPersistentList()
+                }
+                updateState { it.copy(searchResults = results, searching = false) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                logger.e(e) { "Location search failed" }
+                updateState { it.copy(searchResults = persistentListOf(), searching = false) }
+            }
         }
     }
 
@@ -157,6 +171,7 @@ internal class ForecastHomeModel(
         val period: ForecastPeriod = ForecastPeriod.Now,
         val permissionStatus: LocationPermissionStatus = Unknown,
         val forecast: ForecastData? = null,
+        val usingCurrentLocation: Boolean = true,
         val showLocationSheet: Boolean = false,
         val searchQuery: String = "",
         val searchResults: PersistentList<Location> = persistentListOf(),
@@ -183,6 +198,7 @@ private fun state(
         location = settingsRepo.settings.value.run {
             if (useCustomLocation) customLocation else lastLocation
         },
+        usingCurrentLocation = !settingsRepo.settings.value.useCustomLocation,
         preferences = settingsRepo.settings.value.preferences,
         permissionStatus = if (locationRepo.hasPermission()) Granted else Unknown,
         status = forecastStateHolder.state.value,
@@ -194,6 +210,11 @@ private fun state(
             location to settings.preferences
         }.distinctUntilChanged()
         .into { (location, preferences) -> copy(location = location, preferences = preferences) }
+
+    settingsRepo.settings
+        .map { !it.useCustomLocation }
+        .distinctUntilChanged()
+        .into { usingCurrent -> copy(usingCurrentLocation = usingCurrent) }
 
     forecastStateHolder.state.into { status ->
         when (status) {
