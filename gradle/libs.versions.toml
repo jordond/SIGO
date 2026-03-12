@@ -70,6 +70,8 @@ androidx-uitest-junit4 = { module = "androidx.compose.ui:ui-test-junit4", versio
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
 coil = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
+compass-autocomplete = { module = "dev.jordond.compass:autocomplete", version.ref = "compass" }
+compass-autocomplete-mobile = { module = "dev.jordond.compass:autocomplete-mobile", version.ref = "compass" }
 compass-geocoder = { module = "dev.jordond.compass:geocoder", version.ref = "compass" }
 compass-geocoder-mobile = { module = "dev.jordond.compass:geocoder-mobile", version.ref = "compass" }
 compass-permissions-mobile = { module = "dev.jordond.compass:permissions-mobile", version.ref = "compass" }

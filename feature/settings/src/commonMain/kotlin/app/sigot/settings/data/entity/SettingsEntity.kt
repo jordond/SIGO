@@ -18,6 +18,10 @@ internal data class SettingsEntity(
     val lastLocation: LocationEntity? = null,
     @SerialName("last_location_update")
     val lastLocationUpdate: Long? = null,
+    @SerialName("custom_location")
+    val customLocation: LocationEntity? = null,
+    @SerialName("use_custom_location")
+    val useCustomLocation: Boolean = false,
     @SerialName("use_24_hour_format")
     val use24HourFormat: Boolean = false,
     @SerialName("preferences")
@@ -37,6 +41,8 @@ internal fun SettingsEntity.toModel() =
         use24HourFormat = use24HourFormat,
         lastLocation = lastLocation?.toModel(),
         lastLocationUpdate = lastLocationUpdate?.let { Instant.fromEpochMilliseconds(it) },
+        customLocation = customLocation?.toModel(),
+        useCustomLocation = useCustomLocation,
         enableHaptics = enableHaptics,
         internalSettings = internalSettings.toModel(),
         loaded = true,
@@ -50,6 +56,8 @@ internal fun Settings.toEntity() =
         preferences = preferences.toEntity(),
         lastLocation = lastLocation?.toEntity(),
         lastLocationUpdate = lastLocationUpdate?.toEpochMilliseconds(),
+        customLocation = customLocation?.toEntity(),
+        useCustomLocation = useCustomLocation,
         use24HourFormat = use24HourFormat,
         enableHaptics = enableHaptics,
         internalSettings = internalSettings.toEntity(),

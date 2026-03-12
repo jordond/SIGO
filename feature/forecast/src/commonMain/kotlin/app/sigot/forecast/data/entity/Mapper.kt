@@ -14,7 +14,13 @@ import kotlin.time.Instant
 
 public fun ForecastEntity.toModel(): Forecast =
     Forecast(
-        location = Location(locationLat, locationLong, locationName),
+        location = Location(
+            latitude = locationLat,
+            longitude = locationLong,
+            name = locationName,
+            administrativeArea = locationAdministrativeArea,
+            country = locationCountry,
+        ),
         current = current.toModel(),
         today = ForecastDay(
             block = today.block.toModel(),
@@ -35,6 +41,8 @@ public fun Forecast.toEntity(): ForecastEntity =
         locationLat = location.latitude,
         locationLong = location.longitude,
         locationName = location.name,
+        locationAdministrativeArea = location.administrativeArea,
+        locationCountry = location.country,
         current = current.toEntity(),
         today = ForecastDayEntity(
             block = today.block.toEntity(),

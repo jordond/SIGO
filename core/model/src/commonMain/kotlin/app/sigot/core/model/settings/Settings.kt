@@ -14,6 +14,8 @@ public class Settings(
     public val hasCompletedOnboarding: Boolean = false,
     public val lastLocation: Location? = null,
     public val lastLocationUpdate: Instant? = null,
+    public val customLocation: Location? = null,
+    public val useCustomLocation: Boolean = false,
     public val use24HourFormat: Boolean = false,
     public val preferences: Preferences = Preferences.default,
     public val enableHaptics: Boolean = true,
@@ -52,6 +54,8 @@ public class Settings(
         hasCompletedOnboarding: Boolean = this.hasCompletedOnboarding,
         lastLocation: Location? = this.lastLocation,
         lastLocationUpdate: Instant? = this.lastLocationUpdate,
+        customLocation: Location? = this.customLocation,
+        useCustomLocation: Boolean = this.useCustomLocation,
         use24HourFormat: Boolean = this.use24HourFormat,
         enableHaptics: Boolean = this.enableHaptics,
         internalSettings: InternalSettings = this.internalSettings,
@@ -63,6 +67,8 @@ public class Settings(
             hasCompletedOnboarding = hasCompletedOnboarding,
             lastLocation = lastLocation,
             lastLocationUpdate = lastLocationUpdate,
+            customLocation = customLocation,
+            useCustomLocation = useCustomLocation,
             use24HourFormat = use24HourFormat,
             enableHaptics = enableHaptics,
             internalSettings = internalSettings,
@@ -75,6 +81,8 @@ public class Settings(
         hasCompletedOnboarding: Boolean = this.hasCompletedOnboarding,
         lastLocation: Location? = this.lastLocation,
         lastLocationUpdate: Instant? = this.lastLocationUpdate,
+        customLocation: Location? = this.customLocation,
+        useCustomLocation: Boolean = this.useCustomLocation,
         use24HourFormat: Boolean = this.use24HourFormat,
         preferences: Preferences = this.preferences,
         enableHaptics: Boolean = this.enableHaptics,
@@ -87,6 +95,8 @@ public class Settings(
             hasCompletedOnboarding = hasCompletedOnboarding,
             lastLocation = lastLocation,
             lastLocationUpdate = lastLocationUpdate,
+            customLocation = customLocation,
+            useCustomLocation = useCustomLocation,
             use24HourFormat = use24HourFormat,
             preferences = preferences,
             enableHaptics = enableHaptics,
@@ -97,7 +107,8 @@ public class Settings(
     override fun toString(): String =
         "Settings(firstLaunch=$firstLaunch, themeMode=$themeMode, use24HourFormat=$use24HourFormat, " +
             "hasCompletedOnboarding=$hasCompletedOnboarding, lastLocation=$lastLocation, " +
-            "lastLocationUpdate=$lastLocationUpdate, preferences=$preferences, " +
+            "lastLocationUpdate=$lastLocationUpdate, customLocation=$customLocation, " +
+            "useCustomLocation=$useCustomLocation, preferences=$preferences, " +
             "enableHaptics=$enableHaptics, internalSettings=$internalSettings, loaded=$loaded)"
 
     override fun equals(other: Any?): Boolean {
@@ -111,6 +122,8 @@ public class Settings(
         if (hasCompletedOnboarding != other.hasCompletedOnboarding) return false
         if (lastLocation != other.lastLocation) return false
         if (lastLocationUpdate != other.lastLocationUpdate) return false
+        if (customLocation != other.customLocation) return false
+        if (useCustomLocation != other.useCustomLocation) return false
         if (use24HourFormat != other.use24HourFormat) return false
         if (preferences != other.preferences) return false
         if (enableHaptics != other.enableHaptics) return false
@@ -126,6 +139,8 @@ public class Settings(
         result = 31 * result + hasCompletedOnboarding.hashCode()
         result = 31 * result + (lastLocation?.hashCode() ?: 0)
         result = 31 * result + (lastLocationUpdate?.hashCode() ?: 0)
+        result = 31 * result + (customLocation?.hashCode() ?: 0)
+        result = 31 * result + useCustomLocation.hashCode()
         result = 31 * result + use24HourFormat.hashCode()
         result = 31 * result + preferences.hashCode()
         result = 31 * result + enableHaptics.hashCode()
