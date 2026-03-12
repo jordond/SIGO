@@ -14,9 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.ForecastData
 import app.sigot.core.model.forecast.ForecastBlock
+import app.sigot.core.model.score.ScoreResult
 import app.sigot.core.resources.Res
 import app.sigot.core.resources.something_went_wrong
 import app.sigot.core.ui.AppTheme
@@ -50,6 +53,7 @@ internal fun ForecastDetailsScreen(
         ForecastDetailsScreen(
             data = data,
             selected = state.selected,
+            selectedScore = state.selectedScore?.result,
             onSelected = model::select,
             onBack = onBack,
         )
@@ -60,6 +64,7 @@ internal fun ForecastDetailsScreen(
 internal fun ForecastDetailsScreen(
     data: ForecastData,
     selected: ForecastBlock?,
+    selectedScore: ScoreResult?,
     onSelected: (ForecastBlock?) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -84,7 +89,7 @@ internal fun ForecastDetailsScreen(
             SelectedConditionsHero(
                 block = selected ?: data.forecast.current,
                 today = data.forecast.today.block,
-                scoreResult = data.score.current.result,
+                scoreResult = selectedScore,
                 units = data.forecast.units,
                 modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
             )
@@ -115,15 +120,28 @@ internal fun ForecastDetailsScreen(
     }
 }
 
+private class Params : PreviewParameterProvider<ForecastData> {
+    override val values: Sequence<ForecastData>
+        get() = sequenceOf(
+            ForecastPreviewData.forecastData(ForecastPreviewData.createSunnyForecast()),
+            ForecastPreviewData.forecastData(ForecastPreviewData.createRainyForecast()),
+            ForecastPreviewData.forecastData(ForecastPreviewData.createColdForecast()),
+        )
+}
+
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
-private fun ForecastDetailsScreenPreview() {
-    val data = ForecastPreviewData.forecastData(ForecastPreviewData.createSunnyForecast())
+private fun ForecastDetailsScreenPreview(
+    @PreviewParameter(Params::class) data: ForecastData,
+) {
     AppPreview {
         ForecastDetailsScreen(
             data = data,
-            selected = data.forecast.current,
+            selected = data.forecast.hour(1),
+            selectedScore = data.score.hours
+                .getOrNull(1)
+                ?.result,
             onSelected = {},
             onBack = {},
         )
