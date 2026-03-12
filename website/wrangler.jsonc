@@ -1,0 +1,41 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sigo-marketing",
+  "compatibility_date": "2026-03-12",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+  },
+  "observability": {
+    "enabled": true,
+  },
+  "routes": [
+    {
+      "pattern": "shouldigooutside.now",
+      "custom_domain": true,
+      "zone_name": "shouldigooutside.now",
+    },
+  ],
+  "env": {
+    "prod": {
+      "name": "sigo-marketing",
+      "routes": [
+        {
+          "pattern": "shouldigooutside.now",
+          "custom_domain": true,
+          "zone_name": "shouldigooutside.now",
+        },
+      ],
+    },
+    "staging": {
+      "name": "sigo-marketing-staging",
+      "routes": [
+        {
+          "pattern": "staging.shouldigooutside.now",
+          "custom_domain": true,
+          "zone_name": "shouldigooutside.now",
+        },
+      ],
+    },
+  },
+}

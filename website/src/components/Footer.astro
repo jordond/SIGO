@@ -1,447 +1,538 @@
 ---
-const currentYear = new Date().getFullYear();
+const currentYear = new Date().getFullYear()
 
 const links = [
-	{ label: "Privacy Policy", href: "#" },
-	{ label: "Terms of Service", href: "#" },
-	{ label: "Contact", href: "#" },
-] as const;
+  { label: "Privacy Policy", href: "#" },
+  { label: "Terms of Service", href: "#" },
+  { label: "Contact", href: "#" },
+] as const
 ---
 
 <section class="cta" aria-labelledby="cta-heading">
-	<div class="cta__inner">
-		<!-- Decorative tick marks — pure CSS via pseudo-elements -->
-		<div class="cta__tick cta__tick--left" aria-hidden="true"></div>
-		<div class="cta__tick cta__tick--right" aria-hidden="true"></div>
+  <div class="cta__inner">
+    <!-- Decorative tick marks — pure CSS via pseudo-elements -->
+    <div class="cta__tick cta__tick--left" aria-hidden="true"></div>
+    <div class="cta__tick cta__tick--right" aria-hidden="true"></div>
 
-		<h2 class="cta__heading reveal" id="cta-heading">
-			Ready to Never Overthink<br />Weather Again?
-		</h2>
+    <h2 class="cta__heading reveal" id="cta-heading">
+      Ready to Never Overthink<br />Weather Again?
+    </h2>
 
-		<p class="cta__sub">
-			One tap. One answer. Get outside already.
-		</p>
+    <p class="cta__sub">One tap. One answer. Get outside already.</p>
 
-		<div class="cta__buttons">
-			<a href="#" class="cta__btn cta__btn--ios" aria-label="Download for iOS">
-				<svg class="cta__btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-					<path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-				</svg>
-				Download for iOS
-			</a>
+    <div class="cta__buttons">
+      <a href="#" class="cta__btn cta__btn--ios" aria-label="Download for iOS">
+        <svg
+          class="cta__btn-icon"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"
+          ></path>
+        </svg>
+        Download for iOS
+      </a>
 
-			<a href="#" class="cta__btn cta__btn--android" aria-label="Download for Android">
-				<svg class="cta__btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-					<path d="M17.523 15.341a.5.5 0 0 1-.857.35l-2.09-2.09-2.576 2.576 2.09 2.09a.5.5 0 0 1-.35.857H6.5a.5.5 0 0 1-.5-.5v-7.24a.5.5 0 0 1 .857-.35l2.09 2.09 2.576-2.576-2.09-2.09a.5.5 0 0 1 .35-.857h7.24a.5.5 0 0 1 .5.5v7.24zM8.5 3.5a.5.5 0 0 0-1 0v1a.5.5 0 0 0 1 0v-1zm8 0a.5.5 0 0 0-1 0v1a.5.5 0 0 0 1 0v-1zM3 8.5a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1H3zm17 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z"/>
-					<path d="M7.071 4.929a.5.5 0 0 0-.707.707l.707.707a.5.5 0 1 0 .707-.707l-.707-.707zm9.9 9.9a.5.5 0 0 0-.707.707l.707.707a.5.5 0 0 0 .707-.707l-.707-.707zm-9.9 0a.5.5 0 0 0 .707.707l.707-.707a.5.5 0 0 0-.707-.707l-.707.707zm9.9-9.9a.5.5 0 0 0 .707.707l.707-.707a.5.5 0 1 0-.707-.707l-.707.707z"/>
-				</svg>
-				Download for Android
-			</a>
-		</div>
-	</div>
+      <a
+        href="#"
+        class="cta__btn cta__btn--android"
+        aria-label="Download for Android"
+      >
+        <svg
+          class="cta__btn-icon"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M17.523 15.341a.5.5 0 0 1-.857.35l-2.09-2.09-2.576 2.576 2.09 2.09a.5.5 0 0 1-.35.857H6.5a.5.5 0 0 1-.5-.5v-7.24a.5.5 0 0 1 .857-.35l2.09 2.09 2.576-2.576-2.09-2.09a.5.5 0 0 1 .35-.857h7.24a.5.5 0 0 1 .5.5v7.24zM8.5 3.5a.5.5 0 0 0-1 0v1a.5.5 0 0 0 1 0v-1zm8 0a.5.5 0 0 0-1 0v1a.5.5 0 0 0 1 0v-1zM3 8.5a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1H3zm17 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z"
+          ></path>
+          <path
+            d="M7.071 4.929a.5.5 0 0 0-.707.707l.707.707a.5.5 0 1 0 .707-.707l-.707-.707zm9.9 9.9a.5.5 0 0 0-.707.707l.707.707a.5.5 0 0 0 .707-.707l-.707-.707zm-9.9 0a.5.5 0 0 0 .707.707l.707-.707a.5.5 0 0 0-.707-.707l-.707.707zm9.9-9.9a.5.5 0 0 0 .707.707l.707-.707a.5.5 0 1 0-.707-.707l-.707.707z"
+          ></path>
+        </svg>
+        Download for Android
+      </a>
+    </div>
+  </div>
 </section>
 
 <footer class="footer" role="contentinfo">
-	<!-- Colored accent stripe at very top of dark footer -->
-	<div class="footer__accent-stripe" aria-hidden="true"></div>
+  <!-- Colored accent stripe at very top of dark footer -->
+  <div class="footer__accent-stripe" aria-hidden="true"></div>
 
-	<div class="footer__inner">
-		<!-- Left: brand -->
-		<div class="footer__brand">
-			<p class="footer__app-name">Should I Go Outside?</p>
-			<p class="footer__tagline">The only weather app that answers<br />the only question that matters.</p>
-		</div>
+  <div class="footer__inner">
+    <!-- Left: brand -->
+    <div class="footer__brand">
+      <p class="footer__app-name">Should I Go Outside?</p>
+      <p class="footer__tagline">
+        The only weather app that answers<br />the only question that matters.
+      </p>
+    </div>
 
-		<!-- Center: links -->
-		<nav class="footer__nav" aria-label="Footer navigation">
-			<ul class="footer__nav-list" role="list">
-				{links.map((link) => (
-					<li>
-						<a href={link.href} class="footer__nav-link">{link.label}</a>
-					</li>
-				))}
-			</ul>
-		</nav>
+    <!-- Center: links -->
+    <nav class="footer__nav" aria-label="Footer navigation">
+      <ul class="footer__nav-list" role="list">
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href} class="footer__nav-link">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
 
-		<!-- Right: social icons -->
-		<div class="footer__social" aria-label="Social media links">
-			<a href="#" class="footer__social-link" aria-label="Follow us on X (Twitter)">
-				<!-- X / Twitter -->
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-					<path d="M4 4l16 16M4 20L20 4"/>
-					<path d="M4 4h4l4 5 4-5h4M4 20h4l4-5 4 5h4" stroke-width="0"/>
-					<path d="M3 5h3.6l13.8 14H17L3 5z"/>
-					<path d="M10 14 3 21M21 3l-7 7"/>
-				</svg>
-			</a>
+    <!-- Right: social icons -->
+    <div class="footer__social" aria-label="Social media links">
+      <a
+        href="#"
+        class="footer__social-link"
+        aria-label="Follow us on X (Twitter)"
+      >
+        <!-- X / Twitter -->
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M4 4l16 16M4 20L20 4"></path>
+          <path d="M4 4h4l4 5 4-5h4M4 20h4l4-5 4 5h4" stroke-width="0"></path>
+          <path d="M3 5h3.6l13.8 14H17L3 5z"></path>
+          <path d="M10 14 3 21M21 3l-7 7"></path>
+        </svg>
+      </a>
 
-			<a href="#" class="footer__social-link" aria-label="Follow us on Instagram">
-				<!-- Instagram -->
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-					<rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-					<circle cx="12" cy="12" r="4"/>
-					<circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
-				</svg>
-			</a>
+      <a
+        href="#"
+        class="footer__social-link"
+        aria-label="Follow us on Instagram"
+      >
+        <!-- Instagram -->
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <circle cx="12" cy="12" r="4"></circle>
+          <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"
+          ></circle>
+        </svg>
+      </a>
 
-			<a href="#" class="footer__social-link" aria-label="View our GitHub">
-				<!-- GitHub -->
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-					<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-				</svg>
-			</a>
-		</div>
-	</div>
+      <a href="#" class="footer__social-link" aria-label="View our GitHub">
+        <!-- GitHub -->
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+          ></path>
+        </svg>
+      </a>
+    </div>
+  </div>
 
-	<!-- Bottom bar -->
-	<div class="footer__bottom">
-		<p class="footer__copyright">
-			&copy; {currentYear} Should I Go Outside? All rights reserved.
-		</p>
-	</div>
+  <!-- Bottom bar -->
+  <div class="footer__bottom">
+    <p class="footer__copyright">
+      &copy; {currentYear} Should I Go Outside? All rights reserved.
+    </p>
+  </div>
 </footer>
 
 <style>
-	.cta {
-		background-color: var(--color-primary);
-		border-top: var(--border-width) solid var(--color-outline);
-		border-bottom: var(--border-width) solid var(--color-outline);
-		padding: 5rem 1.5rem;
-		position: relative;
-		overflow: hidden;
-	}
+  .cta {
+    background-color: var(--color-primary);
+    border-top: var(--border-width) solid var(--color-outline);
+    border-bottom: var(--border-width) solid var(--color-outline);
+    padding: 5rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
 
-	.cta__inner {
-		max-width: 720px;
-		margin-inline: auto;
-		text-align: center;
-		position: relative;
-		z-index: 1;
-	}
+  .cta__inner {
+    max-width: 720px;
+    margin-inline: auto;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
 
-	/* ── Decorative tick marks ── */
-	.cta__tick {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 48px;
-		height: 80%;
-		pointer-events: none;
-	}
+  /* ── Decorative tick marks ── */
+  .cta__tick {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 80%;
+    pointer-events: none;
+  }
 
-	.cta__tick--left  { left: 2rem; }
-	.cta__tick--right { right: 2rem; transform: translateY(-50%) scaleX(-1); }
+  .cta__tick--left {
+    left: 2rem;
+  }
+  .cta__tick--right {
+    right: 2rem;
+    transform: translateY(-50%) scaleX(-1);
+  }
 
-	.cta__tick::before,
-	.cta__tick::after {
-		content: "";
-		position: absolute;
-		left: 50%;
-		width: var(--border-width);
-		background-color: var(--color-black);
-		opacity: 0.18;
-	}
-	.cta__tick::before { top: 0; height: 40%; transform: translateX(-50%) rotate(-10deg); }
-	.cta__tick::after  { bottom: 0; height: 40%; transform: translateX(-50%) rotate(10deg); }
+  .cta__tick::before,
+  .cta__tick::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: var(--border-width);
+    background-color: var(--color-black);
+    opacity: 0.18;
+  }
+  .cta__tick::before {
+    top: 0;
+    height: 40%;
+    transform: translateX(-50%) rotate(-10deg);
+  }
+  .cta__tick::after {
+    bottom: 0;
+    height: 40%;
+    transform: translateX(-50%) rotate(10deg);
+  }
 
-	/* ── Heading ── */
-	.cta__heading {
-		font-size: clamp(2rem, 5.5vw, 3.5rem);
-		font-weight: 700;
-		line-height: 1.1;
-		letter-spacing: -0.03em;
-		text-transform: uppercase;
-		color: var(--color-text);
-		margin-bottom: 1rem;
-	}
+  /* ── Heading ── */
+  .cta__heading {
+    font-family: "Lexend Mega", sans-serif;
+    font-size: clamp(2rem, 5.5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 0.93;
+    letter-spacing: -0.2em;
+    text-transform: uppercase;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+  }
 
-	.cta__sub {
-		font-size: 1.05rem;
-		font-weight: 500;
-		color: var(--color-text-secondary);
-		margin-bottom: 2.5rem;
-		letter-spacing: 0.01em;
-	}
+  .cta__sub {
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: var(--color-text-secondary);
+    margin-bottom: 2.5rem;
+  }
 
-	/* ── Buttons container ── */
-	.cta__buttons {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 1rem;
-		justify-content: center;
-	}
+  /* ── Buttons container ── */
+  .cta__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
 
-	/* ── Shared button chrome ── */
-	.cta__btn {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.6rem;
-		padding: 0.85rem 1.75rem;
-		font-family: inherit;
-		font-size: 1rem;
-		font-weight: 700;
-		line-height: 1;
-		letter-spacing: -0.01em;
-		text-decoration: none;
-		color: var(--color-text);
-		border: var(--border-width) solid var(--color-outline);
-		border-radius: var(--radius-sm);
-		box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0 var(--color-shadow);
-		/* Press-in transition */
-		transform: translate(0, 0);
-		transition:
-			transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
-			box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1);
-		cursor: pointer;
-		white-space: nowrap;
-	}
+  /* ── Shared button chrome ── */
+  .cta__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.75rem;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    color: var(--color-text);
+    border: var(--border-width) solid var(--color-outline);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0
+      var(--color-shadow);
+    /* Press-in transition */
+    transform: translate(0, 0);
+    transition:
+      transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+    white-space: nowrap;
+  }
 
-	.cta__btn:hover,
-	.cta__btn:focus-visible {
-		transform: translate(var(--shadow-offset-lg), var(--shadow-offset-lg));
-		box-shadow: 0 0 0 0 var(--color-shadow);
-		outline: none;
-	}
+  .cta__btn:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 12px 12px 0 0 var(--color-shadow);
+  }
 
-	.cta__btn:focus-visible {
-		outline: 3px solid var(--color-accent);
-		outline-offset: 2px;
-	}
+  .cta__btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 3px 3px 0 0 var(--color-shadow);
+  }
 
-	/* Color variants */
-	.cta__btn--ios     { background-color: var(--color-tertiary); }
-	.cta__btn--android { background-color: var(--color-secondary); }
+  .cta__btn:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+  }
 
-	.cta__btn-icon {
-		width: 1.25rem;
-		height: 1.25rem;
-		flex-shrink: 0;
-	}
+  /* Color variants */
+  .cta__btn--ios {
+    background-color: var(--color-tertiary);
+  }
+  .cta__btn--android {
+    background-color: var(--color-secondary);
+  }
 
-	/* ── Mobile: stack buttons ── */
-	@media (max-width: 480px) {
-		.cta {
-			padding: 4rem 1.25rem;
-		}
+  .cta__btn-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+  }
 
-		.cta__buttons {
-			flex-direction: column;
-			align-items: center;
-		}
+  /* ── Mobile: stack buttons ── */
+  @media (max-width: 480px) {
+    .cta {
+      padding: 4rem 1.25rem;
+    }
 
-		.cta__btn {
-			width: 100%;
-			max-width: 320px;
-			justify-content: center;
-		}
+    .cta__buttons {
+      flex-direction: column;
+      align-items: center;
+    }
 
-		.cta__tick { display: none; }
-	}
+    .cta__btn {
+      width: 100%;
+      max-width: 320px;
+      justify-content: center;
+    }
 
-	.footer {
-		background-color: #111111;
-		color: var(--color-white);
-	}
+    .cta__tick {
+      display: none;
+    }
+  }
 
-	/* Accent stripe — a 4px slash of yellow across the top edge */
-	.footer__accent-stripe {
-		height: 4px;
-		background: repeating-linear-gradient(
-			90deg,
-			var(--color-primary)   0px,
-			var(--color-primary)   40px,
-			var(--color-tertiary)  40px,
-			var(--color-tertiary)  80px,
-			var(--color-secondary) 80px,
-			var(--color-secondary) 120px
-		);
-	}
+  .footer {
+    background-color: var(--color-text);
+    color: var(--color-white);
+  }
 
-	/* ── Main columns row ── */
-	.footer__inner {
-		max-width: 900px;
-		margin-inline: auto;
-		padding: 3.5rem 1.5rem 2.5rem;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 2.5rem;
-		align-items: flex-start;
-		justify-content: space-between;
-	}
+  /* Accent stripe — a 4px slash of yellow across the top edge */
+  .footer__accent-stripe {
+    height: 4px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--color-primary) 0px,
+      var(--color-primary) 40px,
+      var(--color-tertiary) 40px,
+      var(--color-tertiary) 80px,
+      var(--color-secondary) 80px,
+      var(--color-secondary) 120px
+    );
+  }
 
-	/* ── Brand block ── */
-	.footer__brand {
-		flex: 1 1 200px;
-	}
+  /* ── Main columns row ── */
+  .footer__inner {
+    max-width: 900px;
+    margin-inline: auto;
+    padding: 3.5rem 1.5rem 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
 
-	.footer__app-name {
-		font-size: 1.1rem;
-		font-weight: 700;
-		letter-spacing: -0.02em;
-		color: var(--color-primary);
-		margin-bottom: 0.6rem;
-		/* Left-aligned tick mark */
-		padding-left: 0.85rem;
-		border-left: 3px solid var(--color-primary);
-		line-height: 1.3;
-	}
+  /* ── Brand block ── */
+  .footer__brand {
+    flex: 1 1 200px;
+  }
 
-	.footer__tagline {
-		font-size: 0.875rem;
-		font-weight: 400;
-		line-height: 1.6;
-		color: rgba(255, 255, 255, 0.55);
-		padding-left: 0.85rem;
-	}
+  .footer__app-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--color-primary);
+    margin-bottom: 0.6rem;
+    /* Left-aligned tick mark */
+    padding-left: 0.85rem;
+    border-left: 3px solid var(--color-primary);
+    line-height: 1.3;
+  }
 
-	/* ── Nav block ── */
-	.footer__nav {
-		flex: 0 1 auto;
-		align-self: center;
-	}
+  .footer__tagline {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.55);
+    padding-left: 0.85rem;
+  }
 
-	.footer__nav-list {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.6rem;
-	}
+  /* ── Nav block ── */
+  .footer__nav {
+    flex: 0 1 auto;
+    align-self: center;
+  }
 
-	.footer__nav-link {
-		font-size: 0.9rem;
-		font-weight: 500;
-		color: rgba(255, 255, 255, 0.65);
-		text-decoration: none;
-		letter-spacing: 0.01em;
-		position: relative;
-		transition: color 150ms ease;
-	}
+  .footer__nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
 
-	/* Underline that slides in from the left on hover */
-	.footer__nav-link::after {
-		content: "";
-		position: absolute;
-		bottom: -2px;
-		left: 0;
-		width: 0;
-		height: 2px;
-		background-color: var(--color-primary);
-		transition: width 200ms cubic-bezier(0.22, 1, 0.36, 1);
-	}
+  .footer__nav-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    line-height: 1.43;
+    position: relative;
+    transition: color 150ms ease;
+  }
 
-	.footer__nav-link:hover,
-	.footer__nav-link:focus-visible {
-		color: var(--color-white);
-		outline: none;
-	}
+  /* Underline that slides in from the left on hover */
+  .footer__nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-primary);
+    transition: width 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
 
-	.footer__nav-link:hover::after,
-	.footer__nav-link:focus-visible::after {
-		width: 100%;
-	}
+  .footer__nav-link:hover,
+  .footer__nav-link:focus-visible {
+    color: var(--color-white);
+    outline: none;
+  }
 
-	.footer__nav-link:focus-visible {
-		outline: 2px solid var(--color-primary);
-		outline-offset: 3px;
-		border-radius: 2px;
-	}
+  .footer__nav-link:hover::after,
+  .footer__nav-link:focus-visible::after {
+    width: 100%;
+  }
 
-	/* ── Social block ── */
-	.footer__social {
-		flex: 0 1 auto;
-		display: flex;
-		gap: 0.75rem;
-		align-items: center;
-		align-self: center;
-	}
+  .footer__nav-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
 
-	.footer__social-link {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 2.5rem;
-		height: 2.5rem;
-		border: var(--border-width) solid rgba(255, 255, 255, 0.2);
-		border-radius: var(--radius-sm);
-		color: rgba(255, 255, 255, 0.65);
-		text-decoration: none;
-		box-shadow: 3px 3px 0 0 rgba(255, 255, 255, 0.08);
-		transform: translate(0, 0);
-		transition:
-			color 150ms ease,
-			border-color 150ms ease,
-			transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
-			box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1);
-	}
+  /* ── Social block ── */
+  .footer__social {
+    flex: 0 1 auto;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    align-self: center;
+  }
 
-	.footer__social-link:hover,
-	.footer__social-link:focus-visible {
-		color: var(--color-primary);
-		border-color: var(--color-primary);
-		transform: translate(3px, 3px);
-		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.08);
-		outline: none;
-	}
+  .footer__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: var(--border-width) solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+    color: rgba(255, 255, 255, 0.65);
+    text-decoration: none;
+    box-shadow: 3px 3px 0 0 rgba(255, 255, 255, 0.08);
+    transform: translate(0, 0);
+    transition:
+      color 150ms ease,
+      border-color 150ms ease,
+      transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
 
-	.footer__social-link:focus-visible {
-		outline: 2px solid var(--color-primary);
-		outline-offset: 2px;
-	}
+  .footer__social-link:hover,
+  .footer__social-link:focus-visible {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.08);
+    outline: none;
+  }
 
-	.footer__social-link svg {
-		width: 1.1rem;
-		height: 1.1rem;
-		flex-shrink: 0;
-	}
+  .footer__social-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 
-	/* ── Bottom copyright bar ── */
-	.footer__bottom {
-		border-top: 1px solid rgba(255, 255, 255, 0.08);
-		padding: 1.25rem 1.5rem;
-		text-align: center;
-	}
+  .footer__social-link svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
+  }
 
-	.footer__copyright {
-		font-size: 0.8rem;
-		font-weight: 400;
-		color: rgba(255, 255, 255, 0.35);
-		letter-spacing: 0.02em;
-	}
+  /* ── Bottom copyright bar ── */
+  .footer__bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+  }
 
-	@media (max-width: 600px) {
-		.footer__inner {
-			flex-direction: column;
-			gap: 2rem;
-			padding: 2.5rem 1.25rem 2rem;
-			align-items: flex-start;
-		}
+  .footer__copyright {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.04em;
+    line-height: 1.33;
+  }
 
-		.footer__brand,
-		.footer__nav,
-		.footer__social {
-			flex: none;
-			width: 100%;
-		}
+  @media (max-width: 600px) {
+    .footer__inner {
+      flex-direction: column;
+      gap: 2rem;
+      padding: 2.5rem 1.25rem 2rem;
+      align-items: flex-start;
+    }
 
-		.footer__social {
-			justify-content: flex-start;
-		}
+    .footer__brand,
+    .footer__nav,
+    .footer__social {
+      flex: none;
+      width: 100%;
+    }
 
-		.footer__bottom {
-			padding: 1rem 1.25rem;
-		}
-	}
+    .footer__social {
+      justify-content: flex-start;
+    }
 
-	@media (prefers-reduced-motion: reduce) {
-		.cta__btn,
-		.footer__social-link {
-			transition: none;
-		}
+    .footer__bottom {
+      padding: 1rem 1.25rem;
+    }
+  }
 
-		.footer__nav-link::after {
-			transition: none;
-		}
-	}
+  @media (prefers-reduced-motion: reduce) {
+    .cta__btn,
+    .footer__social-link {
+      transition: none;
+    }
+
+    .footer__nav-link::after {
+      transition: none;
+    }
+  }
 </style>
