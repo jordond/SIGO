@@ -161,7 +161,7 @@ internal fun ForecastHomeScreen(
                     data = data,
                     period = period,
                     changePeriod = dispatcher.rememberRelayOf(ForecastHomeAction::ChangePeriod),
-                    location = location,
+                    location = location?.takeUnless { it.isDefaultName },
                     onLocationClick = dispatcher.rememberRelay(ForecastHomeAction.OpenLocationSheet),
                     instant = instant,
                     modifier = Modifier.padding(top = AppTheme.spacing.standard),
