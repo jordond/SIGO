@@ -1,6 +1,8 @@
 ---
 import appleLogo from "../assets/apple-logo.svg?raw"
 import googlePlayLogo from "../assets/google-play-logo.svg?raw"
+import { Image } from "astro:assets"
+import screenshotYes from "../assets/screenshot_yes.jpg"
 
 // Hero.astro — "Should I Go Outside?" landing hero
 // Neobrutalism: chunky borders, hard shadows, bright pops of color, a tilted headline card
@@ -39,54 +41,70 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
 
   <!-- Main content -->
   <div class="hero__inner">
-    <!-- Tilted headline card -->
-    <div class="hero__title-card">
-      <h1 class="hero__title">Should I<br />Go Outside?</h1>
+    <!-- Text column -->
+    <div class="hero__text">
+      <!-- Tilted headline card -->
+      <div class="hero__title-card">
+        <h1 class="hero__title">Should I<br />Go Outside?</h1>
+      </div>
+
+      <!-- Tagline -->
+      <p class="hero__tagline">
+        The weather app that answers<br class="tagline-break" /> the only question that
+        matters.
+      </p>
+
+      <!-- Description -->
+      <p class="hero__description">
+        No radar maps. No pollen counts. No 10-day forecasts you'll never read.<br
+          class="desc-break"
+        />
+        Just the answer you actually need.
+      </p>
+
+      <!-- CTA buttons -->
+      <div class="hero__ctas">
+        <a
+          href="#"
+          class="btn btn--ios"
+          aria-label="Download for iOS on the App Store"
+        >
+          <span class="btn__icon" aria-hidden="true">
+            <Fragment set:html={appleLogo} />
+          </span>
+          <span class="btn__text">
+            <span class="btn__label">Download for</span>
+            <span class="btn__platform">iOS</span>
+          </span>
+        </a>
+
+        <a
+          href="#"
+          class="btn btn--android"
+          aria-label="Download for Android on the Play Store"
+        >
+          <span class="btn__icon" aria-hidden="true">
+            <Fragment set:html={googlePlayLogo} />
+          </span>
+          <span class="btn__text">
+            <span class="btn__label">Download for</span>
+            <span class="btn__platform">Android</span>
+          </span>
+        </a>
+      </div>
     </div>
 
-    <!-- Tagline -->
-    <p class="hero__tagline">
-      The weather app that answers<br class="tagline-break" /> the only question that
-      matters.
-    </p>
-
-    <!-- Description -->
-    <p class="hero__description">
-      No radar maps. No pollen counts. No 10-day forecasts you'll never read.<br
-        class="desc-break"
-      />
-      Just the answer you actually need.
-    </p>
-
-    <!-- CTA buttons -->
-    <div class="hero__ctas">
-      <a
-        href="#"
-        class="btn btn--ios"
-        aria-label="Download for iOS on the App Store"
-      >
-        <span class="btn__icon" aria-hidden="true">
-          <Fragment set:html={appleLogo} />
-        </span>
-        <span class="btn__text">
-          <span class="btn__label">Download for</span>
-          <span class="btn__platform">iOS</span>
-        </span>
-      </a>
-
-      <a
-        href="#"
-        class="btn btn--android"
-        aria-label="Download for Android on the Play Store"
-      >
-        <span class="btn__icon" aria-hidden="true">
-          <Fragment set:html={googlePlayLogo} />
-        </span>
-        <span class="btn__text">
-          <span class="btn__label">Download for</span>
-          <span class="btn__platform">Android</span>
-        </span>
-      </a>
+    <!-- Phone screenshot -->
+    <div class="hero__phone-wrap">
+      <div class="hero__phone">
+        <Image
+          src={screenshotYes}
+          alt="Should I Go Outside app showing a YES answer with sunny weather details"
+          class="hero__phone-screenshot"
+          width={280}
+          loading="eager"
+        />
+      </div>
     </div>
 
     <!-- Scroll nudge -->
@@ -285,12 +303,56 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
     position: relative;
     z-index: 1;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  .hero__text {
+    display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 2rem;
-    max-width: 780px;
+    flex: 1 1 0%;
+  }
+
+  /* ── Hero phone ── */
+  .hero__phone-wrap {
+    flex: 1 1 0%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: rotate(3deg) translateY(10px);
+    animation: float-a 6s ease-in-out infinite;
+  }
+
+  .hero__phone {
+    position: relative;
+    width: 280px;
+    border-radius: 36px;
+    border: 3px solid var(--color-outline);
+    padding: 5px;
+    background-color: var(--color-outline);
+    box-shadow: 8px 10px 0 0 var(--color-outline);
+    overflow: hidden;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .hero__phone:hover {
+    transform: translateY(-6px);
+    box-shadow: 12px 14px 0 0 var(--color-outline);
+  }
+
+  .hero__phone-screenshot {
+    display: block;
     width: 100%;
+    height: auto;
+    border-radius: 31px;
   }
 
   .hero__title-card {
@@ -472,6 +534,26 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
     }
   }
 
+  @media (max-width: 900px) {
+    .hero__inner {
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .hero__phone-wrap {
+      transform: rotate(2deg);
+    }
+
+    .hero__phone {
+      width: 220px;
+      border-radius: 30px;
+    }
+
+    .hero__phone-screenshot {
+      border-radius: 25px;
+    }
+  }
+
   @media (max-width: 640px) {
     .hero {
       padding: 5rem 1.25rem 4rem;
@@ -479,7 +561,6 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
 
     .hero__title-card {
       padding: 1.25rem 1.75rem 1.5rem;
-      /* Reduce shadow on small screens so it doesn't clip */
       box-shadow: 6px 6px 0 0 var(--color-outline);
     }
 
@@ -496,6 +577,20 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
     .btn {
       width: 100%;
       justify-content: center;
+    }
+
+    .hero__phone-wrap {
+      transform: rotate(1.5deg);
+    }
+
+    .hero__phone {
+      width: 200px;
+      border-radius: 26px;
+      box-shadow: 6px 8px 0 0 var(--color-outline);
+    }
+
+    .hero__phone-screenshot {
+      border-radius: 22px;
     }
 
     /* Tuck large background shapes further out of frame on small screens */
@@ -525,11 +620,13 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
   /* Reduce motion for users who prefer it */
   @media (prefers-reduced-motion: reduce) {
     .shape,
-    .hero__scroll-nudge {
+    .hero__scroll-nudge,
+    .hero__phone-wrap {
       animation: none;
     }
 
-    .hero__title-card {
+    .hero__title-card,
+    .hero__phone {
       transition: none;
     }
 
