@@ -63,7 +63,6 @@ internal fun LocationResultsList(
                     )
                 }
             }
-
             results.isNotEmpty() -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
@@ -78,7 +77,6 @@ internal fun LocationResultsList(
                     }
                 }
             }
-
             query.isNotBlank() -> {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -126,9 +124,9 @@ private class ResultsParams : PreviewParameterProvider<LocationResultsListState>
             LocationResultsListState(
                 query = "New York",
                 results = persistentListOf(
-                    Location(40.7128, -74.0060, "New York"),
-                    Location(40.7282, -73.7949, "New York Mills"),
-                    Location(42.6866, -73.8269, "New York State Capitol"),
+                    Location(40.7128, -74.0060, "New York", "New York", "United States"),
+                    Location(40.7282, -73.7949, "New York Mills", "New York", "United States"),
+                    Location(42.6866, -73.8269, "New York State Capitol", "New York", "United States"),
                 ),
                 searching = false,
             ),

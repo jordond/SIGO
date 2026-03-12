@@ -12,6 +12,10 @@ internal data class LocationEntity(
     val longitude: Double,
     @SerialName("name")
     val name: String?,
+    @SerialName("administrativeArea")
+    val administrativeArea: String? = null,
+    @SerialName("country")
+    val country: String? = null,
 )
 
 internal fun Location.toEntity() =
@@ -19,6 +23,8 @@ internal fun Location.toEntity() =
         latitude = latitude,
         longitude = longitude,
         name = if (isDefaultName) null else name,
+        administrativeArea = administrativeArea,
+        country = country,
     )
 
 internal fun LocationEntity.toModel() =
@@ -26,4 +32,6 @@ internal fun LocationEntity.toModel() =
         latitude = latitude,
         longitude = longitude,
         name = name,
+        administrativeArea = administrativeArea,
+        country = country,
     )

@@ -112,8 +112,8 @@ private class SheetParams : PreviewParameterProvider<LocationSearchSheetState> {
             LocationSearchSheetState(
                 query = "New York",
                 results = persistentListOf(
-                    Location(40.7128, -74.0060, "New York"),
-                    Location(40.7282, -73.7949, "New York Mills"),
+                    Location(40.7128, -74.0060, "New York", "New York", "United States"),
+                    Location(40.7282, -73.7949, "New York Mills", "New York", "United States"),
                 ),
                 searching = false,
                 usingCurrentLocation = false,
