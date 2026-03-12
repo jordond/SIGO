@@ -35,6 +35,19 @@ public data class ForecastData(
             ForecastPeriodData(period, block, score)
         }
     }
+
+    public fun forBlock(block: ForecastBlock): Score? =
+        when (block) {
+            forecast.current -> score.current
+            forecast.today.block -> score.today
+            forecast.tomorrow?.block -> score.days.getOrNull(0)
+            else -> {
+                forecast.today.hours
+                    .indexOfFirst { it == block }
+                    .takeIf { it >= 0 }
+                    ?.let { score.hours.getOrNull(it) }
+            }
+        }
 }
 
 public data class ForecastPeriodData(

@@ -23,4 +23,6 @@ public data class Forecast(
     val instant: Instant,
 ) {
     val tomorrow: ForecastDay? get() = days.getOrNull(0)
+
+    public fun hour(index: Int): ForecastBlock? = today.hours.getOrNull(index)
 }

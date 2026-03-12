@@ -42,8 +42,11 @@ import app.sigot.core.ui.brutal
 import app.sigot.core.ui.ktx.get
 
 @Composable
-internal fun ForecastPeriodData.brutalColor(): BrutalColors =
-    when (score.result) {
+internal fun ForecastPeriodData.brutalColor(): BrutalColors = score.result.color()
+
+@Composable
+internal fun ScoreResult.color(): BrutalColors =
+    when (this) {
         ScoreResult.Yes -> AppTheme.colors.brutal.green
         ScoreResult.Maybe -> AppTheme.colors.brutal.yellow
         ScoreResult.No -> AppTheme.colors.brutal.red

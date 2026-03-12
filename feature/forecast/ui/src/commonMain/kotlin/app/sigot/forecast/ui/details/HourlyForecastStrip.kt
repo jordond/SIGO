@@ -40,11 +40,15 @@ import app.sigot.core.ui.icons.lucide.Droplet
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.ktx.scrollToBottom
 import app.sigot.core.ui.ktx.scrollToTop
+import app.sigot.core.ui.ktx.text
 import app.sigot.core.ui.mappers.units.rememberUnit
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.ForecastPreviewData
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
@@ -71,7 +75,7 @@ internal fun HourlyForecastStrip(
             tomorrow -> listState.scrollToBottom()
             else -> {
                 hours.indexOf(selected).takeIf { it != -1 }?.let { index ->
-                    listState.animateScrollToItem(index)
+                    listState.animateScrollToItem(index + 1)
                 }
             }
         }
@@ -88,15 +92,20 @@ internal fun HourlyForecastStrip(
                 text = Res.string.forecast_period_now.get(),
                 block = now,
                 tempUnit = tempUnit,
-                isSelected = now == selected || selected == null,
-                onClick = { onSelected(null) },
+                isSelected = now == selected,
+                onClick = { onSelected(now) },
             )
         }
 
         items(hours, key = { it.instant.toString() }) { hour ->
             val isSelected = selected == hour
+            val dateTime = remember(hour.instant) {
+                val hour = hour.instant.toLocalDateTime(TimeZone.currentSystemDefault()).hour
+                LocalTime(hour = hour, minute = 0)
+            }
 
             HourCard(
+                text = dateTime.text(),
                 block = hour,
                 tempUnit = tempUnit,
                 isSelected = isSelected,
@@ -112,7 +121,7 @@ internal fun HourlyForecastStrip(
                     tempUnit = tempUnit,
                     isSelected = tomorrow == selected,
                     onClick = { onSelected(tomorrow) },
-                    modifier = modifier.animateItem(),
+                    modifier = Modifier.animateItem(),
                 )
             }
         }
@@ -121,15 +130,13 @@ internal fun HourlyForecastStrip(
 
 @Composable
 internal fun HourCard(
+    text: String,
     block: ForecastBlock,
     tempUnit: String,
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    text: String? = null,
 ) {
-    val title = text ?: Res.string.forecast_period_now.get()
-
     val colors = if (isSelected) {
         AppTheme.colors.brutal.yellow
     } else {
@@ -150,7 +157,7 @@ internal fun HourCard(
                 .padding(vertical = 12.dp, horizontal = 4.dp),
         ) {
             Text(
-                text = title,
+                text = text,
                 style = AppTheme.typography.body1,
                 maxLines = 1,
                 autoSize = AppTheme.typography.body1.autoSize(),
@@ -214,6 +221,7 @@ private fun HourlyForecastStripPreview() {
 private fun HourCardSelectedPreview() {
     AppPreview {
         HourCard(
+            text = "Now",
             block = ForecastPreviewData.rainy(),
             tempUnit = "°C",
             isSelected = true,
@@ -228,6 +236,7 @@ private fun HourCardSelectedPreview() {
 private fun HourCardUnselectedPreview() {
     AppPreview {
         HourCard(
+            text = "Foo",
             block = ForecastPreviewData.sunny(),
             tempUnit = "°C",
             isSelected = false,
