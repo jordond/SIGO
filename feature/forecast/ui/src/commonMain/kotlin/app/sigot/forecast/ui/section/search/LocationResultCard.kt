@@ -48,7 +48,8 @@ internal fun LocationResultCard(
                     style = AppTheme.typography.body1,
                 )
                 Text(
-                    text = "${location.roundedLatitude}, ${location.roundedLongitude}",
+                    text = location.subtitle
+                        ?: "${location.roundedLatitude}, ${location.roundedLongitude}",
                     style = AppTheme.typography.label1,
                     color = AppTheme.colors.textSecondary,
                 )
@@ -62,7 +63,7 @@ internal fun LocationResultCard(
 private fun LocationResultCardPreview() {
     AppPreview {
         LocationResultCard(
-            location = Location(40.7128, -74.0060, "New York"),
+            location = Location(40.7128, -74.0060, "New York", "New York", "United States"),
             onClick = {},
             modifier = Modifier.fillMaxWidth().padding(16.dp),
         )

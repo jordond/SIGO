@@ -11,6 +11,10 @@ public data class ForecastEntity(
     public val locationLong: Double,
     @SerialName("location_name")
     public val locationName: String,
+    @SerialName("location_administrative_area")
+    public val locationAdministrativeArea: String? = null,
+    @SerialName("location_country")
+    public val locationCountry: String? = null,
     @SerialName("current")
     public val current: ForecastBlockEntity,
     @SerialName("today")

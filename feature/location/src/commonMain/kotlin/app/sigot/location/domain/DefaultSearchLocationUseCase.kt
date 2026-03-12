@@ -25,6 +25,8 @@ internal class DefaultSearchLocationUseCase(
                     latitude = place.coordinates.latitude,
                     longitude = place.coordinates.longitude,
                     name = name,
+                    administrativeArea = place.administrativeArea,
+                    country = place.country,
                 )
             } ?: emptyList()
     }

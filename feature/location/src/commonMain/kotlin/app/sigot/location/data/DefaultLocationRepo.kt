@@ -111,7 +111,11 @@ internal class DefaultLocationRepo(
                 logger.d { "Geocoding result: $place" }
 
                 val name = place.locality ?: place.subAdministrativeArea ?: place.firstValue
-                val updated = result.location.copy(name = name)
+                val updated = result.location.copy(
+                    name = name,
+                    administrativeArea = place.administrativeArea,
+                    country = place.country,
+                )
                 settingsRepo.update { state ->
                     state.copy(
                         lastLocation = updated,
