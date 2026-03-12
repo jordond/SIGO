@@ -34,14 +34,13 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import kotlin.coroutines.cancellation.CancellationException
 
-private const val DEBOUNCE_MS = 500L
 private const val MIN_SEARCH_INDICATOR_MS = 500L
 
 @Stable
@@ -102,7 +101,6 @@ internal class ForecastHomeModel(
             return
         }
         searchJob = viewModelScope.launch {
-            delay(DEBOUNCE_MS)
             try {
                 val results = ensureExecutionTime(MIN_SEARCH_INDICATOR_MS) {
                     searchLocationUseCase.search(query).toPersistentList()
@@ -125,7 +123,10 @@ internal class ForecastHomeModel(
             )
         }
         closeLocationSheet()
-        forecastStateHolder.fetch()
+        viewModelScope.launch {
+            settingsRepo.settings.first { it.useCustomLocation && it.customLocation == location }
+            forecastStateHolder.fetch()
+        }
     }
 
     fun useCurrentLocation() {
@@ -136,7 +137,10 @@ internal class ForecastHomeModel(
             )
         }
         closeLocationSheet()
-        forecastStateHolder.fetch()
+        viewModelScope.launch {
+            settingsRepo.settings.first { !it.useCustomLocation }
+            forecastStateHolder.fetch()
+        }
     }
 
     override fun onCleared() {
@@ -207,14 +211,11 @@ private fun state(
     settingsRepo.settings
         .map { settings ->
             val location = if (settings.useCustomLocation) settings.customLocation else settings.lastLocation
-            location to settings.preferences
+            Triple(location, settings.preferences, !settings.useCustomLocation)
         }.distinctUntilChanged()
-        .into { (location, preferences) -> copy(location = location, preferences = preferences) }
-
-    settingsRepo.settings
-        .map { !it.useCustomLocation }
-        .distinctUntilChanged()
-        .into { usingCurrent -> copy(usingCurrentLocation = usingCurrent) }
+        .into { (location, preferences, usingCurrent) ->
+            copy(location = location, preferences = preferences, usingCurrentLocation = usingCurrent)
+        }
 
     forecastStateHolder.state.into { status ->
         when (status) {

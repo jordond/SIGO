@@ -17,10 +17,12 @@ internal class DefaultSearchLocationUseCase(
         return result
             .onFailed { error -> logger.e { "Autocomplete search failed: ${error.message}" } }
             .getOrNull()
-            ?.map { place ->
+            ?.mapNotNull { place ->
                 val name = place.locality
                     ?: place.subAdministrativeArea
+                    ?: place.administrativeArea
                     ?: place.firstValue.takeUnless { it.isNullOrBlank() }
+                    ?: return@mapNotNull null
                 Location.create(
                     latitude = place.coordinates.latitude,
                     longitude = place.coordinates.longitude,
