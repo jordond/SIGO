@@ -20,7 +20,7 @@ internal class DefaultSearchLocationUseCase(
             ?.map { place ->
                 val name = place.locality
                     ?: place.subAdministrativeArea
-                    ?: place.firstValue
+                    ?: place.firstValue.takeUnless { it.isNullOrBlank() }
                 Location.create(
                     latitude = place.coordinates.latitude,
                     longitude = place.coordinates.longitude,

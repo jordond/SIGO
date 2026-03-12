@@ -35,11 +35,11 @@ import app.sigot.core.ui.preview.PreviewData
 import app.sigot.forecast.ui.ForecastHomeModel.Event
 import app.sigot.forecast.ui.components.Header
 import app.sigot.forecast.ui.components.LoadingBox
-import app.sigot.forecast.ui.components.LocationSearchSheet
 import app.sigot.forecast.ui.components.NoDataForPeriod
 import app.sigot.forecast.ui.components.mappers.rememberInstant
 import app.sigot.forecast.ui.section.ForecastScoreContent
 import app.sigot.forecast.ui.section.HomeBottomBar
+import app.sigot.forecast.ui.section.search.LocationSearchSheet
 import dev.stateholder.dispatcher.Dispatcher
 import dev.stateholder.dispatcher.rememberDebounceDispatcher
 import dev.stateholder.dispatcher.rememberDispatcher
@@ -81,6 +81,7 @@ internal fun ForecastHomeScreen(
         permissionStatus = state.permissionStatus,
         snackbarHostState = snackbar.hostState,
         showLocationSheet = state.showLocationSheet,
+        usingCurrentLocation = state.usingCurrentLocation,
         searchQuery = state.searchQuery,
         searchResults = state.searchResults,
         searching = state.searching,
@@ -114,6 +115,7 @@ internal fun ForecastHomeScreen(
     permissionStatus: LocationPermissionStatus = LocationPermissionStatus.Unknown,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     showLocationSheet: Boolean = false,
+    usingCurrentLocation: Boolean = true,
     searchQuery: String = "",
     searchResults: PersistentList<Location> = persistentListOf(),
     searching: Boolean = false,
@@ -200,6 +202,7 @@ internal fun ForecastHomeScreen(
 
     LocationSearchSheet(
         isVisible = showLocationSheet,
+        usingCurrentLocation = usingCurrentLocation,
         query = searchQuery,
         results = searchResults,
         searching = searching,
