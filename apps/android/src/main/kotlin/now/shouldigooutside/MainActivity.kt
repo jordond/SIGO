@@ -1,4 +1,4 @@
-package app.sigot
+package now.shouldigooutside
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
