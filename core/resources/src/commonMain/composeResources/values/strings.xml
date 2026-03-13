@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Should I go outside today?</string>
-    <string name="app_name_short">SIGOT</string>
+    <string name="app_name">Should I go outside?</string>
+    <string name="app_name_short">SIGO</string>
     <string name="blank" />
     <string name="progress">%1$d%</string>
     <string name="dismiss">Dismiss</string>
@@ -67,13 +67,7 @@
     <string name="permission_status">Permissions %1$s</string>
     <string name="permission_granted">Granted</string>
     <string name="permission_denied">Denied</string>
-    <string name="permission_unknown">Unknown</string>
-
-    <string name="cyclone">Cyclone</string>
-    <string name="open_github">Open NOTHING</string>
-    <string name="run">Run</string>
-    <string name="stop">Stop</string>
-    <string name="theme">Theme</string>
+    <string name="permission_unknown">Needed</string>
 
     <string name="time_am">AM</string>
     <string name="time_pm">PM</string>
@@ -97,16 +91,6 @@
     <string name="month_november">November</string>
     <string name="month_december">December</string>
 
-    <string name="month_january_short">Jan</string>
-    <string name="month_february_short">Feb</string>
-    <string name="month_march_short">Mar</string>
-    <string name="month_april_short">Apr</string>
-    <string name="month_august_short">Aug</string>
-    <string name="month_september_short">Sep</string>
-    <string name="month_october_short">Oct</string>
-    <string name="month_november_short">Nov</string>
-    <string name="month_december_short">Dec</string>
-
     <string name="day_of_week_sunday">Sunday</string>
     <string name="day_of_week_monday">Monday</string>
     <string name="day_of_week_tuesday">Tuesday</string>
@@ -128,7 +112,6 @@
     <string name="day_of_week_ordinal_third">rd</string>
     <string name="day_of_week_ordinal_th">th</string>
 
-    <string name="unit_preset_title">Quick Select</string>
     <string name="unit_preset_si">SI</string>
     <string name="unit_preset_metric">Metric</string>
     <string name="unit_preset_imperial">Imperial</string>
@@ -153,7 +136,6 @@
     <string name="unit_distance_km">km</string>
     <string name="unit_distance_mile">mi</string>
 
-    <string name="onboarding">Onboarding</string>
     <string name="onboarding_welcome_preamble">Welcome to</string>
     <string name="onboarding_welcome">"Should I go outside today?"</string>
     <string name="onboarding_welcome_footer">Your brutally honest weather buddy that doesn't sugarcoat the forecast! We'll tell you when to go out and explore, or just stay home and binge-watch shows instead.</string>
@@ -163,6 +145,8 @@
     <string name="onboarding_preferences_subtext">Tell us your weather comfort levels</string>
     <string name="onboarding_location">Location</string>
     <string name="onboarding_location_subtext">We use your approximate location to fetch the weather</string>
+    <string name="onboarding_summary_title">We're all set</string>
+    <string name="onboarding_summary_text">Let's get started!</string>
 
     <string name="preferences_temp_description">When is it too cold or too hot to go outside?</string>
     <string name="preferences_temp_min">min: %1$s</string>
@@ -194,7 +178,6 @@
     <string name="location_longitude">Longitude</string>
     <string name="location_place">Place</string>
     <string name="location_warning_dialog_text">You can continue without setting a location but the app will not be able to function properly.\n\nLocation is required in order to fetch the weather forecast, you can set your location later.</string>
-    <string name="location_set">Set location</string>
     <string name="location_change">Change Location</string>
     <string name="location_search_placeholder">Search for a city…</string>
     <string name="location_use_current">Use current location</string>
@@ -205,14 +188,12 @@
     <string name="forecast_title">Should I go outside</string>
     <string name="forecast_title_in">in</string>
     <string name="forecast_period_now">Now</string>
-    <string name="forecast_period_description">Choose a time period</string>
     <string name="forecast_period_today">Today</string>
     <string name="forecast_period_hour">at %1$s</string>
     <string name="forecast_period_tomorrow">Tomorrow</string>
     <string name="forecast_period_no_data">There is no data available for this time period, please select a different period.</string>
     <string name="forecast_view_details">View Details</string>
 
-    <string name="score">Score</string>
     <string name="score_yes">Yes</string>
     <string name="score_maybe">Maybe</string>
     <string name="score_no">No</string>
@@ -239,8 +220,6 @@
     <string name="score_precipitation_status_inside">None</string>
     <string name="score_precipitation_status_outside">Too much</string>
     <string name="score_precipitation_status_near">Some</string>
-    <string name="score_severe_weather">Severe weather</string>
-    <string name="score_severe_weather_inside">No severe weather!</string>
     <string name="score_severe_weather_outside">There is severe weather out there!</string>
     <string name="score_severe_weather_near">Chance of severe weather</string>
 
@@ -274,7 +253,6 @@
     <string name="settings_internal_backend_api_desc">The address of the backend API to use</string>
     <string name="settings_internal_backend_direct_api">Direct API</string>
     <string name="settings_internal_backend_direct_api_desc">Bypass the SIGOT backend and use the weather API directly, this requires an API token</string>
-    <string name="settings_internal_backend_direct_api_token">API Token</string>
     <string name="settings_internal_backend_direct_api_token_placeholder">Enter your API key</string>
     <string name="settings_internal_reset">Reset internal settings</string>
     <string name="settings_internal_clear_forecast_cache">Clear Forecast Cache</string>
@@ -297,7 +275,6 @@
     <string name="forecast_details_cloud_cover">Cloud Cover</string>
     <string name="forecast_details_precipitation">Precipitation</string>
     <string name="forecast_details_precipitation_chance">%1$d% chance - %2$s</string>
-    <string name="forecast_details_now">Now</string>
     <string name="forecast_details_wind_direction_n">N</string>
     <string name="forecast_details_wind_direction_ne">NE</string>
     <string name="forecast_details_wind_direction_e">E</string>
