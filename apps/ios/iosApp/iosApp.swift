@@ -1,8 +1,13 @@
 import SwiftUI
+import FirebaseCore
 import iosApp
 
 @main
 struct ComposeApp: App {
+    init() {
+        FirebaseApp.configure()
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView().ignoresSafeArea(.all)

@@ -31,10 +31,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F73E86D62DDF756500E89B14 /* FirebaseRemoteConfig in Frameworks */,
-				F73E86DE2DDF80C200E89B14 /* FirebaseCore in Frameworks */,
 				F73E86D22DDF756500E89B14 /* FirebaseCore in Frameworks */,
-				F73E86E22DDF80C200E89B14 /* FirebaseRemoteConfig in Frameworks */,
-				F73E86E02DDF80C200E89B14 /* FirebaseCrashlytics in Frameworks */,
 				F73E86DC2DDF80C200E89B14 /* FirebaseAnalytics in Frameworks */,
 				F73E86D42DDF756500E89B14 /* FirebaseCrashlytics in Frameworks */,
 			);
@@ -315,13 +312,14 @@
 				INFOPLIST_FILE = iosApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Should I Go Outside";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.weather";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Course location is required to fetch weather data for your position";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.sigot.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = now.shouldigooutside;
 				PRODUCT_NAME = SIGOT;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -337,18 +335,20 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = 7YZ4RG7YHP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Should I Go Outside";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.weather";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Course location is required to fetch weather data for your position";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.sigot.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = now.shouldigooutside;
 				PRODUCT_NAME = SIGOT;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -410,21 +410,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F73E86D02DDF756500E89B14 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalytics;
-		};
-		F73E86DD2DDF80C200E89B14 /* FirebaseCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F73E86D02DDF756500E89B14 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCore;
-		};
-		F73E86DF2DDF80C200E89B14 /* FirebaseCrashlytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F73E86D02DDF756500E89B14 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCrashlytics;
-		};
-		F73E86E12DDF80C200E89B14 /* FirebaseRemoteConfig */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F73E86D02DDF756500E89B14 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseRemoteConfig;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
