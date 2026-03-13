@@ -36,6 +36,7 @@ kotlin {
 
             implementation(libs.compose.windowSizeClass)
             api(libs.kermit)
+            implementation(libs.kermit.crashlytics)
             implementation(libs.kermit.koin)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
