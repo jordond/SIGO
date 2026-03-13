@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.text.appendInlineContent
@@ -55,7 +56,7 @@ internal fun HeaderText(
 ) {
     val buttonText = period.rememberText(instant)
 
-    val textLength = measureTextWidth(buttonText, style)
+    val textLength = measureTextWidth(buttonText)
     val inlineContent = remember(buttonText) {
         mapOf(
             INLINE_CONTENT_ID to InlineTextContent(
@@ -67,7 +68,9 @@ internal fun HeaderText(
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.padding(start = 4.dp),
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .wrapContentSize(unbounded = true),
                 ) {
                     Button(
                         onClick = onClick,
@@ -100,20 +103,14 @@ internal fun HeaderText(
 }
 
 @Composable
-private fun measureTextWidth(
-    text: String,
-    style: TextStyle,
-): TextUnit {
+private fun measureTextWidth(text: String): TextUnit {
     val textMeasurer = rememberTextMeasurer()
-    val percent = remember(text) {
-        when (text.length) {
-            in 1..5 -> 0.95f
-            in 6..10 -> 0.85f
-            else -> 0.8f
-        }
-    }
-    val widthInPixels = textMeasurer.measure(text, style).size.width * percent
-    return with(LocalDensity.current) { widthInPixels.toSp() }
+    val buttonStyle = AppTheme.typography.h2
+    val density = LocalDensity.current
+    val textWidthPx = textMeasurer.measure(text, buttonStyle).size.width
+    // 4.dp Box start padding + 8.dp×2 Button horizontal content padding + 4.dp brutal elevation shadow
+    val paddingPx = with(density) { 24.dp.toPx() }
+    return with(density) { (textWidthPx + paddingPx).toSp() }
 }
 
 @Preview
