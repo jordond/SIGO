@@ -61,11 +61,9 @@ public class RateLimiter(
         val allowed = newCount <= maxRequests
         val remaining = (maxRequests - newCount).coerceAtLeast(0)
 
-        if (allowed) {
-            val updated = currentWindow.copy(count = newCount)
-            val ttl = (resetAt - nowSeconds).toInt().coerceAtLeast(1)
-            cache.put(key, json.encodeToString(updated), ttl)
-        }
+        val updated = currentWindow.copy(count = newCount)
+        val ttl = (resetAt - nowSeconds).toInt().coerceAtLeast(1)
+        cache.put(key, json.encodeToString(updated), ttl)
 
         return RateLimitResult(
             allowed = allowed,
