@@ -106,8 +106,8 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
-firebase-common = { module = "com.google.firebase:firebase-common-ktx" }
-firebase-config = { module = "com.google.firebase:firebase-config-ktx" }
+firebase-common = { module = "com.google.firebase:firebase-common" }
+firebase-config = { module = "com.google.firebase:firebase-config" }
 firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
 firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debug" }
 firebase-kmp-analytics = { module = "dev.gitlive:firebase-analytics", version.ref = "firebase-kmp" }
