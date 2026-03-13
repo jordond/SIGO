@@ -9,17 +9,22 @@ import app.sigot.forecast.ui.forecastUiModule
 import app.sigot.location.locationModule
 import app.sigot.onboarding.onboardingModule
 import app.sigot.settings.settingsModule
+import co.touchlab.kermit.ExperimentalKermitApi
 import co.touchlab.kermit.Logger
+import co.touchlab.kermit.crashlytics.CrashlyticsLogWriter
 import co.touchlab.kermit.koin.KermitKoinLogger
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
+@OptIn(ExperimentalKermitApi::class)
 public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
     startKoin {
         appDeclaration()
 
         logger(KermitKoinLogger(Logger.withTag(tag = "Koin")))
+
+        Logger.addLogWriter(CrashlyticsLogWriter())
 
         modules(
             appModule(),
