@@ -59,7 +59,7 @@ internal class ForecastHomeModel(
     private val logger = Logger.withTag("ForecastHomeModel")
 
     init {
-        forecastStateHolder.start()
+        forecastStateHolder.start(viewModelScope)
 
         viewModelScope.launch {
             state

@@ -34,7 +34,7 @@ internal class DefaultForecastStateHolder(
     private val settingsRepo: SettingsRepo,
     private val appConfigRepo: AppConfigRepo,
     private val scoreCalculator: ScoreCalculator,
-    private val scope: CoroutineScope,
+    private val coroutineScope: CoroutineScope,
 ) : ForecastStateHolder {
     private val logger = Logger.withTag("ForecastStateHolder")
     private val delayDuration = appConfigRepo.value.maxCacheAge
@@ -52,14 +52,14 @@ internal class DefaultForecastStateHolder(
                     score = scoreCalculator.calculate(forecast, preferences),
                 )
             }
-        }.stateIn(scope, SharingStarted.WhileSubscribed(5000), AsyncResult.Loading)
+        }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), AsyncResult.Loading)
 
     private var fetchJob: Job? = null
     private var refreshJob: Job? = null
 
     override fun fetch() {
         if (fetchJob?.isActive == true) return
-        fetchJob = scope.launch {
+        fetchJob = coroutineScope.launch {
             ensureExecutionTime(appConfigRepo.value.minimumExecutionDelay) {
                 logger.d { "Fetching forecast..." }
                 getForecast()
@@ -67,11 +67,11 @@ internal class DefaultForecastStateHolder(
         }
     }
 
-    override fun start() {
+    override fun start(scope: CoroutineScope?) {
         if (refreshJob?.isActive == true) return
 
         logger.d { "Starting refresh ticker" }
-        refreshJob = scope.launch {
+        refreshJob = (scope ?: coroutineScope).launch {
             while (isActive) {
                 fetch()
                 delay(delayDuration)
