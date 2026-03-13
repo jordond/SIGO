@@ -1,4 +1,4 @@
-package app.sigot.android
+package app.sigot
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
