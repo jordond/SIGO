@@ -144,18 +144,6 @@ public fun unauthorized(
         json = json,
     )
 
-public fun forbidden(
-    meta: Map<String, Any?> = emptyMap(),
-    json: Json = defaultJson,
-): Response =
-    respondJson(
-        data = Unit,
-        meta = meta,
-        status = 403,
-        statusText = "Forbidden",
-        json = json,
-    )
-
 public fun tooManyRequests(
     meta: Map<String, Any?> = emptyMap(),
     json: Json = defaultJson,
