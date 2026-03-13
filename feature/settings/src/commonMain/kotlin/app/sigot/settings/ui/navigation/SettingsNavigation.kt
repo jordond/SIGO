@@ -31,6 +31,7 @@ public data object PreferencesBottomSheet : Route
 public fun NavGraphBuilder.settingsNavigation(
     navController: NavHostController,
     toWebView: (title: String, url: String) -> Unit,
+    toOnboarding: () -> Unit = {},
 ) {
     popUpScreen<SettingsRoute> {
         SettingsScreen(
@@ -43,7 +44,10 @@ public fun NavGraphBuilder.settingsNavigation(
     }
 
     slideHorizontally<InternalSettingsRoute> {
-        InternalSettingsScreen(onBack = navController::popBackStack)
+        InternalSettingsScreen(
+            onBack = navController::popBackStack,
+            onLaunchOnboarding = toOnboarding,
+        )
     }
 
     slideHorizontally<UnitsRoute> { entry ->

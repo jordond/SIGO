@@ -40,6 +40,7 @@ import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.Check
 import app.sigot.core.ui.icons.lucide.Link
 import app.sigot.core.ui.icons.lucide.Server
+import app.sigot.core.ui.icons.lucide.Smartphone
 import app.sigot.core.ui.icons.lucide.Trash
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
@@ -59,6 +60,8 @@ import now.shouldigooutside.core.resources.settings_internal_backend_simulate_fa
 import now.shouldigooutside.core.resources.settings_internal_backend_simulate_failure_desc
 import now.shouldigooutside.core.resources.settings_internal_clear_forecast_cache
 import now.shouldigooutside.core.resources.settings_internal_clear_forecast_cache_desc
+import now.shouldigooutside.core.resources.settings_internal_launch_onboarding
+import now.shouldigooutside.core.resources.settings_internal_launch_onboarding_desc
 import now.shouldigooutside.core.resources.settings_internal_reset
 import now.shouldigooutside.core.resources.settings_internal_title
 import org.koin.compose.viewmodel.koinViewModel
@@ -66,6 +69,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 internal fun InternalSettingsScreen(
     onBack: () -> Unit,
+    onLaunchOnboarding: () -> Unit,
     model: InternalSettingsModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
@@ -75,6 +79,7 @@ internal fun InternalSettingsScreen(
         update = model::update,
         onBack = onBack,
         onClearCache = model::clearCache,
+        onLaunchOnboarding = onLaunchOnboarding,
     )
 }
 
@@ -85,6 +90,7 @@ internal fun InternalSettingsScreen(
     update: (InternalSettings) -> Unit,
     onBack: () -> Unit = {},
     onClearCache: () -> Unit = {},
+    onLaunchOnboarding: () -> Unit = {},
 ) {
     var backendApiUrl by remember(settings.backendApiUrl) { mutableStateOf(settings.backendApiUrl) }
     val backendApiUrlChanged = remember(backendApiUrl, settings.backendApiUrl) {
@@ -145,6 +151,15 @@ internal fun InternalSettingsScreen(
                         description = Res.string.settings_internal_clear_forecast_cache_desc,
                         icon = AppIcons.Lucide.Trash,
                         onClick = onClearCache,
+                    )
+                }
+
+                Item {
+                    SettingsTextRow(
+                        text = Res.string.settings_internal_launch_onboarding,
+                        description = Res.string.settings_internal_launch_onboarding_desc,
+                        icon = AppIcons.Lucide.Smartphone,
+                        onClick = onLaunchOnboarding,
                     )
                 }
 

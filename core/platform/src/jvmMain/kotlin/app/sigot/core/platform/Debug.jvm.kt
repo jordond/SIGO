@@ -10,12 +10,8 @@ private val possibleDebugArgs = listOf(
 public actual val isDebug: Boolean = runCatching {
     // Check if assertions are enabled, which typically indicates a debug build
     var isAssertOn = false
-    assert(
-        {
-            isAssertOn = true
-            true
-        }(),
-    )
+    isAssertOn = true
+    assert(true)
 
     // Also check if Java Debug Wire Protocol (JDWP) agent is active
     val jvmArgs = System.getProperty("java.vm.name", "") +
