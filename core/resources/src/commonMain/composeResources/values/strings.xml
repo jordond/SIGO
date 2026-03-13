@@ -279,6 +279,8 @@
     <string name="settings_internal_reset">Reset internal settings</string>
     <string name="settings_internal_clear_forecast_cache">Clear Forecast Cache</string>
     <string name="settings_internal_clear_forecast_cache_desc">Delete any cached forecast data</string>
+    <string name="settings_internal_launch_onboarding">Launch Onboarding</string>
+    <string name="settings_internal_launch_onboarding_desc">Restart the onboarding flow</string>
 
     <string name="forecast_details_title">Details</string>
     <string name="forecast_details_temperature_value">%1$d%2$s</string>

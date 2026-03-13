@@ -58,34 +58,6 @@ internal fun Header(
             onClick = { showPeriodDropdown = !showPeriodDropdown },
         )
 
-        if (location != null) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 4.dp),
-            ) {
-                Text(
-                    text = Res.string.forecast_title_in.get(),
-                    style = AppTheme.typography.h2,
-                )
-                Button(
-                    onClick = onLocationClick,
-                    shape = AppTheme.shapes.extraSmall,
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
-                    variant = ButtonVariant.SecondaryElevated,
-                ) {
-                    Text(
-                        text = location.name,
-                        style = AppTheme.typography.h3.asDisplay,
-                        autoSize = AppTheme.typography.h3.autoSize(),
-                        maxLines = 1,
-                    )
-                }
-            }
-        }
-
         Box(
             modifier = Modifier
                 .wrapContentSize(Alignment.TopCenter)
@@ -115,6 +87,34 @@ internal fun Header(
                     if (index != entries.lastIndex) {
                         HorizontalDivider()
                     }
+                }
+            }
+        }
+
+        if (location != null) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 4.dp),
+            ) {
+                Text(
+                    text = Res.string.forecast_title_in.get(),
+                    style = AppTheme.typography.h2,
+                )
+                Button(
+                    onClick = onLocationClick,
+                    shape = AppTheme.shapes.extraSmall,
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+                    variant = ButtonVariant.SecondaryElevated,
+                ) {
+                    Text(
+                        text = location.name,
+                        style = AppTheme.typography.h3.asDisplay,
+                        autoSize = AppTheme.typography.h3.autoSize(),
+                        maxLines = 1,
+                    )
                 }
             }
         }
