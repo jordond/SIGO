@@ -11,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -63,11 +62,6 @@ internal fun ForecastHomeScreen(
         when (event) {
             is Event.Error -> snackbar.error(event.message)
         }
-    }
-
-    LaunchedEffect(Unit) {
-        // Try to fetch on the first load, this could hit the cache, or a fresh forecast.
-        model.fetch()
     }
 
     val state by model.collectAsState()
