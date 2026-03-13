@@ -6,12 +6,18 @@
   "observability": {
     "enabled": true
   },
+  "kv_namespaces": [
+    {
+      "binding": "FORECAST_CACHE",
+      "id": "76a504d795c94147a7dd6abdc95589f8"
+    }
+  ],
   "routes": [
     {
       "pattern": "api.shouldigooutside.now",
       "custom_domain": true,
       "zone_name": "shouldigooutside.now"
-    },
+    }
   ],
   "env": {
     "staging": {
