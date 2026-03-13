@@ -37,10 +37,8 @@ public class ForecastScoreRoute(
     ): Response? {
         val query = request.queryParams<ForecastScoreRequestQuery>(json)
 
-        // US-005: Validate coordinates and score params
         validateRequest(query)
 
-        // US-001: Round coordinates
         val roundedLat = query.lat.roundCoordinate()
         val roundedLon = query.lon.roundCoordinate()
 
@@ -56,7 +54,6 @@ public class ForecastScoreRoute(
             includeApparentTemperature = defaults.includeApparentTemperature,
         )
 
-        // US-002: Check KV cache
         val cacheKey = buildString {
             append("score:$roundedLat,$roundedLon")
             append(":${query.maxTemp}")
@@ -82,7 +79,6 @@ public class ForecastScoreRoute(
         val responseData = ForecastScoreResponse(forecast = forecast.toEntity(), score = score)
         val responseJson = json.encodeToString(ApiResponse(data = responseData))
 
-        // Store in KV cache
         if (cache != null) {
             cache.put(cacheKey, responseJson, ttlSeconds = 600)
         }

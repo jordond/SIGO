@@ -70,11 +70,9 @@ public object CorsHandler {
         }
 
         val headers: dynamic = object {}
-        // Copy existing headers
         response.headers.asDynamic().forEach { value: String, key: String ->
             headers[key] = value
         }
-        // Add CORS headers
         headers["Access-Control-Allow-Origin"] = origin
         headers["Access-Control-Allow-Methods"] = ALLOWED_METHODS
         headers["Access-Control-Allow-Headers"] = ALLOWED_HEADERS
