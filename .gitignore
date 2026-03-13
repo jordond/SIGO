@@ -32,8 +32,6 @@ fastlane_appstore_connect_key.p8
 
 app-env.properties
 
-apps/android/google-services.json
-apps/ios/iosApp/GoogleService-Info.plist
 apps/ios/Podfile.lock
 apps/ios/Pods/*
 apps/ios/iosApp.xcworkspace/*

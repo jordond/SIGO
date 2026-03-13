@@ -14,7 +14,6 @@ print_usage() {
     echo "Commands:"
     echo "    help                           Show this help message"
     echo "    init [command] [arguments]     Initialize a project component"
-    echo "          secrets|s [--empty]      Generate the secrets.properties file, pass --empty to use 'empty' for all secrets"
     echo "          ktlint|k [arguments]     Install ktlint and integrate it with the project"
     echo "          hooks|h [--output]       Install the git hooks, pass --output to display the contents of the hooks"
     echo "          api:worker               Install required dependencies for the api worker"

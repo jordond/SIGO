@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
+import kotlin.io.encoding.Base64
 
 plugins {
     alias(libs.plugins.android.application)
@@ -15,7 +16,7 @@ kotlin {
 
 android {
     namespace = libs.versions.app.name
-        .get() + ".android"
+        .get()
     compileSdk = libs.versions.sdk.compile
         .get()
         .toInt()
@@ -29,7 +30,7 @@ android {
             .toInt()
 
         applicationId = libs.versions.app.name
-            .get() + ".android"
+            .get()
 
         versionCode = libs.versions.app.android.code
             .get()
@@ -38,30 +39,45 @@ android {
             .get()
     }
 
-    val secretsFile = File(".app/secrets/secrets.properties")
-    val releaseKeyFile = project.rootDir.resolve(".app/secrets/sigot_release.key")
+    val envProps = Properties().apply {
+        val envFile = project.rootDir.resolve("app-env.properties")
+        if (envFile.exists()) load(envFile.inputStream())
+    }
 
-    val secrets = Properties()
-    val hasSecrets = secretsFile.exists() && releaseKeyFile.exists()
+    fun prop(key: String): String? = envProps[key]?.toString() ?: System.getenv(key)
 
-    if (hasSecrets) {
-        secrets.load(secretsFile.inputStream())
+    val keystorePassword = prop("APP_KEYSTORE_PASSWORD")
+    val keystoreKeyAlias = prop("APP_KEYSTORE_KEY_ALIAS")
+    val keystoreBase64 = prop("APP_KEYSTORE_BASE64")
+
+    //noinspection WrongGradleMethod
+    val hasSigningConfig =
+        listOf(keystorePassword, keystoreKeyAlias, keystoreBase64).all { !it.isNullOrBlank() }
+
+    val releaseKeyFile = if (hasSigningConfig) {
+        val decoded = Base64.decode(keystoreBase64!!)
+        layout.buildDirectory.file("signing/release.jks").get().asFile.apply {
+            parentFile.mkdirs()
+            writeBytes(decoded)
+        }
+    } else {
+        null
     }
 
     signingConfigs {
-        if (hasSecrets) {
+        if (hasSigningConfig && releaseKeyFile != null) {
             create("release") {
                 storeFile = releaseKeyFile
-                storePassword = secrets["KEYSTORE_PASSWORD"] as String
-                keyAlias = secrets["KEYSTORE_KEY_ALIAS"] as String
-                keyPassword = secrets["KEYSTORE_KEY_PASSWORD"] as String
+                storePassword = keystorePassword
+                keyAlias = keystoreKeyAlias
+                keyPassword = keystorePassword
             }
         }
     }
 
     buildTypes {
         getByName("release") {
-            signingConfig = if (hasSecrets) {
+            signingConfig = if (hasSigningConfig) {
                 signingConfigs.getByName("release")
             } else {
                 signingConfigs.getByName("debug")

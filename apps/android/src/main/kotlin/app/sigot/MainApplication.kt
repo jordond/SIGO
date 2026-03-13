@@ -1,4 +1,4 @@
-package app.sigot.android
+package app.sigot
 
 import android.app.Application
 import app.sigot.di.initKoin
