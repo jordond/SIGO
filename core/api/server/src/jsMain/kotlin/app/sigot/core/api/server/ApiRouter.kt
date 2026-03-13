@@ -1,11 +1,16 @@
 package app.sigot.core.api.server
 
+import app.sigot.core.api.server.cache.ForecastCacheProvider
+import app.sigot.core.api.server.cors.CorsHandler
 import app.sigot.core.api.server.exception.BadRequestException
+import app.sigot.core.api.server.ratelimit.RateLimiter
 import app.sigot.core.api.server.util.badRequest
 import app.sigot.core.api.server.util.methodNotAllowed
 import app.sigot.core.api.server.util.noContent
 import app.sigot.core.api.server.util.notFound
 import app.sigot.core.api.server.util.serverError
+import app.sigot.core.api.server.util.tooManyRequests
+import app.sigot.core.api.server.util.unauthorized
 import co.touchlab.kermit.Logger
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.CancellationException
@@ -13,6 +18,7 @@ import kotlinx.serialization.json.Json
 import org.w3c.dom.url.URL
 import org.w3c.fetch.Request
 import org.w3c.fetch.Response
+import org.w3c.fetch.ResponseInit
 
 /**
  * Router interface for managing multiple API routes
@@ -24,8 +30,15 @@ public interface ApiRouter {
 internal class DefaultApiRouter(
     private val routes: List<ApiRoute>,
     private val json: Json,
+    private val cacheProvider: ForecastCacheProvider,
+    private val rateLimiter: RateLimiter,
 ) : ApiRouter {
     private val logger = Logger.withTag("ApiRouter")
+
+    private val uuidRegex = Regex(
+        "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        RegexOption.IGNORE_CASE,
+    )
 
     private data class RouteMatch(
         val route: ApiRoute,
@@ -33,14 +46,53 @@ internal class DefaultApiRouter(
     )
 
     override suspend fun handle(request: Request): Response {
-        val url = URL(request.url)
-        val path = url.pathname
         val method = request.method.uppercase()
 
-        val match = findMatchingRoute(path)
-            ?: return notFound(meta = mapOf("path" to path))
+        // US-006: CORS origin validation
+        val corsBlock = CorsHandler.validateOrigin(request)
+        if (corsBlock != null) return corsBlock
 
-        return try {
+        // US-006: Handle OPTIONS preflight
+        if (method == "OPTIONS") {
+            return CorsHandler.preflight(request)
+        }
+
+        // US-004: Rate limiting (extract client ID, validate, check rate)
+        val clientId = request.headers.get("X-Client-ID")
+        if (clientId == null || !uuidRegex.matches(clientId)) {
+            return unauthorized(
+                meta = mapOf("error" to "Missing or invalid X-Client-ID header"),
+                json = json,
+            )
+        }
+
+        val cache = cacheProvider.cache
+        val rateLimitResult = if (cache != null) {
+            rateLimiter.check(clientId, cache)
+        } else {
+            null
+        }
+
+        if (rateLimitResult != null && !rateLimitResult.allowed) {
+            var finalResponse = tooManyRequests(
+                meta = mapOf("error" to "Rate limit exceeded"),
+                json = json,
+            )
+            finalResponse = addRateLimitHeaders(finalResponse, rateLimitResult)
+            return CorsHandler.withCorsHeaders(finalResponse, request)
+        }
+
+        // Route the request
+        val url = URL(request.url)
+        val path = url.pathname
+
+        val match = findMatchingRoute(path)
+            ?: return CorsHandler.withCorsHeaders(
+                notFound(meta = mapOf("path" to path)),
+                request,
+            )
+
+        val response = try {
             when (method) {
                 HttpMethod.Get.value -> get(match.route, request, match.parameters)
                 HttpMethod.Post.value -> post(match.route, request, match.parameters)
@@ -62,6 +114,38 @@ internal class DefaultApiRouter(
             logger.e(cause) { "Error handling request for path: $path" }
             serverError(cause, meta = mapOf("path" to path), json = json)
         }
+
+        // Add rate limit headers
+        val finalResponse = if (rateLimitResult != null) {
+            addRateLimitHeaders(response, rateLimitResult)
+        } else {
+            response
+        }
+
+        // US-006: Add CORS headers to the response
+        return CorsHandler.withCorsHeaders(finalResponse, request)
+    }
+
+    private fun addRateLimitHeaders(
+        response: Response,
+        result: RateLimiter.RateLimitResult,
+    ): Response {
+        val headers: dynamic = object {}
+        response.headers.asDynamic().forEach { value: String, key: String ->
+            headers[key] = value
+        }
+        headers["X-RateLimit-Limit"] = result.limit.toString()
+        headers["X-RateLimit-Remaining"] = result.remaining.toString()
+        headers["X-RateLimit-Reset"] = result.resetEpochSeconds.toString()
+
+        return Response(
+            response.body,
+            ResponseInit(
+                status = response.status,
+                statusText = response.statusText,
+                headers = headers,
+            ),
+        )
     }
 
     private fun findMatchingRoute(requestPath: String): RouteMatch? {

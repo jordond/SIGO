@@ -1,21 +1,26 @@
 package app.sigot.core.platform.di
 
+import app.sigot.core.platform.ClientIdProvider
 import app.sigot.core.platform.DefaultLocationManager
 import app.sigot.core.platform.LocationManager
 import app.sigot.core.platform.createAutocomplete
 import app.sigot.core.platform.createGeocoder
 import app.sigot.core.platform.createGeolocator
+import app.sigot.core.platform.internal.SettingsClientIdProvider
 import app.sigot.core.platform.isDebug
 import app.sigot.core.platform.locationPermissionController
+import app.sigot.core.platform.store.Store
 import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.permissions.LocationPermissionController
 import dev.jordond.connectivity.Connectivity
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.header
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
@@ -46,8 +51,17 @@ public fun platformModule(): Module =
 
         single<Json> { defaultJson }
 
+        single<ClientIdProvider> {
+            val store: Store<String> = Store.storeOf(
+                filename = "client-id.json",
+                type = Store.Type.Persistent,
+            )
+            SettingsClientIdProvider(store)
+        }
+
         single {
             val json = get<Json>()
+            val clientIdProvider = get<ClientIdProvider>()
             HttpClient {
                 expectSuccess = true
 
@@ -63,6 +77,14 @@ public fun platformModule(): Module =
                         }
                     }
                 }
+
+                install(
+                    createClientPlugin("ClientIdPlugin") {
+                        onRequest { request, _ ->
+                            request.header("X-Client-ID", clientIdProvider.clientId())
+                        }
+                    },
+                )
             }
         }
 
