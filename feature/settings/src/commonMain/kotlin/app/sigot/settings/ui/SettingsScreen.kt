@@ -20,8 +20,6 @@ import androidx.compose.ui.unit.dp
 import app.sigot.core.Version
 import app.sigot.core.model.settings.Settings
 import app.sigot.core.platform.launchAppStore
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.settings
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Scaffold
 import app.sigot.core.ui.components.snackbar.Snackbar
@@ -40,6 +38,8 @@ import dev.stateholder.dispatcher.rememberRelay
 import dev.stateholder.dispatcher.rememberRelayOf
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.settings
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -65,12 +65,24 @@ internal fun SettingsScreen(
         snackbarHostState = snackbar.hostState,
         dispatcher = rememberDebounceDispatcher { action ->
             when (action) {
-                is SettingsAction.Close -> onBack()
-                is SettingsAction.UpdateTheme -> model.updateTheme(action.mode)
-                is SettingsAction.ToggleHaptics -> model.toggleHaptics()
-                is SettingsAction.Toggle24HourFormat -> model.toggle24HourFormat()
-                is SettingsAction.ToUnitsScreen -> toUnits()
-                is SettingsAction.ToPreferencesScreen -> toPreferences()
+                is SettingsAction.Close -> {
+                    onBack()
+                }
+                is SettingsAction.UpdateTheme -> {
+                    model.updateTheme(action.mode)
+                }
+                is SettingsAction.ToggleHaptics -> {
+                    model.toggleHaptics()
+                }
+                is SettingsAction.Toggle24HourFormat -> {
+                    model.toggle24HourFormat()
+                }
+                is SettingsAction.ToUnitsScreen -> {
+                    toUnits()
+                }
+                is SettingsAction.ToPreferencesScreen -> {
+                    toPreferences()
+                }
                 is SettingsAction.RateApp -> {
                     if (state.canEnableInternalSettings) {
                         model.enableInternalSettings()
@@ -81,7 +93,9 @@ internal fun SettingsScreen(
                 is SettingsAction.ShareApp -> {
                     // TODO: Share app
                 }
-                is SettingsAction.TapAbout -> model.clickAbout()
+                is SettingsAction.TapAbout -> {
+                    model.clickAbout()
+                }
                 is SettingsAction.TapVersion -> {
                     if (!state.settings.internalSettings.enabled) {
                         model.clickVersion()
@@ -89,7 +103,9 @@ internal fun SettingsScreen(
                         toInternalSettings()
                     }
                 }
-                is SettingsAction.WebViewUrl -> model.handleWebViewUrl(action)
+                is SettingsAction.WebViewUrl -> {
+                    model.handleWebViewUrl(action)
+                }
             }
         },
     )

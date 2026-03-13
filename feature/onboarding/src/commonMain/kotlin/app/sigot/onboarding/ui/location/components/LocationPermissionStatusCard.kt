@@ -14,11 +14,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.location.LocationPermissionStatus
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.location_permission_cta_open_settings
-import app.sigot.core.resources.location_permission_cta_request
-import app.sigot.core.resources.location_permission_open_settings_rationale
-import app.sigot.core.resources.location_permission_rationale
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalIsAndroid
 import app.sigot.core.ui.colors
@@ -30,6 +25,11 @@ import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.rememberIcon
 import app.sigot.core.ui.rememberText
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.location_permission_cta_open_settings
+import now.shouldigooutside.core.resources.location_permission_cta_request
+import now.shouldigooutside.core.resources.location_permission_open_settings_rationale
+import now.shouldigooutside.core.resources.location_permission_rationale
 
 @Composable
 internal fun LocationPermissionStatusCard(

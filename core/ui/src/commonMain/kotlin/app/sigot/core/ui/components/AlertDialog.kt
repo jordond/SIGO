@@ -31,9 +31,6 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.cancel
-import app.sigot.core.resources.okay
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalContentColor
 import app.sigot.core.ui.components.AlertDialogDefaults.ButtonsCrossAxisSpacing
@@ -49,6 +46,9 @@ import app.sigot.core.ui.components.AlertDialogDefaults.TitlePadding
 import app.sigot.core.ui.foundation.ProvideContentColorTextStyle
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.cancel
+import now.shouldigooutside.core.resources.okay
 import kotlin.math.max
 
 @Composable

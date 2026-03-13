@@ -27,13 +27,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.sigot.core.model.preferences.Preferences
 import app.sigot.core.model.units.Units
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.back
-import app.sigot.core.resources.done
-import app.sigot.core.resources.get_started
-import app.sigot.core.resources.location_warning_dialog_text
-import app.sigot.core.resources.next
-import app.sigot.core.resources.warning
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.asContent
 import app.sigot.core.ui.components.AlertDialog
@@ -66,6 +59,13 @@ import app.sigot.onboarding.ui.units.OnboardingUnitsScreen
 import app.sigot.onboarding.ui.welcome.WelcomeScreen
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.back
+import now.shouldigooutside.core.resources.done
+import now.shouldigooutside.core.resources.get_started
+import now.shouldigooutside.core.resources.location_warning_dialog_text
+import now.shouldigooutside.core.resources.next
+import now.shouldigooutside.core.resources.warning
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

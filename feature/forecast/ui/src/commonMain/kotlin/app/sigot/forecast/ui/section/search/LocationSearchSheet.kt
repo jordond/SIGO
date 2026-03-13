@@ -12,9 +12,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.location.Location
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.location_change
-import app.sigot.core.resources.location_search_placeholder
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.ModalBottomSheet
 import app.sigot.core.ui.components.Text
@@ -23,6 +20,9 @@ import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.location_change
+import now.shouldigooutside.core.resources.location_search_placeholder
 
 @Composable
 internal fun LocationSearchSheet(

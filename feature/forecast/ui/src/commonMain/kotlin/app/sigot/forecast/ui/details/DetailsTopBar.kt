@@ -12,9 +12,6 @@ import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.location.Location
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.back
-import app.sigot.core.resources.forecast_details_title
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalContentColor
@@ -26,6 +23,9 @@ import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.ArrowBigDown
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.back
+import now.shouldigooutside.core.resources.forecast_details_title
 
 @Composable
 internal fun DetailsTopBar(

@@ -13,16 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.preferences.Preferences
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.preferences_precipitation_title
-import app.sigot.core.resources.rain
-import app.sigot.core.resources.snow
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.Droplet
 import app.sigot.core.ui.icons.lucide.Snowflake
 import app.sigot.core.ui.preview.AppPreview
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.preferences_precipitation_title
+import now.shouldigooutside.core.resources.rain
+import now.shouldigooutside.core.resources.snow
 
 @Composable
 public fun PreferencesList(

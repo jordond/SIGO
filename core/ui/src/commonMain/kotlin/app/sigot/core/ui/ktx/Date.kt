@@ -8,44 +8,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.blank
-import app.sigot.core.resources.day_of_week_friday
-import app.sigot.core.resources.day_of_week_monday
-import app.sigot.core.resources.day_of_week_ordinal_first
-import app.sigot.core.resources.day_of_week_ordinal_second
-import app.sigot.core.resources.day_of_week_ordinal_th
-import app.sigot.core.resources.day_of_week_ordinal_third
-import app.sigot.core.resources.day_of_week_saturday
-import app.sigot.core.resources.day_of_week_short_friday
-import app.sigot.core.resources.day_of_week_short_monday
-import app.sigot.core.resources.day_of_week_short_saturday
-import app.sigot.core.resources.day_of_week_short_sunday
-import app.sigot.core.resources.day_of_week_short_thursday
-import app.sigot.core.resources.day_of_week_short_tuesday
-import app.sigot.core.resources.day_of_week_short_wednesday
-import app.sigot.core.resources.day_of_week_sunday
-import app.sigot.core.resources.day_of_week_thursday
-import app.sigot.core.resources.day_of_week_tuesday
-import app.sigot.core.resources.day_of_week_wednesday
-import app.sigot.core.resources.month_april
-import app.sigot.core.resources.month_august
-import app.sigot.core.resources.month_december
-import app.sigot.core.resources.month_february
-import app.sigot.core.resources.month_january
-import app.sigot.core.resources.month_july
-import app.sigot.core.resources.month_june
-import app.sigot.core.resources.month_march
-import app.sigot.core.resources.month_may
-import app.sigot.core.resources.month_november
-import app.sigot.core.resources.month_october
-import app.sigot.core.resources.month_september
-import app.sigot.core.resources.time_ago_a_minute
-import app.sigot.core.resources.time_ago_at
-import app.sigot.core.resources.time_ago_minutes
-import app.sigot.core.resources.time_ago_moments
-import app.sigot.core.resources.time_am
-import app.sigot.core.resources.time_pm
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalUse24HourTime
 import app.sigot.core.ui.asDisplay
@@ -57,6 +19,44 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.blank
+import now.shouldigooutside.core.resources.day_of_week_friday
+import now.shouldigooutside.core.resources.day_of_week_monday
+import now.shouldigooutside.core.resources.day_of_week_ordinal_first
+import now.shouldigooutside.core.resources.day_of_week_ordinal_second
+import now.shouldigooutside.core.resources.day_of_week_ordinal_th
+import now.shouldigooutside.core.resources.day_of_week_ordinal_third
+import now.shouldigooutside.core.resources.day_of_week_saturday
+import now.shouldigooutside.core.resources.day_of_week_short_friday
+import now.shouldigooutside.core.resources.day_of_week_short_monday
+import now.shouldigooutside.core.resources.day_of_week_short_saturday
+import now.shouldigooutside.core.resources.day_of_week_short_sunday
+import now.shouldigooutside.core.resources.day_of_week_short_thursday
+import now.shouldigooutside.core.resources.day_of_week_short_tuesday
+import now.shouldigooutside.core.resources.day_of_week_short_wednesday
+import now.shouldigooutside.core.resources.day_of_week_sunday
+import now.shouldigooutside.core.resources.day_of_week_thursday
+import now.shouldigooutside.core.resources.day_of_week_tuesday
+import now.shouldigooutside.core.resources.day_of_week_wednesday
+import now.shouldigooutside.core.resources.month_april
+import now.shouldigooutside.core.resources.month_august
+import now.shouldigooutside.core.resources.month_december
+import now.shouldigooutside.core.resources.month_february
+import now.shouldigooutside.core.resources.month_january
+import now.shouldigooutside.core.resources.month_july
+import now.shouldigooutside.core.resources.month_june
+import now.shouldigooutside.core.resources.month_march
+import now.shouldigooutside.core.resources.month_may
+import now.shouldigooutside.core.resources.month_november
+import now.shouldigooutside.core.resources.month_october
+import now.shouldigooutside.core.resources.month_september
+import now.shouldigooutside.core.resources.time_ago_a_minute
+import now.shouldigooutside.core.resources.time_ago_at
+import now.shouldigooutside.core.resources.time_ago_minutes
+import now.shouldigooutside.core.resources.time_ago_moments
+import now.shouldigooutside.core.resources.time_am
+import now.shouldigooutside.core.resources.time_pm
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.abs
@@ -211,8 +211,12 @@ public fun Instant.rememberTimeAgo(
     }
 
     return when {
-        seconds < 30 -> Res.string.time_ago_moments.get()
-        seconds < 120 -> Res.string.time_ago_a_minute.get()
+        seconds < 30 -> {
+            Res.string.time_ago_moments.get()
+        }
+        seconds < 120 -> {
+            Res.string.time_ago_a_minute.get()
+        }
         seconds < 3600 -> {
             val minutes = seconds / 60
             if (minutes == 1L) {

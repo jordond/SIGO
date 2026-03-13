@@ -17,19 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationResult
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.location_details
-import app.sigot.core.resources.location_get
-import app.sigot.core.resources.location_latitude
-import app.sigot.core.resources.location_longitude
-import app.sigot.core.resources.location_place
-import app.sigot.core.resources.location_status
-import app.sigot.core.resources.location_status_error
-import app.sigot.core.resources.location_status_idle
-import app.sigot.core.resources.location_status_tracking
-import app.sigot.core.resources.location_status_update
-import app.sigot.core.resources.not_applicable
-import app.sigot.core.resources.try_again
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.BrutalColors
 import app.sigot.core.ui.brutal
@@ -48,6 +35,19 @@ import app.sigot.core.ui.icons.lucide.Search
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.PreviewData
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.location_details
+import now.shouldigooutside.core.resources.location_get
+import now.shouldigooutside.core.resources.location_latitude
+import now.shouldigooutside.core.resources.location_longitude
+import now.shouldigooutside.core.resources.location_place
+import now.shouldigooutside.core.resources.location_status
+import now.shouldigooutside.core.resources.location_status_error
+import now.shouldigooutside.core.resources.location_status_idle
+import now.shouldigooutside.core.resources.location_status_tracking
+import now.shouldigooutside.core.resources.location_status_update
+import now.shouldigooutside.core.resources.not_applicable
+import now.shouldigooutside.core.resources.try_again
 import org.jetbrains.compose.resources.StringResource
 
 @Composable

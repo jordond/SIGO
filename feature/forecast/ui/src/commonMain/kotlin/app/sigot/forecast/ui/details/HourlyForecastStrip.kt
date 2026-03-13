@@ -25,9 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.sigot.core.model.forecast.ForecastBlock
 import app.sigot.core.model.units.Units
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.forecast_period_now
-import app.sigot.core.resources.forecast_period_tomorrow
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.brutal
 import app.sigot.core.ui.components.Icon
@@ -49,6 +46,9 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.forecast_period_now
+import now.shouldigooutside.core.resources.forecast_period_tomorrow
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
@@ -71,8 +71,12 @@ internal fun HourlyForecastStrip(
 
     LaunchedEffect(selected) {
         when (selected) {
-            null, now -> listState.scrollToTop()
-            tomorrow -> listState.scrollToBottom()
+            null, now -> {
+                listState.scrollToTop()
+            }
+            tomorrow -> {
+                listState.scrollToBottom()
+            }
             else -> {
                 hours.indexOf(selected).takeIf { it != -1 }?.let { index ->
                     listState.animateScrollToItem(index + 1)

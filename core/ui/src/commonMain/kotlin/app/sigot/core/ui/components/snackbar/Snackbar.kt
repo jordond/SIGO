@@ -21,8 +21,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
 import androidx.compose.ui.util.fastFirstOrNull
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.dismiss
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalContentColor
@@ -44,6 +42,8 @@ import app.sigot.core.ui.components.snackbar.SnackbarDefaults.TextEndExtraSpacin
 import app.sigot.core.ui.components.snackbar.SnackbarDefaults.TwoLinesContainerHeight
 import app.sigot.core.ui.contentColorFor
 import app.sigot.core.ui.ktx.get
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.dismiss
 import kotlin.math.max
 import kotlin.math.min
 

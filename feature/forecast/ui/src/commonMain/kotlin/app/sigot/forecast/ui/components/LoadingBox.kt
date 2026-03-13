@@ -24,8 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.loading_ellipses
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.brutal
 import app.sigot.core.ui.components.HorizontalDivider
@@ -36,6 +34,8 @@ import app.sigot.core.ui.components.card.ElevatedCard
 import app.sigot.core.ui.components.progressindicators.LinearProgressIndicator
 import app.sigot.core.ui.components.progressindicators.ProgressTextPosition
 import app.sigot.core.ui.preview.AppPreview
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.loading_ellipses
 
 @Composable
 internal fun LoadingBox(

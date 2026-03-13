@@ -45,8 +45,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.progress
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.components.BrutalContainer
@@ -59,6 +57,8 @@ import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.progress
 import kotlin.math.abs
 
 @Composable
@@ -409,7 +409,9 @@ private fun getProgressEndPosition(
     // For StrokeCap.Butt, the end position is exactly at the mathematical endpoint
     // For StrokeCap.Round and StrokeCap.Square, we need to account for the cap extension
     return when {
-        strokeCap == StrokeCap.Butt || strokeWidth > width -> barEnd
+        strokeCap == StrokeCap.Butt || strokeWidth > width -> {
+            barEnd
+        }
         else -> {
             val strokeCapOffset = strokeWidth / 2
             // Apply the coerced range to ensure the endpoint stays within bounds
@@ -421,7 +423,9 @@ private fun getProgressEndPosition(
                     // For Round and Square caps, the visual end extends by half strokeWidth
                     if (progress < 1f) adjustedBarEnd + strokeCapOffset else width
                 }
-                else -> adjustedBarEnd // Should never reach here
+                else -> {
+                    adjustedBarEnd
+                } // Should never reach here
             }
         }
     }

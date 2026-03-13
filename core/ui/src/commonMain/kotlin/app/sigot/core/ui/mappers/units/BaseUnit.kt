@@ -8,21 +8,6 @@ import app.sigot.core.model.units.PrecipitationUnit
 import app.sigot.core.model.units.PressureUnit
 import app.sigot.core.model.units.TemperatureUnit
 import app.sigot.core.model.units.WindSpeedUnit
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.unit_precipitation
-import app.sigot.core.resources.unit_precipitation_inch
-import app.sigot.core.resources.unit_precipitation_mm
-import app.sigot.core.resources.unit_pressure
-import app.sigot.core.resources.unit_pressure_hecto_pascal
-import app.sigot.core.resources.unit_pressure_inch_mercury
-import app.sigot.core.resources.unit_temperature
-import app.sigot.core.resources.unit_temperature_celsius
-import app.sigot.core.resources.unit_temperature_fahrenheit
-import app.sigot.core.resources.unit_temperature_kelvin
-import app.sigot.core.resources.unit_wind
-import app.sigot.core.resources.unit_wind_kph
-import app.sigot.core.resources.unit_wind_mph
-import app.sigot.core.resources.unit_wind_ms
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.BrutalColors
 import app.sigot.core.ui.brutal
@@ -32,6 +17,21 @@ import app.sigot.core.ui.icons.lucide.Thermometer
 import app.sigot.core.ui.icons.lucide.Waves
 import app.sigot.core.ui.icons.lucide.Wind
 import app.sigot.core.ui.ktx.get
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.unit_precipitation
+import now.shouldigooutside.core.resources.unit_precipitation_inch
+import now.shouldigooutside.core.resources.unit_precipitation_mm
+import now.shouldigooutside.core.resources.unit_pressure
+import now.shouldigooutside.core.resources.unit_pressure_hecto_pascal
+import now.shouldigooutside.core.resources.unit_pressure_inch_mercury
+import now.shouldigooutside.core.resources.unit_temperature
+import now.shouldigooutside.core.resources.unit_temperature_celsius
+import now.shouldigooutside.core.resources.unit_temperature_fahrenheit
+import now.shouldigooutside.core.resources.unit_temperature_kelvin
+import now.shouldigooutside.core.resources.unit_wind
+import now.shouldigooutside.core.resources.unit_wind_kph
+import now.shouldigooutside.core.resources.unit_wind_mph
+import now.shouldigooutside.core.resources.unit_wind_ms
 import org.jetbrains.compose.resources.StringResource
 
 public fun BaseUnit.titleResource(): StringResource =

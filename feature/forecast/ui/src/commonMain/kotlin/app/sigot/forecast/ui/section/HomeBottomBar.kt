@@ -18,10 +18,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.forecast_view_details
-import app.sigot.core.resources.preferences
-import app.sigot.core.resources.settings
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Button
 import app.sigot.core.ui.components.ButtonVariant
@@ -34,6 +30,10 @@ import app.sigot.core.ui.icons.lucide.Settings
 import app.sigot.core.ui.icons.lucide.SlidersHorizontal
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.forecast_view_details
+import now.shouldigooutside.core.resources.preferences
+import now.shouldigooutside.core.resources.settings
 
 @Composable
 internal fun HomeBottomBar(

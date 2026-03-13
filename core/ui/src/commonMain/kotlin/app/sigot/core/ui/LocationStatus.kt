@@ -4,16 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import app.sigot.core.model.location.LocationPermissionStatus
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.permission_denied
-import app.sigot.core.resources.permission_granted
-import app.sigot.core.resources.permission_status
-import app.sigot.core.resources.permission_unknown
 import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.Locate
 import app.sigot.core.ui.icons.lucide.LocateFixed
 import app.sigot.core.ui.icons.lucide.LocateOff
 import app.sigot.core.ui.ktx.get
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.permission_denied
+import now.shouldigooutside.core.resources.permission_granted
+import now.shouldigooutside.core.resources.permission_status
+import now.shouldigooutside.core.resources.permission_unknown
 
 @Composable
 public fun LocationPermissionStatus.rememberIcon(): ImageVector =

@@ -3,10 +3,10 @@ package app.sigot.core.ui.mappers.units
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import app.sigot.core.model.preferences.Preferences
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.preferences_temp_max
-import app.sigot.core.resources.preferences_temp_min
-import app.sigot.core.resources.preferences_wind_max
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.preferences_temp_max
+import now.shouldigooutside.core.resources.preferences_temp_min
+import now.shouldigooutside.core.resources.preferences_wind_max
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

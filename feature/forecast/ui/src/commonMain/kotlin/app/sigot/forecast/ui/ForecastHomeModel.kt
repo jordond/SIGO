@@ -19,12 +19,6 @@ import app.sigot.core.model.location.LocationPermissionStatus.Granted
 import app.sigot.core.model.location.LocationPermissionStatus.Unknown
 import app.sigot.core.model.location.LocationResult
 import app.sigot.core.model.preferences.Preferences
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.forecast_error_generic
-import app.sigot.core.resources.location_geolocation_error
-import app.sigot.core.resources.location_geolocation_not_allowed
-import app.sigot.core.resources.location_geolocation_not_found
-import app.sigot.core.resources.location_geolocation_not_supported
 import app.sigot.forecast.ui.ForecastHomeModel.Event
 import app.sigot.forecast.ui.ForecastHomeModel.State
 import co.touchlab.kermit.Logger
@@ -38,6 +32,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.forecast_error_generic
+import now.shouldigooutside.core.resources.location_geolocation_error
+import now.shouldigooutside.core.resources.location_geolocation_not_allowed
+import now.shouldigooutside.core.resources.location_geolocation_not_found
+import now.shouldigooutside.core.resources.location_geolocation_not_supported
 import org.jetbrains.compose.resources.StringResource
 import kotlin.coroutines.cancellation.CancellationException
 
