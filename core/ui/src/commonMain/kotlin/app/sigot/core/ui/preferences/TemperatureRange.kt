@@ -13,10 +13,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.preferences.Preferences
 import app.sigot.core.model.units.TemperatureUnit
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.preferences_temp_description
-import app.sigot.core.resources.unit_temperature
-import app.sigot.core.resources.unit_wind
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.asContent
 import app.sigot.core.ui.cardColors
@@ -30,6 +26,10 @@ import app.sigot.core.ui.mappers.units.icon
 import app.sigot.core.ui.mappers.units.maxTemperatureString
 import app.sigot.core.ui.mappers.units.minTemperatureString
 import app.sigot.core.ui.sliderColors
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.preferences_temp_description
+import now.shouldigooutside.core.resources.unit_temperature
+import now.shouldigooutside.core.resources.unit_wind
 
 @Composable
 public fun TemperatureRange(

@@ -16,9 +16,6 @@ import androidx.compose.ui.unit.dp
 import app.sigot.core.model.location.Location
 import app.sigot.core.model.location.LocationPermissionStatus
 import app.sigot.core.model.location.LocationResult
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.onboarding_location
-import app.sigot.core.resources.onboarding_location_subtext
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.autoSize
@@ -38,6 +35,9 @@ import dev.stateholder.dispatcher.rememberDispatcher
 import dev.stateholder.dispatcher.rememberRelay
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.onboarding_location
+import now.shouldigooutside.core.resources.onboarding_location_subtext
 import org.koin.compose.viewmodel.koinViewModel
 
 internal sealed interface LocationScreenAction {

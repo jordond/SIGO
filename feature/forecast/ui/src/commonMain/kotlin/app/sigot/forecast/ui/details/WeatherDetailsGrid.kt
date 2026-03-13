@@ -13,15 +13,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.forecast.ForecastBlock
 import app.sigot.core.model.units.Units
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.forecast_details_cloud_cover
-import app.sigot.core.resources.forecast_details_humidity
-import app.sigot.core.resources.forecast_details_precipitation
-import app.sigot.core.resources.forecast_details_pressure
-import app.sigot.core.resources.forecast_details_uv
-import app.sigot.core.resources.forecast_details_uv_index
-import app.sigot.core.resources.forecast_details_visibility
-import app.sigot.core.resources.forecast_details_wind
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.brutal
 import app.sigot.core.ui.icons.AppIcons
@@ -35,6 +26,15 @@ import app.sigot.core.ui.mappers.units.rememberUnit
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.preview.ForecastPreviewData.ForecastBlockPreviewParameterProvider
 import app.sigot.forecast.ui.components.PreferenceResultCard
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.forecast_details_cloud_cover
+import now.shouldigooutside.core.resources.forecast_details_humidity
+import now.shouldigooutside.core.resources.forecast_details_precipitation
+import now.shouldigooutside.core.resources.forecast_details_pressure
+import now.shouldigooutside.core.resources.forecast_details_uv
+import now.shouldigooutside.core.resources.forecast_details_uv_index
+import now.shouldigooutside.core.resources.forecast_details_visibility
+import now.shouldigooutside.core.resources.forecast_details_wind
 import kotlin.math.roundToInt
 
 @Composable

@@ -12,9 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.units.Units
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.onboarding_units
-import app.sigot.core.resources.onboarding_units_subtext
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.autoSize
@@ -22,6 +19,9 @@ import app.sigot.core.ui.units.UnitCardList
 import app.sigot.onboarding.ui.OnboardingScreenPreview
 import app.sigot.onboarding.ui.navigation.OnboardingDestination
 import dev.stateholder.extensions.collectAsState
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.onboarding_units
+import now.shouldigooutside.core.resources.onboarding_units_subtext
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

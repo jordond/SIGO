@@ -11,9 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.preferences.Preferences
 import app.sigot.core.model.units.WindSpeedUnit
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.preferences_wind_description
-import app.sigot.core.resources.unit_wind
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.asContent
 import app.sigot.core.ui.cardColors
@@ -26,6 +23,9 @@ import app.sigot.core.ui.mappers.units.colors
 import app.sigot.core.ui.mappers.units.icon
 import app.sigot.core.ui.mappers.units.windSpeedString
 import app.sigot.core.ui.sliderColors
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.preferences_wind_description
+import now.shouldigooutside.core.resources.unit_wind
 
 @Composable
 public fun WindRange(

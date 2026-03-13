@@ -18,9 +18,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.preferences.Preferences
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.onboarding_units
-import app.sigot.core.resources.preferences
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Scaffold
 import app.sigot.core.ui.preferences.PreferencesList
@@ -28,6 +25,9 @@ import app.sigot.core.ui.preview.AppPreview
 import app.sigot.settings.ui.components.SettingsTopBar
 import app.sigot.settings.ui.components.SettingsTopBarNav
 import dev.stateholder.extensions.collectAsState
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.onboarding_units
+import now.shouldigooutside.core.resources.preferences
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

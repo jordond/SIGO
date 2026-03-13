@@ -7,14 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.open
-import app.sigot.core.resources.settings_about_privacy
-import app.sigot.core.resources.settings_about_rate
-import app.sigot.core.resources.settings_about_share
-import app.sigot.core.resources.settings_about_terms
-import app.sigot.core.resources.settings_about_title
-import app.sigot.core.resources.settings_about_website
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.icons.AppIcons
@@ -32,6 +24,14 @@ import app.sigot.settings.ui.components.TrailingBorderedIcon
 import dev.stateholder.dispatcher.Dispatcher
 import dev.stateholder.dispatcher.rememberDispatcher
 import dev.stateholder.dispatcher.rememberRelay
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.open
+import now.shouldigooutside.core.resources.settings_about_privacy
+import now.shouldigooutside.core.resources.settings_about_rate
+import now.shouldigooutside.core.resources.settings_about_share
+import now.shouldigooutside.core.resources.settings_about_terms
+import now.shouldigooutside.core.resources.settings_about_title
+import now.shouldigooutside.core.resources.settings_about_website
 
 private fun trailingContent(color: Color) =
     @Composable {

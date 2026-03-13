@@ -21,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import app.sigot.core.model.ForecastData
 import app.sigot.core.model.forecast.ForecastPeriod
 import app.sigot.core.model.location.Location
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.forecast_title_in
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.asDisplay
 import app.sigot.core.ui.components.Button
@@ -36,6 +34,8 @@ import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.mappers.rememberText
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.forecast.ui.components.mappers.rememberInstant
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.forecast_title_in
 import kotlin.time.Instant
 
 @Composable

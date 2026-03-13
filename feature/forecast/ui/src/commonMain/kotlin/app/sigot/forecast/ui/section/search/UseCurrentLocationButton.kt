@@ -13,8 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.location_use_current
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Button
 import app.sigot.core.ui.components.ButtonVariant
@@ -25,6 +23,8 @@ import app.sigot.core.ui.icons.lucide.LocateFixed
 import app.sigot.core.ui.icons.lucide.Lucide
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.location_use_current
 
 @Composable
 internal fun UseCurrentLocationButton(

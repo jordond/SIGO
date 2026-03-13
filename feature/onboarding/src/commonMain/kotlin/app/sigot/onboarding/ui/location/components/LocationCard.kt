@@ -16,8 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.permission_status
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.BrutalColors
 import app.sigot.core.ui.components.BrutalCircle
@@ -26,6 +24,8 @@ import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.card.CardDefaults
 import app.sigot.core.ui.components.card.ElevatedCard
 import app.sigot.core.ui.ktx.get
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.permission_status
 
 internal class LocationCardScope(
     delegate: ColumnScope,

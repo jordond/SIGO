@@ -25,8 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.forecast.ForecastPeriod
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.forecast_title
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Button
 import app.sigot.core.ui.components.ButtonVariant
@@ -38,6 +36,8 @@ import app.sigot.core.ui.preview.AppPreview
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.forecast_title
 import kotlin.time.Instant
 
 private const val INLINE_CONTENT_ID = "inlineContentId"

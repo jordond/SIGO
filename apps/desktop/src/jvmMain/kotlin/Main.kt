@@ -7,12 +7,12 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import app.sigot.App
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.app_name
-import app.sigot.core.resources.ic_cyclone
 import app.sigot.di.initKoin
 import co.touchlab.kermit.Logger
 import io.github.vinceglb.filekit.FileKit
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.app_name
+import now.shouldigooutside.core.resources.ic_cyclone
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import java.awt.Dimension

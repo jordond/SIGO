@@ -12,17 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.settings.Settings
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.open
-import app.sigot.core.resources.settings_experience_24_hour_format
-import app.sigot.core.resources.settings_experience_24_hour_format_desc
-import app.sigot.core.resources.settings_experience_haptics
-import app.sigot.core.resources.settings_experience_haptics_desc
-import app.sigot.core.resources.settings_experience_preferences
-import app.sigot.core.resources.settings_experience_preferences_desc
-import app.sigot.core.resources.settings_experience_title
-import app.sigot.core.resources.settings_experience_units
-import app.sigot.core.resources.settings_experience_units_desc
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Switch
 import app.sigot.core.ui.components.SwitchDefaults
@@ -38,6 +27,17 @@ import app.sigot.core.ui.preview.AppPreview
 import app.sigot.settings.ui.components.SettingsCard
 import app.sigot.settings.ui.components.SettingsTextRow
 import app.sigot.settings.ui.components.TrailingBorderedIcon
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.open
+import now.shouldigooutside.core.resources.settings_experience_24_hour_format
+import now.shouldigooutside.core.resources.settings_experience_24_hour_format_desc
+import now.shouldigooutside.core.resources.settings_experience_haptics
+import now.shouldigooutside.core.resources.settings_experience_haptics_desc
+import now.shouldigooutside.core.resources.settings_experience_preferences
+import now.shouldigooutside.core.resources.settings_experience_preferences_desc
+import now.shouldigooutside.core.resources.settings_experience_title
+import now.shouldigooutside.core.resources.settings_experience_units
+import now.shouldigooutside.core.resources.settings_experience_units_desc
 
 private val trailingContent = @Composable {
     TrailingBorderedIcon(

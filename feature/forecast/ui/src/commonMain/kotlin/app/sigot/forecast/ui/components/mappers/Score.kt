@@ -9,37 +9,37 @@ import app.sigot.core.model.ForecastPeriodData
 import app.sigot.core.model.score.ReasonValue
 import app.sigot.core.model.score.Reasons
 import app.sigot.core.model.score.ScoreResult
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.score_maybe
-import app.sigot.core.resources.score_no
-import app.sigot.core.resources.score_precipitation_rain_inside
-import app.sigot.core.resources.score_precipitation_rain_near
-import app.sigot.core.resources.score_precipitation_rain_outside
-import app.sigot.core.resources.score_precipitation_snow_inside
-import app.sigot.core.resources.score_precipitation_snow_near
-import app.sigot.core.resources.score_precipitation_snow_outside
-import app.sigot.core.resources.score_precipitation_status_inside
-import app.sigot.core.resources.score_precipitation_status_near
-import app.sigot.core.resources.score_precipitation_status_outside
-import app.sigot.core.resources.score_temperature_inside
-import app.sigot.core.resources.score_temperature_near
-import app.sigot.core.resources.score_temperature_outside_high
-import app.sigot.core.resources.score_temperature_outside_low
-import app.sigot.core.resources.score_temperature_status_inside
-import app.sigot.core.resources.score_temperature_status_near
-import app.sigot.core.resources.score_temperature_status_outside_high
-import app.sigot.core.resources.score_temperature_status_outside_low
-import app.sigot.core.resources.score_wind_inside
-import app.sigot.core.resources.score_wind_near
-import app.sigot.core.resources.score_wind_outside
-import app.sigot.core.resources.score_wind_status_inside
-import app.sigot.core.resources.score_wind_status_near
-import app.sigot.core.resources.score_wind_status_outside
-import app.sigot.core.resources.score_yes
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.BrutalColors
 import app.sigot.core.ui.brutal
 import app.sigot.core.ui.ktx.get
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.score_maybe
+import now.shouldigooutside.core.resources.score_no
+import now.shouldigooutside.core.resources.score_precipitation_rain_inside
+import now.shouldigooutside.core.resources.score_precipitation_rain_near
+import now.shouldigooutside.core.resources.score_precipitation_rain_outside
+import now.shouldigooutside.core.resources.score_precipitation_snow_inside
+import now.shouldigooutside.core.resources.score_precipitation_snow_near
+import now.shouldigooutside.core.resources.score_precipitation_snow_outside
+import now.shouldigooutside.core.resources.score_precipitation_status_inside
+import now.shouldigooutside.core.resources.score_precipitation_status_near
+import now.shouldigooutside.core.resources.score_precipitation_status_outside
+import now.shouldigooutside.core.resources.score_temperature_inside
+import now.shouldigooutside.core.resources.score_temperature_near
+import now.shouldigooutside.core.resources.score_temperature_outside_high
+import now.shouldigooutside.core.resources.score_temperature_outside_low
+import now.shouldigooutside.core.resources.score_temperature_status_inside
+import now.shouldigooutside.core.resources.score_temperature_status_near
+import now.shouldigooutside.core.resources.score_temperature_status_outside_high
+import now.shouldigooutside.core.resources.score_temperature_status_outside_low
+import now.shouldigooutside.core.resources.score_wind_inside
+import now.shouldigooutside.core.resources.score_wind_near
+import now.shouldigooutside.core.resources.score_wind_outside
+import now.shouldigooutside.core.resources.score_wind_status_inside
+import now.shouldigooutside.core.resources.score_wind_status_near
+import now.shouldigooutside.core.resources.score_wind_status_outside
+import now.shouldigooutside.core.resources.score_yes
 
 @Composable
 internal fun ForecastPeriodData.brutalColor(): BrutalColors = score.result.color()
@@ -84,8 +84,12 @@ internal fun Reasons.temperatureStatus(
 ): String =
     remember(temperature) {
         when (temperature) {
-            ReasonValue.Inside -> Res.string.score_temperature_status_inside
-            ReasonValue.Near -> Res.string.score_temperature_status_near
+            ReasonValue.Inside -> {
+                Res.string.score_temperature_status_inside
+            }
+            ReasonValue.Near -> {
+                Res.string.score_temperature_status_near
+            }
             ReasonValue.Outside -> {
                 if (value >= max) {
                     Res.string.score_temperature_status_outside_high
@@ -103,8 +107,12 @@ internal fun Reasons.temperatureText(
 ): String =
     remember(temperature) {
         when (temperature) {
-            ReasonValue.Inside -> Res.string.score_temperature_inside
-            ReasonValue.Near -> Res.string.score_temperature_near
+            ReasonValue.Inside -> {
+                Res.string.score_temperature_inside
+            }
+            ReasonValue.Near -> {
+                Res.string.score_temperature_near
+            }
             ReasonValue.Outside -> {
                 if (value >= max) {
                     Res.string.score_temperature_outside_high

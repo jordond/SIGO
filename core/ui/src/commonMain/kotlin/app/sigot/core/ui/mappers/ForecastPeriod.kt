@@ -3,17 +3,17 @@ package app.sigot.core.ui.mappers
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import app.sigot.core.model.forecast.ForecastPeriod
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.blank
-import app.sigot.core.resources.forecast_period_hour
-import app.sigot.core.resources.forecast_period_now
-import app.sigot.core.resources.forecast_period_today
-import app.sigot.core.resources.forecast_period_tomorrow
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.ktx.text
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.blank
+import now.shouldigooutside.core.resources.forecast_period_hour
+import now.shouldigooutside.core.resources.forecast_period_now
+import now.shouldigooutside.core.resources.forecast_period_today
+import now.shouldigooutside.core.resources.forecast_period_tomorrow
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 

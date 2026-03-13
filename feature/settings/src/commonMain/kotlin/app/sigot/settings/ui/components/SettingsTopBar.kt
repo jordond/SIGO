@@ -12,11 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.back
-import app.sigot.core.resources.close
-import app.sigot.core.resources.settings
-import app.sigot.core.resources.settings_internal_title
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalContentColor
@@ -30,6 +25,11 @@ import app.sigot.core.ui.icons.lucide.ArrowLeft
 import app.sigot.core.ui.icons.lucide.X
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.back
+import now.shouldigooutside.core.resources.close
+import now.shouldigooutside.core.resources.settings
+import now.shouldigooutside.core.resources.settings_internal_title
 import org.jetbrains.compose.resources.StringResource
 
 internal enum class SettingsTopBarNav {
