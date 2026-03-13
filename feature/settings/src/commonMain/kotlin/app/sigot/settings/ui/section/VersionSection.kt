@@ -8,10 +8,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import app.sigot.core.Version
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.settings_about_version
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.ktx.clickableWithoutRipple
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.settings_about_version
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

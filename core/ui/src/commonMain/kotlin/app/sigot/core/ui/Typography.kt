@@ -11,10 +11,10 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import app.sigot.core.resources.LexendMega
-import app.sigot.core.resources.PublicSans
-import app.sigot.core.resources.PublicSans_Italic
-import app.sigot.core.resources.Res
+import now.shouldigooutside.core.resources.LexendMega
+import now.shouldigooutside.core.resources.PublicSans
+import now.shouldigooutside.core.resources.PublicSans_Italic
+import now.shouldigooutside.core.resources.Res
 import org.jetbrains.compose.resources.Font
 
 public val LexendMega: FontFamily

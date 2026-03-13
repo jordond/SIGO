@@ -25,12 +25,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.settings
-import app.sigot.core.resources.settings_about_privacy
-import app.sigot.core.resources.settings_about_website
-import app.sigot.core.resources.settings_experience_haptics
-import app.sigot.core.resources.settings_experience_haptics_desc
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalContainerColor
 import app.sigot.core.ui.LocalHaptics
@@ -51,6 +45,12 @@ import app.sigot.core.ui.icons.lucide.Share
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.core.ui.wrap
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.settings
+import now.shouldigooutside.core.resources.settings_about_privacy
+import now.shouldigooutside.core.resources.settings_about_website
+import now.shouldigooutside.core.resources.settings_experience_haptics
+import now.shouldigooutside.core.resources.settings_experience_haptics_desc
 import org.jetbrains.compose.resources.StringResource
 
 private val itemScope = object : SettingsCardItemScope {}

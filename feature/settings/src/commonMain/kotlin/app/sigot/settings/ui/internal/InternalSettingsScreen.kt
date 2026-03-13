@@ -25,20 +25,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.settings.InternalSettings
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.save
-import app.sigot.core.resources.settings_internal_backend
-import app.sigot.core.resources.settings_internal_backend_api
-import app.sigot.core.resources.settings_internal_backend_api_desc
-import app.sigot.core.resources.settings_internal_backend_direct_api
-import app.sigot.core.resources.settings_internal_backend_direct_api_desc
-import app.sigot.core.resources.settings_internal_backend_direct_api_token_placeholder
-import app.sigot.core.resources.settings_internal_backend_simulate_failure
-import app.sigot.core.resources.settings_internal_backend_simulate_failure_desc
-import app.sigot.core.resources.settings_internal_clear_forecast_cache
-import app.sigot.core.resources.settings_internal_clear_forecast_cache_desc
-import app.sigot.core.resources.settings_internal_reset
-import app.sigot.core.resources.settings_internal_title
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Button
 import app.sigot.core.ui.components.ButtonVariant
@@ -61,6 +47,20 @@ import app.sigot.settings.ui.components.SettingsCard
 import app.sigot.settings.ui.components.SettingsTextRow
 import app.sigot.settings.ui.components.SettingsTopBar
 import dev.stateholder.extensions.collectAsState
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.save
+import now.shouldigooutside.core.resources.settings_internal_backend
+import now.shouldigooutside.core.resources.settings_internal_backend_api
+import now.shouldigooutside.core.resources.settings_internal_backend_api_desc
+import now.shouldigooutside.core.resources.settings_internal_backend_direct_api
+import now.shouldigooutside.core.resources.settings_internal_backend_direct_api_desc
+import now.shouldigooutside.core.resources.settings_internal_backend_direct_api_token_placeholder
+import now.shouldigooutside.core.resources.settings_internal_backend_simulate_failure
+import now.shouldigooutside.core.resources.settings_internal_backend_simulate_failure_desc
+import now.shouldigooutside.core.resources.settings_internal_clear_forecast_cache
+import now.shouldigooutside.core.resources.settings_internal_clear_forecast_cache_desc
+import now.shouldigooutside.core.resources.settings_internal_reset
+import now.shouldigooutside.core.resources.settings_internal_title
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

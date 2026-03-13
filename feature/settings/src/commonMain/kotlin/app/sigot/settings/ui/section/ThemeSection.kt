@@ -18,11 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.sigot.core.model.ui.ThemeMode
 import app.sigot.core.model.units.UnitPreset
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.settings_theme_dark
-import app.sigot.core.resources.settings_theme_light
-import app.sigot.core.resources.settings_theme_system
-import app.sigot.core.resources.settings_theme_title
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.LocalHaptics
 import app.sigot.core.ui.components.Icon
@@ -39,6 +34,11 @@ import app.sigot.core.ui.icons.lucide.Sun
 import app.sigot.core.ui.ktx.get
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.settings.ui.components.SettingsHeader
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.settings_theme_dark
+import now.shouldigooutside.core.resources.settings_theme_light
+import now.shouldigooutside.core.resources.settings_theme_system
+import now.shouldigooutside.core.resources.settings_theme_title
 
 @Composable
 internal fun ThemeSection(

@@ -17,13 +17,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.close
 import app.sigot.core.ui.ktx.get
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.close
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -20,8 +20,6 @@ import androidx.compose.ui.unit.dp
 import app.sigot.core.model.ForecastData
 import app.sigot.core.model.forecast.ForecastBlock
 import app.sigot.core.model.score.ScoreResult
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.something_went_wrong
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Scaffold
 import app.sigot.core.ui.components.Text
@@ -31,6 +29,8 @@ import app.sigot.core.ui.preview.ForecastPreviewData
 import app.sigot.core.ui.preview.PreviewData.location
 import dev.stateholder.extensions.collectAsState
 import kotlinx.collections.immutable.toPersistentList
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.something_went_wrong
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

@@ -1,10 +1,10 @@
 package app.sigot.settings.ui
 
 import app.sigot.core.model.ui.ThemeMode
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.url_title_privacy
-import app.sigot.core.resources.url_title_terms
-import app.sigot.core.resources.url_title_website
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.url_title_privacy
+import now.shouldigooutside.core.resources.url_title_terms
+import now.shouldigooutside.core.resources.url_title_website
 import org.jetbrains.compose.resources.StringResource
 
 internal sealed interface SettingsAction {

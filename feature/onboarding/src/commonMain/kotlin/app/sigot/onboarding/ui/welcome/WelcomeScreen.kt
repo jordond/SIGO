@@ -15,10 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.sigot.core.resources.Res
-import app.sigot.core.resources.onboarding_welcome
-import app.sigot.core.resources.onboarding_welcome_footer
-import app.sigot.core.resources.onboarding_welcome_preamble
 import app.sigot.core.ui.AppTheme
 import app.sigot.core.ui.components.Text
 import app.sigot.core.ui.components.card.CardDefaults
@@ -26,6 +22,10 @@ import app.sigot.core.ui.components.card.ElevatedCard
 import app.sigot.core.ui.preview.AppPreview
 import app.sigot.onboarding.ui.OnboardingScreenPreview
 import app.sigot.onboarding.ui.navigation.OnboardingDestination
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.onboarding_welcome
+import now.shouldigooutside.core.resources.onboarding_welcome_footer
+import now.shouldigooutside.core.resources.onboarding_welcome_preamble
 
 @Composable
 internal fun WelcomeScreen(modifier: Modifier = Modifier) {
