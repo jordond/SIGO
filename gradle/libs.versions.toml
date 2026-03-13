@@ -40,6 +40,7 @@ ktor = "3.4.1"
 filekit = "0.13.0"
 firebase-bom = "34.10.0"
 firebase-kmp = "2.4.0"
+firebase-crashlytics = "3.0.6"
 google-services = "4.4.4"
 kotlinx-serialization = "1.10.0"
 coil = "3.4.0"
@@ -50,6 +51,7 @@ room = "2.8.4"
 ksp = "2.3.6"
 materialKolor = "4.1.1"
 kermit = "2.1.0"
+crashkios = "0.8.6"
 slf4jNop = "2.0.17"
 stateHolder = "3.1.0"
 compass = "3.0.2"
@@ -67,6 +69,7 @@ androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:life
 androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 androidx-uitest-testManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-ui-test" }
 androidx-uitest-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-ui-test" }
+crashkios = { module = "co.touchlab.crashkios:crashlytics", version.ref = "crashkios" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
 coil = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
@@ -101,6 +104,7 @@ filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "file
 filekit-coil = { module = "io.github.vinceglb:filekit-coil", version.ref = "filekit" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-common = { module = "com.google.firebase:firebase-common-ktx" }
 firebase-config = { module = "com.google.firebase:firebase-config-ktx" }
@@ -191,5 +195,6 @@ room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 lumo = { id = "com.nomanr.plugin.lumo", version.ref = "lumo" }
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
+crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
 convention-multiplatform = { id = "convention.multiplatform", version = "0" }
 toolchain-version = { id = "toolchain.version", version = "0" }

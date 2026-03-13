@@ -14,6 +14,16 @@ configureMultiplatform(Platform.Ios, name = "iosApp")
 kotlin {
     disableExplicitApi()
 
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        binaries.withType<org.jetbrains.kotlin.gradle.plugin.mpp.Framework> {
+            binaryOption(
+                "bundleId",
+                libs.versions.app.name
+                    .get(),
+            )
+        }
+    }
+
     sourceSets {
         iosMain.dependencies {
             implementation(projects.core.app)
