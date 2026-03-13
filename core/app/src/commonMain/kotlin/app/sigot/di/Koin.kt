@@ -24,6 +24,8 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
 
         logger(KermitKoinLogger(Logger.withTag(tag = "Koin")))
 
+        configureCrashlytics()
+
         Logger.addLogWriter(CrashlyticsLogWriter())
 
         modules(
@@ -41,3 +43,5 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
             settingsModule(),
         )
     }
+
+internal expect fun configureCrashlytics()

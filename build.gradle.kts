@@ -12,4 +12,5 @@ plugins {
     alias(libs.plugins.ksp).apply(false)
     alias(libs.plugins.lumo).apply(false)
     alias(libs.plugins.buildKonfig).apply(false)
+    alias(libs.plugins.crashlytics).apply(false)
 }
