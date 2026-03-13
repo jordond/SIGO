@@ -71,7 +71,7 @@ private fun AppNavHost(
             enterTransition = { fadeIn(tween(300)) },
             exitTransition = { fadeOut(tween(2000)) },
             popEnterTransition = { fadeIn(tween(300)) },
-            popExitTransition = { fadeOut(tween(2000)) },
+            popExitTransition = { fadeOut(tween(300)) },
             builder = builder,
         )
     } else {

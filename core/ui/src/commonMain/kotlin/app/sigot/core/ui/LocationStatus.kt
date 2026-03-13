@@ -30,7 +30,7 @@ public fun LocationPermissionStatus.colors(): BrutalColors =
     when (this) {
         is LocationPermissionStatus.Denied -> AppTheme.colors.brutal.red
         is LocationPermissionStatus.Granted -> AppTheme.colors.brutal.green
-        is LocationPermissionStatus.Unknown -> AppTheme.colors.brutal.yellow
+        is LocationPermissionStatus.Unknown -> AppTheme.colors.brutal.pink
     }
 
 @Composable

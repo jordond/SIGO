@@ -22,6 +22,7 @@ import now.shouldigooutside.core.resources.location_geolocation_not_found
 import now.shouldigooutside.core.resources.location_geolocation_not_supported
 import org.jetbrains.compose.resources.StringResource
 
+@Stable
 internal class LocationModel(
     settingsRepo: SettingsRepo,
     private val locationRepo: LocationRepo,
