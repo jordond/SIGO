@@ -10,5 +10,7 @@ public actual val context: PlatformContext
 
 public actual val isAndroid: Boolean = true
 
+public actual val platform: Platform = Platform.Android
+
 @Composable
 public actual fun context(): PlatformContext = context
