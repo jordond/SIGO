@@ -48,16 +48,13 @@ internal class DefaultApiRouter(
     override suspend fun handle(request: Request): Response {
         val method = request.method.uppercase()
 
-        // US-006: CORS origin validation
         val corsBlock = CorsHandler.validateOrigin(request)
         if (corsBlock != null) return corsBlock
 
-        // US-006: Handle OPTIONS preflight
         if (method == "OPTIONS") {
             return CorsHandler.preflight(request)
         }
 
-        // US-004: Rate limiting (extract client ID, validate, check rate)
         val clientId = request.headers.get("X-Client-ID")
         if (clientId == null || !uuidRegex.matches(clientId)) {
             return unauthorized(
@@ -82,7 +79,6 @@ internal class DefaultApiRouter(
             return CorsHandler.withCorsHeaders(finalResponse, request)
         }
 
-        // Route the request
         val url = URL(request.url)
         val path = url.pathname
 
@@ -115,14 +111,12 @@ internal class DefaultApiRouter(
             serverError(cause, meta = mapOf("path" to path), json = json)
         }
 
-        // Add rate limit headers
         val finalResponse = if (rateLimitResult != null) {
             addRateLimitHeaders(response, rateLimitResult)
         } else {
             response
         }
 
-        // US-006: Add CORS headers to the response
         return CorsHandler.withCorsHeaders(finalResponse, request)
     }
 

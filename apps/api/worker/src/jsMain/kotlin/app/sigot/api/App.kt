@@ -51,7 +51,6 @@ class DefaultApp(
 
         tokenProvider.apiToken = parsedEnv.forecastApiKey
 
-        // US-002: Set up KV cache from Cloudflare env binding (only on first request)
         if (cacheProvider.cache == null) {
             val kvNamespace: dynamic = env.FORECAST_CACHE
             if (kvNamespace != null) {

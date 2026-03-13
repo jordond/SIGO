@@ -34,10 +34,8 @@ public class ForecastRoute(
     ): Response? {
         val query = request.queryParams<ForecastRequestQuery>(json = json)
 
-        // US-005: Validate coordinates before rounding
         validateCoordinates(query.lat, query.lon)
 
-        // US-001: Round coordinates for cache-friendly bucketing
         val roundedLat = query.lat.roundCoordinate()
         val roundedLon = query.lon.roundCoordinate()
 
@@ -48,7 +46,6 @@ public class ForecastRoute(
         )
         logger.d { "Querying forecast for location: $location" }
 
-        // US-002: Check KV cache
         val cacheKey = "forecast:$roundedLat,$roundedLon"
         val cache = cacheProvider.cache
         if (cache != null) {
@@ -67,7 +64,6 @@ public class ForecastRoute(
         val responseData = ForecastResponse(forecast = forecast)
         val responseJson = json.encodeToString(ApiResponse(data = responseData))
 
-        // Store in KV cache
         if (cache != null) {
             cache.put(cacheKey, responseJson, ttlSeconds = 600)
         }
