@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,9 @@ import app.sigot.core.ui.icons.AppIcons
 import app.sigot.core.ui.icons.lucide.ArrowBigDown
 import app.sigot.onboarding.ui.OnboardingScreenPreview
 import app.sigot.onboarding.ui.navigation.OnboardingDestination
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.onboarding_summary_text
+import now.shouldigooutside.core.resources.onboarding_summary_title
 
 @Composable
 internal fun SummaryScreen(modifier: Modifier = Modifier) {
@@ -32,11 +36,12 @@ internal fun SummaryScreen(modifier: Modifier = Modifier) {
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = modifier
+                .fillMaxSize()
                 .padding(horizontal = 16.dp)
                 .align(Alignment.Center),
         ) {
             Text(
-                text = "We're all set",
+                text = Res.string.onboarding_summary_title,
                 style = AppTheme.typography.h2,
             )
 
@@ -55,7 +60,7 @@ internal fun SummaryScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(16.dp),
                 ) {
                     Text(
-                        text = "Let's get started!",
+                        text = Res.string.onboarding_summary_text,
                         style = AppTheme.typography.h1,
                         autoSize = TextAutoSize.StepBased(maxFontSize = 52.sp),
                     )

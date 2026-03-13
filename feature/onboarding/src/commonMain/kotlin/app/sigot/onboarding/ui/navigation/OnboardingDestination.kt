@@ -1,8 +1,10 @@
 package app.sigot.onboarding.ui.navigation
 
+import androidx.compose.runtime.Immutable
 import app.sigot.core.ui.navigation.Route
 import kotlinx.serialization.Serializable
 
+@Immutable
 @Serializable
 internal sealed interface OnboardingDestination : Route {
     @Serializable

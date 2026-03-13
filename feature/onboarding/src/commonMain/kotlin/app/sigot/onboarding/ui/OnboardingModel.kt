@@ -1,5 +1,6 @@
 package app.sigot.onboarding.ui
 
+import androidx.compose.runtime.Stable
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
 import app.sigot.core.domain.settings.SettingsRepo
@@ -17,6 +18,7 @@ private val destinations = listOfNotNull(
     OnboardingDestination.Summary,
 )
 
+@Stable
 internal class OnboardingModel(
     private val settingsRepo: SettingsRepo,
 ) : UiStateViewModel<OnboardingModel.State, OnboardingModel.Event>(State()) {

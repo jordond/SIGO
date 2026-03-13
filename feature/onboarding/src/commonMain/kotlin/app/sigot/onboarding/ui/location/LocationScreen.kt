@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +41,7 @@ import now.shouldigooutside.core.resources.onboarding_location
 import now.shouldigooutside.core.resources.onboarding_location_subtext
 import org.koin.compose.viewmodel.koinViewModel
 
+@Immutable
 internal sealed interface LocationScreenAction {
     data object RequestPermission : LocationScreenAction
 
