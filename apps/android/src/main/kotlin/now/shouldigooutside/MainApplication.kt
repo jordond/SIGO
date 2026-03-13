@@ -1,4 +1,4 @@
-package app.sigot
+package now.shouldigooutside
 
 import android.app.Application
 import app.sigot.di.initKoin
