@@ -4,11 +4,11 @@ import app.sigot.core.api.server.ApiRoute
 import app.sigot.core.api.server.ApiRoutePath
 import app.sigot.core.api.server.cache.ForecastCacheProvider
 import app.sigot.core.api.server.entity.ApiResponse
-import app.sigot.core.api.server.exception.BadRequestException
 import app.sigot.core.api.server.queryParams
 import app.sigot.core.api.server.util.cached
 import app.sigot.core.api.server.util.respondJson
 import app.sigot.core.api.server.util.roundCoordinate
+import app.sigot.core.api.server.util.validateCoordinates
 import app.sigot.core.domain.forecast.GetForecastUseCase
 import app.sigot.core.model.location.Location
 import app.sigot.forecast.data.entity.ForecastRequestQuery
@@ -46,13 +46,13 @@ public class ForecastRoute(
         )
         logger.d { "Querying forecast for location: $location" }
 
-        val cacheKey = "forecast:$roundedLat,$roundedLon"
+        val cacheKey = "v1:forecast:$roundedLat,$roundedLon"
         val cache = cacheProvider.cache
         if (cache != null) {
             val cachedJson = cache.get(cacheKey)
             if (cachedJson != null) {
                 logger.d { "Cache hit for $cacheKey" }
-                return cached(10.minutes) {
+                return cached(15.minutes) {
                     respondJson(json = cachedJson)
                 }
             }
@@ -65,27 +65,11 @@ public class ForecastRoute(
         val responseJson = json.encodeToString(ApiResponse(data = responseData))
 
         if (cache != null) {
-            cache.put(cacheKey, responseJson, ttlSeconds = 600)
+            cache.put(cacheKey, responseJson, ttlSeconds = 900)
         }
 
-        return cached(10.minutes) {
+        return cached(15.minutes) {
             respondJson(json = responseJson)
-        }
-    }
-
-    private fun validateCoordinates(
-        lat: Double,
-        lon: Double,
-    ) {
-        val errors = mutableListOf<String>()
-        if (lat < -90.0 || lat > 90.0) {
-            errors.add("lat must be between -90 and 90")
-        }
-        if (lon < -180.0 || lon > 180.0) {
-            errors.add("lon must be between -180 and 180")
-        }
-        if (errors.isNotEmpty()) {
-            throw BadRequestException(validation = errors)
         }
     }
 }

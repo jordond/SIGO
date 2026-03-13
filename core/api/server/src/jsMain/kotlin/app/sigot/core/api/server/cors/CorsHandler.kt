@@ -93,6 +93,7 @@ public object CorsHandler {
     private fun forbidden(): Response {
         val headers: dynamic = object {}
         headers["content-type"] = "application/json"
+        headers["Vary"] = "Origin"
         return Response(
             """{"error":"Forbidden: Origin not allowed"}""",
             ResponseInit(status = 403, statusText = "Forbidden", headers = headers),

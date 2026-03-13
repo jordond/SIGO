@@ -9,6 +9,7 @@ import app.sigot.core.api.server.queryParams
 import app.sigot.core.api.server.util.cached
 import app.sigot.core.api.server.util.respondJson
 import app.sigot.core.api.server.util.roundCoordinate
+import app.sigot.core.api.server.util.validateCoordinates
 import app.sigot.core.domain.forecast.GetForecastUseCase
 import app.sigot.core.domain.forecast.ScoreCalculator
 import app.sigot.core.model.location.Location
@@ -37,7 +38,8 @@ public class ForecastScoreRoute(
     ): Response? {
         val query = request.queryParams<ForecastScoreRequestQuery>(json)
 
-        validateRequest(query)
+        validateCoordinates(query.lat, query.lon)
+        validateScoreParams(query)
 
         val roundedLat = query.lat.roundCoordinate()
         val roundedLon = query.lon.roundCoordinate()
@@ -55,7 +57,7 @@ public class ForecastScoreRoute(
         )
 
         val cacheKey = buildString {
-            append("score:$roundedLat,$roundedLon")
+            append("v1:score:$roundedLat,$roundedLon")
             append(":${query.maxTemp}")
             append(":${query.minTemp}")
             append(":${query.maxWind}")
@@ -68,7 +70,7 @@ public class ForecastScoreRoute(
             val cachedJson = cache.get(cacheKey)
             if (cachedJson != null) {
                 logger.d { "Cache hit for $cacheKey" }
-                return cached(10.minutes) {
+                return cached(15.minutes) {
                     respondJson(json = cachedJson)
                 }
             }
@@ -80,23 +82,17 @@ public class ForecastScoreRoute(
         val responseJson = json.encodeToString(ApiResponse(data = responseData))
 
         if (cache != null) {
-            cache.put(cacheKey, responseJson, ttlSeconds = 600)
+            cache.put(cacheKey, responseJson, ttlSeconds = 900)
         }
 
-        return cached(10.minutes) {
+        return cached(15.minutes) {
             respondJson(json = responseJson)
         }
     }
 
-    private fun validateRequest(query: ForecastScoreRequestQuery) {
+    private fun validateScoreParams(query: ForecastScoreRequestQuery) {
         val errors = mutableListOf<String>()
 
-        if (query.lat < -90.0 || query.lat > 90.0) {
-            errors.add("lat must be between -90 and 90")
-        }
-        if (query.lon < -180.0 || query.lon > 180.0) {
-            errors.add("lon must be between -180 and 180")
-        }
         val maxTemp = query.maxTemp
         if (maxTemp != null && (maxTemp < -100 || maxTemp > 100)) {
             errors.add("max_temp must be between -100 and 100")

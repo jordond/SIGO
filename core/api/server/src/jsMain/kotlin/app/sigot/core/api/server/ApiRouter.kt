@@ -57,9 +57,12 @@ internal class DefaultApiRouter(
 
         val clientId = request.headers.get("X-Client-ID")
         if (clientId == null || !uuidRegex.matches(clientId)) {
-            return unauthorized(
-                meta = mapOf("error" to "Missing or invalid X-Client-ID header"),
-                json = json,
+            return CorsHandler.withCorsHeaders(
+                unauthorized(
+                    meta = mapOf("error" to "Missing or invalid X-Client-ID header"),
+                    json = json,
+                ),
+                request,
             )
         }
 

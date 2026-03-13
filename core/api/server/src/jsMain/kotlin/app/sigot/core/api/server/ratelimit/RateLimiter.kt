@@ -13,6 +13,9 @@ internal data class RateLimitEntry(
 /**
  * Fixed-window rate limiter backed by Cloudflare KV.
  * Allows [maxRequests] per [windowSeconds] per client ID.
+ *
+ * Note: KV is eventually consistent and does not support atomic read-modify-write,
+ * so enforcement is approximate under concurrent requests from the same client.
  */
 public class RateLimiter(
     private val json: Json,
@@ -55,14 +58,17 @@ public class RateLimiter(
 
         val newCount = currentWindow.count + 1
         val resetAt = currentWindow.windowStart + windowSeconds
+        val allowed = newCount <= maxRequests
         val remaining = (maxRequests - newCount).coerceAtLeast(0)
 
-        val updated = currentWindow.copy(count = newCount)
-        val ttl = (resetAt - nowSeconds).toInt().coerceAtLeast(1)
-        cache.put(key, json.encodeToString(updated), ttl)
+        if (allowed) {
+            val updated = currentWindow.copy(count = newCount)
+            val ttl = (resetAt - nowSeconds).toInt().coerceAtLeast(1)
+            cache.put(key, json.encodeToString(updated), ttl)
+        }
 
         return RateLimitResult(
-            allowed = newCount <= maxRequests,
+            allowed = allowed,
             limit = maxRequests,
             remaining = remaining,
             resetEpochSeconds = resetAt,
