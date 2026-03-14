@@ -25,9 +25,6 @@ internal data class RateLimitEntry(
  *  - Per IP address: [maxRequestsPerIp] per [window]
  *
  * The IP limit prevents abuse via client-ID rotation.
- *
- * Note: KV is eventually consistent and does not support atomic read-modify-write,
- * so enforcement is approximate under concurrent requests from the same client.
  */
 public class DefaultRateLimiter(
     private val json: Json,

@@ -25,6 +25,7 @@ print_usage() {
     echo "    commit|c [options]             Stage changes, run fix, and commit"
     echo "    cli [args]                     Run the CLI version of SIGO"
     echo "    api                            Commands for the API"
+    echo "    api:server <command>           Run command helpers for the JVM API server"
     echo "    api:worker <command>           Run command helpers for the api worker"
 }
 
@@ -166,6 +167,10 @@ cli)
 api)
     shift
     "$ROOT"/scripts/api.sh "$@"
+    ;;
+api:server)
+    shift
+    "$ROOT"/scripts/api-server.sh "$@"
     ;;
 api:worker)
     shift

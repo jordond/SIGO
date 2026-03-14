@@ -42,11 +42,10 @@ abstract class AppVersion : DefaultTask() {
             // Generated file. Do not edit!
             package app.sigot.core
             
-            @Suppress("MayBeConstant")
             public object Version {
-                public val NAME: String = "${version.get()}"
-                public val CODE: Int = ${code.get()}
-                public val GIT_SHA: String = "${gitHash.get().trim()}"
+                public const val NAME: String = "${version.get()}"
+                public const val CODE: Int = ${code.get()}
+                public const val GIT_SHA: String = "${gitHash.get().trim()}"
             }
             """.trimIndent(),
         )
