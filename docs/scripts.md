@@ -1,14 +1,13 @@
 # Scripts Reference
 
-All project tooling is accessed through the `./sigot` CLI wrapper at the project root. Individual
-scripts live in the `scripts/` directory but should generally be invoked through `./sigot` rather
-than directly.
+All project tooling goes through the `./sigo` CLI wrapper at the project root. Individual scripts
+live in `scripts/` but should be invoked through `./sigo`.
 
 ---
 
-## `./sigot` — Project CLI
+## `./sigo`
 
-The main entry point for all project commands. Must be run from the project root directory.
+Must be run from the project root.
 
 ```
 ./sigo <command> [args]
@@ -26,11 +25,10 @@ The main entry point for all project commands. Must be run from the project root
 | `lint [--all\|--staged] [args]` | Lint the codebase (alias: `l`)              |
 | `fix [--all]`                   | Auto-fix staged files (or all with `--all`) |
 | `commit [options]`              | Stage, fix, and commit (alias: `c`)         |
-| `cli [args]`                    | Run the SIGOT CLI application               |
+| `cli [args]`                    | Run the SIGO CLI application                |
 | `api`                           | API build commands                          |
 | `api:worker <command>`          | Cloudflare Worker commands                  |
 | `xcode`                         | Open the Xcode workspace                    |
-| `encrypt`                       | Encrypt a file                              |
 | `generate-image-sizes`          | Generate image resource sizes               |
 
 ---
@@ -39,8 +37,7 @@ The main entry point for all project commands. Must be run from the project root
 
 ### `./sigo init`
 
-Runs the full project initialization. Copies `app-env.sample.properties` to `app-env.properties` and
-prompts for the `FORECAST_API_KEY` if it is not already set.
+Copies `app-env.sample.properties` to `app-env.properties` and prompts for `FORECAST_API_KEY`.
 
 **Script:** `scripts/init.sh`
 
@@ -56,18 +53,16 @@ Installs the [ktlint](https://github.com/pinterest/ktlint) binary to `.app/ktlin
 |-------------------|------------------------------------------------------------------|
 | `-u`, `--update`  | Force update even if already installed                           |
 | `--version <ver>` | Install a specific version (default: `latest`)                   |
-| `--ci`            | Run in CI mode (uses default version `1.5.0`, skips auto-update) |
+| `--ci`            | CI mode: uses pinned version `1.5.0`, skips auto-update          |
 | `--idea`          | Apply ktlint styles to Android Studio                            |
 
-The script automatically detects CI environments via the `$CI` variable (set by GitHub Actions and
-most CI providers). In CI mode it uses a pinned version and skips interactive features. The
-installed version is tracked in `.app/ktlint.version` for upgrade comparison.
+CI environments are detected via `$CI`. The installed version is tracked in `.app/ktlint.version`.
 
 **Script:** `scripts/init-ktlint.sh`
 
 ### `./sigo init hooks` (aliases: `hook`, `h`)
 
-Copies all hook scripts from `scripts/hooks/` into `.git/hooks/` and makes them executable.
+Copies hook scripts from `scripts/hooks/` into `.git/hooks/`.
 
 ```
 ./sigo init hooks [--output]
@@ -78,26 +73,6 @@ Copies all hook scripts from `scripts/hooks/` into `.git/hooks/` and makes them 
 | `--output` | Print the contents of each hook as it is installed |
 
 **Script:** `scripts/init-hooks.sh`
-
-### `./sigo init secrets` (aliases: `secret`, `s`)
-
-Decrypts project secret files using `crypt.sh`. The decryption key can be provided via `--key` or
-the `SIGOT_DECRYPT_KEY` environment variable. If neither is set, the script prompts interactively.
-
-```
-./sigo init secrets [--key <key>]
-```
-
-**Decrypted files:**
-
-| Encrypted source                            | Output                                       |
-|---------------------------------------------|----------------------------------------------|
-| `secrets/secrets.properties.enc`            | `.app/secrets/secrets.gradle`                |
-| `secrets/fastlane_service_account.json.enc` | `.app/secrets/fastlane_service_account.json` |
-| `secrets/google-services.json.enc`          | `apps/android/google-services.json`          |
-| `secrets/GoogleService-Info.plist.enc`      | `apps/ios/iosApp/GoogleService-Info.plist`   |
-
-**Script:** `scripts/init-secrets.sh`
 
 ### `./sigo init api:worker`
 
@@ -121,22 +96,22 @@ Runs ktlint on Kotlin files.
 | `--all` (default) | Lint all `*.kt` and `*.kts` files, excluding `build/` and `generated/` |
 | `--staged`        | Lint only git-staged Kotlin files                                      |
 
-Pass `-F` to auto-fix violations (e.g., `./sigo lint --staged -F`).
+Pass `-F` to auto-fix (e.g., `./sigo lint --staged -F`).
 
 **Script:** `scripts/ktlint.sh`
 
 ### `./sigo fix`
 
-Runs the pre-commit hook which formats staged shell scripts with `shfmt` and lints staged Kotlin
-files with ktlint.
+Runs the pre-commit hook: formats staged shell scripts with `shfmt`, then lints staged Kotlin files
+with ktlint.
 
 ```
-./sigo fix          # Fix staged files only
-./sigo fix --all    # Fix all Kotlin files + format all shell scripts
+./sigo fix          # staged files only
+./sigo fix --all    # all Kotlin files + all shell scripts
 ```
 
-When `--all` is passed, the script runs ktlint with `-F` on every Kotlin file and `shfmt -w -i 4` on
-all scripts. Without `--all` it delegates to the pre-commit hook.
+With `--all`, runs ktlint `-F` on every Kotlin file and `shfmt -w -i 4` on all scripts. Without it,
+delegates to the pre-commit hook.
 
 ---
 
@@ -144,15 +119,15 @@ all scripts. Without `--all` it delegates to the pre-commit hook.
 
 ### `./sigo commit` (alias: `c`)
 
-A convenience command that stages all changes, runs the fix/lint hook, re-stages, and commits.
+Stages all changes, runs fix/lint, re-stages, and commits.
 
 ```
-./sigo commit                    # Opens editor for commit message
-./sigo commit -m "message"       # Inline commit message
-./sigo commit [git commit args]  # Passes args to git commit
+./sigo commit                    # opens editor for commit message
+./sigo commit -m "message"       # inline commit message
+./sigo commit [git commit args]  # passes args to git commit
 ```
 
-The commit is created with `--no-verify` since the pre-commit hook has already been run manually.
+Uses `--no-verify` since the pre-commit hook is already run inline.
 
 ---
 
@@ -160,14 +135,8 @@ The commit is created with `--no-verify` since the pre-commit hook has already b
 
 ### `./sigo cli [args]`
 
-Builds and runs the SIGOT CLI application.
-
-```
-./sigo cli [args]
-```
-
-This compiles `:apps:cli:installDist` via Gradle (quietly), then executes the built binary at
-`apps/cli/build/install/sigot/bin/sigot` with any provided arguments.
+Builds and runs the SIGO CLI application. Compiles `:apps:cli:installDist` via Gradle, then runs
+the binary at `apps/cli/build/install/sigo/bin/sigo`.
 
 **Script:** `scripts/cli.sh`
 
@@ -192,7 +161,7 @@ Build commands for the Kotlin/JS API module.
 
 ### `./sigo api:worker <command>`
 
-Manages the Cloudflare Worker that serves the SIGOT API.
+Manages the Cloudflare Worker that serves the SIGO API.
 
 ```
 ./sigo api:worker <command> [options]
@@ -206,7 +175,7 @@ Manages the Cloudflare Worker that serves the SIGOT API.
 | `build [--clean]`  | Compile the worker (delegates to `api.sh build`) |
 | `dev`              | Start Kotlin/JS watcher + Wrangler dev server    |
 | `deploy [options]` | Deploy to Cloudflare                             |
-| `update-wrangler`  | Update Wrangler to the latest version            |
+| `update-wrangler`  | Update Wrangler to latest                        |
 | `wrangler [args]`  | Pass-through to the Wrangler CLI                 |
 
 #### Deploy options
@@ -228,49 +197,12 @@ Manages the Cloudflare Worker that serves the SIGOT API.
 1. Gradle continuous build watching for Kotlin/JS changes
 2. Wrangler dev server serving the compiled worker
 
-Both are cleaned up on `Ctrl+C`. The script waits up to 60 seconds for the initial build before
-starting Wrangler.
+Both are cleaned up on `Ctrl+C`. Waits up to 60s for the initial build before starting Wrangler.
 
-**Prerequisites:** The dev and deploy commands verify that `FORECAST_API_KEY` is configured. The key
-is sourced from `app-env.properties` (set up by `./sigo init`) and written to `.dev.vars` for
-Wrangler.
+The dev and deploy commands require `FORECAST_API_KEY` in `app-env.properties`. The key is written
+to `.dev.vars` for Wrangler.
 
 **Script:** `scripts/api-worker.sh`
-
----
-
-## Encryption / Decryption
-
-### `./sigo encrypt`
-
-Encrypts a file using AES-256-CBC with PBKDF2 key derivation (500,000 iterations, SHA-512). Output
-is written to the `secrets/` directory with a `.enc` extension.
-
-```
-./sigo encrypt --key <key> <file>
-```
-
-### Decryption (via `init secrets`)
-
-Decryption is handled through `./sigo init secrets` which calls `crypt.sh decrypt` internally. It
-can also be called directly:
-
-```
-scripts/crypt.sh decrypt --key <key> [file]   # Specific file
-scripts/crypt.sh decrypt --key <key>           # All .enc files in secrets/
-scripts/crypt.sh decrypt                       # Uses SIGOT_DECRYPT_KEY env var
-```
-
-**Key requirements:** Minimum 32 characters. Can be provided via `--key`, the `SIGOT_DECRYPT_KEY`
-environment variable, or interactive prompt.
-
-**Encryption details:**
-
-- Algorithm: AES-256-CBC
-- Key derivation: PBKDF2 with 500,000 iterations
-- Digest: SHA-512
-
-**Script:** `scripts/crypt.sh`
 
 ---
 
@@ -278,15 +210,12 @@ environment variable, or interactive prompt.
 
 ### `pre-commit`
 
-The pre-commit hook runs automatically on `git commit` (after `./sigo init hooks`).
+Runs automatically on `git commit` (after `./sigo init hooks`).
 
-**Steps:**
-
-1. Finds staged shell scripts in `scripts/` (excluding `.js` and `.json`) and formats them with
-   `shfmt -i 4`
+1. Formats staged shell scripts in `scripts/` (excluding `.js`/`.json`) with `shfmt -i 4`
 2. Runs `ktlint.sh --staged` on staged Kotlin files
 
-Any additional arguments (e.g., `-F` for auto-fix) are forwarded to ktlint.
+Additional arguments (e.g., `-F`) are forwarded to ktlint.
 
 **Script:** `scripts/hooks/pre-commit`
 
@@ -304,9 +233,6 @@ Any additional arguments (e.g., `-F` for auto-fix) are forwarded to ktlint.
 # 3. Install git hooks
 ./sigo init hooks
 
-# 4. (Optional) Decrypt secrets if you have the key
-./sigo init secrets --key $SIGOT_DECRYPT_KEY
-
-# 5. (Optional) Set up the API worker
+# 4. (Optional) Set up the API worker
 ./sigo init api:worker
 ```

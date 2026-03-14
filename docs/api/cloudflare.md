@@ -15,59 +15,44 @@ This will:
 
 ### Deploying
 
-You are now ready to deploy the backend API to your own Cloudflare account, but there are a few
-things you need to do first:
+Before deploying to your Cloudflare account:
 
-1. Update [`./wrangler.json`](./wrangler.json) with the appropriate values
-    - Change the URL for the routes to match your own domain
-    - **Note:** If your domain's DNS nameservers are **not** Cloudflare, then you will need to
-      follow
-      separate steps to setup your worker with your domain
-2. If you already have `wrangler` installed run: `wrangler login`
-    - **Note:** If you don't have `wrangler` installed you can run:
-      `./sigo api:worker wrangler login`
-3. Now you need to set the `FORECAST_API_KEY` env secret in cloudflare. You can do so by running:
-    - `./sigo api:worker secret set`
+1. Update [`./wrangler.json`](./wrangler.json) with your domain routes
+    - **Note:** If your domain's DNS nameservers are **not** Cloudflare, you'll need to set up the worker with your domain separately
+2. Log in to Wrangler: `wrangler login` (or `./sigo api:worker wrangler login` if you don't have it installed globally)
+3. Set the `FORECAST_API_KEY` secret: `./sigo api:worker secret set`
 
-Now you are ready to deploy!
-
-That can be done by running the following command:
+Deploy:
 
 ```shell
 ./sigo api:worker deploy
 ```
 
-This will preform a clean-build of the project, then attempt to deploy the `apps/api/worker` module
-to Cloudflare.
+This clean-builds the project and deploys the `apps/api/worker` module to Cloudflare.
 
-If all goes well you will be able to hit the api at:
+The API will be available at:
 
 `https://your-domain.com/forecast?lat=123&lon=321`
 
 ### Developing
 
-Now you are ready to start working on the worker API. To build the project, watch for changes, and
-get it running with `wrangler`. You can run the following command:
+Start the dev server with file watching:
 
 ```shell
 ./sigo api:worker dev
 ```
 
-If you make a change to any of the source files, gradle will recompile and eventually wrangler will
-pick up on the changes.
+Gradle recompiles on source changes and Wrangler picks them up automatically.
 
-**Note:** You might see an error from wrangler about missing files, just wait, it should be fine.
+**Note:** You might see a Wrangler error about missing files on first start. Wait for the initial build to finish.
 
 ### Deploying
-
-Now that you have a new kick-ass feature, you can deploy the worker to Cloudflare with the following
-command:
 
 ```shell
 ./sigo api:worker deploy
 ```
 
-If you want to deploy to staging or the dev environment you can pass `--env` like so:
+Deploy to staging or dev with `--env`:
 
 ```shell
 # Deploy to staging
@@ -77,13 +62,11 @@ If you want to deploy to staging or the dev environment you can pass `--env` lik
 ./sigo api:worker deploy --env dev
 ```
 
-Once that is successful the worker should be available at https://api.shouldigooutside.now (or
-dev/staging.api.shouldigooutside.now)
+The worker will be available at `https://api.shouldigooutside.now` (or `dev`/`staging.api.shouldigooutside.now`).
 
 ### Misc
 
-Wrangler is installed to the `apps/api/worker/node_modules` folder. To run it easily for any other
-command you can use the wrapper command:
+Wrangler is installed to `apps/api/worker/node_modules`. Run it via the wrapper:
 
 ```shell
 ./sigo api:worker wrangler <command>
