@@ -34,13 +34,16 @@ public class InMemoryApiCache(
     }
 
     override suspend fun get(key: String): String? {
-        val entry = store[key] ?: return null
-        return if (System.currentTimeMillis() < entry.expiresAtMillis) {
-            entry.value
-        } else {
-            store.remove(key)
-            null
+        var result: String? = null
+        store.computeIfPresent(key) { _, entry ->
+            if (System.currentTimeMillis() < entry.expiresAtMillis) {
+                result = entry.value
+                entry // keep
+            } else {
+                null // remove expired
+            }
         }
+        return result
     }
 
     override suspend fun put(
@@ -49,7 +52,7 @@ public class InMemoryApiCache(
         ttl: Duration,
     ) {
         val expiresAtMillis = System.currentTimeMillis() + ttl.inWholeMilliseconds
-        store[key] = Entry(value, expiresAtMillis)
+        store.compute(key) { _, _ -> Entry(value, expiresAtMillis) }
     }
 
     private fun sweep() {
