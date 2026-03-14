@@ -65,6 +65,9 @@ private suspend fun ApplicationCall.toServerRequest(): ServerRequest {
     )
 }
 
+/**
+ * Write a [ServerResponse] back to a Ktor [ApplicationCall].
+ */
 private suspend fun ServerResponse.writeTo(call: ApplicationCall) {
     headers.forEach { name, values ->
         if (!name.equals(HttpHeaders.ContentType, ignoreCase = true)) {
