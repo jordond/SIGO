@@ -201,7 +201,9 @@ internal fun BoxScope.ModalBottomSheetContent(
                     }
                 }
                 val newTarget = when (sheetState.anchoredDraggableState.targetValue) {
-                    Hidden -> Hidden
+                    Hidden -> {
+                        Hidden
+                    }
                     PartiallyExpanded, Expanded -> {
                         val hasPartiallyExpandedState = newAnchors.hasAnchorFor(PartiallyExpanded)
                         val newTarget = if (hasPartiallyExpandedState) {

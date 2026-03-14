@@ -90,11 +90,15 @@ internal class DefaultLocationRepo(
 
         if (result is LocationResult.Failed && savedLocation != null) {
             when (result) {
-                is LocationResult.NotFound ->
+                is LocationResult.NotFound -> {
                     logger.w { "GPS not ready, falling back to stale cached location: ${savedLocation.name}" }
-                is LocationResult.Error ->
+                }
+                is LocationResult.Error -> {
                     logger.w { "GPS error, falling back to stale cached location: ${savedLocation.name}" }
-                else -> return result // NotAllowed / NotSupported should not fall back
+                }
+                else -> {
+                    return result
+                } // NotAllowed / NotSupported should not fall back
             }
             val enriched = enrichWithGeocoding(savedLocation)
             return Success(enriched)
@@ -147,16 +151,24 @@ internal class DefaultLocationRepo(
 
     private fun GeolocatorResult.toResult(): LocationResult =
         when (this) {
-            is GeolocatorResult.Error -> when (this) {
-                is CancellationException -> throw this
-                is GeolocatorResult.PermissionDenied -> {
-                    LocationResult.NotAllowed(permanent = this.forever)
-                }
-                is GeolocatorResult.NotSupported -> LocationResult.NotSupported
-                is GeolocatorResult.NotFound -> LocationResult.NotFound
-                else -> {
-                    logger.e { "Geolocation error: $this" }
-                    LocationResult.Error
+            is GeolocatorResult.Error -> {
+                when (this) {
+                    is CancellationException -> {
+                        throw this
+                    }
+                    is GeolocatorResult.PermissionDenied -> {
+                        LocationResult.NotAllowed(permanent = this.forever)
+                    }
+                    is GeolocatorResult.NotSupported -> {
+                        LocationResult.NotSupported
+                    }
+                    is GeolocatorResult.NotFound -> {
+                        LocationResult.NotFound
+                    }
+                    else -> {
+                        logger.e { "Geolocation error: $this" }
+                        LocationResult.Error
+                    }
                 }
             }
             is GeolocatorResult.Success -> {

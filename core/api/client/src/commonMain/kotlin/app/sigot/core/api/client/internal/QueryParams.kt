@@ -16,7 +16,9 @@ internal inline fun <reified T> T.toQueryParams(json: Json = defaultJson): Map<S
 
 private fun JsonElement.toQueryParams(prefix: String = ""): Map<String, String> =
     when (this) {
-        is JsonNull -> emptyMap()
+        is JsonNull -> {
+            emptyMap()
+        }
         is JsonPrimitive -> {
             if (prefix.isEmpty()) {
                 emptyMap()

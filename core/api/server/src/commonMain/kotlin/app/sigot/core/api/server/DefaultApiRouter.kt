@@ -119,6 +119,10 @@ internal class DefaultApiRouter(
         return response.copy(headers = headers)
     }
 
+    /**
+     * Extract pathname from URL: strip scheme+host and query string.
+     * Assumes adapters provide a full URL with scheme (e.g., "https://host:port/path?query").
+     */
     private fun extractPath(url: String): String {
         // Extract pathname from URL: strip scheme+host and query string
         val withoutScheme = url.substringAfter("://")

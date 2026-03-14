@@ -449,9 +449,15 @@ internal fun calculateTransformOrigin(
 ): TransformOrigin {
     val pivotX =
         when {
-            menuBounds.left >= anchorBounds.right -> 0f
-            menuBounds.right <= anchorBounds.left -> 1f
-            menuBounds.width == 0 -> 0f
+            menuBounds.left >= anchorBounds.right -> {
+                0f
+            }
+            menuBounds.right <= anchorBounds.left -> {
+                1f
+            }
+            menuBounds.width == 0 -> {
+                0f
+            }
             else -> {
                 val intersectionCenter =
                     (
@@ -463,9 +469,15 @@ internal fun calculateTransformOrigin(
         }
     val pivotY =
         when {
-            menuBounds.top >= anchorBounds.bottom -> 0f
-            menuBounds.bottom <= anchorBounds.top -> 1f
-            menuBounds.height == 0 -> 0f
+            menuBounds.top >= anchorBounds.bottom -> {
+                0f
+            }
+            menuBounds.bottom <= anchorBounds.top -> {
+                1f
+            }
+            menuBounds.height == 0 -> {
+                0f
+            }
             else -> {
                 val intersectionCenter =
                     (

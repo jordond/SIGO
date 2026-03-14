@@ -18,7 +18,7 @@ public fun respondText(
     ServerResponse(
         statusCode = status,
         statusText = statusText,
-        headers = mutableMapOf(ApiHeaders.CONTENT_TYPE to ContentType.TEXT_PLAIN),
+        headers = mapOf(ApiHeaders.CONTENT_TYPE to ContentType.TEXT_PLAIN),
         body = text,
     )
 
@@ -30,7 +30,7 @@ public fun respondJson(
     ServerResponse(
         statusCode = status,
         statusText = statusText,
-        headers = mutableMapOf(ApiHeaders.CONTENT_TYPE to ContentType.JSON),
+        headers = mapOf(ApiHeaders.CONTENT_TYPE to ContentType.JSON),
         body = json,
     )
 
@@ -164,8 +164,10 @@ public fun cached(
     block: () -> ServerResponse,
 ): ServerResponse {
     val response = block()
-    response.headers[ApiHeaders.CACHE_CONTROL] = "max-age=${age.inWholeSeconds}"
-    return response
+    return response.copy(
+        headers = response.headers +
+            (ApiHeaders.CACHE_CONTROL to "max-age=${age.inWholeSeconds}"),
+    )
 }
 
 @PublishedApi
