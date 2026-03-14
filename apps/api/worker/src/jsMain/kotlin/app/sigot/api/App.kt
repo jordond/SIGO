@@ -2,6 +2,8 @@ package app.sigot.api
 
 import app.sigot.api.provider.WorkerTokenProvider
 import app.sigot.core.api.server.ApiRouter
+import app.sigot.core.api.server.cache.ForecastCacheProvider
+import app.sigot.core.api.server.cache.KvForecastCache
 import app.sigot.core.api.server.util.serverError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.promise
@@ -33,6 +35,7 @@ class DefaultApp(
     scope: CoroutineScope,
     private val router: ApiRouter,
     private val tokenProvider: WorkerTokenProvider,
+    private val cacheProvider: ForecastCacheProvider,
     private val json: Json,
 ) : App,
     CoroutineScope by scope {
@@ -47,6 +50,14 @@ class DefaultApp(
         }
 
         tokenProvider.apiToken = parsedEnv.forecastApiKey
+
+        if (cacheProvider.cache == null) {
+            val kvNamespace: dynamic = env.FORECAST_CACHE
+            if (kvNamespace != null) {
+                cacheProvider.cache = KvForecastCache(kvNamespace)
+            }
+        }
+
         return promise { router.handle(request) }
     }
 }

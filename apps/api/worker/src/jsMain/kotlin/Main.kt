@@ -6,7 +6,7 @@ import app.sigot.core.api.server.jsApiServerModule
 import app.sigot.core.domain.VersionProvider
 import app.sigot.core.domain.forecast.ApiTokenProvider
 import app.sigot.core.foundation.di.foundationModule
-import app.sigot.core.platform.di.platformModule
+import app.sigot.core.platform.di.networkModule
 import app.sigot.forecast.forecastBackendModule
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.koin.KermitKoinLogger
@@ -37,7 +37,7 @@ internal fun initKoin(): Koin =
             jsApiServerModule(),
             foundationModule(),
             forecastBackendModule(),
-            platformModule(),
+            networkModule(),
         )
     }.koin
 

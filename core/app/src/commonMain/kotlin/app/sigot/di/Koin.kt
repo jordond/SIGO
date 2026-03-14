@@ -3,6 +3,9 @@ package app.sigot.di
 import app.sigot.core.api.client.apiClientModule
 import app.sigot.core.config.configModule
 import app.sigot.core.foundation.di.foundationModule
+import app.sigot.core.platform.ClientIdProvider
+import app.sigot.core.platform.di.getKoinInstance
+import app.sigot.core.platform.di.networkModule
 import app.sigot.core.platform.di.platformModule
 import app.sigot.forecast.forecastAppModule
 import app.sigot.forecast.ui.forecastUiModule
@@ -34,6 +37,16 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
             apiClientModule(),
             configModule(),
             foundationModule(),
+            networkModule {
+                install(
+                    createClientPlugin("ClientIdPlugin") {
+                        onRequest { request, _ ->
+                            val clientId = getKoinInstance<ClientIdProvider>().clientId()
+                            request.header("X-Client-ID", clientId)
+                        }
+                    },
+                )
+            },
             platformModule(),
             // Feature
             forecastAppModule(),

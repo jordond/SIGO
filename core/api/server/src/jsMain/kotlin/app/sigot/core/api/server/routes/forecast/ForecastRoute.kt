@@ -2,23 +2,29 @@ package app.sigot.core.api.server.routes.forecast
 
 import app.sigot.core.api.server.ApiRoute
 import app.sigot.core.api.server.ApiRoutePath
+import app.sigot.core.api.server.cache.FORECAST_CACHE_TTL_DURATION
+import app.sigot.core.api.server.cache.FORECAST_CACHE_TTL_SECONDS
+import app.sigot.core.api.server.cache.ForecastCacheProvider
+import app.sigot.core.api.server.entity.ApiResponse
 import app.sigot.core.api.server.queryParams
 import app.sigot.core.api.server.util.cached
-import app.sigot.core.api.server.util.ok
+import app.sigot.core.api.server.util.respondJson
+import app.sigot.core.api.server.util.roundCoordinate
+import app.sigot.core.api.server.util.validateCoordinates
 import app.sigot.core.domain.forecast.GetForecastUseCase
+import app.sigot.core.model.location.Location
 import app.sigot.forecast.data.entity.ForecastRequestQuery
 import app.sigot.forecast.data.entity.ForecastResponse
 import app.sigot.forecast.data.entity.toEntity
-import app.sigot.forecast.data.entity.toLocation
 import co.touchlab.kermit.Logger
 import kotlinx.serialization.json.Json
 import org.w3c.fetch.Request
 import org.w3c.fetch.Response
-import kotlin.time.Duration.Companion.minutes
 
 public class ForecastRoute(
     private val json: Json,
     private val getForecastUseCase: GetForecastUseCase,
+    private val cacheProvider: ForecastCacheProvider,
 ) : ApiRoute {
     private val logger = Logger.withTag("ForecastRoute")
     override val path: ApiRoutePath = ApiRoutePath.Forecast
@@ -27,14 +33,44 @@ public class ForecastRoute(
         request: Request,
         parameters: Map<String, String>,
     ): Response? {
-        val location = request.queryParams<ForecastRequestQuery>(json = json).toLocation()
+        val query = request.queryParams<ForecastRequestQuery>(json = json)
+
+        validateCoordinates(query.lat, query.lon)
+
+        val roundedLat = query.lat.roundCoordinate()
+        val roundedLon = query.lon.roundCoordinate()
+
+        val location = Location.create(
+            latitude = roundedLat,
+            longitude = roundedLon,
+            name = query.name,
+        )
         logger.d { "Querying forecast for location: $location" }
+
+        val cacheKey = "v1:forecast:$roundedLat,$roundedLon"
+        val cache = cacheProvider.cache
+        if (cache != null) {
+            val cachedJson = cache.get(cacheKey)
+            if (cachedJson != null) {
+                logger.d { "Cache hit for $cacheKey" }
+                return cached(FORECAST_CACHE_TTL_DURATION) {
+                    respondJson(json = cachedJson)
+                }
+            }
+        }
 
         val forecast = getForecastUseCase.forecastFor(location).getOrThrow().toEntity()
         logger.i { "Forecast retrieved successfully for location: $location" }
 
-        return cached(10.minutes) {
-            ok(ForecastResponse(forecast = forecast))
+        val responseData = ForecastResponse(forecast = forecast)
+        val responseJson = json.encodeToString(ApiResponse(data = responseData))
+
+        if (cache != null) {
+            cache.put(cacheKey, responseJson, ttlSeconds = FORECAST_CACHE_TTL_SECONDS)
+        }
+
+        return cached(FORECAST_CACHE_TTL_DURATION) {
+            respondJson(json = responseJson)
         }
     }
 }
