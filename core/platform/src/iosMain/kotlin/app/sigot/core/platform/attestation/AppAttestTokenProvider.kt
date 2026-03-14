@@ -2,6 +2,7 @@ package app.sigot.core.platform.attestation
 
 import app.sigot.core.platform.AttestationTokenProvider
 import app.sigot.core.platform.ClientIdProvider
+import app.sigot.core.platform.store.Store
 import co.touchlab.kermit.Logger
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
@@ -20,11 +21,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import platform.DeviceCheck.DCAppAttestService
 import platform.Foundation.NSData
-import platform.Foundation.NSError
 import platform.Foundation.base64EncodedStringWithOptions
 import platform.Foundation.create
-import platform.Security.SecRandomCopyBytes
-import platform.Security.kSecRandomDefault
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -33,6 +31,7 @@ internal class AppAttestTokenProvider(
     private val clientIdProvider: ClientIdProvider,
     private val json: Json,
     private val backendUrl: String,
+    private val attestStateStore: Store<AttestState>,
 ) : AttestationTokenProvider {
     // Must match ApiHeaders.CLIENT_ID in core/api/server — duplicated here to avoid
     // a circular dependency (core/api/server depends on core/platform).
@@ -45,9 +44,6 @@ internal class AppAttestTokenProvider(
 
     override val platform: String = "ios"
 
-    private var keyId: String? = null
-    private var isAttested: Boolean = false
-
     override suspend fun getToken(requestHash: String): String? {
         if (!attestService.isSupported()) {
             logger.d { "App Attest not supported on this device" }
@@ -55,8 +51,9 @@ internal class AppAttestTokenProvider(
         }
 
         return try {
-            val currentKeyId = getOrCreateKeyId()
-            if (!isAttested) {
+            val state = loadOrCreateState()
+            val currentKeyId = state.keyId
+            if (!state.isAttested) {
                 performAttestation(currentKeyId)
             }
             generateAssertion(currentKeyId, requestHash)
@@ -66,8 +63,14 @@ internal class AppAttestTokenProvider(
         }
     }
 
-    private suspend fun getOrCreateKeyId(): String {
-        keyId?.let { return it }
+    override fun resetAttestation() {
+        // Clear persisted state — next getToken() call will generate a new key and re-attest
+        kotlinx.coroutines.runBlocking { attestStateStore.clear() }
+        logger.i { "Attestation state reset" }
+    }
+
+    private suspend fun loadOrCreateState(): AttestState {
+        attestStateStore.get()?.let { return it }
 
         // Generate a new key
         val newKeyId = suspendCancellableCoroutine<String> { continuation ->
@@ -82,8 +85,9 @@ internal class AppAttestTokenProvider(
             }
         }
 
-        keyId = newKeyId
-        return newKeyId
+        val state = AttestState(keyId = newKeyId, isAttested = false)
+        attestStateStore.set(state)
+        return state
     }
 
     @OptIn(ExperimentalForeignApi::class)
@@ -139,7 +143,11 @@ internal class AppAttestTokenProvider(
             throw Exception("Server attestation registration failed: ${response.status}")
         }
 
-        isAttested = true
+        attestStateStore.update {
+            it?.copy(
+                isAttested = true,
+            ) ?: AttestState(keyId = keyId, isAttested = true)
+        }
         logger.i { "App Attest registration successful" }
     }
 
@@ -165,6 +173,12 @@ internal class AppAttestTokenProvider(
 
         return assertionData.base64EncodedStringWithOptions(0u)
     }
+
+    @Serializable
+    internal data class AttestState(
+        val keyId: String,
+        val isAttested: Boolean,
+    )
 
     @Serializable
     private data class NonceResponse(

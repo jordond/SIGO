@@ -16,6 +16,7 @@ import app.sigot.onboarding.onboardingModule
 import app.sigot.settings.settingsModule
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.koin.KermitKoinLogger
+import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.request.header
 import org.koin.core.KoinApplication
@@ -37,6 +38,17 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
             configModule(),
             foundationModule(),
             networkModule {
+                install(HttpRequestRetry) {
+                    maxRetries = 1
+                    retryIf { _, response ->
+                        if (response.status.value == 403) {
+                            getKoinInstance<AttestationTokenProvider>().resetAttestation()
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                }
                 install(
                     createClientPlugin("ClientIdPlugin") {
                         onRequest { request, _ ->

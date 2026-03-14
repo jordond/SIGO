@@ -6,4 +6,7 @@ public interface AttestationTokenProvider {
 
     /** Generate an attestation token for the given request hash, or null if unavailable. */
     public suspend fun getToken(requestHash: String): String?
+
+    /** Reset attestation state (e.g. after a 403), forcing re-attestation on the next request. */
+    public fun resetAttestation()
 }
