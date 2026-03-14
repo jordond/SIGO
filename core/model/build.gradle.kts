@@ -25,6 +25,8 @@ buildkonfig {
         println("Warning: app-env.properties not found at ${envPropsFile.absolutePath}")
     }
 
+    exposeObjectWithName = "BuildConfig"
+
     defaultConfigs {
         val useDirectApi = envProps.getProperty("USE_DIRECT_API", "false")
         buildConfigField(BOOLEAN, "USE_DIRECT_API", useDirectApi, const = true)
