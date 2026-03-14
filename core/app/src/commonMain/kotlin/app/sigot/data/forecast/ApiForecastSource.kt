@@ -11,7 +11,7 @@ import app.sigot.forecast.data.source.ForecastSource
 internal class ApiForecastSource(
     private val apiClient: ApiClient,
 ) : ForecastSource {
-    override suspend fun forecastFor(location: Location): Forecast = apiClient.forecast(location)
+    override suspend fun forecastFor(location: Location): Forecast = apiClient.forecast(location).data
 
     override suspend fun forecastFor(location: String): Forecast =
         throw RuntimeException("Not Supported, API requires a Location object. Call forecastFor(Location)")

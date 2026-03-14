@@ -3,6 +3,7 @@ package app.sigot.core.api.server
 import app.sigot.core.api.server.cache.CacheProvider
 import app.sigot.core.api.server.cors.CorsHandler
 import app.sigot.core.api.server.exception.BadRequestException
+import app.sigot.core.api.server.http.ApiHeaders
 import app.sigot.core.api.server.http.ServerRequest
 import app.sigot.core.api.server.http.ServerResponse
 import app.sigot.core.api.server.ratelimit.RateLimiter
@@ -41,18 +42,18 @@ internal class DefaultApiRouter(
             return corsHandler.preflight(request)
         }
 
-        val clientId = Uuid.parseOrNull(request.headers["X-Client-ID"] ?: "")
+        val clientId = Uuid.parseOrNull(request.headers[ApiHeaders.CLIENT_ID] ?: "")
         if (clientId == null) {
             return corsHandler.withCorsHeaders(
                 unauthorized(
-                    meta = mapOf("error" to "Missing or invalid X-Client-ID header"),
+                    meta = mapOf("error" to "Missing or invalid ${ApiHeaders.CLIENT_ID} header"),
                     json = json,
                 ),
                 request,
             )
         }
 
-        val ipAddress = request.headers["CF-Connecting-IP"]
+        val ipAddress = request.headers[ApiHeaders.CONNECTING_IP]
 
         val cache = cacheProvider.cache
         val rateLimitResult = if (cache != null) {
@@ -112,9 +113,9 @@ internal class DefaultApiRouter(
         result: RateLimiter.RateLimitResult,
     ): ServerResponse {
         val headers = response.headers.toMutableMap()
-        headers["X-RateLimit-Limit"] = result.limit.toString()
-        headers["X-RateLimit-Remaining"] = result.remaining.toString()
-        headers["X-RateLimit-Reset"] = result.resetAt.epochSeconds.toString()
+        headers[ApiHeaders.RATE_LIMIT] = result.limit.toString()
+        headers[ApiHeaders.RATE_LIMIT_REMAINING] = result.remaining.toString()
+        headers[ApiHeaders.RATE_LIMIT_RESET] = result.resetAt.epochSeconds.toString()
         return response.copy(headers = headers)
     }
 
