@@ -146,11 +146,7 @@ unsupported() {
 
 ensure_ktlint_path() {
     if [[ "$KTLINT_PATH" != "$ROOT" ]]; then
-        if [[ -w "$KTLINT_PATH" ]]; then
-            mkdir -p "$KTLINT_PATH"
-        else
-            error "Unable to write to $KTLINT_PATH!"
-        fi
+        mkdir -p "$KTLINT_PATH"
     fi
 }
 

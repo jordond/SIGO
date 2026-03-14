@@ -132,6 +132,30 @@ public fun serverError(
     )
 }
 
+public fun unauthorized(
+    meta: Map<String, Any?> = emptyMap(),
+    json: Json = defaultJson,
+): Response =
+    respondJson(
+        data = Unit,
+        meta = meta,
+        status = 401,
+        statusText = "Unauthorized",
+        json = json,
+    )
+
+public fun tooManyRequests(
+    meta: Map<String, Any?> = emptyMap(),
+    json: Json = defaultJson,
+): Response =
+    respondJson(
+        data = Unit,
+        meta = meta,
+        status = 429,
+        statusText = "Too Many Requests",
+        json = json,
+    )
+
 public fun cached(
     age: Duration,
     block: () -> Response,
