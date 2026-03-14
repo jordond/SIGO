@@ -1,5 +1,7 @@
 package app.sigot.core.api.server
 
+import app.sigot.core.api.server.attestation.AttestationResult
+import app.sigot.core.api.server.attestation.AttestationService
 import app.sigot.core.api.server.cache.CacheProvider
 import app.sigot.core.api.server.cors.CorsHandler
 import app.sigot.core.api.server.exception.BadRequestException
@@ -8,6 +10,7 @@ import app.sigot.core.api.server.http.ServerRequest
 import app.sigot.core.api.server.http.ServerResponse
 import app.sigot.core.api.server.ratelimit.RateLimiter
 import app.sigot.core.api.server.util.badRequest
+import app.sigot.core.api.server.util.forbidden
 import app.sigot.core.api.server.util.methodNotAllowed
 import app.sigot.core.api.server.util.noContent
 import app.sigot.core.api.server.util.notFound
@@ -27,6 +30,7 @@ internal class DefaultApiRouter(
     private val cacheProvider: CacheProvider,
     private val rateLimiter: RateLimiter,
     private val corsHandler: CorsHandler,
+    private val attestationService: AttestationService,
 ) : ApiRouter {
     private val logger = Logger.withTag("ApiRouter")
 
@@ -55,9 +59,19 @@ internal class DefaultApiRouter(
         }
 
         val ipAddress = request.headers[ApiHeaders.CONNECTING_IP]
+
+        val attestationToken = request.headers[ApiHeaders.ATTESTATION_TOKEN]
+        val attestationPlatform = request.headers[ApiHeaders.ATTESTATION_PLATFORM]
+        val attestationResult = attestationService.verify(
+            token = attestationToken,
+            platform = attestationPlatform,
+            clientId = clientId.toString(),
+        )
+
+        val isAttested = attestationResult is AttestationResult.Attested
         val cache = cacheProvider.cache
         val rateLimitResult = if (cache != null) {
-            rateLimiter.check(clientId, ipAddress, cache)
+            rateLimiter.check(clientId, ipAddress, cache, attested = isAttested)
         } else {
             null
         }

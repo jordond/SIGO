@@ -2,6 +2,7 @@ package app.sigot.api
 
 import app.sigot.api.provider.WorkerTokenProvider
 import app.sigot.core.api.server.ApiRouter
+import app.sigot.core.api.server.attestation.AttestationConfig
 import app.sigot.core.api.server.cache.ForecastCacheProvider
 import app.sigot.core.api.server.cache.KvForecastCache
 import app.sigot.core.api.server.http.toJsResponse
@@ -30,6 +31,10 @@ interface App {
 data class Env(
     @SerialName("FORECAST_API_KEY")
     val forecastApiKey: String,
+    @SerialName("GOOGLE_SERVICE_ACCOUNT_JSON")
+    val googleServiceAccountJson: String? = null,
+    @SerialName("APPLE_APP_ID")
+    val appleAppId: String? = null,
 )
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -38,6 +43,7 @@ class DefaultApp(
     private val router: ApiRouter,
     private val tokenProvider: WorkerTokenProvider,
     private val cacheProvider: ForecastCacheProvider,
+    private val attestationConfig: AttestationConfig,
     private val json: Json,
 ) : App,
     CoroutineScope by scope {
@@ -52,6 +58,8 @@ class DefaultApp(
         }
 
         tokenProvider.apiToken = parsedEnv.forecastApiKey
+        attestationConfig.googleServiceAccountJson = parsedEnv.googleServiceAccountJson
+        attestationConfig.appleAppId = parsedEnv.appleAppId
 
         if (cacheProvider.cache == null) {
             val kvNamespace: dynamic = env.FORECAST_CACHE

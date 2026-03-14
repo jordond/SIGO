@@ -4,6 +4,7 @@ import app.sigot.core.api.client.apiClientModule
 import app.sigot.core.api.server.http.ApiHeaders
 import app.sigot.core.config.configModule
 import app.sigot.core.foundation.di.foundationModule
+import app.sigot.core.platform.AttestationTokenProvider
 import app.sigot.core.platform.ClientIdProvider
 import app.sigot.core.platform.di.getKoinInstance
 import app.sigot.core.platform.di.networkModule
@@ -44,6 +45,18 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
                         }
                     },
                 )
+                install(
+                    createClientPlugin("AttestationPlugin") {
+                        onRequest { request, _ ->
+                            val provider = getKoinInstance<AttestationTokenProvider>()
+                            val platform = provider.platform ?: return@onRequest
+                            val requestHash = computeRequestHash(request)
+                            val token = provider.getToken(requestHash) ?: return@onRequest
+                            request.header(ApiHeaders.ATTESTATION_TOKEN, token)
+                            request.header(ApiHeaders.ATTESTATION_PLATFORM, platform)
+                        }
+                    },
+                )
             },
             platformModule(),
             // Feature
@@ -54,5 +67,18 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
             settingsModule(),
         )
     }
+
+private fun computeRequestHash(request: io.ktor.client.request.HttpRequestBuilder): String {
+    val method = request.method.value
+    val url = request.url.buildString()
+    val input = "$method$url"
+    // Simple hash using Kotlin's built-in hashCode as a fallback
+    // A proper SHA-256 implementation can be added later
+    return input
+        .hashCode()
+        .toUInt()
+        .toString(16)
+        .padStart(8, '0')
+}
 
 internal expect fun configureCrashlytics()
