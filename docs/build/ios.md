@@ -10,6 +10,20 @@
 A **paid** Apple Developer account ($99/year) is required to install on a physical device. A free
 account works for simulator builds only.
 
+## Firebase setup
+
+The app uses Firebase for Remote Config and Crashlytics. You need to create your own Firebase
+project and download the config file:
+
+1. Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project (or
+   use the same project as Android)
+2. Add an iOS app with bundle ID `now.shouldigooutside` (or your own bundle ID if you've changed it)
+3. Download `GoogleService-Info.plist` and place it at `apps/ios/iosApp/GoogleService-Info.plist`
+4. Enable any Firebase services you need (Remote Config, Crashlytics, etc.)
+
+> **Note:** `GoogleService-Info.plist` is gitignored. Each contributor must create their own Firebase
+> project or obtain the file from a project maintainer.
+
 ## Configuration
 
 The iOS app doesn't read `app-env.properties` directly. Gradle compiles the shared KMP code with

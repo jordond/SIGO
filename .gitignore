@@ -45,3 +45,7 @@ app/build
 .app
 *.key
 .dev.vars
+
+# Firebase config (contributors must create their own Firebase project)
+google-services.json
+GoogleService-Info.plist

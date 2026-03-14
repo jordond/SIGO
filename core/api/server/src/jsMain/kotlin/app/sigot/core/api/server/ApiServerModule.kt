@@ -1,6 +1,7 @@
 package app.sigot.core.api.server
 
 import app.sigot.core.api.server.cache.ForecastCacheProvider
+import app.sigot.core.api.server.ratelimit.DefaultRateLimiter
 import app.sigot.core.api.server.ratelimit.RateLimiter
 import app.sigot.core.api.server.routes.VersionRoute
 import app.sigot.core.api.server.routes.forecast.ForecastRoute
@@ -13,7 +14,7 @@ import org.koin.dsl.module
 public fun jsApiServerModule(): Module =
     module {
         single { ForecastCacheProvider() }
-        single { RateLimiter(json = get()) }
+        single<RateLimiter> { DefaultRateLimiter(json = get()) }
 
         factoryOf(::VersionRoute) bind ApiRoute::class
         factoryOf(::ForecastRoute) bind ApiRoute::class

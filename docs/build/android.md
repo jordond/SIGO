@@ -5,6 +5,20 @@
 - Java 17+
 - Android SDK (via Android Studio or command line tools)
 
+## Firebase setup
+
+The app uses Firebase for Remote Config and Crashlytics. You need to create your own Firebase
+project and download the config file:
+
+1. Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project
+2. Add an Android app with package name `now.shouldigooutside` (or your own package name if you've
+   changed it)
+3. Download `google-services.json` and place it at `apps/android/google-services.json`
+4. Enable any Firebase services you need (Remote Config, Crashlytics, etc.)
+
+> **Note:** `google-services.json` is gitignored. Each contributor must create their own Firebase
+> project or obtain the file from a project maintainer.
+
 ## Configuration
 
 Copy the sample env file and fill in your values:

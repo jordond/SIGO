@@ -66,9 +66,11 @@ internal class DefaultApiRouter(
             )
         }
 
+        val ipAddress = request.headers.get("CF-Connecting-IP")
+
         val cache = cacheProvider.cache
         val rateLimitResult = if (cache != null) {
-            rateLimiter.check(clientId, cache)
+            rateLimiter.check(clientId, ipAddress, cache)
         } else {
             null
         }
