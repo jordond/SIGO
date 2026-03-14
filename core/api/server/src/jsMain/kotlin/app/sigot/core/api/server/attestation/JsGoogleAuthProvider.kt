@@ -27,15 +27,15 @@ private data class TokenResponse(
     val expiresIn: Int? = null,
 )
 
-internal class GoogleAuthProvider(
+internal class JsGoogleAuthProvider(
     private val config: AttestationConfig,
     private val httpClient: HttpClient,
     private val json: Json,
-) {
+) : GoogleAuthProvider {
     private var cachedToken: String? = null
     private var tokenExpiry: Long = 0
 
-    suspend fun getAccessToken(): String {
+    override suspend fun getAccessToken(): String {
         if (config.googleServiceAccountJson.isNullOrEmpty()) {
             throw IllegalStateException("Google service account not configured")
         }
