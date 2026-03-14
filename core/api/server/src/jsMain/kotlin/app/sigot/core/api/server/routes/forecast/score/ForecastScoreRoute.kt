@@ -2,6 +2,8 @@ package app.sigot.core.api.server.routes.forecast.score
 
 import app.sigot.core.api.server.ApiRoute
 import app.sigot.core.api.server.ApiRoutePath
+import app.sigot.core.api.server.cache.FORECAST_CACHE_TTL_DURATION
+import app.sigot.core.api.server.cache.FORECAST_CACHE_TTL_SECONDS
 import app.sigot.core.api.server.cache.ForecastCacheProvider
 import app.sigot.core.api.server.entity.ApiResponse
 import app.sigot.core.api.server.exception.BadRequestException
@@ -21,7 +23,6 @@ import co.touchlab.kermit.Logger
 import kotlinx.serialization.json.Json
 import org.w3c.fetch.Request
 import org.w3c.fetch.Response
-import kotlin.time.Duration.Companion.minutes
 
 public class ForecastScoreRoute(
     private val json: Json,
@@ -70,7 +71,7 @@ public class ForecastScoreRoute(
             val cachedJson = cache.get(cacheKey)
             if (cachedJson != null) {
                 logger.d { "Cache hit for $cacheKey" }
-                return cached(15.minutes) {
+                return cached(FORECAST_CACHE_TTL_DURATION) {
                     respondJson(json = cachedJson)
                 }
             }
@@ -82,10 +83,10 @@ public class ForecastScoreRoute(
         val responseJson = json.encodeToString(ApiResponse(data = responseData))
 
         if (cache != null) {
-            cache.put(cacheKey, responseJson, ttlSeconds = 900)
+            cache.put(cacheKey, responseJson, ttlSeconds = FORECAST_CACHE_TTL_SECONDS)
         }
 
-        return cached(15.minutes) {
+        return cached(FORECAST_CACHE_TTL_DURATION) {
             respondJson(json = responseJson)
         }
     }
