@@ -23,7 +23,8 @@ kotlin {
         outputModuleName.set("index")
 
         compilations["main"].packageJson {
-            version = "1.0.0"
+            version = libs.versions.api.server.version
+                .get()
             main = "./index.mjs"
             customField("type", "module")
         }
