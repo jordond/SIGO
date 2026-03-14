@@ -5,7 +5,7 @@ import app.sigot.core.model.forecast.Forecast
 import app.sigot.core.model.location.Location
 
 public interface ApiClient {
-    public suspend fun version(): Version
+    public suspend fun version(): ApiResult<Version>
 
-    public suspend fun forecast(location: Location): Forecast
+    public suspend fun forecast(location: Location): ApiResult<Forecast>
 }

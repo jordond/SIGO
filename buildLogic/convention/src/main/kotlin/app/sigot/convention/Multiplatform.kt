@@ -74,6 +74,7 @@ internal fun KotlinMultiplatformExtension.configurePlatforms(
         freeCompilerArgs.add("-Xexpect-actual-classes")
         optIn.add("kotlinx.cinterop.ExperimentalForeignApi")
         optIn.add("kotlinx.coroutines.ExperimentalCoroutinesApi")
+        optIn.add("kotlin.uuid.ExperimentalUuidApi")
     }
 
     if (platforms.contains(Platform.Android)) {

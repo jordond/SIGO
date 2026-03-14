@@ -33,7 +33,7 @@ kotlin {
             implementation(libs.ktor.client.js)
         }
 
-        jsTest.dependencies {
+        commonTest.dependencies {
             implementation(kotlin("test"))
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.kotest.assertions)
