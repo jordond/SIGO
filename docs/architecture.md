@@ -189,7 +189,8 @@ The API layer is split into shared logic and deployable targets.
 **core/api/server** is a multiplatform module that defines the API router, request/response types,
 CORS handling, and rate limiting. On JVM targets it uses Ktor's server APIs. On JS targets it uses a
 custom adapter that bridges to Cloudflare Worker request/response types. The single endpoint is
-`GET /forecast?lat=<lat>&lon=<lon>`.
+`GET /forecast?lat=<lat>&lon=<lon>`. All requests require an `X-Client-ID` header containing a
+valid UUID, used for per-client rate limiting.
 
 **core/api/client** is a multiplatform HTTP client that calls the forecast API. It uses OkHttp on
 Android/JVM, the Darwin URL session on iOS, and JS fetch on browser/worker targets.

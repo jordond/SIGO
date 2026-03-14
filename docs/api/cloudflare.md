@@ -36,6 +36,9 @@ The API will be available at:
 
 `https://your-domain.com/forecast?lat=123&lon=321`
 
+All requests require an `X-Client-ID` header with a valid UUID. The server returns 400 if it is
+missing. See [JVM Server API - Required Headers](server.md#required-headers) for details.
+
 ### Developing
 
 Start the dev server with file watching:
