@@ -39,6 +39,16 @@ forecast view is also available.
 Built with Kotlin Multiplatform. Forecasts from
 the [Visual Crossing API](https://www.visualcrossing.com/).
 
+## Motivation
+
+This is a fun side project to explore Compose Multiplatform and Kotlin Multiplatform in general. It
+targets Android, iOS, Desktop, and even has a CLI and backend API. I hope others can learn from it,
+whether you're just getting started with KMP or looking for a real-world example of how to structure
+a multiplatform project.
+
+For a deeper look at how the project is organized, check out the
+[Architecture documentation](./docs/architecture.md).
+
 ## What if I want to roll my own?
 
 The repo is open source, so you can host your own backend and build the app yourself.
