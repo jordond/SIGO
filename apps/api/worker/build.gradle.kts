@@ -9,7 +9,7 @@ plugins {
 }
 
 val versionTask = tasks.named<AppVersion>("appVersion") {
-    version = libs.versions.api.worker.version
+    version = libs.versions.api.server.version
         .get()
 }
 
