@@ -34,6 +34,12 @@ internal class AppAttestTokenProvider(
     private val json: Json,
     private val backendUrl: String,
 ) : AttestationTokenProvider {
+    // Must match ApiHeaders.CLIENT_ID in core/api/server — duplicated here to avoid
+    // a circular dependency (core/api/server depends on core/platform).
+    private companion object {
+        const val HEADER_CLIENT_ID = "X-Client-ID"
+    }
+
     private val logger = Logger.withTag("AppAttestTokenProvider")
     private val attestService = DCAppAttestService.sharedService
 
@@ -85,8 +91,8 @@ internal class AppAttestTokenProvider(
         val clientId = clientIdProvider.clientId()
 
         // 1. Request nonce from server
-        val nonceResponse = apiClient.get("$backendUrl/v1/attest") {
-            header("X-Client-ID", clientId)
+        val nonceResponse = apiClient.get("$backendUrl/attest") {
+            header(HEADER_CLIENT_ID, clientId)
         }
         if (!nonceResponse.status.isSuccess()) {
             throw Exception("Failed to get attestation nonce: ${nonceResponse.status}")
@@ -115,8 +121,8 @@ internal class AppAttestTokenProvider(
 
         // 4. Send attestation to server
         val attestationBase64 = attestationObject.base64EncodedStringWithOptions(0u)
-        val response = apiClient.post("$backendUrl/v1/attest") {
-            header("X-Client-ID", clientId)
+        val response = apiClient.post("$backendUrl/attest") {
+            header(HEADER_CLIENT_ID, clientId)
             contentType(ContentType.Application.Json)
             setBody(
                 json.encodeToString(

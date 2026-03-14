@@ -6,5 +6,6 @@ public interface AttestationVerifier {
     public suspend fun verify(
         token: String,
         clientId: String,
+        requestHash: String,
     ): AttestationResult
 }

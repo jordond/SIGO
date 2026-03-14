@@ -20,6 +20,7 @@ internal class AppAttestVerifier(
     override suspend fun verify(
         token: String,
         clientId: String,
+        requestHash: String,
     ): AttestationResult {
         val cache = cacheProvider.cache
             ?: return AttestationResult.Failed("Cache unavailable")
@@ -74,10 +75,14 @@ internal class AppAttestVerifier(
             return AttestationResult.Failed("Counter replay detected")
         }
 
+        // Compute SHA-256(clientData) where clientData = requestHash
+        // Per Apple spec, signature covers authenticatorData || SHA-256(clientData)
+        val clientDataHash = sha256(requestHash.encodeToByteArray())
+
         // Import the stored public key for ES256 verification
         val publicKeyBytes = base64DecodeToArrayBuffer(storedKey.publicKeyBase64)
         val verified = try {
-            verifyES256Signature(publicKeyBytes, authenticatorData, signature)
+            verifyES256Signature(publicKeyBytes, authenticatorData, clientDataHash, signature)
         } catch (e: Exception) {
             logger.w(e) { "Signature verification failed for $clientId" }
             return AttestationResult.Failed("Signature verification failed: ${e.message}")
@@ -106,9 +111,20 @@ private fun base64DecodeToArrayBuffer(input: String): ArrayBuffer {
     return uint8.buffer
 }
 
+private suspend fun sha256(input: ByteArray): ByteArray {
+    val crypto = js("globalThis.crypto.subtle")
+    val uint8 = Uint8Array(input.toTypedArray())
+    val hashBuffer = (crypto.digest("SHA-256", uint8.buffer) as Promise<dynamic>)
+        .kotlinx.coroutines
+        .await() as ArrayBuffer
+    val resultUint8 = Uint8Array(hashBuffer)
+    return ByteArray(resultUint8.length) { resultUint8[it] }
+}
+
 private suspend fun verifyES256Signature(
     publicKeyBytes: ArrayBuffer,
     authenticatorData: Uint8Array,
+    clientDataHash: ByteArray,
     signature: Uint8Array,
 ): Boolean {
     val crypto = js("globalThis.crypto.subtle")
@@ -127,16 +143,18 @@ private suspend fun verifyES256Signature(
     ).kotlinx.coroutines
         .await()
 
-    // Concatenate authenticatorData + clientDataHash for verification
-    // Note: The full data to verify is authenticatorData || SHA-256(clientData)
-    // For now, we verify over authenticatorData directly since clientDataHash
-    // is included in the assertion format
+    // Per Apple App Attest spec: verify over authenticatorData || SHA-256(clientData)
+    val clientDataHashUint8 = Uint8Array(clientDataHash.toTypedArray())
+    val dataToVerify = Uint8Array(authenticatorData.length + clientDataHashUint8.length)
+    dataToVerify.set(authenticatorData, 0)
+    dataToVerify.set(clientDataHashUint8, authenticatorData.length)
+
     val verified = (
         crypto.verify(
             verifyAlgorithm,
             key,
             signature.buffer,
-            authenticatorData.buffer,
+            dataToVerify.buffer,
         ) as Promise<Boolean>
     ).kotlinx.coroutines
         .await()

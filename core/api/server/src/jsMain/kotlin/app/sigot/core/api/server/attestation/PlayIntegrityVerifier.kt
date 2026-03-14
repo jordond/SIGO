@@ -24,6 +24,7 @@ internal class PlayIntegrityVerifier(
     override suspend fun verify(
         token: String,
         clientId: String,
+        requestHash: String,
     ): AttestationResult {
         val accessToken = googleAuthProvider.getAccessToken()
 
@@ -46,6 +47,15 @@ internal class PlayIntegrityVerifier(
         } catch (e: Exception) {
             logger.w(e) { "Failed to parse Play Integrity response" }
             return AttestationResult.Failed("Failed to parse response: ${e.message}")
+        }
+
+        // Verify request nonce to prevent token replay across different requests
+        val responseNonce = payload.requestDetails?.nonce
+        if (responseNonce == null || responseNonce != requestHash) {
+            logger.w {
+                "Nonce mismatch: expected=$requestHash got=$responseNonce"
+            }
+            return AttestationResult.Failed("Nonce mismatch")
         }
 
         // Verify package name
