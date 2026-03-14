@@ -33,6 +33,10 @@ kotlin {
             implementation(libs.ktor.client.js)
         }
 
+        jvmMain.dependencies {
+            implementation(libs.ktor.server.core)
+        }
+
         commonTest.dependencies {
             implementation(kotlin("test"))
             implementation(libs.kotlinx.coroutines.test)

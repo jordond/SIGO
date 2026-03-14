@@ -28,6 +28,9 @@ internal data class RateLimitEntry(
  *
  * Note: KV is eventually consistent and does not support atomic read-modify-write,
  * so enforcement is approximate under concurrent requests from the same client.
+ * Note: On JVM with InMemoryApiCache, the read-modify-write is also non-atomic under
+ * concurrent requests. This is acceptable for rate limiting where approximate enforcement
+ * is sufficient.
  */
 public class DefaultRateLimiter(
     private val json: Json,

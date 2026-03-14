@@ -10,6 +10,5 @@ public data class ServerRequest(
     val method: HttpMethod,
     val headers: Map<String, String>,
     val queryParameters: Map<String, String> = emptyMap(),
-    val pathParameters: Map<String, String> = emptyMap(),
     val body: String? = null,
 )

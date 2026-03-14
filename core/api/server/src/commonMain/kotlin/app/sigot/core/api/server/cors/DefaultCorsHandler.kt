@@ -65,7 +65,7 @@ public class DefaultCorsHandler(
         ServerResponse(
             statusCode = 403,
             statusText = "Forbidden",
-            headers = mutableMapOf(
+            headers = mapOf(
                 ApiHeaders.CONTENT_TYPE to ContentType.JSON,
                 ApiHeaders.VARY to ApiHeaders.ORIGIN,
             ),
