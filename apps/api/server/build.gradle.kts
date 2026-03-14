@@ -45,5 +45,5 @@ dependencies {
     implementation(libs.kermit.koin)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.slf4j.nop)
+    implementation(libs.logback.classic)
 }
