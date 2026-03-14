@@ -31,6 +31,13 @@ kotlin {
 
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
+            implementation(npm("cbor-x", "1.6.0"))
+            implementation(npm("@peculiar/x509", "1.12.3"))
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.ktor.server.core)
+            implementation(libs.kotlinx.serialization.cbor)
         }
 
         jvmMain.dependencies {

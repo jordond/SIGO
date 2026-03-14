@@ -40,6 +40,7 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.play.integrity)
         }
 
         iosMain.dependencies {

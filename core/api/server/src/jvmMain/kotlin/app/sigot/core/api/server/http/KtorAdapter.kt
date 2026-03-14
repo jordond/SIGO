@@ -31,8 +31,12 @@ public fun Route.mountApiRouter(
     }
 }
 
+/**
+ * Convert a Ktor [io.ktor.server.request.ApplicationRequest] to a [ServerRequest].
+ */
 private suspend fun ApplicationCall.toServerRequest(): ServerRequest {
     val headers = request.headers
+
     val queryParameters = mutableMapOf<String, String>()
     request.queryParameters.forEach { name, values ->
         if (values.isNotEmpty()) {
@@ -48,6 +52,7 @@ private suspend fun ApplicationCall.toServerRequest(): ServerRequest {
         null
     }
 
+    // Build a full URL from the request for compatibility with DefaultApiRouter.extractPath()
     val scheme = request.local.scheme
     val host = request.local.serverHost
     val port = request.local.serverPort
@@ -63,6 +68,9 @@ private suspend fun ApplicationCall.toServerRequest(): ServerRequest {
     )
 }
 
+/**
+ * Write a [ServerResponse] back to a Ktor [ApplicationCall].
+ */
 private suspend fun ServerResponse.writeTo(call: ApplicationCall) {
     headers.forEach { name, values ->
         if (!name.equals(HttpHeaders.ContentType, ignoreCase = true)) {

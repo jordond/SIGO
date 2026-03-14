@@ -1,5 +1,7 @@
 package app.sigot.core.api.server
 
+import app.sigot.core.api.server.attestation.AttestationResult
+import app.sigot.core.api.server.attestation.AttestationService
 import app.sigot.core.api.server.cache.CacheProvider
 import app.sigot.core.api.server.cors.CorsHandler
 import app.sigot.core.api.server.exception.BadRequestException
@@ -8,6 +10,7 @@ import app.sigot.core.api.server.http.ServerRequest
 import app.sigot.core.api.server.http.ServerResponse
 import app.sigot.core.api.server.ratelimit.RateLimiter
 import app.sigot.core.api.server.util.badRequest
+import app.sigot.core.api.server.util.forbidden
 import app.sigot.core.api.server.util.methodNotAllowed
 import app.sigot.core.api.server.util.noContent
 import app.sigot.core.api.server.util.notFound
@@ -27,6 +30,7 @@ internal class DefaultApiRouter(
     private val cacheProvider: CacheProvider,
     private val rateLimiter: RateLimiter,
     private val corsHandler: CorsHandler,
+    private val attestationService: AttestationService,
 ) : ApiRouter {
     private val logger = Logger.withTag("ApiRouter")
 
@@ -55,9 +59,32 @@ internal class DefaultApiRouter(
         }
 
         val ipAddress = request.headers[ApiHeaders.CONNECTING_IP]
+
+        val requestHash = computeRequestHash(request.method.value, request.url)
+
+        val attestationToken = request.headers[ApiHeaders.ATTESTATION_TOKEN]
+        val attestationPlatform = request.headers[ApiHeaders.ATTESTATION_PLATFORM]
+        val attestationResult = attestationService.verify(
+            token = attestationToken,
+            platform = attestationPlatform,
+            clientId = clientId.toString(),
+            requestHash = requestHash,
+        )
+
+        if (attestationResult is AttestationResult.Failed) {
+            return corsHandler.withCorsHeaders(
+                forbidden(
+                    meta = mapOf("error" to "Attestation verification failed"),
+                    json = json,
+                ),
+                request,
+            )
+        }
+
+        val isAttested = attestationResult is AttestationResult.Attested
         val cache = cacheProvider.cache
         val rateLimitResult = if (cache != null) {
-            rateLimiter.check(clientId, ipAddress, cache)
+            rateLimiter.check(clientId, ipAddress, cache, attested = isAttested)
         } else {
             null
         }
@@ -123,6 +150,25 @@ internal class DefaultApiRouter(
         return response.copy(headers = headers)
     }
 
+    private fun computeRequestHash(
+        method: String,
+        url: String,
+    ): String {
+        val path = extractPath(url)
+        val input = "$method$path"
+        // FNV-1a 64-bit hash — must match client-side computeRequestHash in Koin.kt
+        var hash = -3750763034362895579L // 0xCBF29CE484222325 (FNV offset basis)
+        for (c in input) {
+            hash = hash xor c.code.toLong()
+            hash *= 1099511628211L // 0x00000100000001B3 (FNV prime)
+        }
+        return hash.toULong().toString(16).padStart(16, '0')
+    }
+
+    /**
+     * Extract pathname from URL: strip scheme+host and query string.
+     * Assumes adapters provide a full URL with scheme (e.g., "https://host:port/path?query").
+     */
     private fun extractPath(url: String): String {
         val withoutScheme = url.substringAfter("://")
         val pathAndQuery = if (withoutScheme.contains("/")) {

@@ -6,4 +6,5 @@ public enum class ApiRoutePath(
     Version("/"),
     Forecast("/forecast"),
     ForecastScore("/forecast/score"),
+    Attest("/attest"),
 }
