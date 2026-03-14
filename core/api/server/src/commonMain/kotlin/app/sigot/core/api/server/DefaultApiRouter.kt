@@ -15,6 +15,7 @@ import app.sigot.core.api.server.util.serverError
 import app.sigot.core.api.server.util.tooManyRequests
 import app.sigot.core.api.server.util.unauthorized
 import co.touchlab.kermit.Logger
+import io.ktor.http.HeadersBuilder
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
@@ -45,16 +46,15 @@ internal class DefaultApiRouter(
         val clientId = Uuid.parseOrNull(request.headers[ApiHeaders.CLIENT_ID] ?: "")
         if (clientId == null) {
             return corsHandler.withCorsHeaders(
-                unauthorized(
+                response = unauthorized(
                     meta = mapOf("error" to "Missing or invalid ${ApiHeaders.CLIENT_ID} header"),
                     json = json,
                 ),
-                request,
+                request = request,
             )
         }
 
         val ipAddress = request.headers[ApiHeaders.CONNECTING_IP]
-
         val cache = cacheProvider.cache
         val rateLimitResult = if (cache != null) {
             rateLimiter.check(clientId, ipAddress, cache)
@@ -63,16 +63,17 @@ internal class DefaultApiRouter(
         }
 
         if (rateLimitResult != null && !rateLimitResult.allowed) {
-            var finalResponse = tooManyRequests(
-                meta = mapOf("error" to "Rate limit exceeded"),
-                json = json,
+            val finalResponse = addRateLimitHeaders(
+                response = tooManyRequests(
+                    meta = mapOf("error" to "Rate limit exceeded"),
+                    json = json,
+                ),
+                result = rateLimitResult,
             )
-            finalResponse = addRateLimitHeaders(finalResponse, rateLimitResult)
             return corsHandler.withCorsHeaders(finalResponse, request)
         }
 
         val path = extractPath(request.url)
-
         val match = findMatchingRoute(path)
             ?: return corsHandler.withCorsHeaders(
                 notFound(meta = mapOf("path" to path)),
@@ -112,19 +113,17 @@ internal class DefaultApiRouter(
         response: ServerResponse,
         result: RateLimiter.RateLimitResult,
     ): ServerResponse {
-        val headers = response.headers.toMutableMap()
-        headers[ApiHeaders.RATE_LIMIT] = result.limit.toString()
-        headers[ApiHeaders.RATE_LIMIT_REMAINING] = result.remaining.toString()
-        headers[ApiHeaders.RATE_LIMIT_RESET] = result.resetAt.epochSeconds.toString()
+        val headers = HeadersBuilder()
+            .apply {
+                appendAll(response.headers)
+                append(ApiHeaders.RATE_LIMIT, result.limit.toString())
+                append(ApiHeaders.RATE_LIMIT_REMAINING, result.remaining.toString())
+                append(ApiHeaders.RATE_LIMIT_RESET, result.resetAt.epochSeconds.toString())
+            }.build()
         return response.copy(headers = headers)
     }
 
-    /**
-     * Extract pathname from URL: strip scheme+host and query string.
-     * Assumes adapters provide a full URL with scheme (e.g., "https://host:port/path?query").
-     */
     private fun extractPath(url: String): String {
-        // Extract pathname from URL: strip scheme+host and query string
         val withoutScheme = url.substringAfter("://")
         val pathAndQuery = if (withoutScheme.contains("/")) {
             "/" + withoutScheme.substringAfter("/")
@@ -182,35 +181,23 @@ internal class DefaultApiRouter(
         route: ApiRoute,
         request: ServerRequest,
         parameters: Map<String, String>,
-    ): ServerResponse {
-        val result = route.get(request, parameters)
-        return result ?: noContent(json = json)
-    }
+    ): ServerResponse = route.get(request, parameters) ?: noContent(json = json)
 
     private suspend fun post(
         route: ApiRoute,
         request: ServerRequest,
         parameters: Map<String, String>,
-    ): ServerResponse {
-        val result = route.post(request, parameters)
-        return result ?: noContent(json = json)
-    }
+    ): ServerResponse = route.post(request, parameters) ?: noContent(json = json)
 
     private suspend fun put(
         route: ApiRoute,
         request: ServerRequest,
         parameters: Map<String, String>,
-    ): ServerResponse {
-        val result = route.put(request, parameters)
-        return result ?: noContent(json = json)
-    }
+    ): ServerResponse = route.put(request, parameters) ?: noContent(json = json)
 
     private suspend fun delete(
         route: ApiRoute,
         request: ServerRequest,
         parameters: Map<String, String>,
-    ): ServerResponse {
-        val result = route.delete(request, parameters)
-        return result ?: noContent(json = json)
-    }
+    ): ServerResponse = route.delete(request, parameters) ?: noContent(json = json)
 }
