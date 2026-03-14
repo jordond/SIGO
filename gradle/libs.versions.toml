@@ -4,7 +4,6 @@ app-name = "now.shouldigooutside"
 app-desktop-version = "1.0.0"
 app-ios-version = "0.1.0"
 app-android-version = "0.1.0"
-api-worker-version = "1.0.0"
 api-server-version = "1.0.0"
 # App code for development, the real app code is set by release process
 app-android-code = "99999"
