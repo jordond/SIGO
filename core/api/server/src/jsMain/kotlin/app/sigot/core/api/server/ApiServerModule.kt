@@ -1,6 +1,9 @@
 package app.sigot.core.api.server
 
+import app.sigot.core.api.server.cache.CacheProvider
 import app.sigot.core.api.server.cache.ForecastCacheProvider
+import app.sigot.core.api.server.cors.CorsHandler
+import app.sigot.core.api.server.cors.DefaultCorsHandler
 import app.sigot.core.api.server.ratelimit.DefaultRateLimiter
 import app.sigot.core.api.server.ratelimit.RateLimiter
 import app.sigot.core.api.server.routes.VersionRoute
@@ -13,19 +16,21 @@ import org.koin.dsl.module
 
 public fun jsApiServerModule(): Module =
     module {
-        single { ForecastCacheProvider() }
+        single { ForecastCacheProvider() } bind CacheProvider::class
         single<RateLimiter> { DefaultRateLimiter(json = get()) }
+        single<CorsHandler> { DefaultCorsHandler() }
 
         factoryOf(::VersionRoute) bind ApiRoute::class
         factoryOf(::ForecastRoute) bind ApiRoute::class
         factoryOf(::ForecastScoreRoute) bind ApiRoute::class
 
-        single {
+        single<ApiRouter> {
             DefaultApiRouter(
                 routes = getAll(),
                 json = get(),
                 cacheProvider = get(),
                 rateLimiter = get(),
+                corsHandler = get(),
             )
-        } bind ApiRouter::class
+        }
     }

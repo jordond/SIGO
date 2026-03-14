@@ -2,34 +2,35 @@ package app.sigot.core.api.server.util
 
 import app.sigot.core.api.server.entity.ApiError
 import app.sigot.core.api.server.entity.ApiResponse
+import app.sigot.core.api.server.http.ServerResponse
 import app.sigot.core.platform.di.defaultJson
-import kotlinx.serialization.Serializable
+import io.ktor.http.HttpMethod
 import kotlinx.serialization.json.Json
-import org.w3c.fetch.Response
-import org.w3c.fetch.ResponseInit
 import kotlin.time.Duration
 
 public fun respondText(
     text: String,
     statusText: String = "OK",
     status: Int = 200,
-): Response {
-    val headers: dynamic = object {}
-    headers["content-type"] = "text/plain"
-    val init = ResponseInit(status = status.toShort(), statusText = statusText, headers = headers)
-    return Response(text, init)
-}
+): ServerResponse =
+    ServerResponse(
+        statusCode = status,
+        statusText = statusText,
+        headers = mutableMapOf("content-type" to "text/plain"),
+        body = text,
+    )
 
 public fun respondJson(
     json: String,
     statusText: String = "OK",
     status: Int = 200,
-): Response {
-    val headers: dynamic = object {}
-    headers["content-type"] = "application/json"
-    val init = ResponseInit(status = status.toShort(), statusText = statusText, headers = headers)
-    return Response(json, init)
-}
+): ServerResponse =
+    ServerResponse(
+        statusCode = status,
+        statusText = statusText,
+        headers = mutableMapOf("content-type" to "application/json"),
+        body = json,
+    )
 
 public fun respondJson(
     data: Map<String, Any?>,
@@ -37,30 +38,30 @@ public fun respondJson(
     statusText: String = "OK",
     status: Int = 200,
     json: Json = defaultJson,
-): Response {
+): ServerResponse {
     val map = data.mapValues { it.value.toString() }
     val response = ApiResponse(data = map, meta = meta.forJson())
-    val json = json.encodeToString(response)
-    return respondJson(json, statusText, status)
+    val encoded = json.encodeToString(response)
+    return respondJson(encoded, statusText, status)
 }
 
-public inline fun <reified T : @Serializable Any?> respondJson(
+public inline fun <reified T> respondJson(
     data: T,
     meta: Map<String, Any?> = emptyMap(),
     statusText: String = "OK",
     status: Int = 200,
     json: Json = defaultJson,
-): Response {
+): ServerResponse {
     val response = ApiResponse(data = data, meta = meta.forJson())
-    val json = json.encodeToString(response)
-    return respondJson(json, statusText, status)
+    val encoded = json.encodeToString(response)
+    return respondJson(encoded, statusText, status)
 }
 
-public inline fun <reified T : @Serializable Any?> ok(
+public inline fun <reified T> ok(
     data: T,
     meta: Map<String, Any?> = emptyMap(),
     json: Json = defaultJson,
-): Response =
+): ServerResponse =
     respondJson(
         data = data,
         meta = meta,
@@ -72,7 +73,7 @@ public inline fun <reified T : @Serializable Any?> ok(
 public fun noContent(
     meta: Map<String, Any?> = emptyMap(),
     json: Json = defaultJson,
-): Response =
+): ServerResponse =
     respondJson(
         data = Unit,
         meta = meta,
@@ -84,7 +85,7 @@ public fun noContent(
 public fun badRequest(
     meta: Map<String, Any?> = emptyMap(),
     json: Json = defaultJson,
-): Response =
+): ServerResponse =
     respondJson(
         data = Unit,
         meta = meta,
@@ -96,7 +97,7 @@ public fun badRequest(
 public fun notFound(
     meta: Map<String, Any?> = emptyMap(),
     json: Json = defaultJson,
-): Response =
+): ServerResponse =
     respondJson(
         data = Unit,
         meta = meta,
@@ -106,27 +107,27 @@ public fun notFound(
     )
 
 public fun methodNotAllowed(
+    method: HttpMethod,
     meta: Map<String, Any?> = emptyMap(),
     json: Json = defaultJson,
-): Response =
+): ServerResponse =
     respondJson(
         data = Unit,
-        meta = meta,
+        meta = mapOf("method" to method.value) + meta,
         status = 405,
         statusText = "Method Not Allowed",
         json = json,
     )
 
 public fun serverError(
-    cause: Throwable,
     message: String = "An internal error occurred",
     meta: Map<String, Any?> = emptyMap(),
     json: Json = defaultJson,
-): Response {
+): ServerResponse {
     val data = ApiError(error = message, meta = meta.forJson())
-    val json = json.encodeToString(data)
+    val encoded = json.encodeToString(data)
     return respondJson(
-        json = json,
+        json = encoded,
         status = 500,
         statusText = "Internal Server Error",
     )
@@ -135,7 +136,7 @@ public fun serverError(
 public fun unauthorized(
     meta: Map<String, Any?> = emptyMap(),
     json: Json = defaultJson,
-): Response =
+): ServerResponse =
     respondJson(
         data = Unit,
         meta = meta,
@@ -147,7 +148,7 @@ public fun unauthorized(
 public fun tooManyRequests(
     meta: Map<String, Any?> = emptyMap(),
     json: Json = defaultJson,
-): Response =
+): ServerResponse =
     respondJson(
         data = Unit,
         meta = meta,
@@ -158,11 +159,10 @@ public fun tooManyRequests(
 
 public fun cached(
     age: Duration,
-    block: () -> Response,
-): Response {
-    val response = block().apply {
-        headers.append("cache-control", "max-age=${age.inWholeSeconds}")
-    }
+    block: () -> ServerResponse,
+): ServerResponse {
+    val response = block()
+    response.headers["cache-control"] = "max-age=${age.inWholeSeconds}"
     return response
 }
 

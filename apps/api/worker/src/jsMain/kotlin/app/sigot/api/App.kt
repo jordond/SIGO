@@ -4,6 +4,8 @@ import app.sigot.api.provider.WorkerTokenProvider
 import app.sigot.core.api.server.ApiRouter
 import app.sigot.core.api.server.cache.ForecastCacheProvider
 import app.sigot.core.api.server.cache.KvForecastCache
+import app.sigot.core.api.server.http.toJsResponse
+import app.sigot.core.api.server.http.toServerRequest
 import app.sigot.core.api.server.util.serverError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.promise
@@ -46,7 +48,7 @@ class DefaultApp(
         val parsedEnv = try {
             json.decodeFromDynamic<Env>(env)
         } catch (cause: SerializationException) {
-            return promise { serverError(cause, json = json) }
+            return promise { serverError(json = json).toJsResponse() }
         }
 
         tokenProvider.apiToken = parsedEnv.forecastApiKey
@@ -58,6 +60,6 @@ class DefaultApp(
             }
         }
 
-        return promise { router.handle(request) }
+        return promise { router.handle(request.toServerRequest()).toJsResponse() }
     }
 }
