@@ -39,6 +39,10 @@ kotlin {
             implementation(libs.ktor.server.core)
         }
 
+        jvmMain.dependencies {
+            implementation(libs.ktor.server.core)
+        }
+
         commonTest.dependencies {
             implementation(kotlin("test"))
             implementation(libs.kotlinx.coroutines.test)

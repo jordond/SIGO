@@ -33,6 +33,7 @@ public fun Route.mountApiRouter(
 
 private suspend fun ApplicationCall.toServerRequest(): ServerRequest {
     val headers = request.headers
+
     val queryParameters = mutableMapOf<String, String>()
     request.queryParameters.forEach { name, values ->
         if (values.isNotEmpty()) {
@@ -48,6 +49,7 @@ private suspend fun ApplicationCall.toServerRequest(): ServerRequest {
         null
     }
 
+    // Build a full URL from the request for compatibility with DefaultApiRouter.extractPath()
     val scheme = request.local.scheme
     val host = request.local.serverHost
     val port = request.local.serverPort
