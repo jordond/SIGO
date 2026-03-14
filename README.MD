@@ -1,25 +1,43 @@
-# Should I go outside?
+<p align="center">
+  <img src="screenshots/icon.png" width="100" alt="SIGO App Icon" />
+</p>
 
-"Should I go outside?" or **SIGO** is a Kotlin Multiplatform weather app. The inspiration
-behind this app was a dead simple weather app that answer that simple question.
+<h1 align="center">Should I go outside?</h1>
 
-When opened the app will fetch the forecast for your current location then display a simple answer
-to whether or not you should go outside today. Of course like any good weather app, it will also
-give you the detailed forecast if you wish.
+<p align="center">
+  A dead simple weather app that answers one question — <em>should I go outside?</em><br />
+  Built with Kotlin Multiplatform for Android &amp; iOS.
+</p>
 
-The forecast is currently retrieved from the [Visual Crossing API](https://www.visualcrossing.com/).
-There is planned support for other API's down the line.
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=dev.jordon.sigo">
+    <img src="https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white" alt="Get it on Google Play" />
+  </a>
+  &nbsp;
+  <a href="https://apps.apple.com/app/should-i-go-outside/id123456789">
+    <img src="https://img.shields.io/badge/App_Store-0D96F6?style=for-the-badge&logo=app-store&logoColor=white" alt="Download on the App Store" />
+  </a>
+</p>
 
-### Supported platforms
+<p align="center">
+  <img src="screenshots/01.png" width="150" alt="Yes - go outside" />
+  &nbsp;
+  <img src="screenshots/02.png" width="150" alt="No - stay inside" />
+  &nbsp;
+  <img src="screenshots/03.png" width="150" alt="Maybe - you decide" />
+  &nbsp;
+  <img src="screenshots/04.png" width="150" alt="Forecast details" />
+  &nbsp;
+  <img src="screenshots/05.png" width="150" alt="Preferences" />
+</p>
 
-- Android
-- iOS
+## About
 
-With a planned future web, desktop, and CLI app.
+**Should I go outside?** (or **SIGO**) is a weather app that cuts through the noise. Open it up and it fetches the forecast for your current location, then gives you a straightforward **Yes**, **No**, or **Maybe** — based on your personal weather preferences.
 
-## How do I get it?
+Set your ideal temperature range, wind tolerance, and whether you're okay with rain or snow. SIGO does the rest. And if you want the full picture, the detailed forecast is just a tap away.
 
-You can download the app from the Play Store or the App Store.
+Built with Kotlin Multiplatform, powered by the [Visual Crossing API](https://www.visualcrossing.com/).
 
 ## What if I want to roll my own?
 

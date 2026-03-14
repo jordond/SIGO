@@ -1,0 +1,138 @@
+---
+import appleLogo from "../assets/apple-logo.svg?raw"
+import googlePlayLogo from "../assets/google-play-logo.svg?raw"
+---
+
+<div class="download-buttons">
+  <a href="#" class="download-btn download-btn--ios" aria-label="Download for iOS on the App Store">
+    <span class="download-btn__icon" aria-hidden="true">
+      <Fragment set:html={appleLogo} />
+    </span>
+    <span class="download-btn__text">
+      <span class="download-btn__label">Download for</span>
+      <span class="download-btn__platform">iOS</span>
+    </span>
+  </a>
+
+  <a
+    href="https://play.google.com/store/apps/details?id=now.shouldigooutside"
+    class="download-btn download-btn--android"
+    aria-label="Download for Android on the Play Store"
+  >
+    <span class="download-btn__icon" aria-hidden="true">
+      <Fragment set:html={googlePlayLogo} />
+    </span>
+    <span class="download-btn__text">
+      <span class="download-btn__label">Download for</span>
+      <span class="download-btn__platform">Android</span>
+    </span>
+  </a>
+</div>
+
+<style>
+  .download-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.75rem;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    color: var(--color-text);
+    border: var(--border-width) solid var(--color-outline);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0
+      var(--color-shadow);
+    transform: translate(0, 0);
+    transition:
+      transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .download-btn:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 12px 12px 0 0 var(--color-shadow);
+  }
+
+  .download-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 3px 3px 0 0 var(--color-shadow);
+  }
+
+  .download-btn:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .download-btn--ios {
+    background-color: var(--color-tertiary);
+  }
+
+  .download-btn--android {
+    background-color: var(--color-secondary);
+  }
+
+  .download-btn__icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .download-btn__icon :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .download-btn__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.1;
+  }
+
+  .download-btn__label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+  }
+
+  .download-btn__platform {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  @media (max-width: 480px) {
+    .download-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .download-btn {
+      width: 100%;
+      max-width: 320px;
+      justify-content: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .download-btn {
+      transition: none;
+    }
+  }
+</style>
