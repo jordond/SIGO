@@ -102,7 +102,8 @@ Build the client app:
 
 - [Android](./docs/build/android)
 - [iOS](./docs/build/ios)
-  If you're using the Direct API, you're done. For a custom backend, see below.
+  
+If you're using the Direct API, you're done. For a custom backend, see below.
 
 ## Custom Backend API
 
