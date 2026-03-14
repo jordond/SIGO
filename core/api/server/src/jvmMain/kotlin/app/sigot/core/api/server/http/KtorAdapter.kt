@@ -31,6 +31,9 @@ public fun Route.mountApiRouter(
     }
 }
 
+/**
+ * Convert a Ktor [io.ktor.server.request.ApplicationRequest] to a [ServerRequest].
+ */
 private suspend fun ApplicationCall.toServerRequest(): ServerRequest {
     val headers = request.headers
 
