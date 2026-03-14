@@ -22,8 +22,7 @@
     "@astrojs/cloudflare": "^13.1.1",
     "@astrojs/sitemap": "^3.7.0",
     "astro-icon": "^1.1.5",
-    "astro-seo": "^1.1.0",
-    "astro-useragent": "^5.2.0"
+    "astro-seo": "^1.1.0"
   },
   "devDependencies": {
     "@coreui/icons": "^3.0.1",

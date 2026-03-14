@@ -1,27 +1,8 @@
 package app.sigot.core.api.server.ratelimit
 
 import app.sigot.core.api.server.cache.KvForecastCache
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
-@Serializable
-internal data class RateLimitEntry(
-    val count: Int,
-    val windowStart: Long,
-)
-
-/**
- * Fixed-window rate limiter backed by Cloudflare KV.
- * Allows [maxRequests] per [windowSeconds] per client ID.
- *
- * Note: KV is eventually consistent and does not support atomic read-modify-write,
- * so enforcement is approximate under concurrent requests from the same client.
- */
-public class RateLimiter(
-    private val json: Json,
-    private val maxRequests: Int = 60,
-    private val windowSeconds: Int = 3600,
-) {
+public interface RateLimiter {
     public data class RateLimitResult(
         val allowed: Boolean,
         val limit: Int,
@@ -30,46 +11,12 @@ public class RateLimiter(
     )
 
     /**
-     * Check and increment rate limit for the given client ID.
+     * Check and increment rate limit for the given client ID and IP address.
+     * Both limits must pass for the request to be allowed.
      */
     public suspend fun check(
         clientId: String,
+        ipAddress: String?,
         cache: KvForecastCache,
-    ): RateLimitResult {
-        val key = "ratelimit:$clientId"
-        val nowSeconds = (js("Date.now()") as Double).toLong() / 1000
-
-        val existing = cache.get(key)
-        val entry = if (existing != null) {
-            try {
-                json.decodeFromString<RateLimitEntry>(existing)
-            } catch (_: Throwable) {
-                null
-            }
-        } else {
-            null
-        }
-
-        val currentWindow = if (entry != null && (nowSeconds - entry.windowStart) < windowSeconds) {
-            entry
-        } else {
-            RateLimitEntry(count = 0, windowStart = nowSeconds)
-        }
-
-        val newCount = currentWindow.count + 1
-        val resetAt = currentWindow.windowStart + windowSeconds
-        val allowed = newCount <= maxRequests
-        val remaining = (maxRequests - newCount).coerceAtLeast(0)
-
-        val updated = currentWindow.copy(count = newCount)
-        val ttl = (resetAt - nowSeconds).toInt().coerceAtLeast(1)
-        cache.put(key, json.encodeToString(updated), ttl)
-
-        return RateLimitResult(
-            allowed = allowed,
-            limit = maxRequests,
-            remaining = remaining,
-            resetEpochSeconds = resetAt,
-        )
-    }
+    ): RateLimitResult
 }

@@ -119,7 +119,7 @@ public fun methodNotAllowed(
 
 public fun serverError(
     cause: Throwable,
-    message: String = cause.message ?: "Unknown error",
+    message: String = "An internal error occurred",
     meta: Map<String, Any?> = emptyMap(),
     json: Json = defaultJson,
 ): Response {
