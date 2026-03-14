@@ -3,6 +3,7 @@
   "name": "sigo-api-worker",
   "main": "apps/api/worker/index.mjs",
   "compatibility_date": "2026-02-25",
+  "compatibility_flags": ["nodejs_compat_v2"],
   "observability": {
     "enabled": true
   },

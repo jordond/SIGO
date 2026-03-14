@@ -16,5 +16,6 @@ public interface RateLimiter {
         clientId: Uuid,
         ipAddress: String?,
         cache: ApiCache,
+        attested: Boolean = false,
     ): RateLimitResult
 }

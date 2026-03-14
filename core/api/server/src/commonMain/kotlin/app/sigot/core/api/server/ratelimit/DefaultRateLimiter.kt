@@ -30,18 +30,23 @@ public class DefaultRateLimiter(
     private val json: Json,
     private val clock: Clock = Clock.System,
     private val maxRequestsPerClient: Int = 30,
+    private val maxRequestsPerClientAttested: Int = 120,
     private val maxRequestsPerIp: Int = 60,
+    private val maxRequestsPerIpAttested: Int = 240,
     private val window: Duration = 1.hours,
 ) : RateLimiter {
     override suspend fun check(
         clientId: Uuid,
         ipAddress: String?,
         cache: ApiCache,
+        attested: Boolean,
     ): RateLimiter.RateLimitResult {
         val nowSeconds = clock.now().epochSeconds
-        val clientResult = checkKey("ratelimit:$clientId", maxRequestsPerClient, nowSeconds, cache)
+        val clientMax = if (attested) maxRequestsPerClientAttested else maxRequestsPerClient
+        val ipMax = if (attested) maxRequestsPerIpAttested else maxRequestsPerIp
+        val clientResult = checkKey("ratelimit:$clientId", clientMax, nowSeconds, cache)
         val ipResult = if (ipAddress != null) {
-            checkKey("ratelimit:ip:$ipAddress", maxRequestsPerIp, nowSeconds, cache)
+            checkKey("ratelimit:ip:$ipAddress", ipMax, nowSeconds, cache)
         } else {
             null
         }
