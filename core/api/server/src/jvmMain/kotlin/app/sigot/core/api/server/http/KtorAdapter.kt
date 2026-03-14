@@ -2,6 +2,7 @@ package app.sigot.core.api.server.http
 
 import app.sigot.core.api.server.ApiRouter
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
@@ -30,17 +31,8 @@ public fun Route.mountApiRouter(
     }
 }
 
-/**
- * Convert a Ktor [io.ktor.server.request.ApplicationRequest] to a [ServerRequest].
- */
 private suspend fun ApplicationCall.toServerRequest(): ServerRequest {
-    val headers = mutableMapOf<String, String>()
-    request.headers.forEach { name, values ->
-        if (values.isNotEmpty()) {
-            headers[name] = values.first()
-        }
-    }
-
+    val headers = request.headers
     val queryParameters = mutableMapOf<String, String>()
     request.queryParameters.forEach { name, values ->
         if (values.isNotEmpty()) {
@@ -56,7 +48,6 @@ private suspend fun ApplicationCall.toServerRequest(): ServerRequest {
         null
     }
 
-    // Build a full URL from the request for compatibility with DefaultApiRouter.extractPath()
     val scheme = request.local.scheme
     val host = request.local.serverHost
     val port = request.local.serverPort
@@ -72,21 +63,15 @@ private suspend fun ApplicationCall.toServerRequest(): ServerRequest {
     )
 }
 
-/**
- * Write a [ServerResponse] back to a Ktor [io.ktor.server.application.ApplicationCall].
- */
 private suspend fun ServerResponse.writeTo(call: ApplicationCall) {
-    for ((name, value) in headers) {
-        if (!name.equals("Content-Type", ignoreCase = true)) {
-            call.response.header(name, value)
+    headers.forEach { name, values ->
+        if (!name.equals(HttpHeaders.ContentType, ignoreCase = true)) {
+            values.forEach { call.response.header(name, it) }
         }
     }
 
-    val contentType = headers["Content-Type"]
-        ?.let {
-            ContentType
-                .parse(it)
-        }
+    val contentType = headers[HttpHeaders.ContentType]
+        ?.let { ContentType.parse(it) }
         ?: ContentType.Text.Plain
 
     call.respondText(

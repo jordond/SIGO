@@ -1,20 +1,15 @@
 package app.sigot.core.api.server.http
 
+import io.ktor.http.Headers
+import io.ktor.http.HeadersBuilder
 import io.ktor.http.HttpMethod
 import org.w3c.dom.url.URL
 import org.w3c.fetch.Request
 import org.w3c.fetch.Response
 import org.w3c.fetch.ResponseInit
 
-/**
- * Convert a W3C Fetch Request to a platform-agnostic ServerRequest.
- */
 public fun Request.toServerRequest(): ServerRequest {
-    val headers = mutableMapOf<String, String>()
-    this.headers.asDynamic().forEach { value: String, key: String ->
-        headers[key] = value
-    }
-
+    val headers = headers.toKtorHeaders()
     val url = URL(this.url)
     val queryParameters = mutableMapOf<String, String>()
     url.searchParams.asDynamic().forEach { value: String, key: String ->
@@ -29,20 +24,25 @@ public fun Request.toServerRequest(): ServerRequest {
     )
 }
 
-/**
- * Convert a platform-agnostic ServerResponse to a W3C Fetch Response.
- */
+private fun org.w3c.fetch.Headers.toKtorHeaders(): Headers =
+    HeadersBuilder()
+        .apply {
+            asDynamic().forEach { value: String, key: String ->
+                append(key, value)
+            }
+        }.build()
+
 public fun ServerResponse.toJsResponse(): Response {
-    val headers: dynamic = js("({})")
-    for ((key, value) in this.headers) {
-        headers[key] = value
+    val jsHeaders: dynamic = js("({})")
+    this.headers.forEach { name, values ->
+        jsHeaders[name] = values.joinToString(", ")
     }
     return Response(
         body,
         ResponseInit(
             status = statusCode.toShort(),
             statusText = statusText,
-            headers = headers,
+            headers = jsHeaders,
         ),
     )
 }

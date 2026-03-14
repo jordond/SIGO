@@ -49,12 +49,12 @@ Installs the [ktlint](https://github.com/pinterest/ktlint) binary to `.app/ktlin
 ./sigo init ktlint [options]
 ```
 
-| Option            | Description                                                      |
-|-------------------|------------------------------------------------------------------|
-| `-u`, `--update`  | Force update even if already installed                           |
-| `--version <ver>` | Install a specific version (default: `latest`)                   |
-| `--ci`            | CI mode: uses pinned version `1.5.0`, skips auto-update          |
-| `--idea`          | Apply ktlint styles to Android Studio                            |
+| Option            | Description                                             |
+|-------------------|---------------------------------------------------------|
+| `-u`, `--update`  | Force update even if already installed                  |
+| `--version <ver>` | Install a specific version (default: `latest`)          |
+| `--ci`            | CI mode: uses pinned version `1.5.0`, skips auto-update |
+| `--idea`          | Apply ktlint styles to Android Studio                   |
 
 CI environments are detected via `$CI`. The installed version is tracked in `.app/ktlint.version`.
 
@@ -158,6 +158,44 @@ Build commands for the Kotlin/JS API module.
 | `--clean` | Run `gradlew clean` before building                                                                               |
 
 **Script:** `scripts/api.sh`
+
+### `./sigo api:server <command>`
+
+JVM API server (Ktor/Netty).
+
+```
+./sigo api:server <command> [options]
+```
+
+| Command               | Description                                   |
+|-----------------------|-----------------------------------------------|
+| `dev [--port <port>]` | Run the server locally via Gradle             |
+| `build [--clean]`     | Build the server distribution via installDist |
+| `docker build`        | Build the Docker image                        |
+| `docker run`          | Run the Docker container                      |
+
+#### Dev mode
+
+Starts the JVM server via Gradle. The API key is read from `app-env.properties` at build time,
+so no extra setup is needed after `./sigo init`.
+
+```shell
+./sigo api:server dev
+./sigo api:server dev --port 9090
+```
+
+#### Docker
+
+```shell
+./sigo api:server docker build
+./sigo api:server docker build --tag my-api
+./sigo api:server docker run
+./sigo api:server docker run --port 9090 --tag my-api
+```
+
+**Script:** `scripts/api-server.sh`
+
+---
 
 ### `./sigo api:worker <command>`
 
