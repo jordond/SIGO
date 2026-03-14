@@ -139,15 +139,12 @@ public class DefaultScoreCalculator(
         return when {
             // User preferences for rain/snow
             chance > 0 && ((isRain && !prefs.rain) || (isSnow && !prefs.snow)) -> ReasonValue.Outside
-
             // Chance thresholds
             chance > maxChance -> ReasonValue.Outside
             chance > nearChance -> ReasonValue.Near
-
             // Amount thresholds
             amount > moderateAmountMm -> ReasonValue.Outside
             amount > lowAmountMm -> ReasonValue.Near
-
             else -> ReasonValue.Inside
         }
     }

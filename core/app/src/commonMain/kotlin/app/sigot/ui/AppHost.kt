@@ -59,7 +59,6 @@ internal fun AppHost(
                     // )
                 }
             }
-
             is UiState.Loaded -> {
                 val haptics = rememberHaptics(state.enableHaptics)
 
