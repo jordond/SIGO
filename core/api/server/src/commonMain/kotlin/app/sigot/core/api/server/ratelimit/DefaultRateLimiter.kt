@@ -5,7 +5,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlin.time.Clock
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 @Serializable
@@ -18,8 +21,8 @@ internal data class RateLimitEntry(
  * Fixed-window rate limiter backed by [ApiCache].
  *
  * Enforces two independent limits:
- *  - Per client ID: [maxRequestsPerClient] per [windowSeconds]
- *  - Per IP address: [maxRequestsPerIp] per [windowSeconds]
+ *  - Per client ID: [maxRequestsPerClient] per [window]
+ *  - Per IP address: [maxRequestsPerIp] per [window]
  *
  * The IP limit prevents abuse via client-ID rotation.
  *
@@ -31,7 +34,7 @@ public class DefaultRateLimiter(
     private val clock: Clock = Clock.System,
     private val maxRequestsPerClient: Int = 30,
     private val maxRequestsPerIp: Int = 60,
-    private val windowSeconds: Int = 3600,
+    private val window: Duration = 1.hours,
 ) : RateLimiter {
     override suspend fun check(
         clientId: Uuid,
@@ -72,6 +75,7 @@ public class DefaultRateLimiter(
             null
         }
 
+        val windowSeconds = window.inWholeSeconds
         val currentWindow = if (entry != null && (nowSeconds - entry.windowStart) < windowSeconds) {
             entry
         } else {
@@ -79,19 +83,19 @@ public class DefaultRateLimiter(
         }
 
         val newCount = currentWindow.count + 1
-        val resetAt = currentWindow.windowStart + windowSeconds
+        val resetEpoch = currentWindow.windowStart + windowSeconds
         val allowed = newCount <= maxRequests
         val remaining = (maxRequests - newCount).coerceAtLeast(0)
 
         val updated = currentWindow.copy(count = newCount)
-        val ttl = (resetAt - nowSeconds).toInt().coerceAtLeast(1).seconds
+        val ttl = (resetEpoch - nowSeconds).coerceAtLeast(1).seconds
         cache.put(key, json.encodeToString(updated), ttl)
 
         return RateLimiter.RateLimitResult(
             allowed = allowed,
             limit = maxRequests,
             remaining = remaining,
-            resetEpochSeconds = resetAt,
+            resetAt = Instant.fromEpochSeconds(resetEpoch),
         )
     }
 }

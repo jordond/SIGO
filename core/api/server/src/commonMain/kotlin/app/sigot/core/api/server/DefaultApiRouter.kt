@@ -114,7 +114,7 @@ internal class DefaultApiRouter(
         val headers = response.headers.toMutableMap()
         headers["X-RateLimit-Limit"] = result.limit.toString()
         headers["X-RateLimit-Remaining"] = result.remaining.toString()
-        headers["X-RateLimit-Reset"] = result.resetEpochSeconds.toString()
+        headers["X-RateLimit-Reset"] = result.resetAt.epochSeconds.toString()
         return response.copy(headers = headers)
     }
 
