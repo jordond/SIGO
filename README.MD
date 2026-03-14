@@ -21,13 +21,9 @@
 
 <p align="center">
   <img src="screenshots/01.png" width="150" alt="Yes - go outside" />
-  &nbsp;
   <img src="screenshots/02.png" width="150" alt="No - stay inside" />
-  &nbsp;
   <img src="screenshots/03.png" width="150" alt="Maybe - you decide" />
-  &nbsp;
   <img src="screenshots/04.png" width="150" alt="Forecast details" />
-  &nbsp;
   <img src="screenshots/05.png" width="150" alt="Preferences" />
 </p>
 
