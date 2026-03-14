@@ -38,9 +38,15 @@ public data class ForecastData(
 
     public fun forBlock(block: ForecastBlock): Score? =
         when (block) {
-            forecast.current -> score.current
-            forecast.today.block -> score.today
-            forecast.tomorrow?.block -> score.days.getOrNull(0)
+            forecast.current -> {
+                score.current
+            }
+            forecast.today.block -> {
+                score.today
+            }
+            forecast.tomorrow?.block -> {
+                score.days.getOrNull(0)
+            }
             else -> {
                 forecast.today.hours
                     .indexOfFirst { it == block }

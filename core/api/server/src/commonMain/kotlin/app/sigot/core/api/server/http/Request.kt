@@ -6,12 +6,14 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 
 @OptIn(ExperimentalSerializationApi::class)
 public inline fun <reified T : @Serializable Any> ServerRequest.queryParams(json: Json = defaultJson): T {
     try {
-        val mapJson = json.encodeToString(queryParameters)
-        return json.decodeFromString<T>(mapJson)
+        val jsonElement = json.encodeToJsonElement(queryParameters)
+        return json.decodeFromJsonElement<T>(jsonElement)
     } catch (cause: MissingFieldException) {
         throw BadRequestException(validation = cause.missingFields)
     }

@@ -2,11 +2,13 @@ package app.sigot.core.api.server.util
 
 import app.sigot.core.api.server.entity.ApiError
 import app.sigot.core.api.server.entity.ApiResponse
-import app.sigot.core.api.server.http.ApiHeaders
 import app.sigot.core.api.server.http.ContentType
 import app.sigot.core.api.server.http.ServerResponse
 import app.sigot.core.platform.di.defaultJson
+import io.ktor.http.HeadersBuilder
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
+import io.ktor.http.headersOf
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration
 
@@ -18,7 +20,7 @@ public fun respondText(
     ServerResponse(
         statusCode = status,
         statusText = statusText,
-        headers = mutableMapOf(ApiHeaders.CONTENT_TYPE to ContentType.TEXT_PLAIN),
+        headers = headersOf(HttpHeaders.ContentType, ContentType.TEXT_PLAIN),
         body = text,
     )
 
@@ -30,7 +32,7 @@ public fun respondJson(
     ServerResponse(
         statusCode = status,
         statusText = statusText,
-        headers = mutableMapOf(ApiHeaders.CONTENT_TYPE to ContentType.JSON),
+        headers = headersOf(HttpHeaders.ContentType, ContentType.JSON),
         body = json,
     )
 
@@ -164,8 +166,13 @@ public fun cached(
     block: () -> ServerResponse,
 ): ServerResponse {
     val response = block()
-    response.headers[ApiHeaders.CACHE_CONTROL] = "max-age=${age.inWholeSeconds}"
-    return response
+    return response.copy(
+        headers = HeadersBuilder()
+            .apply {
+                appendAll(response.headers)
+                append(HttpHeaders.CacheControl, "max-age=${age.inWholeSeconds}")
+            }.build(),
+    )
 }
 
 @PublishedApi

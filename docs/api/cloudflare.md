@@ -17,9 +17,11 @@ This will:
 
 Before deploying to your Cloudflare account:
 
-1. Update [`./wrangler.json`](./wrangler.json) with your domain routes
-    - **Note:** If your domain's DNS nameservers are **not** Cloudflare, you'll need to set up the worker with your domain separately
-2. Log in to Wrangler: `wrangler login` (or `./sigo api:worker wrangler login` if you don't have it installed globally)
+1. Update [`wrangler.json`](../../wrangler.json) with your domain routes
+    - **Note:** If your domain's DNS nameservers are **not** Cloudflare, you'll need to set up the
+      worker with your domain separately
+2. Log in to Wrangler: `wrangler login` (or `./sigo api:worker wrangler login` if you don't have it
+   installed globally)
 3. Set the `FORECAST_API_KEY` secret: `./sigo api:worker secret set`
 
 Deploy:
@@ -42,9 +44,10 @@ Start the dev server with file watching:
 ./sigo api:worker dev
 ```
 
-Gradle recompiles on source changes and Wrangler picks them up automatically.
+Gradle re-compiles on source changes and Wrangler picks them up automatically.
 
-**Note:** You might see a Wrangler error about missing files on first start. Wait for the initial build to finish.
+**Note:** You might see a Wrangler error about missing files on first start. Wait for the initial
+build to finish.
 
 ### Deploying
 
@@ -62,7 +65,8 @@ Deploy to staging or dev with `--env`:
 ./sigo api:worker deploy --env dev
 ```
 
-The worker will be available at `https://api.shouldigooutside.now` (or `dev`/`staging.api.shouldigooutside.now`).
+The worker will be available at `https://api.shouldigooutside.now` (or `dev`/
+`staging.api.shouldigooutside.now`).
 
 ### Misc
 

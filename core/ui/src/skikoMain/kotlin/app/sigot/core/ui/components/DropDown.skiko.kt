@@ -200,7 +200,9 @@ internal fun handleDropdownOnKeyEvent(
                 focusManager?.moveFocus(FocusDirection.Previous)
                 true
             }
-            else -> false
+            else -> {
+                false
+            }
         }
     } else {
         false

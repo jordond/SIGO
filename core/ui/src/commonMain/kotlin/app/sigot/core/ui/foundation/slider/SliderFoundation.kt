@@ -507,10 +507,11 @@ private fun Modifier.slideOnKeyEvents(
                         onValueChangeState((value + page * delta).coerceIn(valueRange))
                         true
                     }
-                    else -> false
+                    else -> {
+                        false
+                    }
                 }
             }
-
             KeyEventType.KeyUp -> {
                 when (event.key) {
                     Key.DirectionUp,
@@ -525,12 +526,14 @@ private fun Modifier.slideOnKeyEvents(
                         onValueChangeFinishedState?.invoke()
                         true
                     }
-
-                    else -> false
+                    else -> {
+                        false
+                    }
                 }
             }
-
-            else -> false
+            else -> {
+                false
+            }
         }
     }
 }

@@ -4,13 +4,13 @@ app-name = "now.shouldigooutside"
 app-desktop-version = "1.0.0"
 app-ios-version = "0.1.0"
 app-android-version = "0.1.0"
-api-worker-version = "1.0.0"
+api-server-version = "1.0.0"
 # App code for development, the real app code is set by release process
 app-android-code = "99999"
 sdk-target = "36"
 sdk-compile = "36"
 sdk-min = "30"
-jvmTarget = "17"
+jvmTarget = "21"
 ############################
 
 kotlin = "2.3.10"
@@ -53,6 +53,7 @@ materialKolor = "4.1.1"
 kermit = "2.1.0"
 crashkios = "0.8.6"
 slf4jNop = "2.0.17"
+logback = "1.5.18"
 stateHolder = "3.1.0"
 compass = "3.0.2"
 connectivity = "2.4.1"
@@ -142,6 +143,8 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 mordant = { module = "com.github.ajalt.mordant:mordant", version.ref = "mordant" }
 mordant-coroutines = { module = "com.github.ajalt.mordant:mordant-coroutines", version.ref = "mordant" }
@@ -149,6 +152,7 @@ multiplatformSettings = { module = "com.russhwolf:multiplatform-settings", versi
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4jNop" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 stateHolder = { module = "dev.jordond.stateholder:core", version.ref = "stateHolder" }
 stateHolder-dispatcher = { module = "dev.jordond.stateholder:dispatcher-compose", version.ref = "stateHolder" }
 stateHolder-compose = { module = "dev.jordond.stateholder:extensions-compose", version.ref = "stateHolder" }
