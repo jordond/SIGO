@@ -10,7 +10,7 @@ app-android-code = "99999"
 sdk-target = "36"
 sdk-compile = "36"
 sdk-min = "30"
-jvmTarget = "17"
+jvmTarget = "21"
 ############################
 
 kotlin = "2.3.10"
@@ -53,6 +53,7 @@ materialKolor = "4.1.1"
 kermit = "2.1.0"
 crashkios = "0.8.6"
 slf4jNop = "2.0.17"
+logback = "1.5.18"
 stateHolder = "3.1.0"
 compass = "3.0.2"
 connectivity = "2.4.1"
@@ -151,6 +152,7 @@ multiplatformSettings = { module = "com.russhwolf:multiplatform-settings", versi
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4jNop" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 stateHolder = { module = "dev.jordond.stateholder:core", version.ref = "stateHolder" }
 stateHolder-dispatcher = { module = "dev.jordond.stateholder:dispatcher-compose", version.ref = "stateHolder" }
 stateHolder-compose = { module = "dev.jordond.stateholder:extensions-compose", version.ref = "stateHolder" }
