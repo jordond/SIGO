@@ -112,7 +112,7 @@ Build the client app:
 
 - [Android](./docs/build/android)
 - [iOS](./docs/build/ios)
-  
+
 If you're using the Direct API, you're done. For a custom backend, see below.
 
 ## Custom Backend API
@@ -122,3 +122,10 @@ The backend proxies requests to the weather API. Implementations:
 - [x] [Cloudflare Worker](./docs/api/cloudflare.md)
 - [x] [JVM Server (Docker)](./docs/api/server.md)
 - [ ] Firebase Function
+
+---
+
+### AI Disclaimer
+
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code) was used to assist with development,
+but the majority of the planning, architecture, and code was written by me.
