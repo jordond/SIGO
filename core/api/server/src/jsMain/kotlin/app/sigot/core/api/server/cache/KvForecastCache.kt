@@ -26,7 +26,7 @@ public class KvForecastCache(
         ttl: Duration,
     ) {
         val options = js("({})")
-        options.expirationTtl = ttl
+        options.expirationTtl = ttl.inWholeSeconds
         @Suppress("UNCHECKED_CAST")
         val promise = kv.put(key, value, options) as kotlin.js.Promise<dynamic>
         promise.await()
