@@ -1,8 +1,10 @@
 package app.sigot.core.api.server.http
 
 import app.sigot.core.api.server.ApiRouter
+import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.httpMethod
 import io.ktor.server.request.receiveText
 import io.ktor.server.request.uri
@@ -10,6 +12,7 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.route
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * Mount the [ApiRouter] to handle all incoming requests under [path].
@@ -30,7 +33,7 @@ public fun Route.mountApiRouter(
 /**
  * Convert a Ktor [io.ktor.server.request.ApplicationRequest] to a [ServerRequest].
  */
-private suspend fun io.ktor.server.application.ApplicationCall.toServerRequest(): ServerRequest {
+private suspend fun ApplicationCall.toServerRequest(): ServerRequest {
     val headers = mutableMapOf<String, String>()
     request.headers.forEach { name, values ->
         if (values.isNotEmpty()) {
@@ -47,7 +50,7 @@ private suspend fun io.ktor.server.application.ApplicationCall.toServerRequest()
 
     val body = try {
         receiveText().takeIf { it.isNotEmpty() }
-    } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+    } catch (e: CancellationException) {
         throw e
     } catch (_: Exception) {
         null
@@ -72,7 +75,7 @@ private suspend fun io.ktor.server.application.ApplicationCall.toServerRequest()
 /**
  * Write a [ServerResponse] back to a Ktor [io.ktor.server.application.ApplicationCall].
  */
-private suspend fun ServerResponse.writeTo(call: io.ktor.server.application.ApplicationCall) {
+private suspend fun ServerResponse.writeTo(call: ApplicationCall) {
     for ((name, value) in headers) {
         if (!name.equals("Content-Type", ignoreCase = true)) {
             call.response.header(name, value)
@@ -81,10 +84,10 @@ private suspend fun ServerResponse.writeTo(call: io.ktor.server.application.Appl
 
     val contentType = headers["Content-Type"]
         ?.let {
-            io.ktor.http.ContentType
+            ContentType
                 .parse(it)
         }
-        ?: io.ktor.http.ContentType.Text.Plain
+        ?: ContentType.Text.Plain
 
     call.respondText(
         text = body ?: "",
