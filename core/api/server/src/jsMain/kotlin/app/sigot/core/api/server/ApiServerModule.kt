@@ -6,6 +6,7 @@ import app.sigot.core.api.server.attestation.AttestationRegistrar
 import app.sigot.core.api.server.attestation.AttestationService
 import app.sigot.core.api.server.attestation.AttestationVerifier
 import app.sigot.core.api.server.attestation.GoogleAuthProvider
+import app.sigot.core.api.server.attestation.JsGoogleAuthProvider
 import app.sigot.core.api.server.attestation.KvAttestationRegistrar
 import app.sigot.core.api.server.attestation.PlayIntegrityVerifier
 import app.sigot.core.api.server.cache.CacheProvider
@@ -40,8 +41,8 @@ public fun jsApiServerModule(): Module =
             )
         } bind AttestationVerifier::class
 
-        single {
-            GoogleAuthProvider(
+        single<GoogleAuthProvider> {
+            JsGoogleAuthProvider(
                 config = get(),
                 httpClient = get(),
                 json = get(),

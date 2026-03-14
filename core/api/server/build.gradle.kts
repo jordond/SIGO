@@ -37,6 +37,7 @@ kotlin {
 
         jvmMain.dependencies {
             implementation(libs.ktor.server.core)
+            implementation(libs.kotlinx.serialization.cbor)
         }
 
         jvmMain.dependencies {
