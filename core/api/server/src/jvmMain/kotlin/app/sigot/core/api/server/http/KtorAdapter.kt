@@ -47,6 +47,8 @@ private suspend fun io.ktor.server.application.ApplicationCall.toServerRequest()
 
     val body = try {
         receiveText().takeIf { it.isNotEmpty() }
+    } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+        throw e
     } catch (_: Exception) {
         null
     }
@@ -72,7 +74,9 @@ private suspend fun io.ktor.server.application.ApplicationCall.toServerRequest()
  */
 private suspend fun ServerResponse.writeTo(call: io.ktor.server.application.ApplicationCall) {
     for ((name, value) in headers) {
-        call.response.header(name, value)
+        if (!name.equals("Content-Type", ignoreCase = true)) {
+            call.response.header(name, value)
+        }
     }
 
     val contentType = headers["Content-Type"]

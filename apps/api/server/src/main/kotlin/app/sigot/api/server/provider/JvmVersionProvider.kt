@@ -6,8 +6,8 @@ import app.sigot.core.model.Version
 internal class JvmVersionProvider : VersionProvider {
     override fun provide(): Version =
         Version(
-            code = 1,
-            name = "1.0.0-jvm",
-            sha = "dev",
+            code = app.sigot.core.Version.CODE,
+            name = app.sigot.core.Version.NAME,
+            sha = app.sigot.core.Version.GIT_SHA,
         )
 }

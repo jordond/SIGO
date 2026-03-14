@@ -1,11 +1,31 @@
+@file:Suppress("unused")
+
+import app.sigot.toolchain.AppVersion
+
 plugins {
     alias(libs.plugins.jvm)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.toolchain.version)
     application
+}
+
+val versionTask = tasks.named<AppVersion>("appVersion") {
+    version = libs.versions.api.server.version
+        .get()
 }
 
 application {
     mainClass.set("app.sigot.api.server.MainKt")
+}
+
+sourceSets {
+    main {
+        kotlin.srcDir(versionTask)
+    }
+}
+
+tasks.named("compileKotlin") {
+    dependsOn(versionTask)
 }
 
 dependencies {
