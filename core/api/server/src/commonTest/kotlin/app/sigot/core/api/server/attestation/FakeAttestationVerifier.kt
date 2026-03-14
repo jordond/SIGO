@@ -8,13 +8,17 @@ internal class FakeAttestationVerifier(
         private set
     var lastClientId: String? = null
         private set
+    var lastRequestHash: String? = null
+        private set
 
     override suspend fun verify(
         token: String,
         clientId: String,
+        requestHash: String,
     ): AttestationResult {
         lastToken = token
         lastClientId = clientId
+        lastRequestHash = requestHash
         return result
     }
 }

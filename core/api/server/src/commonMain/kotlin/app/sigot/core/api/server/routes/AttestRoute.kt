@@ -23,7 +23,7 @@ internal class AttestRoute(
         request: ServerRequest,
         parameters: Map<String, String>,
     ): ServerResponse {
-        // GET /v1/attest — returns a nonce for attestation challenge
+        // GET /attest — returns a nonce for attestation challenge
         val clientId = request.headers[ApiHeaders.CLIENT_ID] ?: return badRequest(
             meta = mapOf("error" to "Missing client ID"),
             json = json,
@@ -37,7 +37,7 @@ internal class AttestRoute(
         request: ServerRequest,
         parameters: Map<String, String>,
     ): ServerResponse {
-        // POST /v1/attest — register a device attestation
+        // POST /attest — register a device attestation
         val clientId = request.headers[ApiHeaders.CLIENT_ID] ?: return badRequest(
             meta = mapOf("error" to "Missing client ID"),
             json = json,

@@ -60,13 +60,26 @@ internal class DefaultApiRouter(
 
         val ipAddress = request.headers[ApiHeaders.CONNECTING_IP]
 
+        val requestHash = computeRequestHash(request.method.value, request.url)
+
         val attestationToken = request.headers[ApiHeaders.ATTESTATION_TOKEN]
         val attestationPlatform = request.headers[ApiHeaders.ATTESTATION_PLATFORM]
         val attestationResult = attestationService.verify(
             token = attestationToken,
             platform = attestationPlatform,
             clientId = clientId.toString(),
+            requestHash = requestHash,
         )
+
+        if (attestationResult is AttestationResult.Failed) {
+            return corsHandler.withCorsHeaders(
+                forbidden(
+                    meta = mapOf("error" to "Attestation verification failed"),
+                    json = json,
+                ),
+                request,
+            )
+        }
 
         val isAttested = attestationResult is AttestationResult.Attested
         val cache = cacheProvider.cache
@@ -135,6 +148,21 @@ internal class DefaultApiRouter(
                 append(ApiHeaders.RATE_LIMIT_RESET, result.resetAt.epochSeconds.toString())
             }.build()
         return response.copy(headers = headers)
+    }
+
+    private fun computeRequestHash(
+        method: String,
+        url: String,
+    ): String {
+        val path = extractPath(url)
+        val input = "$method$path"
+        // FNV-1a 64-bit hash — must match client-side computeRequestHash in Koin.kt
+        var hash = -3750763034362895579L // 0xCBF29CE484222325 (FNV offset basis)
+        for (c in input) {
+            hash = hash xor c.code.toLong()
+            hash *= 1099511628211L // 0x00000100000001B3 (FNV prime)
+        }
+        return hash.toULong().toString(16).padStart(16, '0')
     }
 
     private fun extractPath(url: String): String {

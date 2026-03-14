@@ -48,6 +48,12 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
                 install(
                     createClientPlugin("AttestationPlugin") {
                         onRequest { request, _ ->
+                            // Skip attestation for attest endpoint to prevent infinite recursion:
+                            // AppAttestTokenProvider calls /attest to register, which would
+                            // trigger this plugin again, recursing indefinitely.
+                            val path = request.url.encodedPath
+                            if (path.endsWith("/attest")) return@onRequest
+
                             val provider = getKoinInstance<AttestationTokenProvider>()
                             val platform = provider.platform ?: return@onRequest
                             val requestHash = computeRequestHash(request)
@@ -70,15 +76,15 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
 
 private fun computeRequestHash(request: io.ktor.client.request.HttpRequestBuilder): String {
     val method = request.method.value
-    val url = request.url.buildString()
-    val input = "$method$url"
-    // Simple hash using Kotlin's built-in hashCode as a fallback
-    // A proper SHA-256 implementation can be added later
-    return input
-        .hashCode()
-        .toUInt()
-        .toString(16)
-        .padStart(8, '0')
+    val path = request.url.encodedPath
+    val input = "$method$path"
+    // FNV-1a 64-bit hash — must match server-side computeRequestHash in DefaultApiRouter.kt
+    var hash = -3750763034362895579L // 0xCBF29CE484222325 (FNV offset basis)
+    for (c in input) {
+        hash = hash xor c.code.toLong()
+        hash *= 1099511628211L // 0x00000100000001B3 (FNV prime)
+    }
+    return hash.toULong().toString(16).padStart(16, '0')
 }
 
 internal expect fun configureCrashlytics()

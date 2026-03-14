@@ -19,35 +19,60 @@ class AttestationServiceTest {
     @Test
     fun missingTokenReturnsUnattested() =
         runTest {
-            val result = service.verify(token = null, platform = "android", clientId = "client1")
+            val result = service.verify(
+                token = null,
+                platform = "android",
+                clientId = "client1",
+                requestHash = "abc123",
+            )
             result.shouldBeInstanceOf<AttestationResult.Unattested>()
         }
 
     @Test
     fun missingPlatformReturnsUnattested() =
         runTest {
-            val result = service.verify(token = "some-token", platform = null, clientId = "client1")
+            val result = service.verify(
+                token = "some-token",
+                platform = null,
+                clientId = "client1",
+                requestHash = "abc123",
+            )
             result.shouldBeInstanceOf<AttestationResult.Unattested>()
         }
 
     @Test
     fun bothMissingReturnsUnattested() =
         runTest {
-            val result = service.verify(token = null, platform = null, clientId = "client1")
+            val result = service.verify(
+                token = null,
+                platform = null,
+                clientId = "client1",
+                requestHash = "abc123",
+            )
             result.shouldBeInstanceOf<AttestationResult.Unattested>()
         }
 
     @Test
     fun unknownPlatformReturnsUnattested() =
         runTest {
-            val result = service.verify(token = "token", platform = "windows", clientId = "client1")
+            val result = service.verify(
+                token = "token",
+                platform = "windows",
+                clientId = "client1",
+                requestHash = "abc123",
+            )
             result.shouldBeInstanceOf<AttestationResult.Unattested>()
         }
 
     @Test
     fun androidPlatformDispatchesToPlayIntegrityVerifier() =
         runTest {
-            val result = service.verify(token = "android-token", platform = "android", clientId = "client1")
+            val result = service.verify(
+                token = "android-token",
+                platform = "android",
+                clientId = "client1",
+                requestHash = "abc123",
+            )
             result.shouldBeInstanceOf<AttestationResult.Attested>()
             (result as AttestationResult.Attested).platform shouldBe AttestationPlatform.PLAY_INTEGRITY
             androidVerifier.lastToken shouldBe "android-token"
@@ -57,7 +82,12 @@ class AttestationServiceTest {
     @Test
     fun iosPlatformDispatchesToAppAttestVerifier() =
         runTest {
-            val result = service.verify(token = "ios-token", platform = "ios", clientId = "client1")
+            val result = service.verify(
+                token = "ios-token",
+                platform = "ios",
+                clientId = "client1",
+                requestHash = "abc123",
+            )
             result.shouldBeInstanceOf<AttestationResult.Attested>()
             (result as AttestationResult.Attested).platform shouldBe AttestationPlatform.APP_ATTEST
             iosVerifier.lastToken shouldBe "ios-token"
@@ -73,6 +103,7 @@ class AttestationServiceTest {
                 override suspend fun verify(
                     token: String,
                     clientId: String,
+                    requestHash: String,
                 ): AttestationResult = throw RuntimeException("Network error")
             }
             val serviceWithThrowing = AttestationService(listOf(throwingVerifier))
@@ -80,6 +111,7 @@ class AttestationServiceTest {
                 token = "token",
                 platform = "android",
                 clientId = "client1",
+                requestHash = "abc123",
             )
             result.shouldBeInstanceOf<AttestationResult.Failed>()
             (result as AttestationResult.Failed).reason shouldBe "Network error"
