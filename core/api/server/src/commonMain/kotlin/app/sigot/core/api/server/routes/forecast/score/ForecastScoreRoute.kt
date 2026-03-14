@@ -2,12 +2,13 @@ package app.sigot.core.api.server.routes.forecast.score
 
 import app.sigot.core.api.server.ApiRoute
 import app.sigot.core.api.server.ApiRoutePath
-import app.sigot.core.api.server.cache.FORECAST_CACHE_TTL_DURATION
-import app.sigot.core.api.server.cache.FORECAST_CACHE_TTL_SECONDS
-import app.sigot.core.api.server.cache.ForecastCacheProvider
+import app.sigot.core.api.server.cache.CacheProvider
+import app.sigot.core.api.server.cache.FORECAST_CACHE_TTL
 import app.sigot.core.api.server.entity.ApiResponse
 import app.sigot.core.api.server.exception.BadRequestException
-import app.sigot.core.api.server.queryParams
+import app.sigot.core.api.server.http.ServerRequest
+import app.sigot.core.api.server.http.ServerResponse
+import app.sigot.core.api.server.http.queryParams
 import app.sigot.core.api.server.util.cached
 import app.sigot.core.api.server.util.respondJson
 import app.sigot.core.api.server.util.roundCoordinate
@@ -21,22 +22,20 @@ import app.sigot.forecast.data.entity.ForecastScoreResponse
 import app.sigot.forecast.data.entity.toEntity
 import co.touchlab.kermit.Logger
 import kotlinx.serialization.json.Json
-import org.w3c.fetch.Request
-import org.w3c.fetch.Response
 
 public class ForecastScoreRoute(
     private val json: Json,
     private val getForecastUseCase: GetForecastUseCase,
     private val scoreCalculator: ScoreCalculator,
-    private val cacheProvider: ForecastCacheProvider,
+    private val cacheProvider: CacheProvider,
 ) : ApiRoute {
     private val logger = Logger.withTag("ForecastScoreRoute")
     override val path: ApiRoutePath = ApiRoutePath.ForecastScore
 
     override suspend fun get(
-        request: Request,
+        request: ServerRequest,
         parameters: Map<String, String>,
-    ): Response? {
+    ): ServerResponse {
         val query = request.queryParams<ForecastScoreRequestQuery>(json)
 
         validateCoordinates(query.lat, query.lon)
@@ -71,7 +70,7 @@ public class ForecastScoreRoute(
             val cachedJson = cache.get(cacheKey)
             if (cachedJson != null) {
                 logger.d { "Cache hit for $cacheKey" }
-                return cached(FORECAST_CACHE_TTL_DURATION) {
+                return cached(FORECAST_CACHE_TTL) {
                     respondJson(json = cachedJson)
                 }
             }
@@ -81,30 +80,26 @@ public class ForecastScoreRoute(
         val score = scoreCalculator.calculate(forecast, preferences).toEntity()
         val responseData = ForecastScoreResponse(forecast = forecast.toEntity(), score = score)
         val responseJson = json.encodeToString(ApiResponse(data = responseData))
+        cache?.put(cacheKey, responseJson, ttl = FORECAST_CACHE_TTL)
 
-        if (cache != null) {
-            cache.put(cacheKey, responseJson, ttlSeconds = FORECAST_CACHE_TTL_SECONDS)
-        }
-
-        return cached(FORECAST_CACHE_TTL_DURATION) {
+        return cached(FORECAST_CACHE_TTL) {
             respondJson(json = responseJson)
         }
     }
 
     private fun validateScoreParams(query: ForecastScoreRequestQuery) {
-        val errors = mutableListOf<String>()
+        val errors = buildList {
+            query.maxTemp
+                ?.takeIf { it !in -100..100 }
+                ?.let { add("max_temp must be between -100 and 100") }
 
-        val maxTemp = query.maxTemp
-        if (maxTemp != null && (maxTemp < -100 || maxTemp > 100)) {
-            errors.add("max_temp must be between -100 and 100")
-        }
-        val minTemp = query.minTemp
-        if (minTemp != null && (minTemp < -100 || minTemp > 100)) {
-            errors.add("min_temp must be between -100 and 100")
-        }
-        val maxWind = query.maxWind
-        if (maxWind != null && maxWind < 0) {
-            errors.add("max_wind must be >= 0")
+            query.minTemp
+                ?.takeIf { it !in -100..100 }
+                ?.let { add("min_temp must be between -100 and 100") }
+
+            query.maxWind
+                ?.takeIf { it < 0 }
+                ?.let { add("max_wind must be >= 0") }
         }
 
         if (errors.isNotEmpty()) {

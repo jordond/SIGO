@@ -1,9 +1,12 @@
 package app.sigot.core.api.server.ratelimit
 
-import app.sigot.core.api.server.cache.KvForecastCache
+import app.sigot.core.api.server.cache.ApiCache
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.seconds
+import kotlin.uuid.Uuid
 
 @Serializable
 internal data class RateLimitEntry(
@@ -12,7 +15,7 @@ internal data class RateLimitEntry(
 )
 
 /**
- * Fixed-window rate limiter backed by Cloudflare KV.
+ * Fixed-window rate limiter backed by [ApiCache].
  *
  * Enforces two independent limits:
  *  - Per client ID: [maxRequestsPerClient] per [windowSeconds]
@@ -31,14 +34,12 @@ public class DefaultRateLimiter(
     private val windowSeconds: Int = 3600,
 ) : RateLimiter {
     override suspend fun check(
-        clientId: String,
+        clientId: Uuid,
         ipAddress: String?,
-        cache: KvForecastCache,
+        cache: ApiCache,
     ): RateLimiter.RateLimitResult {
         val nowSeconds = clock.now().epochSeconds
-
         val clientResult = checkKey("ratelimit:$clientId", maxRequestsPerClient, nowSeconds, cache)
-
         val ipResult = if (ipAddress != null) {
             checkKey("ratelimit:ip:$ipAddress", maxRequestsPerIp, nowSeconds, cache)
         } else {
@@ -58,13 +59,13 @@ public class DefaultRateLimiter(
         key: String,
         maxRequests: Int,
         nowSeconds: Long,
-        cache: KvForecastCache,
+        cache: ApiCache,
     ): RateLimiter.RateLimitResult {
         val existing = cache.get(key)
         val entry = if (existing != null) {
             try {
                 json.decodeFromString<RateLimitEntry>(existing)
-            } catch (_: Throwable) {
+            } catch (_: SerializationException) {
                 null
             }
         } else {
@@ -83,7 +84,7 @@ public class DefaultRateLimiter(
         val remaining = (maxRequests - newCount).coerceAtLeast(0)
 
         val updated = currentWindow.copy(count = newCount)
-        val ttl = (resetAt - nowSeconds).toInt().coerceAtLeast(1)
+        val ttl = (resetAt - nowSeconds).toInt().coerceAtLeast(1).seconds
         cache.put(key, json.encodeToString(updated), ttl)
 
         return RateLimiter.RateLimitResult(

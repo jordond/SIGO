@@ -19,7 +19,7 @@ class DefaultRateLimiterTest {
     fun firstRequestIsAllowed() =
         runTest {
             val limiter = DefaultRateLimiter(json = json, maxRequestsPerClient = 5, maxRequestsPerIp = 10)
-            val cache = fakeKvCache()
+            val cache = FakeApiCache()
 
             val result = limiter.check("client-1", "1.2.3.4", cache)
 
@@ -32,7 +32,7 @@ class DefaultRateLimiterTest {
     fun requestsUpToLimitAreAllowed() =
         runTest {
             val limiter = DefaultRateLimiter(json = json, maxRequestsPerClient = 3, maxRequestsPerIp = 100)
-            val cache = fakeKvCache()
+            val cache = FakeApiCache()
 
             repeat(3) {
                 val result = limiter.check("client-1", "1.2.3.4", cache)
@@ -44,7 +44,7 @@ class DefaultRateLimiterTest {
     fun clientLimitExceededReturnsDenied() =
         runTest {
             val limiter = DefaultRateLimiter(json = json, maxRequestsPerClient = 2, maxRequestsPerIp = 100)
-            val cache = fakeKvCache()
+            val cache = FakeApiCache()
 
             limiter.check("client-1", "1.2.3.4", cache)
             limiter.check("client-1", "1.2.3.4", cache)
@@ -58,9 +58,8 @@ class DefaultRateLimiterTest {
     fun ipLimitExceededReturnsDenied() =
         runTest {
             val limiter = DefaultRateLimiter(json = json, maxRequestsPerClient = 100, maxRequestsPerIp = 2)
-            val cache = fakeKvCache()
+            val cache = FakeApiCache()
 
-            // Different client IDs but same IP
             limiter.check("client-1", "1.2.3.4", cache)
             limiter.check("client-2", "1.2.3.4", cache)
 
@@ -72,7 +71,7 @@ class DefaultRateLimiterTest {
     fun differentClientsHaveIndependentLimits() =
         runTest {
             val limiter = DefaultRateLimiter(json = json, maxRequestsPerClient = 1, maxRequestsPerIp = 100)
-            val cache = fakeKvCache()
+            val cache = FakeApiCache()
 
             val result1 = limiter.check("client-1", "1.2.3.4", cache)
             result1.allowed shouldBe true
@@ -85,7 +84,7 @@ class DefaultRateLimiterTest {
     fun differentIpsHaveIndependentLimits() =
         runTest {
             val limiter = DefaultRateLimiter(json = json, maxRequestsPerClient = 100, maxRequestsPerIp = 1)
-            val cache = fakeKvCache()
+            val cache = FakeApiCache()
 
             val result1 = limiter.check("client-1", "1.2.3.4", cache)
             result1.allowed shouldBe true
@@ -98,9 +97,8 @@ class DefaultRateLimiterTest {
     fun nullIpAddressSkipsIpLimiting() =
         runTest {
             val limiter = DefaultRateLimiter(json = json, maxRequestsPerClient = 100, maxRequestsPerIp = 1)
-            val cache = fakeKvCache()
+            val cache = FakeApiCache()
 
-            // With null IP, only client limit applies
             repeat(5) {
                 val result = limiter.check("client-1", null, cache)
                 result.allowed shouldBe true
@@ -118,13 +116,12 @@ class DefaultRateLimiterTest {
                 maxRequestsPerIp = 100,
                 windowSeconds = 60,
             )
-            val cache = fakeKvCache()
+            val cache = FakeApiCache()
 
             limiter1.check("client-1", "1.2.3.4", cache)
             val denied = limiter1.check("client-1", "1.2.3.4", cache)
             denied.allowed shouldBe false
 
-            // Advance past the window
             val clock2 = fixedClock(1061L)
             val limiter2 = DefaultRateLimiter(
                 json = json,
@@ -149,7 +146,7 @@ class DefaultRateLimiterTest {
                 maxRequestsPerIp = 100,
                 windowSeconds = 3600,
             )
-            val cache = fakeKvCache()
+            val cache = FakeApiCache()
 
             val result = limiter.check("client-1", "1.2.3.4", cache)
             result.resetEpochSeconds shouldBe 5000L + 3600
@@ -159,26 +156,24 @@ class DefaultRateLimiterTest {
     fun remainingDecrementsCorrectly() =
         runTest {
             val limiter = DefaultRateLimiter(json = json, maxRequestsPerClient = 3, maxRequestsPerIp = 100)
-            val cache = fakeKvCache()
+            val cache = FakeApiCache()
 
             limiter.check("client-1", "1.2.3.4", cache).remaining shouldBe 2
             limiter.check("client-1", "1.2.3.4", cache).remaining shouldBe 1
             limiter.check("client-1", "1.2.3.4", cache).remaining shouldBe 0
-            limiter.check("client-1", "1.2.3.4", cache).remaining shouldBe 0 // stays at 0
+            limiter.check("client-1", "1.2.3.4", cache).remaining shouldBe 0
         }
 
     @Test
     fun corruptedCacheEntryIsHandledGracefully() =
         runTest {
-            val cache = fakeKvCache()
+            val cache = FakeApiCache()
 
-            // Pre-populate cache with invalid JSON
             cache.put("ratelimit:client-1", "not-valid-json", 3600)
 
             val limiter = DefaultRateLimiter(json = json, maxRequestsPerClient = 5, maxRequestsPerIp = 100)
             val result = limiter.check("client-1", null, cache)
 
-            // Should start a fresh window instead of crashing
             result.allowed shouldBe true
             result.remaining shouldBe 4
         }

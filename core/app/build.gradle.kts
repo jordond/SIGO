@@ -36,9 +36,7 @@ kotlin {
 
             implementation(libs.compose.windowSizeClass)
             api(libs.kermit)
-            implementation(libs.kermit.crashlytics)
             implementation(libs.kermit.koin)
-            implementation(libs.crashkios)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.compose.navigation)
@@ -60,6 +58,13 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
+            implementation(libs.kermit.crashlytics)
+            implementation(libs.crashkios)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.kermit.crashlytics)
+            implementation(libs.crashkios)
         }
     }
 }
