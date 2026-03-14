@@ -1,6 +1,7 @@
 package app.sigot.cli.di
 
 import app.sigot.core.foundation.di.foundationModule
+import app.sigot.core.platform.di.networkModule
 import app.sigot.core.platform.di.platformModule
 import app.sigot.forecast.forecastCliModule
 import app.sigot.settings.settingsModule
@@ -12,6 +13,7 @@ fun initKoin(): Koin =
         modules(
             // Core
             foundationModule(),
+            networkModule(),
             platformModule(),
             // Feature
             settingsModule(useStore = false),
