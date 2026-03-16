@@ -21,13 +21,6 @@ kotlin {
         useEsModules()
         generateTypeScriptDefinitions()
         outputModuleName.set("index")
-
-        compilations["main"].packageJson {
-            version = libs.versions.api.server.version
-                .get()
-            main = "./index.mjs"
-            customField("type", "module")
-        }
     }
 
     sourceSets {
@@ -55,4 +48,16 @@ kotlin {
 
 tasks.named("compileKotlinJs") {
     dependsOn(versionTask)
+}
+
+afterEvaluate {
+    val apiVersion = libs.versions.api.server.version
+        .get()
+    kotlin.js().compilations.named("main") {
+        packageJson {
+            version = apiVersion
+            main = "./index.mjs"
+            customField("type", "module")
+        }
+    }
 }
