@@ -1,0 +1,11 @@
+package now.shouldigooutside.core.api.client
+
+import now.shouldigooutside.core.api.model.http.RateLimit
+
+/**
+ * Wraps an API response with optional rate-limit metadata.
+ */
+public data class ApiResult<out T>(
+    val data: T,
+    val rateLimit: RateLimit?,
+)

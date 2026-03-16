@@ -18,7 +18,7 @@ gradlePlugin {
     plugins {
         register("appVersionToolchain") {
             id = "toolchain.version"
-            implementationClass = "app.sigot.toolchain.AppVersionToolchain"
+            implementationClass = "now.shouldigooutside.toolchain.AppVersionToolchain"
         }
     }
 }

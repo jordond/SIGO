@@ -20,5 +20,5 @@
     <logger name="io.netty" level="INFO"/>
     <logger name="io.ktor" level="${LOG_LEVEL:-INFO}"/>
 
-    <logger name="sigot" level="${APP_LOG_LEVEL:-${LOG_LEVEL:-INFO}}"/>
+    <logger name="sigo" level="${APP_LOG_LEVEL:-${LOG_LEVEL:-INFO}}"/>
 </configuration>

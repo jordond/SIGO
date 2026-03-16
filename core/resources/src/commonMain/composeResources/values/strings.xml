@@ -252,7 +252,7 @@
     <string name="settings_internal_backend_api">API Address</string>
     <string name="settings_internal_backend_api_desc">The address of the backend API to use</string>
     <string name="settings_internal_backend_direct_api">Direct API</string>
-    <string name="settings_internal_backend_direct_api_desc">Bypass the SIGOT backend and use the weather API directly, this requires an API token</string>
+    <string name="settings_internal_backend_direct_api_desc">Bypass the SIGO backend and use the weather API directly, this requires an API token</string>
     <string name="settings_internal_backend_direct_api_token_placeholder">Enter your API key</string>
     <string name="settings_internal_reset">Reset internal settings</string>
     <string name="settings_internal_clear_forecast_cache">Clear Forecast Cache</string>

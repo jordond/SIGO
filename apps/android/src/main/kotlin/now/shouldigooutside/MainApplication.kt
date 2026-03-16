@@ -1,7 +1,7 @@
 package now.shouldigooutside
 
 import android.app.Application
-import app.sigot.di.initKoin
+import now.shouldigooutside.di.initKoin
 import org.koin.android.ext.koin.androidContext
 
 class MainApplication : Application() {

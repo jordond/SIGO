@@ -1,0 +1,64 @@
+package now.shouldigooutside.settings.data.entity
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import now.shouldigooutside.core.model.settings.Settings
+import now.shouldigooutside.core.model.ui.ThemeMode
+import kotlin.time.Instant
+
+@Serializable
+internal data class SettingsEntity(
+    @SerialName("first_launch")
+    val firstLaunch: Long,
+    @SerialName("theme")
+    val theme: String,
+    @SerialName("has_completed_onboarding")
+    val hasCompletedOnboarding: Boolean,
+    @SerialName("last_location")
+    val lastLocation: LocationEntity? = null,
+    @SerialName("last_location_update")
+    val lastLocationUpdate: Long? = null,
+    @SerialName("custom_location")
+    val customLocation: LocationEntity? = null,
+    @SerialName("use_custom_location")
+    val useCustomLocation: Boolean = false,
+    @SerialName("use_24_hour_format")
+    val use24HourFormat: Boolean = false,
+    @SerialName("preferences")
+    val preferences: PreferencesEntity,
+    @SerialName("enable_haptics")
+    val enableHaptics: Boolean = true,
+    @SerialName("internal_settings")
+    val internalSettings: InternalSettingsEntity,
+)
+
+internal fun SettingsEntity.toModel() =
+    Settings(
+        firstLaunch = Instant.fromEpochMilliseconds(firstLaunch),
+        themeMode = ThemeMode.from(theme),
+        hasCompletedOnboarding = hasCompletedOnboarding,
+        preferences = preferences.toModel(),
+        use24HourFormat = use24HourFormat,
+        lastLocation = lastLocation?.toModel(),
+        lastLocationUpdate = lastLocationUpdate?.let { Instant.fromEpochMilliseconds(it) },
+        customLocation = customLocation?.toModel(),
+        useCustomLocation = useCustomLocation,
+        enableHaptics = enableHaptics,
+        internalSettings = internalSettings.toModel(),
+        loaded = true,
+    )
+
+internal fun Settings.toEntity() =
+    SettingsEntity(
+        firstLaunch = firstLaunch.toEpochMilliseconds(),
+        theme = themeMode.name,
+        hasCompletedOnboarding = hasCompletedOnboarding,
+        preferences = preferences.toEntity(),
+        lastLocation = lastLocation?.toEntity(),
+        lastLocationUpdate = lastLocationUpdate?.toEpochMilliseconds(),
+        customLocation = customLocation?.toEntity(),
+        useCustomLocation = useCustomLocation,
+        use24HourFormat = use24HourFormat,
+        enableHaptics = enableHaptics,
+        internalSettings = internalSettings.toEntity(),
+    )

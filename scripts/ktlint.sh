@@ -14,7 +14,7 @@ KTLINT="$ROOT/.app/ktlint"
 
 # Check if $ROOT/.app/ktlint exists
 if [[ ! -f "$KTLINT" ]]; then
-    echo "Error: $KTLINT not found, you need to run 'sigot init ktlint'"
+    echo "Error: $KTLINT not found, you need to run 'sigo init ktlint'"
     exit 1
 fi
 

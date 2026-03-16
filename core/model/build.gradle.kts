@@ -1,7 +1,7 @@
-import app.sigot.convention.Platforms
-import app.sigot.convention.configureMultiplatform
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import now.shouldigooutside.convention.Platforms
+import now.shouldigooutside.convention.configureMultiplatform
 import java.util.Properties
 
 plugins {
@@ -15,7 +15,7 @@ plugins {
 configureMultiplatform(Platforms.All, name = "core.model")
 
 buildkonfig {
-    packageName = "app.sigot.build"
+    packageName = "now.shouldigooutside.build"
     val envProps = Properties()
     val envPropsFile = rootProject.file("app-env.properties")
     if (envPropsFile.exists()) {

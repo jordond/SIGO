@@ -5,8 +5,8 @@ plugins {
 }
 
 application {
-    applicationName = "sigot"
-    mainClass.set("app.sigot.cli.MainKt")
+    applicationName = "sigo"
+    mainClass.set("now.shouldigooutside.cli.MainKt")
 }
 
 dependencies {

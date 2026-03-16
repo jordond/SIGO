@@ -1,7 +1,7 @@
 @file:Suppress("unused")
 
-import app.sigot.convention.Platforms
-import app.sigot.convention.configureMultiplatform
+import now.shouldigooutside.convention.Platforms
+import now.shouldigooutside.convention.configureMultiplatform
 
 plugins {
     alias(libs.plugins.android.library)
