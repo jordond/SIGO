@@ -1,4 +1,4 @@
-package app.sigot.core.api.server.http
+package app.sigot.core.api.model.http
 
 public object ApiHeaders {
     /** Client-generated UUID sent on every request for identification and rate limiting. */

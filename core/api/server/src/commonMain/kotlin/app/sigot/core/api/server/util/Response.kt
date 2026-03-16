@@ -1,7 +1,7 @@
 package app.sigot.core.api.server.util
 
-import app.sigot.core.api.server.entity.ApiError
-import app.sigot.core.api.server.entity.ApiResponse
+import app.sigot.core.api.model.entity.ApiError
+import app.sigot.core.api.model.entity.ApiResponse
 import app.sigot.core.api.server.http.ContentType
 import app.sigot.core.api.server.http.ServerResponse
 import app.sigot.core.platform.di.defaultJson

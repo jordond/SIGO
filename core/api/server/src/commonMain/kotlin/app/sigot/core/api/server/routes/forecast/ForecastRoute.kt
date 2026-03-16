@@ -1,10 +1,10 @@
 package app.sigot.core.api.server.routes.forecast
 
+import app.sigot.core.api.model.ApiRoutePath
+import app.sigot.core.api.model.entity.ApiResponse
 import app.sigot.core.api.server.ApiRoute
-import app.sigot.core.api.server.ApiRoutePath
 import app.sigot.core.api.server.cache.CacheProvider
 import app.sigot.core.api.server.cache.FORECAST_CACHE_TTL
-import app.sigot.core.api.server.entity.ApiResponse
 import app.sigot.core.api.server.http.ServerRequest
 import app.sigot.core.api.server.http.ServerResponse
 import app.sigot.core.api.server.http.queryParams

@@ -1,6 +1,6 @@
 package app.sigot.core.api.server.cors
 
-import app.sigot.core.api.server.http.ApiHeaders
+import app.sigot.core.api.model.http.ApiHeaders
 import app.sigot.core.api.server.http.ContentType
 import app.sigot.core.api.server.http.ServerRequest
 import app.sigot.core.api.server.http.ServerResponse

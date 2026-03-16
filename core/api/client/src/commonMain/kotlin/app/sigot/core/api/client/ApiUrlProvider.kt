@@ -1,6 +1,6 @@
 package app.sigot.core.api.client
 
-import app.sigot.core.api.server.ApiRoutePath
+import app.sigot.core.api.model.ApiRoutePath
 
 public interface ApiUrlProvider {
     public fun provide(): String
