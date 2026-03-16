@@ -27,6 +27,9 @@ print_usage() {
     echo "    api                            Commands for the API"
     echo "    api:server <command>           Run command helpers for the JVM API server"
     echo "    api:worker <command>           Run command helpers for the api worker"
+    echo "    release:app [options]          Release both Android and iOS"
+    echo "    release:app:android [options]  Build and release Android AAB"
+    echo "    release:app:ios [options]      Bump iOS version and prepare for Xcode release"
 }
 
 check_directory() {
@@ -175,6 +178,18 @@ api:server)
 api:worker)
     shift
     "$ROOT"/scripts/api-worker.sh "$@"
+    ;;
+release:app:android)
+    shift
+    "$ROOT"/scripts/release-android.sh "$@"
+    ;;
+release:app:ios)
+    shift
+    "$ROOT"/scripts/release-ios.sh "$@"
+    ;;
+release:app)
+    shift
+    "$ROOT"/scripts/release-app.sh "$@"
     ;;
 *)
     echo "Unknown command: $1"

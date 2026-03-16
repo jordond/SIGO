@@ -28,6 +28,9 @@ Must be run from the project root.
 | `cli [args]`                    | Run the SIGO CLI application                |
 | `api`                           | API build commands                          |
 | `api:worker <command>`          | Cloudflare Worker commands                  |
+| `release:app [options]`         | Release both Android and iOS                |
+| `release:app:android [options]` | Build and release Android AAB               |
+| `release:app:ios [options]`     | Bump iOS version and prepare Xcode release  |
 | `xcode`                         | Open the Xcode workspace                    |
 | `generate-image-sizes`          | Generate image resource sizes               |
 
@@ -241,6 +244,93 @@ The dev and deploy commands require `FORECAST_API_KEY` in `app-env.properties`. 
 to `.dev.vars` for Wrangler.
 
 **Script:** `scripts/api-worker.sh`
+
+---
+
+## Releasing
+
+### `./sigo release:app:android`
+
+Builds an Android release AAB, bumps version/build-code, and optionally tags + commits + pushes.
+
+Must be on `main` or a `release/*` branch (unless `--no-branch-check` is passed).
+
+```
+./sigo release:app:android [options]
+```
+
+| Option                    | Description                                          |
+|---------------------------|------------------------------------------------------|
+| `-v`, `--version <ver>`   | Set exact version (e.g. `1.0.1`)                     |
+| `-s`, `--semver <level>`  | Bump version: `major`, `minor`, `patch`, `none`      |
+| `-o`, `--output <dir>`    | Output directory for AAB (default: `./release`)      |
+| `--no-tag`                | Skip creating git tags                               |
+| `--no-commit`             | Skip creating git commit                             |
+| `--no-push`               | Skip pushing to remote                               |
+| `--no-git`                | Skip both tagging and committing                     |
+| `--no-clean`              | Skip clean before building                           |
+| `--no-branch-check`       | Skip branch verification                             |
+
+If neither `--version` nor `--semver` is provided, defaults to a **patch** bump.
+
+The script:
+
+1. Increments `app-android-version` and `app-android-code` in `gradle/libs.versions.toml`
+2. Runs `:apps:android:bundleRelease`
+3. Copies the AAB to `<output>/android-<version>-<code>.aab`
+4. Creates tags `android/build/<code>` and `release/android/<version>`
+5. Commits: `bump for android release <version> (<code>) [skip-ci]`
+6. Pushes commit and tags
+
+```shell
+./sigo release:app:android --semver patch
+./sigo release:app:android --version 2.0.0 --no-push
+./sigo release:app:android --semver minor --no-git
+```
+
+**Script:** `scripts/release-android.sh`
+
+### `./sigo release:app:ios`
+
+Bumps the iOS version in `gradle/libs.versions.toml` and updates `MARKETING_VERSION` /
+`CURRENT_PROJECT_VERSION` in the Xcode project. Then tags, commits, and instructs you to archive
+via Xcode.
+
+```
+./sigo release:app:ios [options]
+```
+
+| Option                    | Description                                          |
+|---------------------------|------------------------------------------------------|
+| `-v`, `--version <ver>`   | Set exact version (e.g. `1.0.1`)                     |
+| `-s`, `--semver <level>`  | Bump version: `major`, `minor`, `patch`, `none`      |
+| `--no-tag`                | Skip creating git tags                               |
+| `--no-commit`             | Skip creating git commit                             |
+| `--no-push`               | Skip pushing to remote                               |
+| `--no-git`                | Skip both tagging and committing                     |
+| `--no-branch-check`       | Skip branch verification                             |
+
+After running, follow the printed steps to archive and upload via Xcode.
+
+```shell
+./sigo release:app:ios --semver minor
+./sigo release:app:ios --version 1.2.0
+```
+
+**Script:** `scripts/release-ios.sh`
+
+### `./sigo release:app`
+
+Runs both Android and iOS releases with a **single combined commit**. All options from the
+individual commands are supported **except `--version`** (use `--semver` instead, or run each
+platform separately if you need exact version control).
+
+```shell
+./sigo release:app --semver minor
+./sigo release:app --semver patch --no-push
+```
+
+**Script:** `scripts/release-app.sh`
 
 ---
 

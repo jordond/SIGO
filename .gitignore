@@ -42,6 +42,7 @@ apps/ios/iosApp.xcodeproj/*
 *.podspec
 app/build
 *.aab
+release/
 *.apk
 .app
 *.key
