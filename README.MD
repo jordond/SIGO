@@ -13,7 +13,6 @@
   <a href="https://play.google.com/store/apps/details?id=now.shouldigooutside">
     <img src="https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white" alt="Get it on Google Play" />
   </a>
-  &nbsp;
   <a href="https://apps.apple.com/app/should-i-go-outside/id123456789">
     <img src="https://img.shields.io/badge/App_Store-0D96F6?style=for-the-badge&logo=app-store&logoColor=white" alt="Download on the App Store" />
   </a>
