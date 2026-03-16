@@ -18,6 +18,8 @@ NO_COMMIT=false
 NO_PUSH=false
 NO_CLEAN=false
 NO_BRANCH_CHECK=false
+AUTO_YES=false
+DRY_RUN=false
 OUTPUT_DIR="$ROOT/release"
 COMBINED_COMMIT=false # When true, skip commit/push/tag (release-app.sh handles it)
 
@@ -26,8 +28,10 @@ print_usage() {
     echo ""
     echo "Options:"
     echo "  -v, --version <version>   Set exact version (e.g. 1.0.1)"
-    echo "  -s, --semver <level>      Bump version: major, minor, patch, none (default: patch)"
+    echo "  -s, --semver <level>      Bump version: major, minor, patch, none"
     echo "  -o, --output <dir>        Output directory for AAB (default: ./release)"
+    echo "  -y, --yes                 Skip confirmation prompts"
+    echo "  -n, --dry-run             Show what would happen without making changes"
     echo "      --no-tag              Skip creating git tags"
     echo "      --no-commit           Skip creating git commit"
     echo "      --no-push             Skip pushing to remote"
@@ -36,6 +40,8 @@ print_usage() {
     echo "      --no-branch-check     Skip branch verification"
     echo "      --combined-commit     Internal: skip commit/push/tag (handled by parent script)"
     echo "  -h, --help                Show this help"
+    echo ""
+    echo "Either --version or --semver is required."
 }
 
 # Parse arguments
@@ -90,6 +96,14 @@ while [[ $# -gt 0 ]]; do
         NO_BRANCH_CHECK=true
         shift
         ;;
+    -y | --yes)
+        AUTO_YES=true
+        shift
+        ;;
+    -n | --dry-run)
+        DRY_RUN=true
+        shift
+        ;;
     --combined-commit)
         COMBINED_COMMIT=true
         shift
@@ -105,6 +119,17 @@ while [[ $# -gt 0 ]]; do
         ;;
     esac
 done
+
+# Require version argument early (before any git checks)
+if [[ -z "$VERSION" && -z "$SEMVER" ]]; then
+    print_usage
+    exit 1
+fi
+
+if [[ -n "$VERSION" && -n "$SEMVER" ]]; then
+    echo "Error: Cannot use both --version and --semver"
+    exit 1
+fi
 
 # Combined mode: parent script handles all git operations
 if [[ "$COMBINED_COMMIT" == true ]]; then
@@ -137,11 +162,6 @@ current_code=$(read_toml_value "app-android-code")
 
 echo "📋 Current Android version: $current_version ($current_code)"
 
-if [[ -n "$VERSION" && -n "$SEMVER" ]]; then
-    echo "Error: Cannot use both --version and --semver"
-    exit 1
-fi
-
 if [[ -n "$VERSION" ]]; then
     # Validate version format
     if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -149,22 +169,38 @@ if [[ -n "$VERSION" ]]; then
         exit 1
     fi
     new_version="$VERSION"
-elif [[ -n "$SEMVER" ]]; then
-    new_version=$(bump_version "$current_version" "$SEMVER")
 else
-    # Default to patch
-    new_version=$(bump_version "$current_version" "patch")
+    new_version=$(bump_version "$current_version" "$SEMVER")
 fi
 
 new_code=$((current_code + 1))
 
-echo "🔄 New Android version: $new_version ($new_code)"
+# --- Summary ---
+
+if [[ "$COMBINED_COMMIT" == false ]]; then
+    echo ""
+    echo "━━━ Release Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "  Platform:     Android"
+    echo "  Version:      $current_version → $new_version"
+    echo "  Build code:   $current_code → $new_code"
+    echo "  Output:       $OUTPUT_DIR/android-${new_version}-${new_code}.aab"
+    echo "  Clean build:  $([[ "$NO_CLEAN" == false ]] && echo "yes" || echo "no")"
+    echo "  Git commit:   $([[ "$NO_COMMIT" == false ]] && echo "yes" || echo "skip")"
+    echo "  Git tag:      $([[ "$NO_TAG" == false && "$NO_COMMIT" == false ]] && echo "yes" || echo "skip")"
+    echo "  Git push:     $([[ "$NO_PUSH" == false && "$NO_COMMIT" == false ]] && echo "yes" || echo "skip")"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    check_dry_run
+    confirm_or_exit "Proceed with release?"
+fi
 
 # --- Step 2: Update version in libs.versions.toml ---
 
+echo "📝 Updating version in gradle/libs.versions.toml..."
 write_toml_value "app-android-version" "$new_version"
 write_toml_value "app-android-code" "$new_code"
-
+echo "   app-android-version = \"$new_version\""
+echo "   app-android-code = \"$new_code\""
 echo "✅ Updated gradle/libs.versions.toml"
 
 # Restore TOML on build failure
@@ -173,12 +209,14 @@ trap 'echo "⚠️  Build failed — reverting version bump"; git -C "$ROOT" che
 # --- Step 3: Build ---
 
 if [[ "$NO_CLEAN" == false ]]; then
-    echo "🧹 Cleaning..."
-    "$ROOT"/gradlew :apps:android:clean
+    echo "🧹 Cleaning build artifacts..."
+    gradle_quiet :apps:android:clean
+    echo "✅ Clean complete"
 fi
 
-echo "🔨 Building release bundle..."
-"$ROOT"/gradlew :apps:android:bundleRelease
+echo "🔨 Building release bundle (this may take a while)..."
+gradle_quiet :apps:android:bundleRelease
+echo "✅ Build complete"
 
 # --- Step 4: Copy AAB ---
 
@@ -191,9 +229,9 @@ fi
 
 mkdir -p "$OUTPUT_DIR"
 AAB_DEST="$OUTPUT_DIR/android-${new_version}-${new_code}.aab"
+echo "📦 Copying AAB to $AAB_DEST..."
 cp "$AAB_SOURCE" "$AAB_DEST"
-
-echo "✅ Copied AAB to $AAB_DEST"
+echo "✅ AAB artifact ready"
 
 # Build succeeded — remove the rollback trap
 trap - ERR
@@ -201,7 +239,7 @@ trap - ERR
 # --- Step 5: Commit, tag, and push ---
 
 if [[ "$NO_COMMIT" == false ]]; then
-    echo "💾 Committing..."
+    echo "💾 Staging and committing version bump..."
     git -C "$ROOT" add "$TOML"
     git -C "$ROOT" commit -m "bump for android release ${new_version} (${new_code}) [skip-ci]"
     echo "✅ Committed version bump"
@@ -213,19 +251,21 @@ if [[ "$NO_COMMIT" == false ]]; then
                 echo "Error: Tag '$tag' already exists"
                 exit 1
             fi
+            echo "   $tag"
         done
         git -C "$ROOT" tag "android/build/${new_code}"
         git -C "$ROOT" tag "release/android/${new_version}"
-        echo "✅ Created tags: android/build/${new_code}, release/android/${new_version}"
+        echo "✅ Tags created"
     fi
 
     if [[ "$NO_PUSH" == false ]]; then
-        echo "🚀 Pushing..."
+        echo "🚀 Pushing commit to remote..."
         git -C "$ROOT" push
         if [[ "$NO_TAG" == false ]]; then
+            echo "🚀 Pushing tags to remote..."
             git -C "$ROOT" push origin "android/build/${new_code}" "release/android/${new_version}"
         fi
-        echo "✅ Pushed commit and tags"
+        echo "✅ Pushed to remote"
     fi
 fi
 

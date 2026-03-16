@@ -18,6 +18,8 @@ NO_TAG=false
 NO_COMMIT=false
 NO_PUSH=false
 NO_BRANCH_CHECK=false
+AUTO_YES=false
+DRY_RUN=false
 COMBINED_COMMIT=false
 
 print_usage() {
@@ -25,7 +27,9 @@ print_usage() {
     echo ""
     echo "Options:"
     echo "  -v, --version <version>   Set exact version (e.g. 1.0.1)"
-    echo "  -s, --semver <level>      Bump version: major, minor, patch, none (default: patch)"
+    echo "  -s, --semver <level>      Bump version: major, minor, patch, none"
+    echo "  -y, --yes                 Skip confirmation prompts"
+    echo "  -n, --dry-run             Show what would happen without making changes"
     echo "      --no-tag              Skip creating git tags"
     echo "      --no-commit           Skip creating git commit"
     echo "      --no-push             Skip pushing to remote"
@@ -33,6 +37,8 @@ print_usage() {
     echo "      --no-branch-check     Skip branch verification"
     echo "      --combined-commit     Internal: skip commit/push/tag (handled by parent script)"
     echo "  -h, --help                Show this help"
+    echo ""
+    echo "Either --version or --semver is required."
 }
 
 # Parse arguments
@@ -75,6 +81,14 @@ while [[ $# -gt 0 ]]; do
         NO_BRANCH_CHECK=true
         shift
         ;;
+    -y | --yes)
+        AUTO_YES=true
+        shift
+        ;;
+    -n | --dry-run)
+        DRY_RUN=true
+        shift
+        ;;
     --combined-commit)
         COMBINED_COMMIT=true
         shift
@@ -90,6 +104,17 @@ while [[ $# -gt 0 ]]; do
         ;;
     esac
 done
+
+# Require version argument early (before any git checks)
+if [[ -z "$VERSION" && -z "$SEMVER" ]]; then
+    print_usage
+    exit 1
+fi
+
+if [[ -n "$VERSION" && -n "$SEMVER" ]]; then
+    echo "Error: Cannot use both --version and --semver"
+    exit 1
+fi
 
 # Combined mode: parent script handles all git operations
 if [[ "$COMBINED_COMMIT" == true ]]; then
@@ -121,21 +146,14 @@ current_version=$(read_toml_value "app-ios-version")
 
 echo "📋 Current iOS version: $current_version"
 
-if [[ -n "$VERSION" && -n "$SEMVER" ]]; then
-    echo "Error: Cannot use both --version and --semver"
-    exit 1
-fi
-
 if [[ -n "$VERSION" ]]; then
     if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         echo "Error: Version must be in format X.Y.Z (got '$VERSION')"
         exit 1
     fi
     new_version="$VERSION"
-elif [[ -n "$SEMVER" ]]; then
-    new_version=$(bump_version "$current_version" "$SEMVER")
 else
-    new_version=$(bump_version "$current_version" "patch")
+    new_version=$(bump_version "$current_version" "$SEMVER")
 fi
 
 # Increment build number from pbxproj
@@ -147,24 +165,43 @@ fi
 current_build=$(echo "$build_values" | head -1)
 new_build=$((current_build + 1))
 
-echo "🔄 New iOS version: $new_version ($new_build)"
+# --- Summary ---
+
+if [[ "$COMBINED_COMMIT" == false ]]; then
+    echo ""
+    echo "━━━ Release Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "  Platform:     iOS"
+    echo "  Version:      $current_version → $new_version"
+    echo "  Build number: $current_build → $new_build"
+    echo "  Git commit:   $([[ "$NO_COMMIT" == false ]] && echo "yes" || echo "skip")"
+    echo "  Git tag:      $([[ "$NO_TAG" == false && "$NO_COMMIT" == false ]] && echo "yes" || echo "skip")"
+    echo "  Git push:     $([[ "$NO_PUSH" == false && "$NO_COMMIT" == false ]] && echo "yes" || echo "skip")"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    check_dry_run
+    confirm_or_exit "Proceed with release?"
+fi
 
 # --- Step 2: Update versions ---
 
-# Update libs.versions.toml
+echo "📝 Updating version in gradle/libs.versions.toml..."
 write_toml_value "app-ios-version" "$new_version"
+echo "   app-ios-version = \"$new_version\""
 echo "✅ Updated gradle/libs.versions.toml"
 
+echo "📝 Updating Xcode project..."
 # Update Xcode project - MARKETING_VERSION and CURRENT_PROJECT_VERSION
 # Anchored to tab-indented build settings lines to avoid matching comments
 sed -i '' "s/^\([[:blank:]]*\)MARKETING_VERSION = .*;/\1MARKETING_VERSION = ${new_version};/" "$PBXPROJ"
 sed -i '' "s/^\([[:blank:]]*\)CURRENT_PROJECT_VERSION = [0-9]*;/\1CURRENT_PROJECT_VERSION = ${new_build};/" "$PBXPROJ"
-echo "✅ Updated Xcode project (MARKETING_VERSION=$new_version, CURRENT_PROJECT_VERSION=$new_build)"
+echo "   MARKETING_VERSION = $new_version"
+echo "   CURRENT_PROJECT_VERSION = $new_build"
+echo "✅ Updated Xcode project"
 
 # --- Step 3: Commit, tag, and push ---
 
 if [[ "$NO_COMMIT" == false ]]; then
-    echo "💾 Committing..."
+    echo "💾 Staging and committing version bump..."
     git -C "$ROOT" add "$TOML" "$PBXPROJ"
     git -C "$ROOT" commit -m "bump for ios release ${new_version} (${new_build}) [skip-ci]"
     echo "✅ Committed version bump"
@@ -176,19 +213,21 @@ if [[ "$NO_COMMIT" == false ]]; then
                 echo "Error: Tag '$tag' already exists"
                 exit 1
             fi
+            echo "   $tag"
         done
         git -C "$ROOT" tag "ios/build/${new_build}"
         git -C "$ROOT" tag "release/ios/${new_version}"
-        echo "✅ Created tags: ios/build/${new_build}, release/ios/${new_version}"
+        echo "✅ Tags created"
     fi
 
     if [[ "$NO_PUSH" == false ]]; then
-        echo "🚀 Pushing..."
+        echo "🚀 Pushing commit to remote..."
         git -C "$ROOT" push
         if [[ "$NO_TAG" == false ]]; then
+            echo "🚀 Pushing tags to remote..."
             git -C "$ROOT" push origin "ios/build/${new_build}" "release/ios/${new_version}"
         fi
-        echo "✅ Pushed commit and tags"
+        echo "✅ Pushed to remote"
     fi
 fi
 

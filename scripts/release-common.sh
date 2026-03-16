@@ -61,3 +61,39 @@ check_clean_worktree() {
         exit 1
     fi
 }
+
+# Exit cleanly if --dry-run is active
+# Usage: check_dry_run (call after printing the summary)
+check_dry_run() {
+    if [[ "${DRY_RUN:-false}" == true ]]; then
+        echo "Dry run — no changes made."
+        exit 0
+    fi
+}
+
+# Prompt for confirmation (unless --yes was passed)
+# Usage: confirm_or_exit "Are you sure?"
+confirm_or_exit() {
+    local prompt="${1:-Continue?}"
+    if [[ "${AUTO_YES:-false}" == true ]]; then
+        return 0
+    fi
+    read -r -p "$prompt [y/N] " answer
+    case "$answer" in
+    [yY] | [yY][eE][sS]) return 0 ;;
+    *)
+        echo "Aborted."
+        exit 0
+        ;;
+    esac
+}
+
+# Run gradle quietly (only show stderr / errors)
+# Usage: gradle_quiet :task:name
+gradle_quiet() {
+    "$ROOT"/gradlew "$@" >/dev/null 2>&1 || {
+        echo "Error: Gradle task failed. Re-running with output for diagnostics..."
+        "$ROOT"/gradlew "$@"
+        return 1
+    }
+}
