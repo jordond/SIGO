@@ -1,4 +1,4 @@
-package app.sigot.core.api.server.entity
+package app.sigot.core.api.model.entity
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

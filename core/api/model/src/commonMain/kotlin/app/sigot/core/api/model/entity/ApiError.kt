@@ -1,9 +1,9 @@
-package app.sigot.core.api.server.entity
+package app.sigot.core.api.model.entity
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-public data class ApiResponse<T>(
-    val data: T,
+public data class ApiError(
+    val error: String,
     val meta: Map<String, String> = emptyMap(),
 )

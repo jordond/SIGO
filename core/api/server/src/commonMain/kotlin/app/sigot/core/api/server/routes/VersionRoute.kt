@@ -1,9 +1,9 @@
 package app.sigot.core.api.server.routes
 
+import app.sigot.core.api.model.ApiRoutePath
+import app.sigot.core.api.model.entity.VersionResponse
+import app.sigot.core.api.model.entity.toEntity
 import app.sigot.core.api.server.ApiRoute
-import app.sigot.core.api.server.ApiRoutePath
-import app.sigot.core.api.server.entity.VersionResponse
-import app.sigot.core.api.server.entity.toEntity
 import app.sigot.core.api.server.http.ServerRequest
 import app.sigot.core.api.server.http.ServerResponse
 import app.sigot.core.api.server.util.cached

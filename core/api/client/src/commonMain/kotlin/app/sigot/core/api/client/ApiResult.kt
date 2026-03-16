@@ -1,6 +1,6 @@
 package app.sigot.core.api.client
 
-import app.sigot.core.api.server.http.RateLimit
+import app.sigot.core.api.model.http.RateLimit
 
 /**
  * Wraps an API response with optional rate-limit metadata.

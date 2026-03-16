@@ -1,4 +1,4 @@
-package app.sigot.core.api.server
+package app.sigot.core.api.model
 
 public enum class ApiRoutePath(
     public val path: String,
