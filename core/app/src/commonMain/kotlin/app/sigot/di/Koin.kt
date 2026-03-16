@@ -1,7 +1,7 @@
 package app.sigot.di
 
 import app.sigot.core.api.client.apiClientModule
-import app.sigot.core.api.server.http.ApiHeaders
+import app.sigot.core.api.model.http.ApiHeaders
 import app.sigot.core.config.configModule
 import app.sigot.core.foundation.di.foundationModule
 import app.sigot.core.platform.ClientIdProvider

@@ -1,4 +1,4 @@
-package app.sigot.core.api.server.http
+package app.sigot.core.api.model.http
 
 import kotlin.time.Instant
 

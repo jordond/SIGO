@@ -1,9 +1,9 @@
 package app.sigot.core.api.server
 
+import app.sigot.core.api.model.http.ApiHeaders
 import app.sigot.core.api.server.cache.CacheProvider
 import app.sigot.core.api.server.cors.CorsHandler
 import app.sigot.core.api.server.exception.BadRequestException
-import app.sigot.core.api.server.http.ApiHeaders
 import app.sigot.core.api.server.http.ServerRequest
 import app.sigot.core.api.server.http.ServerResponse
 import app.sigot.core.api.server.ratelimit.RateLimiter

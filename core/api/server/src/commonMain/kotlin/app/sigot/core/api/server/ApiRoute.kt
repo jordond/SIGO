@@ -1,5 +1,6 @@
 package app.sigot.core.api.server
 
+import app.sigot.core.api.model.ApiRoutePath
 import app.sigot.core.api.server.http.ServerRequest
 import app.sigot.core.api.server.http.ServerResponse
 
