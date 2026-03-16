@@ -5,19 +5,19 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - "**.md"
-      - ".github/**"
-      - "docs/**"
-      - "screenshots/**"
-      - "LICENSE"
-      - "scripts/**"
-      - "website/**"
+    paths:
+      - "apps/api/worker/**"
+      - "core/**"
+      - "buildLogic/**"
+      - "gradle/**"
+      - "gradle.properties"
+      - "settings.gradle.kts"
 
 jobs:
   verify:
     name: "Deploy"
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
