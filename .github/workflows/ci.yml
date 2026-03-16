@@ -62,5 +62,8 @@ jobs:
       - name: Copy sample app-env
         run: cp ./.github/ci-app-env.properties ./app-env.properties
 
+      - name: Copy CI google-services.json
+        run: cp ./.github/ci-google-services.json ./apps/android/google-services.json
+
       - name: Build
         run: ./sigo gradle compileDebugKotlin
