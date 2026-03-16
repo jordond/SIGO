@@ -15,7 +15,7 @@ configureMultiplatform(Platforms.All, name = "core.api.client")
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.core.api.server)
+            implementation(projects.core.api.model)
             implementation(projects.core.domain)
             implementation(projects.core.foundation)
             implementation(projects.core.model)
