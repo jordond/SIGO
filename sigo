@@ -19,7 +19,6 @@ print_usage() {
     echo "          api:worker               Install required dependencies for the api worker"
     echo "    gradle <command>               Run any gradle command"
     echo "    add <component>                Add a lumo ui component"
-    echo "    clean                          Cleans all the build files"
     echo "    lint --all | --staged [args]   Lint the codebase using ktlint"
     echo "    fix [--all] [--staged]         Fixes only staged files if --all is not passed"
     echo "    commit|c [options]             Stage changes, run fix, and commit"
@@ -77,21 +76,14 @@ init)
     hooks | hook | h)
         "$ROOT"/scripts/init-hooks.sh "$@"
         ;;
-    secrets | secret | s)
-        "$ROOT"/scripts/init-secrets.sh "$@"
-        ;;
     api:worker)
         "$ROOT"/scripts/api-worker.sh init
         ;;
     *)
-        echo "The command '$subcommand' is not a valid 'init' command. Use 'ktlint', 'secrets', or 'hooks'."
+        echo "The command '$subcommand' is not a valid 'init' command. Use 'ktlint' or 'hooks'."
         exit 1
         ;;
     esac
-    ;;
-encrypt)
-    shift
-    "$ROOT"/scripts/crypt.sh encrypt "$@"
     ;;
 gradle | g)
     shift
@@ -106,12 +98,9 @@ add)
     fi
     "$ROOT"/gradlew lumo --no-configuration-cache --add "$@"
     ;;
-clean)
-    "$ROOT"/scripts/cleanup
-    ;;
 lint | l)
     shift
-    "$ROOT"/scripts/ktlint "$@"
+    "$ROOT"/scripts/ktlint.sh "$@"
     ;;
 fix | f)
     if [[ "${2:-}" == "--all" ]]; then
@@ -158,10 +147,6 @@ commit | c)
 xcode)
     echo "Opening Xcode workspace"
     open "$ROOT/apps/ios/iosApp.xcodeproj"
-    ;;
-generate-image-sizes)
-    shift
-    node "$ROOT"/scripts/image-resource.js "$@"
     ;;
 cli)
     shift

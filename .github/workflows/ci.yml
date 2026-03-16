@@ -24,7 +24,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -36,7 +36,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Init ktlint
-        run: ./sigo init ktlint --ci
+        run: ./sigo init ktlint --ci --version 1.8.0
 
       - name: Lint
         run: ./sigo lint --all
@@ -48,7 +48,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java
         uses: actions/setup-java@v4
