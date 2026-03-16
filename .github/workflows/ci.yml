@@ -59,5 +59,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Copy sample app-env
+        run: ./.github/ci-app-env.properties ./app-env.properties
+
       - name: Build
         run: ./sigo gradle compileDebugKotlin
