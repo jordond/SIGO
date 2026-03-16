@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-import app.sigot.toolchain.AppVersion
+import now.shouldigooutside.toolchain.AppVersion
 
 plugins {
     alias(libs.plugins.jvm)
@@ -15,7 +15,7 @@ val versionTask = tasks.named<AppVersion>("appVersion") {
 }
 
 application {
-    mainClass.set("app.sigot.api.server.MainKt")
+    mainClass.set("now.shouldigooutside.api.server.MainKt")
 }
 
 sourceSets {

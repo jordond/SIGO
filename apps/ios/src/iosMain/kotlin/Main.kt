@@ -1,8 +1,8 @@
 @file:Suppress("FunctionName")
 
 import androidx.compose.ui.window.ComposeUIViewController
-import app.sigot.App
-import app.sigot.di.initKoin
+import now.shouldigooutside.App
+import now.shouldigooutside.di.initKoin
 import platform.UIKit.UIViewController
 
 @Suppress("unused")

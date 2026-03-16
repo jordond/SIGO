@@ -1,6 +1,6 @@
-import app.sigot.convention.Platforms
-import app.sigot.convention.configureMultiplatform
-import app.sigot.toolchain.AppVersion
+import now.shouldigooutside.convention.Platforms
+import now.shouldigooutside.convention.configureMultiplatform
+import now.shouldigooutside.toolchain.AppVersion
 
 plugins {
     alias(libs.plugins.android.library)

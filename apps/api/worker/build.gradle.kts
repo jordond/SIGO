@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-import app.sigot.toolchain.AppVersion
+import now.shouldigooutside.toolchain.AppVersion
 
 plugins {
     alias(libs.plugins.multiplatform)

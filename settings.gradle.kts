@@ -1,6 +1,6 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "SIGO"
+rootProject.name = "sigo"
 
 pluginManagement {
     repositories {

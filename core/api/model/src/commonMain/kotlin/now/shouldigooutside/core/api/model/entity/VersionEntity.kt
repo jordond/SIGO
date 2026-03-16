@@ -1,0 +1,29 @@
+package now.shouldigooutside.core.api.model.entity
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import now.shouldigooutside.core.model.Version
+
+@Serializable
+public data class VersionEntity(
+    @SerialName("name")
+    val name: String,
+    @SerialName("code")
+    val code: Int,
+    @SerialName("sha")
+    val sha: String?,
+)
+
+public fun Version.toEntity(): VersionEntity =
+    VersionEntity(
+        name = name,
+        code = code,
+        sha = sha,
+    )
+
+public fun VersionEntity.toModel(): Version =
+    Version(
+        name = name,
+        code = code,
+        sha = sha,
+    )

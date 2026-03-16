@@ -1,0 +1,104 @@
+package now.shouldigooutside.cli
+
+import com.github.ajalt.clikt.command.main
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.optional
+import com.github.ajalt.clikt.parameters.options.option
+import io.github.vinceglb.filekit.FileKit
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.http.HttpStatusCode
+import now.shouldigooutside.cli.config.CliApiTokenProvider
+import now.shouldigooutside.cli.config.CliConfigRepo
+import now.shouldigooutside.cli.di.initKoin
+import now.shouldigooutside.cli.util.BaseCommand
+import now.shouldigooutside.cli.util.prompt
+import now.shouldigooutside.core.domain.forecast.ForecastRepo
+import kotlin.system.exitProcess
+
+class Cli(
+    private val configRepo: CliConfigRepo,
+    private val apiTokenProvider: CliApiTokenProvider,
+    private val forecastRepo: ForecastRepo,
+) : BaseCommand() {
+    private val token: String? by option(
+        "--token",
+        "-t",
+        help = "The token to use for authentication",
+    )
+
+    private val location: String? by argument(
+        name = "location",
+        help = "The location to get the forecast for, if empty previous location will be used",
+    ).optional()
+
+    override suspend fun execute() {
+        debug("Starting CLI...")
+        debug("Getting token...")
+        val token = getToken()
+        apiTokenProvider.token = token
+        debug("Token: $token")
+
+        val targetLocation = location ?: configRepo.get()?.lastLocation
+        val location = targetLocation ?: prompt("Enter your location", required = true)
+
+        info("Getting forecast for $location")
+        val result = forecastRepo
+            .forecastFor(location)
+            .onFailure { cause ->
+                if (cause is ClientRequestException) {
+                    if (cause.response.status == HttpStatusCode.Unauthorized) {
+                        error { "Unauthorized, please check your token" }
+                        configRepo.update { it.copy(token = null) }
+                        exitProcess(1)
+                    }
+                }
+
+                error { "Failed to get forecast" }
+                error { cause.stackTraceToString() }
+                exitProcess(1)
+            }
+
+        val forecast = result.getOrNull()
+        if (forecast == null) {
+            error("No forecast data available")
+            exitProcess(1)
+        }
+
+        configRepo.update { it.copy(lastLocation = location) }
+
+        success("Forecast for ${forecast.location.name}:")
+        success("\tTemperature: ${forecast.current.temperature.value} K")
+        success("\tHumidity:    ${forecast.current.humidity} %")
+        success("\tWind Speed:  ${forecast.current.wind.speed} m/s")
+        success("\tSevere Risk: ${forecast.current.severeWeatherRisk}")
+        exitProcess(0)
+    }
+
+    private suspend fun getToken(): String {
+        val token = this.token
+        if (token != null) {
+            configRepo.update { it.copy(token = token) }
+            return token
+        }
+
+        val saved = configRepo.get()?.token
+        if (saved == null) {
+            val input = prompt("Enter your VisualCrossing API key", required = true)
+            configRepo.update { it.copy(token = input) }
+            return input
+        }
+
+        return saved
+    }
+}
+
+suspend fun main(args: Array<String>) {
+    FileKit.init("now.shouldigooutside.cli")
+    val di = initKoin()
+
+    Cli(
+        configRepo = di.get(),
+        apiTokenProvider = di.get(),
+        forecastRepo = di.get(),
+    ).main(args)
+}
