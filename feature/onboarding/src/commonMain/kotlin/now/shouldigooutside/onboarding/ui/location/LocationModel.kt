@@ -1,0 +1,103 @@
+package now.shouldigooutside.onboarding.ui.location
+
+import androidx.compose.runtime.Stable
+import androidx.lifecycle.viewModelScope
+import dev.stateholder.extensions.viewmodel.UiStateViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import now.shouldigooutside.core.domain.location.LocationRepo
+import now.shouldigooutside.core.domain.settings.SettingsRepo
+import now.shouldigooutside.core.foundation.ktx.ensureExecutionTime
+import now.shouldigooutside.core.model.location.Location
+import now.shouldigooutside.core.model.location.LocationPermissionStatus
+import now.shouldigooutside.core.model.location.LocationResult
+import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.location_geolocation_error
+import now.shouldigooutside.core.resources.location_geolocation_not_allowed
+import now.shouldigooutside.core.resources.location_geolocation_not_found
+import now.shouldigooutside.core.resources.location_geolocation_not_supported
+import now.shouldigooutside.onboarding.ui.location.LocationModel.Event
+import now.shouldigooutside.onboarding.ui.location.LocationModel.State
+import org.jetbrains.compose.resources.StringResource
+
+@Stable
+internal class LocationModel(
+    settingsRepo: SettingsRepo,
+    private val locationRepo: LocationRepo,
+) : UiStateViewModel<State, Event>(
+        State(
+            permissionStatus = locationRepo.initialPermissionStatus(),
+        ),
+    ) {
+    private var locationJob: Job? = null
+
+    init {
+        settingsRepo.settings
+            .map { it.lastLocation }
+            .distinctUntilChanged()
+            .mergeState { state, lastLocation -> state.copy(location = lastLocation) }
+    }
+
+    fun requestPermission() {
+        viewModelScope.launch {
+            val result = locationRepo.requestPermission()
+            updateState { it.copy(permissionStatus = result) }
+        }
+    }
+
+    fun getLocation() {
+        if (locationJob?.isActive == true) return
+
+        locationJob = viewModelScope.launch {
+            updateState { it.copy(loading = true, locationResult = null) }
+            val result = ensureExecutionTime(ENSURED_DURATION) {
+                locationRepo.location()
+            }
+
+            if (result is LocationResult.Failed) {
+                val message = when (result) {
+                    is LocationResult.Error -> Res.string.location_geolocation_error
+                    is LocationResult.NotAllowed -> Res.string.location_geolocation_not_allowed
+                    is LocationResult.NotFound -> Res.string.location_geolocation_not_found
+                    is LocationResult.NotSupported -> Res.string.location_geolocation_not_supported
+                }
+
+                emit(Event.LocationError(message))
+            }
+
+            updateState { state ->
+                val permissionStatus = if (result is LocationResult.NotAllowed) {
+                    LocationPermissionStatus.Denied(result.permanent)
+                } else {
+                    state.permissionStatus
+                }
+
+                state.copy(loading = false, locationResult = result, permissionStatus = permissionStatus)
+            }
+        }
+    }
+
+    @Stable
+    data class State(
+        val permissionStatus: LocationPermissionStatus = LocationPermissionStatus.Unknown,
+        val loading: Boolean = false,
+        val locationResult: LocationResult? = null,
+        val canGeolocate: Boolean? = null,
+        val location: Location? = null,
+    )
+
+    sealed interface Event {
+        data class LocationError(
+            val error: StringResource,
+        ) : Event
+    }
+
+    companion object {
+        const val ENSURED_DURATION = 3000L
+    }
+}
+
+private fun LocationRepo.initialPermissionStatus() =
+    if (hasPermission()) LocationPermissionStatus.Granted else LocationPermissionStatus.Unknown

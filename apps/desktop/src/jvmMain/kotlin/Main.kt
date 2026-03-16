@@ -6,13 +6,13 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import app.sigot.App
-import app.sigot.di.initKoin
 import co.touchlab.kermit.Logger
 import io.github.vinceglb.filekit.FileKit
+import now.shouldigooutside.App
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.app_name
 import now.shouldigooutside.core.resources.ic_cyclone
+import now.shouldigooutside.di.initKoin
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import java.awt.Dimension
@@ -57,7 +57,7 @@ fun main(args: Array<String>) {
     Logger.i { "Starting application in mode: $mode" }
     Logger.i { "Window size: $width x $height" }
 
-    FileKit.init("app.sigot.desktop")
+    FileKit.init("now.shouldigooutside.desktop")
     initKoin()
 
     application {

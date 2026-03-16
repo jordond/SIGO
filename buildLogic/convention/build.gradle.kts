@@ -14,7 +14,7 @@ gradlePlugin {
     plugins {
         register("kotlinMultiplatform") {
             id = "convention.multiplatform"
-            implementationClass = "app.sigot.convention.plugin.MultiplatformConventionPlugin"
+            implementationClass = "now.shouldigooutside.convention.plugin.MultiplatformConventionPlugin"
         }
     }
 }

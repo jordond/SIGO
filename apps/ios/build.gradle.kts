@@ -1,6 +1,6 @@
-import app.sigot.convention.Platform
-import app.sigot.convention.configureMultiplatform
-import app.sigot.convention.disableExplicitApi
+import now.shouldigooutside.convention.Platform
+import now.shouldigooutside.convention.configureMultiplatform
+import now.shouldigooutside.convention.disableExplicitApi
 
 plugins {
     alias(libs.plugins.multiplatform)

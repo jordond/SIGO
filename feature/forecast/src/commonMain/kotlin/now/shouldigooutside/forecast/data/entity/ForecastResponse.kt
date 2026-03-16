@@ -1,0 +1,10 @@
+package now.shouldigooutside.forecast.data.entity
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+public data class ForecastResponse(
+    @SerialName("forecast")
+    val forecast: ForecastEntity,
+)
