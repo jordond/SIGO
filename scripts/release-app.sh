@@ -10,7 +10,7 @@ TOML="$ROOT/gradle/libs.versions.toml"
 PBXPROJ="$ROOT/apps/ios/iosApp.xcodeproj/project.pbxproj"
 
 # Collect all args to forward
-ARGS=("")
+ARGS=()
 NO_COMMIT=false
 NO_PUSH=false
 NO_TAG=false
@@ -139,7 +139,7 @@ echo ""
 
 echo "━━━ iOS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 # Filter out Android-only flags that the iOS script does not accept
-IOS_ARGS=("")
+IOS_ARGS=()
 skip_next=false
 for arg in "${ARGS[@]}"; do
     if [[ "$skip_next" == true ]]; then
