@@ -17,6 +17,7 @@ NO_TAG=false
 AUTO_YES=false
 DRY_RUN=false
 HAS_VERSION_ARG=false
+SEMVER_LEVEL=""
 
 print_usage() {
     echo "Usage: release:app [options]"
@@ -47,8 +48,9 @@ while [[ $# -gt 0 ]]; do
         ;;
     -s | --semver)
         HAS_VERSION_ARG=true
-        ARGS+=("$1")
-        shift
+        SEMVER_LEVEL="$2"
+        ARGS+=("$1" "$2")
+        shift 2
         ;;
     --no-commit)
         NO_COMMIT=true
@@ -111,10 +113,14 @@ current_android_version=$(read_toml_value "app-android-version")
 current_android_code=$(read_toml_value "app-android-code")
 current_ios_version=$(read_toml_value "app-ios-version")
 
+new_android_version=$(bump_version "$current_android_version" "$SEMVER_LEVEL")
+new_android_code=$((current_android_code + 1))
+new_ios_version=$(bump_version "$current_ios_version" "$SEMVER_LEVEL")
+
 echo ""
 echo "━━━ Combined Release Summary ━━━━━━━━━━━━━━━━━━"
-echo "  Android version: $current_android_version (code $current_android_code)"
-echo "  iOS version:     $current_ios_version"
+echo "  Android version: $current_android_version → $new_android_version (code $current_android_code → $new_android_code)"
+echo "  iOS version:     $current_ios_version → $new_ios_version"
 echo "  Git commit:      $([[ "$NO_COMMIT" == false ]] && echo "yes" || echo "skip")"
 echo "  Git tag:         $([[ "$NO_TAG" == false && "$NO_COMMIT" == false ]] && echo "yes" || echo "skip")"
 echo "  Git push:        $([[ "$NO_PUSH" == false && "$NO_COMMIT" == false ]] && echo "yes" || echo "skip")"
