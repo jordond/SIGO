@@ -24,10 +24,13 @@ public fun Request.toServerRequest(): ServerRequest {
     )
 }
 
+private fun jsArrayFrom(iterable: dynamic): Array<Array<String>> =
+    js("Array.from(iterable)").unsafeCast<Array<Array<String>>>()
+
 private fun org.w3c.fetch.Headers.toKtorHeaders(): Headers =
     HeadersBuilder()
         .apply {
-            asDynamic().forEach { value: String, key: String ->
+            jsArrayFrom(this@toKtorHeaders.asDynamic().entries()).forEach { (key, value) ->
                 append(key, value)
             }
         }.build()

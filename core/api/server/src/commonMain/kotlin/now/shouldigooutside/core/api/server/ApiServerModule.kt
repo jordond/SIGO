@@ -1,6 +1,5 @@
 package now.shouldigooutside.core.api.server
 
-import now.shouldigooutside.core.api.server.cache.CacheProvider
 import now.shouldigooutside.core.api.server.cors.CorsHandler
 import now.shouldigooutside.core.api.server.cors.DefaultCorsHandler
 import now.shouldigooutside.core.api.server.ratelimit.DefaultRateLimiter
