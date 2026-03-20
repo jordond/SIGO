@@ -99,23 +99,23 @@ internal data class VCForecastResponse(
 @Serializable
 internal data class VCForecastBlock(
     @SerialName("cloudcover")
-    val cloudCover: Double,
+    val cloudCover: Double? = null,
     @SerialName("datetime")
     val datetime: String,
     @SerialName("datetimeEpoch")
     val datetimeEpoch: Long,
     @SerialName("dew")
-    val dew: Double,
+    val dew: Double? = null,
     @SerialName("feelslike")
-    val feelsLike: Double,
+    val feelsLike: Double? = null,
     @SerialName("feelslikemax")
     val feelsLikeMax: Double? = null,
     @SerialName("feelslikemin")
     val feelsLikeMin: Double? = null,
     @SerialName("humidity")
-    val humidity: Double,
+    val humidity: Double? = null,
     @SerialName("icon")
-    val icon: String,
+    val icon: String? = null,
     @SerialName("moonphase")
     val moonPhase: Double = 0.0,
     @SerialName("precip")
@@ -127,7 +127,7 @@ internal data class VCForecastBlock(
     @SerialName("preciptype")
     val precipType: List<String>? = null,
     @SerialName("pressure")
-    val pressure: Double,
+    val pressure: Double? = null,
     @SerialName("snow")
     val snow: Double? = 0.0,
     @SerialName("snowdepth")
@@ -149,21 +149,21 @@ internal data class VCForecastBlock(
     @SerialName("moonsetEpoch")
     val moonsetEpoch: Long? = null,
     @SerialName("temp")
-    val temp: Double,
+    val temp: Double? = null,
     @SerialName("tempmax")
     val tempMax: Double? = null,
     @SerialName("tempmin")
     val tempMin: Double? = null,
     @SerialName("uvindex")
-    val uvIndex: Double,
+    val uvIndex: Double? = null,
     @SerialName("visibility")
-    val visibility: Double,
+    val visibility: Double? = null,
     @SerialName("winddir")
-    val windDir: Double,
+    val windDir: Double? = null,
     @SerialName("windgust")
-    val windGust: Double,
+    val windGust: Double? = null,
     @SerialName("windspeed")
-    val windSpeed: Double,
+    val windSpeed: Double? = null,
     @SerialName("windspeedmax")
     val windSpeedMax: Double? = null,
     @SerialName("windSpeedmean")
@@ -171,9 +171,9 @@ internal data class VCForecastBlock(
     @SerialName("windSpeedmin")
     val windSpeedMin: Double? = null,
     @SerialName("solarradiation")
-    val solarRadiation: Double,
+    val solarRadiation: Double? = null,
     @SerialName("solarenergy")
-    val solarEnergy: Double,
+    val solarEnergy: Double? = null,
     @SerialName("severerisk")
     val severeRisk: Double? = null,
     @SerialName("hours")
@@ -229,14 +229,16 @@ internal fun VCForecastResponse.toModel(
 
 private fun List<VCForecastBlock>?.toModels(): List<ForecastBlock> = this?.map { it.toModel() } ?: emptyList()
 
-private fun VCForecastBlock.toModel(): ForecastBlock =
-    ForecastBlock(
+private fun VCForecastBlock.toModel(): ForecastBlock {
+    val tempValue = temp ?: 0.0
+    val windSpeedValue = windSpeed ?: 0.0
+    return ForecastBlock(
         instant = Instant.fromEpochSeconds(datetimeEpoch),
-        humidity = humidity,
-        cloudCoverPercent = cloudCover.toInt(),
+        humidity = humidity ?: 0.0,
+        cloudCoverPercent = (cloudCover ?: 0.0).toInt(),
         temperature = Temperature(
-            value = temp,
-            feelsLike = feelsLike,
+            value = tempValue,
+            feelsLike = feelsLike ?: tempValue,
             max = tempMax,
             min = tempMin,
         ),
@@ -246,18 +248,19 @@ private fun VCForecastBlock.toModel(): ForecastBlock =
             types = parsePrecipTypes(precipType),
         ),
         wind = Wind(
-            speed = windSpeed,
+            speed = windSpeedValue,
             gust = windGust,
-            directionDegree = windDir,
+            directionDegree = windDir ?: 0.0,
             maxSpeed = windSpeedMax,
             meanSpeed = windSpeedMean,
             minSpeed = windSpeedMin,
         ),
-        pressure = pressure,
-        uvIndex = uvIndex.toInt(),
-        visibility = visibility,
+        pressure = pressure ?: 0.0,
+        uvIndex = (uvIndex ?: 0.0).toInt(),
+        visibility = visibility ?: 0.0,
         severeWeatherRisk = parseSevereWeatherRisk(severeRisk),
     )
+}
 
 private fun parsePrecipTypes(types: List<String>?) =
     types
