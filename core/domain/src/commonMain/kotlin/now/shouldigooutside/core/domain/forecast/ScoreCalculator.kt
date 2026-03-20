@@ -12,6 +12,8 @@ import now.shouldigooutside.core.model.score.Reasons
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.Units
+import now.shouldigooutside.core.model.units.convertTemperature
+import now.shouldigooutside.core.model.units.convertWindSpeed
 
 public interface ScoreCalculator {
     public fun calculate(
@@ -56,7 +58,7 @@ public class DefaultScoreCalculator(
                 "precip=${precipitation.probability}%"
         }
         val reasons = Reasons(
-            wind = windReason(preferences.windSpeed),
+            wind = windReason(preferences),
             temperature = temperatureReason(preferences),
             precipitation = precipitation(preferences),
             severeWeather = when (severeWeatherRisk) {
@@ -75,8 +77,13 @@ public class DefaultScoreCalculator(
         return Score(result = result, reasons = reasons)
     }
 
-    private fun ForecastBlock.windReason(maxWindSpeed: Int): ReasonValue {
+    private fun ForecastBlock.windReason(preferences: Preferences): ReasonValue {
         val windSpeed = this.wind.speed
+        val maxWindSpeed = convertWindSpeed(
+            value = preferences.windSpeed.toDouble(),
+            from = preferences.units.windSpeed,
+            target = Units.Metric.windSpeed,
+        ).toInt()
         logger.d { "Wind evaluation: current=$windSpeed, max=$maxWindSpeed" }
 
         if (windSpeed > maxWindSpeed) {
@@ -107,8 +114,16 @@ public class DefaultScoreCalculator(
                 "min=${preferences.minTemperature}, max=${preferences.maxTemperature}"
         }
 
-        val minTemp = preferences.minTemperature
-        val maxTemp = preferences.maxTemperature
+        val minTemp = convertTemperature(
+            value = preferences.minTemperature.toDouble(),
+            from = preferences.units.temperature,
+            target = Units.Metric.temperature,
+        ).toInt()
+        val maxTemp = convertTemperature(
+            value = preferences.maxTemperature.toDouble(),
+            from = preferences.units.temperature,
+            target = Units.Metric.temperature,
+        ).toInt()
 
         if (temperature < minTemp || temperature > maxTemp) {
             return ReasonValue.Outside

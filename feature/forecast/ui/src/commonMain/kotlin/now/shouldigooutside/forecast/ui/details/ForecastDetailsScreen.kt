@@ -30,7 +30,6 @@ import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.card.Card
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.ForecastPreviewData
-import now.shouldigooutside.core.ui.preview.PreviewData.location
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -72,7 +71,7 @@ internal fun ForecastDetailsScreen(
     Scaffold(
         topBar = {
             DetailsTopBar(
-                location = location,
+                location = data.forecast.location,
                 onBack = onBack,
             )
         },
