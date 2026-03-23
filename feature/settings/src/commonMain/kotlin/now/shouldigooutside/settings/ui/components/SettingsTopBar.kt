@@ -89,7 +89,7 @@ internal fun SettingsTopBar(
 @Preview
 @Composable
 private fun SettingsTopBarPreview() {
-    AppPreview(useSurface = false) {
+    AppPreview {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             SettingsTopBar(
                 text = Res.string.settings,
