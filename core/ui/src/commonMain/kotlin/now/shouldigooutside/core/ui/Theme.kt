@@ -16,6 +16,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import now.shouldigooutside.core.platform.isAndroid
+import now.shouldigooutside.core.ui.components.Surface
 import now.shouldigooutside.core.ui.foundation.ripple
 import now.shouldigooutside.core.ui.icons.LocalPlatformIcon
 import now.shouldigooutside.core.ui.icons.PlatformIcon
@@ -82,7 +83,9 @@ public fun AppTheme(
             LocalTextStyle provides typography.body1,
         ) {
             SystemAppearance(isDarkTheme)
-            content()
+            Surface {
+                content()
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ import now.shouldigooutside.core.platform.ClientIdProvider
 import now.shouldigooutside.core.platform.di.getKoinInstance
 import now.shouldigooutside.core.platform.di.networkModule
 import now.shouldigooutside.core.platform.di.platformModule
+import now.shouldigooutside.core.widget.widgetModule
 import now.shouldigooutside.forecast.forecastAppModule
 import now.shouldigooutside.forecast.ui.forecastUiModule
 import now.shouldigooutside.location.locationModule
@@ -46,6 +47,7 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
                 )
             },
             platformModule(),
+            widgetModule(),
             // Feature
             forecastAppModule(),
             forecastUiModule(),

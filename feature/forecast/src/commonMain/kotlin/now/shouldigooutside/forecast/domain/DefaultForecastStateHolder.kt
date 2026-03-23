@@ -27,6 +27,9 @@ import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.location.LocationResult
 import now.shouldigooutside.core.model.mapSuccess
 import now.shouldigooutside.core.model.toAsyncResult
+import now.shouldigooutside.core.widget.WidgetDataMapper
+import now.shouldigooutside.core.widget.WidgetDataStore
+import now.shouldigooutside.core.widget.WidgetNotifier
 
 internal class DefaultForecastStateHolder(
     private val locationRepo: LocationRepo,
@@ -35,6 +38,8 @@ internal class DefaultForecastStateHolder(
     private val appConfigRepo: AppConfigRepo,
     private val scoreCalculator: ScoreCalculator,
     private val coroutineScope: CoroutineScope,
+    private val widgetDataStore: WidgetDataStore,
+    private val widgetNotifier: WidgetNotifier,
 ) : ForecastStateHolder {
     private val logger = Logger.withTag("ForecastStateHolder")
     private val delayDuration = appConfigRepo.value.maxCacheAge
@@ -53,6 +58,19 @@ internal class DefaultForecastStateHolder(
                 )
             }
         }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), AsyncResult.Loading)
+
+    init {
+        coroutineScope.launch {
+            state.collect { result ->
+                if (result is AsyncResult.Success) {
+                    val units = settingsRepo.settings.value.preferences.units
+                    val widgetData = WidgetDataMapper.map(result.data, units)
+                    widgetDataStore.save(widgetData)
+                    widgetNotifier.notifyUpdate()
+                }
+            }
+        }
+    }
 
     private var fetchJob: Job? = null
     private var refreshJob: Job? = null

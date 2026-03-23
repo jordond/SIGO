@@ -107,6 +107,9 @@ android {
 
 dependencies {
     implementation(projects.core.app)
+    implementation(projects.core.domain)
+    implementation(projects.core.model)
+    implementation(projects.core.widget)
 
     coreLibraryDesugaring(libs.desugar)
 
@@ -125,4 +128,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.config)
     implementation(libs.firebase.crashlytics)
+    implementation(libs.glance.appwidget)
+    implementation(libs.glance.material3)
+    implementation(libs.work.runtime)
 }

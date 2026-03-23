@@ -8,22 +8,18 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "forecast")
+configureMultiplatform(Platforms.All, name = "core.widget")
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.core.config)
             implementation(projects.core.model)
-            implementation(projects.core.domain)
-            implementation(projects.core.widget)
-            implementation(projects.core.foundation)
-            implementation(projects.core.platform)
-
-            implementation(libs.kermit)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.stateHolder)
-            implementation(libs.bundles.kotlinx)
+            implementation(libs.koin.core)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.koin.android)
         }
     }
 }
