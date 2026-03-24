@@ -1196,6 +1196,7 @@ public class SliderColors(
     }
 }
 
+@Stable
 public class SliderState(
     value: Float = 0f,
     @param:IntRange(from = 0) public val steps: Int = 0,

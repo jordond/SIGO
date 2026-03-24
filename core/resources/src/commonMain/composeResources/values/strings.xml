@@ -48,9 +48,9 @@
     <string name="show">Show</string>
     <string name="hide">Hide</string>
     <string name="configure">Configure</string>
-    <string name="min">Min</string>
+    <string name="min">min</string>
     <string name="minimum">Minimum</string>
-    <string name="max">Max</string>
+    <string name="max">max</string>
     <string name="maximum">Maximum</string>
     <string name="snow">Snow</string>
     <string name="rain">Rain</string>
@@ -149,10 +149,10 @@
     <string name="onboarding_summary_text">Let's get started!</string>
 
     <string name="preferences_temp_description">When is it too cold or too hot to go outside?</string>
-    <string name="preferences_temp_min">min: %1$s</string>
-    <string name="preferences_temp_max">max: %1$s</string>
+    <string name="preferences_temp_min">MIN</string>
+    <string name="preferences_temp_max">MAX</string>
     <string name="preferences_wind_description">When is it too windy to go outside?</string>
-    <string name="preferences_wind_max">max: %1$s</string>
+    <string name="preferences_wind_max">MAXIMUM SPEED</string>
     <string name="preferences_precipitation_title">Do you want to go outside in the:</string>
 
     <string name="preferences_location_updates">Enable location updates</string>

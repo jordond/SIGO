@@ -4,6 +4,7 @@ import androidx.annotation.IntRange
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.materialkolor.ktx.darken
 import com.materialkolor.ktx.lighten
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.LocalContentColor
 import now.shouldigooutside.core.ui.LocalThemeIsDark
 import now.shouldigooutside.core.ui.foundation.slider.BasicRangeSlider
 import now.shouldigooutside.core.ui.foundation.slider.BasicSlider
@@ -57,6 +59,7 @@ public fun Slider(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     @IntRange(from = 0) steps: Int = 0,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
+    tickLabel: (@Composable (Float) -> Unit)? = null,
 ) {
     val state =
         remember(steps, valueRange) {
@@ -79,10 +82,45 @@ public fun Slider(
         shape = shape,
         interactionSource = interactionSource,
         colors = colors,
+        tickLabel = tickLabel,
     )
 }
 
 private val thumbSize = 28.dp
+
+@Composable
+private fun TickLabelsRow(
+    valueRange: ClosedFloatingPointRange<Float>,
+    steps: Int,
+    tickLabel: @Composable (Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val tickCount = steps + 2
+    val tickValues = List(tickCount) { index ->
+        valueRange.start + (valueRange.endInclusive - valueRange.start) * index / (tickCount - 1)
+    }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = ThumbWidth / 2),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        tickValues.forEachIndexed { index, value ->
+            val alignment = when (index) {
+                0 -> Alignment.CenterStart
+                tickValues.lastIndex -> Alignment.CenterEnd
+                else -> Alignment.Center
+            }
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = alignment,
+            ) {
+                tickLabel(value)
+            }
+        }
+    }
+}
 
 @Composable
 public fun Slider(
@@ -92,52 +130,63 @@ public fun Slider(
     colors: SliderColors = SliderDefaults.colors(),
     shape: Shape = SliderDefaults.Shape,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    tickLabel: (@Composable (Float) -> Unit)? = null,
 ) {
     require(state.steps >= 0) { "steps should be >= 0" }
 
-    BasicSlider(
-        modifier = modifier,
-        state = state,
-        colors = colors,
-        enabled = enabled,
-        trackInsideCornerSize = 1.dp,
-        trackHeight = 32.dp,
-        thumbWidth = ThumbWidth,
-        thumbHeight = ThumbHeight,
-        interactionSource = interactionSource,
-        thumb = {
-            SliderFoundationDefaults.Thumb(
-                interactionSource = interactionSource,
-                colors = colors,
-                enabled = enabled,
-                thumbWidth = ThumbWidth,
-                thumbHeight = ThumbHeight,
-                thumbSizeOnPress = ThumbSizeOnPress,
-                modifier = Modifier.border(
-                    width = BrutalDefaults.BorderWidth,
-                    color = BrutalDefaults.Color,
-                    shape = SliderFoundationDefaults.ThumbShape,
-                ),
-            )
-        },
-        track = { sliderState ->
-            BrutalContainer(
-                shape = shape,
-                elevation = SliderDefaults.Elevation,
-            ) {
-                SliderFoundationDefaults.Track(
+    Column(modifier = modifier) {
+        BasicSlider(
+            modifier = Modifier.fillMaxWidth(),
+            state = state,
+            colors = colors,
+            enabled = enabled,
+            trackInsideCornerSize = 1.dp,
+            trackHeight = 32.dp,
+            thumbWidth = ThumbWidth,
+            thumbHeight = ThumbHeight,
+            interactionSource = interactionSource,
+            thumb = {
+                SliderFoundationDefaults.Thumb(
+                    interactionSource = interactionSource,
                     colors = colors,
                     enabled = enabled,
-                    sliderState = sliderState,
+                    thumbWidth = ThumbWidth,
+                    thumbHeight = ThumbHeight,
+                    thumbSizeOnPress = ThumbSizeOnPress,
                     modifier = Modifier.border(
                         width = BrutalDefaults.BorderWidth,
                         color = BrutalDefaults.Color,
-                        shape = shape,
+                        shape = SliderFoundationDefaults.ThumbShape,
                     ),
                 )
-            }
-        },
-    )
+            },
+            track = { sliderState ->
+                BrutalContainer(
+                    shape = shape,
+                    elevation = SliderDefaults.Elevation,
+                ) {
+                    SliderFoundationDefaults.Track(
+                        colors = colors,
+                        enabled = enabled,
+                        sliderState = sliderState,
+                        modifier = Modifier.border(
+                            width = BrutalDefaults.BorderWidth,
+                            color = BrutalDefaults.Color,
+                            shape = shape,
+                        ),
+                    )
+                }
+            },
+        )
+
+        if (tickLabel != null) {
+            TickLabelsRow(
+                valueRange = state.valueRange,
+                steps = state.steps,
+                tickLabel = tickLabel,
+            )
+        }
+    }
 }
 
 @Composable
@@ -153,6 +202,7 @@ public fun RangeSlider(
     shape: Shape = SliderDefaults.Shape,
     startInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     endInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    tickLabel: (@Composable (Float) -> Unit)? = null,
 ) {
     val state =
         remember(steps, valueRange) {
@@ -178,6 +228,7 @@ public fun RangeSlider(
         shape = shape,
         startInteractionSource = startInteractionSource,
         endInteractionSource = endInteractionSource,
+        tickLabel = tickLabel,
     )
 }
 
@@ -190,6 +241,7 @@ public fun RangeSlider(
     shape: Shape = SliderDefaults.Shape,
     startInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     endInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    tickLabel: (@Composable (Float) -> Unit)? = null,
 ) {
     require(state.steps >= 0) { "steps should be >= 0" }
 
@@ -210,33 +262,43 @@ public fun RangeSlider(
         )
     }
 
-    BasicRangeSlider(
-        modifier = modifier,
-        state = state,
-        enabled = enabled,
-        startInteractionSource = startInteractionSource,
-        endInteractionSource = endInteractionSource,
-        colors = colors,
-        startThumb = { Thumb(startInteractionSource) },
-        endThumb = { Thumb(endInteractionSource) },
-        track = { rangeSliderState ->
-            BrutalContainer(
-                shape = shape,
-                elevation = SliderDefaults.Elevation,
-            ) {
-                SliderFoundationDefaults.Track(
-                    rangeSliderState = rangeSliderState,
-                    colors = colors,
-                    enabled = enabled,
-                    modifier = Modifier.border(
-                        width = BrutalDefaults.BorderWidth,
-                        color = BrutalDefaults.Color,
-                        shape = shape,
-                    ),
-                )
-            }
-        },
-    )
+    Column(modifier = modifier) {
+        BasicRangeSlider(
+            modifier = Modifier.fillMaxWidth(),
+            state = state,
+            enabled = enabled,
+            startInteractionSource = startInteractionSource,
+            endInteractionSource = endInteractionSource,
+            colors = colors,
+            startThumb = { Thumb(startInteractionSource) },
+            endThumb = { Thumb(endInteractionSource) },
+            track = { rangeSliderState ->
+                BrutalContainer(
+                    shape = shape,
+                    elevation = SliderDefaults.Elevation,
+                ) {
+                    SliderFoundationDefaults.Track(
+                        rangeSliderState = rangeSliderState,
+                        colors = colors,
+                        enabled = enabled,
+                        modifier = Modifier.border(
+                            width = BrutalDefaults.BorderWidth,
+                            color = BrutalDefaults.Color,
+                            shape = shape,
+                        ),
+                    )
+                }
+            },
+        )
+
+        if (tickLabel != null) {
+            TickLabelsRow(
+                valueRange = state.valueRange,
+                steps = state.steps,
+                tickLabel = tickLabel,
+            )
+        }
+    }
 }
 
 @Stable
@@ -278,6 +340,15 @@ public object SliderDefaults {
                 color = BrutalDefaults.Color,
                 shape = SliderFoundationDefaults.ThumbShape,
             ),
+        )
+    }
+
+    @Composable
+    public fun TickLabel(value: Float) {
+        Text(
+            text = value.toInt().toString(),
+            style = AppTheme.typography.label3,
+            color = LocalContentColor.current,
         )
     }
 
@@ -373,6 +444,44 @@ private fun SliderPreview() {
                     modifier = Modifier.width(40.dp),
                 )
             }
+        }
+
+        Column {
+            Text(
+                text = "Tick Labels (Default)",
+                style = AppTheme.typography.h4,
+            )
+            var value by remember { mutableFloatStateOf(50f) }
+            Slider(
+                value = value,
+                onValueChange = { value = it },
+                valueRange = 0f..100f,
+                steps = 3,
+                tickLabel = { SliderDefaults.TickLabel(it) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
+        Column {
+            Text(
+                text = "Tick Labels (Custom)",
+                style = AppTheme.typography.h4,
+            )
+            var value by remember { mutableFloatStateOf(20f) }
+            Slider(
+                value = value,
+                onValueChange = { value = it },
+                valueRange = -10f..40f,
+                steps = 1,
+                tickLabel = { v ->
+                    Text(
+                        text = "${v.toInt()}°C",
+                        style = AppTheme.typography.label3,
+                        color = AppTheme.colors.onSurface,
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
 
         Column {
@@ -501,6 +610,44 @@ private fun RangeSliderPreview() {
                     )
                 }
             }
+        }
+
+        Column {
+            Text(
+                text = "Tick Labels (Default)",
+                style = AppTheme.typography.h4,
+            )
+            var range by remember { mutableStateOf(20f..80f) }
+            RangeSlider(
+                value = range,
+                onValueChange = { range = it },
+                valueRange = 0f..100f,
+                steps = 3,
+                tickLabel = { SliderDefaults.TickLabel(it) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
+        Column {
+            Text(
+                text = "Tick Labels (Custom)",
+                style = AppTheme.typography.h4,
+            )
+            var range by remember { mutableStateOf(-5f..30f) }
+            RangeSlider(
+                value = range,
+                onValueChange = { range = it },
+                valueRange = -10f..40f,
+                steps = 1,
+                tickLabel = { v ->
+                    Text(
+                        text = "${v.toInt()}°C",
+                        style = AppTheme.typography.label3,
+                        color = AppTheme.colors.onSurface,
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
 
         Column {

@@ -1,5 +1,6 @@
 package now.shouldigooutside.onboarding.ui.preferences
 
+import androidx.compose.runtime.Stable
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -19,6 +20,7 @@ private const val DEFAULT_MIN_TEMP_RANGE = -30.0
 private const val DEFAULT_MAX_TEMP_RANGE = 40.0
 private const val DEFAULT_MAX_WIND_SPEED = 50.0
 
+@Stable
 internal class OnboardingPreferencesModel(
     private val settingsRepo: SettingsRepo,
 ) : UiStateViewModel<State, Event>(
