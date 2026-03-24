@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.model.units.WindSpeedUnit
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.preferences_wind_description
@@ -29,6 +30,7 @@ import now.shouldigooutside.core.ui.sliderColors
 
 @Composable
 public fun WindRange(
+    units: Units,
     preferences: Preferences,
     update: (Preferences) -> Unit,
     maxWindSpeed: Float,
@@ -69,7 +71,7 @@ public fun WindRange(
             )
 
             Text(
-                text = preferences.windSpeedString(),
+                text = preferences.windSpeedString(units.windSpeed),
                 style = AppTheme.typography.h4,
             )
         }

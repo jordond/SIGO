@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.units.TemperatureUnit
+import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.preferences_temp_description
 import now.shouldigooutside.core.resources.unit_temperature
@@ -33,6 +34,7 @@ import now.shouldigooutside.core.ui.sliderColors
 
 @Composable
 public fun TemperatureRange(
+    units: Units,
     preferences: Preferences,
     update: (Preferences) -> Unit,
     temperatureRange: ClosedFloatingPointRange<Float>,
@@ -85,14 +87,14 @@ public fun TemperatureRange(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = preferences.minTemperatureString(),
+                    text = preferences.minTemperatureString(units.temperature),
                     style = AppTheme.typography.h4,
                 )
 
                 Spacer(Modifier.weight(1f))
 
                 Text(
-                    text = preferences.maxTemperatureString(),
+                    text = preferences.maxTemperatureString(units.temperature),
                     style = AppTheme.typography.h4,
                     textAlign = TextAlign.End,
                 )

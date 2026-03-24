@@ -31,6 +31,7 @@ import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.location.LocationPermissionStatus
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.Scaffold
 import now.shouldigooutside.core.ui.components.snackbar.Snackbar
@@ -68,6 +69,7 @@ internal fun ForecastHomeScreen(
     ForecastHomeScreen(
         location = state.location,
         preferences = state.preferences,
+        units = state.units,
         data = state.forecast,
         period = state.period,
         loading = state.loading,
@@ -100,6 +102,7 @@ internal fun ForecastHomeScreen(
 internal fun ForecastHomeScreen(
     location: Location?,
     preferences: Preferences,
+    units: Units,
     data: ForecastData?,
     dispatcher: Dispatcher<ForecastHomeAction>,
     modifier: Modifier = Modifier,
@@ -184,6 +187,7 @@ internal fun ForecastHomeScreen(
                             ForecastScoreContent(
                                 updatedAt = instant,
                                 preferences = preferences,
+                                units = units,
                                 periodData = periodData,
                                 modifier = Modifier.padding(end = 2.dp),
                             )
@@ -216,6 +220,7 @@ private fun LoadingPreview() {
             data = null,
             loading = true,
             preferences = Preferences.default,
+            units = Units.Metric,
             dispatcher = rememberDispatcher { },
         )
     }
@@ -228,6 +233,7 @@ private fun ScreenPreview(data: ForecastData) {
             location = null,
             data = data,
             preferences = Preferences.default,
+            units = Units.Metric,
             dispatcher = rememberDispatcher { },
         )
     }

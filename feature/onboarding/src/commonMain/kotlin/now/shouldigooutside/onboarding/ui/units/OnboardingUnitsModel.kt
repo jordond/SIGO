@@ -9,17 +9,17 @@ import now.shouldigooutside.onboarding.ui.units.OnboardingUnitsModel.State
 
 internal class OnboardingUnitsModel(
     private val settingsRepo: SettingsRepo,
-) : StateViewModel<State>(State(settingsRepo.settings.value.preferences.units)) {
+) : StateViewModel<State>(State(settingsRepo.settings.value.units)) {
     init {
         settingsRepo.settings
-            .map { it.preferences.units }
+            .map { it.units }
             .distinctUntilChanged()
             .mergeState { state, units -> state.copy(units = units) }
     }
 
     fun update(units: Units) {
         settingsRepo.update { settings ->
-            settings.updatePreferences(settings.preferences.copy(units = units))
+            settings.copy(units = units)
         }
     }
 

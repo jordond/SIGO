@@ -74,6 +74,7 @@ import kotlin.time.Instant
 internal fun ForecastScoreContent(
     updatedAt: Instant,
     preferences: Preferences,
+    units: Units,
     periodData: ForecastPeriodData,
     modifier: Modifier = Modifier,
     now: Instant = Clock.System.now(),
@@ -173,20 +174,20 @@ internal fun ForecastScoreContent(
                         value = periodData.forecast.temperature.value,
                         max = preferences.maxTemperature.toDouble(),
                     ),
-                    colors = preferences.units.temperature.colors(),
+                    colors = units.temperature.colors(),
                     value = {
-                        val unit = preferences.units.temperature.rememberUnit()
+                        val unit = units.temperature.rememberUnit()
                         "${periodData.forecast.temperature.value.roundToInt()}$unit"
                     },
                     modifier = Modifier.weight(1f),
                 )
 
                 PreferenceResultCard(
-                    title = preferences.units.windSpeed.rememberTitle(),
+                    title = units.windSpeed.rememberTitle(),
                     text = periodData.score.reasons.windStatus(),
-                    colors = preferences.units.windSpeed.colors(),
+                    colors = units.windSpeed.colors(),
                     value = {
-                        val unit = preferences.units.windSpeed.rememberUnit()
+                        val unit = units.windSpeed.rememberUnit()
                         "${periodData.forecast.wind.speed.roundToInt()} $unit"
                     },
                     modifier = Modifier.weight(1f),
@@ -203,7 +204,7 @@ internal fun ForecastScoreContent(
                 PreferenceResultCard(
                     title = precipitationTitle,
                     text = periodData.score.reasons.precipitationStatus(),
-                    colors = preferences.units.precipitation.colors(),
+                    colors = units.precipitation.colors(),
                     value = {
                         Res.string.percent.get(periodData.forecast.precipitation.probability)
                     },
@@ -260,7 +261,8 @@ private fun SevereWeatherPreview() {
         ) {
             ForecastScoreContent(
                 updatedAt = Clock.System.now().minus(1.minutes),
-                preferences = Preferences.default.copy(units = Units.Metric),
+                preferences = Preferences.default,
+                units = Units.Metric,
                 periodData = data.forPeriod(ForecastPeriod.Today)!!,
             )
         }
@@ -279,7 +281,8 @@ private fun ForecastScoreContentPreview() {
         ) {
             ForecastScoreContent(
                 updatedAt = Clock.System.now().minus(1.minutes),
-                preferences = Preferences.default.copy(units = Units.Metric),
+                preferences = Preferences.default,
+                units = Units.Metric,
                 periodData = data.forPeriod(ForecastPeriod.Today)!!,
             )
         }

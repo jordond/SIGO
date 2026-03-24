@@ -89,7 +89,7 @@ internal class DefaultForecastStateHolder(
         container.update { AsyncResult.Loading }
 
         val location = locationRepo.location()
-        val units = settingsRepo.settings.value.preferences.units
+        val units = settingsRepo.settings.value.units
         when (location) {
             is LocationResult.Failed -> {
                 container.update { AsyncResult.Error(location) }

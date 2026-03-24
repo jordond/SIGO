@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.stateholder.extensions.collectAsState
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.onboarding_units
 import now.shouldigooutside.core.resources.preferences
@@ -38,6 +39,7 @@ internal fun PreferencesScreen(
     val state by model.collectAsState()
 
     PreferencesScreen(
+        units = state.units,
         preferences = state.preferences,
         update = model::update,
         onBack = onBack,
@@ -54,6 +56,7 @@ internal fun PreferencesBottomSheet(
     val state by model.collectAsState()
 
     PreferencesBottomSheet(
+        units = state.units,
         preferences = state.preferences,
         update = model::update,
         onBack = onBack,
@@ -64,6 +67,7 @@ internal fun PreferencesBottomSheet(
 
 @Composable
 internal fun PreferencesBottomSheet(
+    units: Units,
     preferences: Preferences,
     update: (Preferences) -> Unit,
     modifier: Modifier = Modifier,
@@ -85,6 +89,7 @@ internal fun PreferencesBottomSheet(
         )
 
         PreferencesList(
+            units = units,
             preferences = preferences,
             updatePreferences = update,
             temperatureRange = temperatureRange,
@@ -96,6 +101,7 @@ internal fun PreferencesBottomSheet(
 
 @Composable
 internal fun PreferencesScreen(
+    units: Units,
     preferences: Preferences,
     update: (Preferences) -> Unit,
     modifier: Modifier = Modifier,
@@ -126,6 +132,7 @@ internal fun PreferencesScreen(
                 .verticalScroll(rememberScrollState()),
         ) {
             PreferencesList(
+                units = units,
                 preferences = preferences,
                 updatePreferences = update,
                 temperatureRange = temperatureRange,
@@ -142,6 +149,7 @@ internal fun PreferencesScreen(
 private fun ScreenPreview() {
     var preferences by remember { mutableStateOf(Preferences.default) }
     PreferencesScreen(
+        units = Units.Metric,
         preferences = preferences,
         update = { preferences = it },
         onBack = {},

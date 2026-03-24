@@ -33,7 +33,6 @@ public fun ForecastScoreRequestQuery.toModels(): Pair<Location, Preferences> {
 private fun ForecastScoreRequestQuery.toPreferences(): Preferences {
     val default = Preferences.default
     return Preferences(
-        units = default.units,
         minTemperature = minTemp ?: default.minTemperature,
         maxTemperature = maxTemp ?: default.maxTemperature,
         windSpeed = maxWind ?: default.windSpeed,

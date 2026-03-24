@@ -30,6 +30,7 @@ import now.shouldigooutside.core.model.location.LocationPermissionStatus.Granted
 import now.shouldigooutside.core.model.location.LocationPermissionStatus.Unknown
 import now.shouldigooutside.core.model.location.LocationResult
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.forecast_error_generic
 import now.shouldigooutside.core.resources.location_geolocation_error
@@ -171,6 +172,7 @@ internal class ForecastHomeModel(
     data class State(
         val location: Location?,
         val preferences: Preferences,
+        val units: Units,
         val status: AsyncResult<ForecastData>,
         val period: ForecastPeriod = ForecastPeriod.Now,
         val permissionStatus: LocationPermissionStatus = Unknown,
@@ -193,6 +195,13 @@ internal class ForecastHomeModel(
     }
 }
 
+private data class SettingsSnapshot(
+    val location: Location?,
+    val preferences: Preferences,
+    val units: Units,
+    val usingCurrentLocation: Boolean,
+)
+
 private fun state(
     settingsRepo: SettingsRepo,
     locationRepo: LocationRepo,
@@ -204,6 +213,7 @@ private fun state(
         },
         usingCurrentLocation = !settingsRepo.settings.value.useCustomLocation,
         preferences = settingsRepo.settings.value.preferences,
+        units = settingsRepo.settings.value.units,
         permissionStatus = if (locationRepo.hasPermission()) Granted else Unknown,
         status = forecastStateHolder.state.value,
     ),
@@ -211,10 +221,15 @@ private fun state(
     settingsRepo.settings
         .map { settings ->
             val location = if (settings.useCustomLocation) settings.customLocation else settings.lastLocation
-            Triple(location, settings.preferences, !settings.useCustomLocation)
+            SettingsSnapshot(location, settings.preferences, settings.units, !settings.useCustomLocation)
         }.distinctUntilChanged()
-        .into { (location, preferences, usingCurrent) ->
-            copy(location = location, preferences = preferences, usingCurrentLocation = usingCurrent)
+        .into { snapshot ->
+            copy(
+                location = snapshot.location,
+                preferences = snapshot.preferences,
+                units = snapshot.units,
+                usingCurrentLocation = snapshot.usingCurrentLocation,
+            )
         }
 
     forecastStateHolder.state.into { status ->

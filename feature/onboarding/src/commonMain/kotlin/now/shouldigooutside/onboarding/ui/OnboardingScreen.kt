@@ -229,6 +229,7 @@ internal fun OnboardingScreenPreview(
                 }
                 OnboardingDestination.Preferences -> {
                     OnboardingPreferencesScreen(
+                        units = Units.Metric,
                         preferences = Preferences.default,
                         updatePreferences = {},
                     )

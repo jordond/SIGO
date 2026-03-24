@@ -12,8 +12,6 @@ import now.shouldigooutside.core.model.score.Reasons
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.Units
-import now.shouldigooutside.core.model.units.convertTemperature
-import now.shouldigooutside.core.model.units.convertWindSpeed
 
 public interface ScoreCalculator {
     public fun calculate(
@@ -79,11 +77,7 @@ public class DefaultScoreCalculator(
 
     private fun ForecastBlock.windReason(preferences: Preferences): ReasonValue {
         val windSpeed = this.wind.speed
-        val maxWindSpeed = convertWindSpeed(
-            value = preferences.windSpeed.toDouble(),
-            from = preferences.units.windSpeed,
-            target = Units.Metric.windSpeed,
-        ).toInt()
+        val maxWindSpeed = preferences.windSpeed
         logger.d { "Wind evaluation: current=$windSpeed, max=$maxWindSpeed" }
 
         if (windSpeed > maxWindSpeed) {
@@ -108,22 +102,12 @@ public class DefaultScoreCalculator(
                 temperature.value
             }
 
+        val minTemp = preferences.minTemperature
+        val maxTemp = preferences.maxTemperature
         val tempType = if (preferences.includeApparentTemperature) "feels like" else "actual"
         logger.d {
-            "Temperature evaluation: $tempType=$temperature, " +
-                "min=${preferences.minTemperature}, max=${preferences.maxTemperature}"
+            "Temperature evaluation: $tempType=$temperature, min=$minTemp, max=$maxTemp"
         }
-
-        val minTemp = convertTemperature(
-            value = preferences.minTemperature.toDouble(),
-            from = preferences.units.temperature,
-            target = Units.Metric.temperature,
-        ).toInt()
-        val maxTemp = convertTemperature(
-            value = preferences.maxTemperature.toDouble(),
-            from = preferences.units.temperature,
-            target = Units.Metric.temperature,
-        ).toInt()
 
         if (temperature < minTemp || temperature > maxTemp) {
             return ReasonValue.Outside

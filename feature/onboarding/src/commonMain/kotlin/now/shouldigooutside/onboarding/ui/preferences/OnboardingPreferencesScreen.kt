@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.stateholder.extensions.collectAsState
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.onboarding_preferences
 import now.shouldigooutside.core.resources.onboarding_preferences_subtext
@@ -29,6 +30,7 @@ internal fun OnboardingPreferencesScreen(model: OnboardingPreferencesModel = koi
     val state by model.collectAsState()
 
     OnboardingPreferencesScreen(
+        units = state.units,
         preferences = state.preferences,
         updatePreferences = model::update,
         temperatureRange = state.tempRange,
@@ -38,6 +40,7 @@ internal fun OnboardingPreferencesScreen(model: OnboardingPreferencesModel = koi
 
 @Composable
 internal fun OnboardingPreferencesScreen(
+    units: Units,
     preferences: Preferences,
     updatePreferences: (Preferences) -> Unit,
     modifier: Modifier = Modifier,
@@ -69,6 +72,7 @@ internal fun OnboardingPreferencesScreen(
             }
 
             PreferencesList(
+                units = units,
                 preferences = preferences,
                 updatePreferences = updatePreferences,
                 temperatureRange = temperatureRange,
