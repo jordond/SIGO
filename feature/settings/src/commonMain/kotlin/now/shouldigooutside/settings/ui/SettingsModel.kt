@@ -1,5 +1,6 @@
 package now.shouldigooutside.settings.ui
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
@@ -12,6 +13,7 @@ import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.model.ui.ThemeMode
 import org.jetbrains.compose.resources.getString
 
+@Stable
 internal class SettingsModel(
     private val settingsRepo: SettingsRepo,
     private val appConfigRepo: AppConfigRepo,
