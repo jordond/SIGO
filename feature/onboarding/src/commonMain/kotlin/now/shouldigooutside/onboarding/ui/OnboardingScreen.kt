@@ -64,7 +64,6 @@ import now.shouldigooutside.onboarding.ui.navigation.OnboardingDestination
 import now.shouldigooutside.onboarding.ui.navigation.OnboardingNavHost
 import now.shouldigooutside.onboarding.ui.preferences.OnboardingPreferencesScreen
 import now.shouldigooutside.onboarding.ui.summary.SummaryScreen
-import now.shouldigooutside.onboarding.ui.units.OnboardingUnitsScreen
 import now.shouldigooutside.onboarding.ui.welcome.WelcomeScreen
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -221,17 +220,12 @@ internal fun OnboardingScreenPreview(
                 OnboardingDestination.Welcome -> {
                     WelcomeScreen()
                 }
-                OnboardingDestination.Units -> {
-                    OnboardingUnitsScreen(
-                        units = Units.Metric,
-                        update = {},
-                    )
-                }
                 OnboardingDestination.Preferences -> {
                     OnboardingPreferencesScreen(
                         units = Units.Metric,
                         preferences = Preferences.default,
                         updatePreferences = {},
+                        updateUnits = {},
                     )
                 }
                 OnboardingDestination.Location -> {
@@ -249,12 +243,6 @@ internal fun OnboardingScreenPreview(
 @Composable
 private fun WelcomePreview() {
     OnboardingScreenPreview(OnboardingDestination.Welcome)
-}
-
-@Preview
-@Composable
-private fun UnitsPreview() {
-    OnboardingScreenPreview(OnboardingDestination.Units)
 }
 
 @Preview

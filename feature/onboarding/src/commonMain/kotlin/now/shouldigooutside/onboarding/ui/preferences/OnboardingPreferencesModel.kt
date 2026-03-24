@@ -33,17 +33,20 @@ internal class OnboardingPreferencesModel(
         settingsRepo.settings
             .map { it.preferences to it.units }
             .distinctUntilChanged()
-            .mergeState {
-                state,
-                (preferences, units),
-                ->
+            .mergeState { state, (preferences, units) ->
                 state.copy(preferences = preferences, units = units)
             }
     }
 
-    fun update(preferences: Preferences) {
+    fun updatePreferences(preferences: Preferences) {
         settingsRepo.update { settings ->
             settings.updatePreferences(Activity.General, preferences)
+        }
+    }
+
+    fun updateUnits(units: Units) {
+        settingsRepo.update { settings ->
+            settings.copy(units = units)
         }
     }
 

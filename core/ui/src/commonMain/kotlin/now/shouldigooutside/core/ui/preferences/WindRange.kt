@@ -53,8 +53,7 @@ public fun WindRange(
     ElevatedCard(
         colors = colors.cardColors(),
     ) {
-        Column(
-        ) {
+        Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),

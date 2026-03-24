@@ -8,7 +8,6 @@ import now.shouldigooutside.core.ui.navigation.slideHorizontally
 import now.shouldigooutside.onboarding.ui.location.LocationScreen
 import now.shouldigooutside.onboarding.ui.preferences.OnboardingPreferencesScreen
 import now.shouldigooutside.onboarding.ui.summary.SummaryScreen
-import now.shouldigooutside.onboarding.ui.units.OnboardingUnitsScreen
 import now.shouldigooutside.onboarding.ui.welcome.WelcomeScreen
 
 @Composable
@@ -24,10 +23,6 @@ internal fun OnboardingNavHost(
     ) {
         slideHorizontally<OnboardingDestination.Welcome> {
             WelcomeScreen()
-        }
-
-        slideHorizontally<OnboardingDestination.Units> {
-            OnboardingUnitsScreen()
         }
 
         slideHorizontally<OnboardingDestination.Preferences> {

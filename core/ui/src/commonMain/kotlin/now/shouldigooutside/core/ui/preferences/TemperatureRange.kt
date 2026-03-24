@@ -54,8 +54,7 @@ public fun TemperatureRange(
     ElevatedCard(
         colors = colors.cardColors(),
     ) {
-        Column(
-        ) {
+        Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -145,8 +144,7 @@ public fun TemperatureRange(
                 modifier = Modifier
                     .padding(horizontal = 12.dp)
                     .padding(bottom = 16.dp),
-
-                )
+            )
         }
     }
 }
