@@ -1,4 +1,4 @@
-package now.shouldigooutside.forecast.ui.section
+package now.shouldigooutside.forecast.ui.forecast.section
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background

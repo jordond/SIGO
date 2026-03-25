@@ -1,4 +1,4 @@
-package now.shouldigooutside.forecast.ui.details
+package now.shouldigooutside.forecast.ui.forecast.details
 
 import androidx.compose.runtime.Composable
 import now.shouldigooutside.core.model.forecast.Precipitation

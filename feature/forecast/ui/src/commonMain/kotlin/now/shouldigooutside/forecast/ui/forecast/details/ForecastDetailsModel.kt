@@ -1,4 +1,4 @@
-package now.shouldigooutside.forecast.ui.details
+package now.shouldigooutside.forecast.ui.forecast.details
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle

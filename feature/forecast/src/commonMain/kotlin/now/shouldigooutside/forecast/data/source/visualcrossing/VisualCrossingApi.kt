@@ -24,6 +24,7 @@ internal class DefaultVisualCrossingApi(
             "key" to tokenProvider.provide(),
             "unitGroup" to "base",
             "include" to "days,hours,alerts,current,events",
+            "elements" to "+aqius,+aqieur",
         )
 
     override suspend fun forecastFor(

@@ -17,6 +17,9 @@ import now.shouldigooutside.settings.ui.units.UnitsScreen
 public data object SettingsRoute : Route
 
 @Serializable
+public data object PreferencesTabRoute : Route
+
+@Serializable
 internal data object InternalSettingsRoute : Route
 
 @Serializable

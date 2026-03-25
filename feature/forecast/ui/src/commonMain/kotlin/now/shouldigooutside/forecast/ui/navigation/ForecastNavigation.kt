@@ -7,8 +7,9 @@ import kotlinx.serialization.Serializable
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.ui.navigation.Route
 import now.shouldigooutside.core.ui.navigation.popUpScreen
-import now.shouldigooutside.forecast.ui.ForecastHomeScreen
-import now.shouldigooutside.forecast.ui.details.ForecastDetailsScreen
+import now.shouldigooutside.forecast.ui.activities.ActivitiesTab
+import now.shouldigooutside.forecast.ui.forecast.ForecastHomeScreen
+import now.shouldigooutside.forecast.ui.forecast.details.ForecastDetailsScreen
 
 @Serializable
 public data object ForecastHomeRoute
@@ -22,6 +23,9 @@ internal class ForecastDetailsRoute private constructor(
     val period: ForecastPeriod
         get() = ForecastPeriod.valueOf(periodString)
 }
+
+@Serializable
+public data object ActivitiesRoute : Route
 
 public fun NavGraphBuilder.forecastNavigation(
     navController: NavController,
@@ -40,5 +44,9 @@ public fun NavGraphBuilder.forecastNavigation(
         ForecastDetailsScreen(
             onBack = navController::popBackStack,
         )
+    }
+
+    composable<ActivitiesRoute> {
+        ActivitiesTab()
     }
 }

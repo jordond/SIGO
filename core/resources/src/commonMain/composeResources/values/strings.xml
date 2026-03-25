@@ -136,6 +136,10 @@
     <string name="unit_distance_km">km</string>
     <string name="unit_distance_mile">mi</string>
 
+    <string name="home_tab_forecast">Home</string>
+    <string name="home_tab_activities">Activities</string>
+    <string name="home_tab_preferences">Preferences</string>
+
     <string name="onboarding_welcome_preamble">Welcome to</string>
     <string name="onboarding_welcome">"Should I go outside today?"</string>
     <string name="onboarding_welcome_footer">Your brutally honest weather buddy that doesn't sugarcoat the forecast! We'll tell you when to go out and explore, or just stay home and binge-watch shows instead.</string>

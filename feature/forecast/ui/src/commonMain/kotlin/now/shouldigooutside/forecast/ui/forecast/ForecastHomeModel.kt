@@ -1,4 +1,4 @@
-package now.shouldigooutside.forecast.ui
+package now.shouldigooutside.forecast.ui.forecast
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
@@ -37,8 +37,8 @@ import now.shouldigooutside.core.resources.location_geolocation_error
 import now.shouldigooutside.core.resources.location_geolocation_not_allowed
 import now.shouldigooutside.core.resources.location_geolocation_not_found
 import now.shouldigooutside.core.resources.location_geolocation_not_supported
-import now.shouldigooutside.forecast.ui.ForecastHomeModel.Event
-import now.shouldigooutside.forecast.ui.ForecastHomeModel.State
+import now.shouldigooutside.forecast.ui.forecast.ForecastHomeModel.Event
+import now.shouldigooutside.forecast.ui.forecast.ForecastHomeModel.State
 import org.jetbrains.compose.resources.StringResource
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -207,7 +207,7 @@ private fun state(
     locationRepo: LocationRepo,
     forecastStateHolder: ForecastStateHolder,
 ) = composedStateProvider(
-    initialState = State(
+    initialState = ForecastHomeModel.State(
         location = settingsRepo.settings.value.run {
             if (useCustomLocation) customLocation else lastLocation
         },

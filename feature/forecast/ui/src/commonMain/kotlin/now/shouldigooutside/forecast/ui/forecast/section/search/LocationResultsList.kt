@@ -1,4 +1,4 @@
-package now.shouldigooutside.forecast.ui.section.search
+package now.shouldigooutside.forecast.ui.forecast.section.search
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

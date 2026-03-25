@@ -1,4 +1,4 @@
-package now.shouldigooutside.forecast.ui.details
+package now.shouldigooutside.forecast.ui.forecast.details
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,6 +49,7 @@ import now.shouldigooutside.core.ui.ktx.text
 import now.shouldigooutside.core.ui.mappers.units.rememberUnit
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.ForecastPreviewData
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
@@ -198,7 +199,7 @@ internal fun HourCard(
 @Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
 private fun HourlyForecastStripPreview() {
-    val now = kotlin.time.Clock.System
+    val now = Clock.System
         .now()
     AppPreview {
         HourlyForecastStrip(

@@ -1,4 +1,4 @@
-package now.shouldigooutside.forecast.ui
+package now.shouldigooutside.forecast.ui.forecast
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
@@ -41,14 +41,13 @@ import now.shouldigooutside.core.ui.components.snackbar.rememberSnackbarProvider
 import now.shouldigooutside.core.ui.ktx.conditional
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
-import now.shouldigooutside.forecast.ui.ForecastHomeModel.Event
 import now.shouldigooutside.forecast.ui.components.Header
 import now.shouldigooutside.forecast.ui.components.LoadingBox
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
 import now.shouldigooutside.forecast.ui.components.mappers.rememberInstant
-import now.shouldigooutside.forecast.ui.section.ForecastScoreContent
-import now.shouldigooutside.forecast.ui.section.HomeBottomBar
-import now.shouldigooutside.forecast.ui.section.search.LocationSearchSheet
+import now.shouldigooutside.forecast.ui.forecast.section.ForecastScoreContent
+import now.shouldigooutside.forecast.ui.forecast.section.HomeBottomBar
+import now.shouldigooutside.forecast.ui.forecast.section.search.LocationSearchSheet
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -61,7 +60,7 @@ internal fun ForecastHomeScreen(
     val snackbar = rememberSnackbarProvider()
     HandleEvents(model) { event ->
         when (event) {
-            is Event.Error -> snackbar.error(event.message)
+            is ForecastHomeModel.Event.Error -> snackbar.error(event.message)
         }
     }
 
@@ -99,7 +98,7 @@ internal fun ForecastHomeScreen(
 }
 
 @Composable
-internal fun ForecastHomeScreen(
+public fun ForecastHomeScreen(
     location: Location?,
     preferences: Preferences,
     units: Units,
@@ -267,9 +266,7 @@ private fun WindyPreview() {
 @Composable
 private fun SevereWeatherLowPreview() {
     val forecast = PreviewData.Forecast.createForecastFrom(
-        PreviewData.Forecast.severeWeather(
-            SevereWeatherRisk.Low,
-        ),
+        PreviewData.Forecast.severeWeather(SevereWeatherRisk.Low),
     )
     ScreenPreview(PreviewData.Forecast.forecastData(forecast))
 }

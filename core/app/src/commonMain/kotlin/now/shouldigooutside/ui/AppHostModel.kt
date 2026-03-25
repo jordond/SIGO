@@ -20,7 +20,7 @@ internal class AppHostModel(
 
         settingsRepo.settings.mergeState { state, value ->
             if (!value.loaded) {
-                state.copy(value)
+                state.copy(settings = value)
             } else {
                 val startDestination = if (value.hasCompletedOnboarding) {
                     AppStartDestination.Home
