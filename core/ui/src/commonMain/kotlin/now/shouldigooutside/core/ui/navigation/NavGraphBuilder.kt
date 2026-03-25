@@ -30,16 +30,16 @@ public val AnimatedContentTransitionScope<NavBackStackEntry>.SlideOutDown: ExitT
     get() = slideOutOfContainer(SlideDirection.Down, tween(700))
 
 public val SlideEnter: EnterTransition
-    get() = slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500))
+    get() = slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(500))
 
 public val SlideExit: ExitTransition
-    get() = slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500))
+    get() = slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(500))
 
 public val SlidePopEnter: EnterTransition
-    get() = slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = tween(500))
+    get() = slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(500))
 
 public val SlidePopExit: ExitTransition
-    get() = slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500))
+    get() = slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(500))
 
 public object NavAnimations {
     public val None: NavAnimation = NavAnimation()

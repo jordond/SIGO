@@ -6,7 +6,6 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -57,6 +56,7 @@ public val LocalUse24HourTime: ProvidableCompositionLocal<Boolean> = composition
 @Composable
 public fun AppTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onThemeChanged: @Composable (isDark: Boolean) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     val rippleIndication = ripple()
@@ -75,14 +75,14 @@ public fun AppTheme(
             LocalUse24HourTime provides false,
             LocalColors provides colors.animate(),
             LocalTypography provides typography,
-            LocalShapes provides Shapes,
+            LocalShapes provides Shapes(),
             LocalIndication provides rippleIndication,
             LocalTextSelectionColors provides selectionColors,
             LocalContentColor provides colors.contentColorFor(colors.background),
             LocalContainerColor provides colors.surface,
             LocalTextStyle provides typography.body1,
         ) {
-            SystemAppearance(isDarkTheme)
+            onThemeChanged(!isDarkTheme)
             Surface {
                 content()
             }
@@ -103,6 +103,3 @@ internal fun rememberTextSelectionColors(colorScheme: Colors): TextSelectionColo
         )
     }
 }
-
-@Composable
-internal expect fun SystemAppearance(isDark: Boolean)

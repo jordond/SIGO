@@ -2,8 +2,6 @@ package now.shouldigooutside.forecast.ui.details
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -13,17 +11,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.resources.Res
-import now.shouldigooutside.core.resources.back
 import now.shouldigooutside.core.resources.forecast_details_title
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.LocalContainerColor
-import now.shouldigooutside.core.ui.LocalContentColor
-import now.shouldigooutside.core.ui.components.Icon
-import now.shouldigooutside.core.ui.components.IconButton
-import now.shouldigooutside.core.ui.components.IconButtonVariant
 import now.shouldigooutside.core.ui.components.Text
-import now.shouldigooutside.core.ui.icons.AppIcons
-import now.shouldigooutside.core.ui.icons.lucide.ArrowBigDown
+import now.shouldigooutside.core.ui.components.topbar.TopBar
+import now.shouldigooutside.core.ui.components.topbar.TopBarDefaults
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
 
@@ -33,7 +26,7 @@ internal fun DetailsTopBar(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    TopAppBar(
+    TopBar(
         modifier = modifier,
         title = {
             Column(modifier = Modifier.padding(start = 8.dp)) {
@@ -52,20 +45,10 @@ internal fun DetailsTopBar(
             }
         },
         navigationIcon = {
-            IconButton(
-                onClick = onBack,
-                variant = IconButtonVariant.Outlined,
-            ) {
-                Icon(
-                    icon = AppIcons.Lucide.ArrowBigDown,
-                    contentDescription = Res.string.back.get(),
-                )
-            }
+            BackButton(onClick = onBack)
         },
-        colors = TopAppBarDefaults.topAppBarColors(
+        colors = TopBarDefaults.topBarColors(
             containerColor = LocalContainerColor.current,
-            navigationIconContentColor = LocalContentColor.current,
-            titleContentColor = LocalContentColor.current,
         ),
     )
 }
