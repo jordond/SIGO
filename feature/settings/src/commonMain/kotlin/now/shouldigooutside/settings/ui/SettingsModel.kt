@@ -67,7 +67,7 @@ internal class SettingsModel(
 
         viewModelScope.launch {
             val title = withContext(Dispatchers.Default) { getString(link.title) }
-            emit(Event.OpenWebView(url, title))
+            emit(Event.OpenWebView(title = title, url = url))
         }
     }
 
