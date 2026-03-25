@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,7 @@ import now.shouldigooutside.core.ui.components.snackbar.Snackbar
 import now.shouldigooutside.core.ui.components.snackbar.SnackbarHost
 import now.shouldigooutside.core.ui.components.snackbar.SnackbarHostState
 import now.shouldigooutside.core.ui.components.snackbar.rememberSnackbarProvider
+import now.shouldigooutside.core.ui.components.topbar.TopBarDefaults
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.settings.ui.components.SettingsTopBar
 import now.shouldigooutside.settings.ui.section.AboutSection
@@ -119,6 +121,8 @@ internal fun SettingsScreen(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     version: Version = Version,
 ) {
+    val scrollBehavior = TopBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
         modifier = modifier,
         containerColor = AppTheme.colors.surface,
@@ -135,6 +139,7 @@ internal fun SettingsScreen(
         },
         topBar = {
             SettingsTopBar(
+                scrollBehavior = scrollBehavior,
                 text = Res.string.settings,
                 onBack = dispatcher.rememberRelay(SettingsAction.Close),
             )
@@ -149,6 +154,7 @@ internal fun SettingsScreen(
                     start = innerPadding.calculateStartPadding(layoutDirection),
                     end = innerPadding.calculateEndPadding(layoutDirection),
                 ).padding(horizontal = 16.dp)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .verticalScroll(rememberScrollState()),
         ) {
             Spacer(Modifier.height(8.dp))

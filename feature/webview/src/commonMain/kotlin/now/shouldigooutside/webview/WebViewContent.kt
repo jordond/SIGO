@@ -24,19 +24,20 @@ import now.shouldigooutside.core.ui.ktx.get
 
 @Composable
 internal fun WebViewContent(
-    title: String,
+    title: String?,
     state: WebViewState,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navigator = rememberWebViewNavigator()
-
     Scaffold(
         containerColor = AppTheme.colors.surface,
         topBar = {
             TopBar(
                 title = {
-                    Title(text = title)
+                    if (!title.isNullOrBlank()) {
+                        Title(text = title)
+                    }
                 },
                 navigationIcon = {
                     NavIcon(

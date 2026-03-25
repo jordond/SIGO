@@ -16,6 +16,7 @@ import now.shouldigooutside.core.resources.settings_internal_title
 import now.shouldigooutside.core.ui.LocalContainerColor
 import now.shouldigooutside.core.ui.components.topbar.TopBar
 import now.shouldigooutside.core.ui.components.topbar.TopBarDefaults
+import now.shouldigooutside.core.ui.components.topbar.TopBarScrollBehavior
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.ArrowBigDown
 import now.shouldigooutside.core.ui.icons.lucide.ArrowLeft
@@ -35,11 +36,13 @@ internal fun SettingsTopBar(
     text: StringResource,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    scrollBehavior: TopBarScrollBehavior? = null,
     handleInsets: Boolean = true,
     navType: SettingsTopBarNav = SettingsTopBarNav.Close,
 ) {
     TopBar(
         modifier = modifier,
+        scrollBehavior = scrollBehavior,
         windowInsets = if (handleInsets) TopBarDefaults.windowInsets else WindowInsets(0.dp),
         title = {
             Title(text = text.get())
