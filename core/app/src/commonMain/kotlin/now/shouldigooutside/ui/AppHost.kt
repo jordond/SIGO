@@ -29,6 +29,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun AppHost(
+    onThemeChanged: @Composable (isDark: Boolean) -> Unit,
     model: AppHostModel = koinViewModel(),
     windowSizeClass: WindowSizeClass = calculateWindowSizeClass(),
     bottomSheetNavigator: BottomSheetNavigator = rememberBottomSheetNavigator(skipPartiallyExpanded = true),
@@ -45,7 +46,7 @@ internal fun AppHost(
         }
     }
 
-    AppTheme(isDarkTheme = isDarkTheme) {
+    AppTheme(onThemeChanged = onThemeChanged, isDarkTheme = isDarkTheme) {
         when (val uiState = state.uiState) {
             is UiState.Loading -> {
                 Box(

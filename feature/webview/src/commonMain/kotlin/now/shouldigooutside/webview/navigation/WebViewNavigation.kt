@@ -2,13 +2,13 @@ package now.shouldigooutside.webview.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.toRoute
-import app.toebean.feature.webview.WebViewScreen
 import kotlinx.serialization.Serializable
 import now.shouldigooutside.core.ui.navigation.popUpScreen
+import now.shouldigooutside.webview.WebViewScreen
 
 @Serializable
 public data class WebViewRoute(
-    public val title: String,
+    public val title: String? = null,
     public val url: String,
 )
 

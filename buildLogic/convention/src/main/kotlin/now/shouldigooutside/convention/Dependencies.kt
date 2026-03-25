@@ -15,7 +15,6 @@ fun Project.composeDependencies(hasAndroid: Boolean) {
         sourceSets.commonMain.dependencies {
             implementation(libs.findLibrary("androidx-lifecycle-viewmodel").get())
             implementation(libs.findLibrary("androidx-lifecycle-runtime-compose").get())
-            implementation(libs.findLibrary("compose-material3").get())
             implementation(libs.findLibrary("compose-runtime").get())
             implementation(libs.findLibrary("compose-foundation").get())
             implementation(libs.findLibrary("compose-resources").get())

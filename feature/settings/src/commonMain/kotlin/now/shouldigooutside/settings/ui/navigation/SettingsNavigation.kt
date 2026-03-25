@@ -50,15 +50,15 @@ public fun NavGraphBuilder.settingsNavigation(
         )
     }
 
-    slideHorizontally<UnitsRoute> { entry ->
+    slideHorizontally<UnitsRoute> {
         UnitsScreen(onBack = navController::popBackStack)
     }
 
-    slideHorizontally<PreferencesRoute> { entry ->
+    slideHorizontally<PreferencesRoute> {
         PreferencesScreen(onBack = navController::popBackStack)
     }
 
-    bottomSheet<PreferencesBottomSheet> { entry ->
+    bottomSheet<PreferencesBottomSheet> {
         PreferencesBottomSheet(onBack = navController::popBackStack)
     }
 }

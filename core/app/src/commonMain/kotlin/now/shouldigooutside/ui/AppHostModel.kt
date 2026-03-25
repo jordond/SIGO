@@ -1,5 +1,6 @@
 package now.shouldigooutside.ui
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
 import dev.stateholder.extensions.viewmodel.StateViewModel
 import kotlinx.coroutines.Dispatchers
@@ -9,6 +10,7 @@ import now.shouldigooutside.core.foundation.initalize.Initializer
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.ui.navigation.AppStartDestination
 
+@Stable
 internal class AppHostModel(
     private val initializer: Initializer,
     settingsRepo: SettingsRepo,
