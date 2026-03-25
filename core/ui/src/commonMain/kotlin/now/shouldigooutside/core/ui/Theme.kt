@@ -6,7 +6,6 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -76,7 +75,7 @@ public fun AppTheme(
             LocalUse24HourTime provides false,
             LocalColors provides colors.animate(),
             LocalTypography provides typography,
-            LocalShapes provides Shapes,
+            LocalShapes provides Shapes(),
             LocalIndication provides rippleIndication,
             LocalTextSelectionColors provides selectionColors,
             LocalContentColor provides colors.contentColorFor(colors.background),

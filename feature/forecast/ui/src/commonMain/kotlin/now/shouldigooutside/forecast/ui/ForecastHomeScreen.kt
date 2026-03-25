@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -32,6 +31,7 @@ import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.location.LocationPermissionStatus
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.components.PullToRefreshBox
 import now.shouldigooutside.core.ui.components.Scaffold
 import now.shouldigooutside.core.ui.components.snackbar.Snackbar
 import now.shouldigooutside.core.ui.components.snackbar.SnackbarHost

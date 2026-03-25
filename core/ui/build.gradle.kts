@@ -26,6 +26,7 @@ kotlin {
             api(projects.core.uiIcons)
 
             implementation(libs.compose.navigation)
+            implementation(libs.compose.material3)
             api(libs.compass.geolocation)
             api(libs.compose.windowSizeClass)
             api(libs.composables)

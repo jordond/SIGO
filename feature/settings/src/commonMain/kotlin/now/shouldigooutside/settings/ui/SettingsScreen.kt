@@ -27,6 +27,7 @@ import dev.stateholder.extensions.collectAsState
 import now.shouldigooutside.core.Version
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.platform.launchAppStore
+import now.shouldigooutside.core.platform.shareApp
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.settings
 import now.shouldigooutside.core.ui.AppTheme
@@ -93,7 +94,7 @@ internal fun SettingsScreen(
                     }
                 }
                 is SettingsAction.ShareApp -> {
-                    // TODO: Share app
+                    shareApp()
                 }
                 is SettingsAction.TapAbout -> {
                     model.clickAbout()
