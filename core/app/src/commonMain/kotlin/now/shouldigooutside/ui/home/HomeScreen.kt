@@ -164,9 +164,8 @@ private fun Preview(
                             selected = Activity.General,
                             selectedPreferences = Preferences.default,
                             activities = PreviewData.activities(2),
-                            onSelect = {},
                             units = Units.Metric,
-                            update = {},
+                            dispatcher = rememberDispatcher { },
                         )
                     }
                 }

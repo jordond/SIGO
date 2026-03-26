@@ -8,6 +8,7 @@ import now.shouldigooutside.forecast.ui.navigation.ActivitiesRoute
 import now.shouldigooutside.forecast.ui.navigation.ForecastHomeRoute
 import now.shouldigooutside.forecast.ui.navigation.forecastNavigation
 import now.shouldigooutside.settings.ui.navigation.PreferencesTabRoute
+import now.shouldigooutside.settings.ui.navigation.SettingsRoute
 import now.shouldigooutside.settings.ui.preferences.tab.preferencesTab
 import now.shouldigooutside.ui.navigation.AppNavHost
 import kotlin.reflect.KClass
@@ -28,6 +29,9 @@ internal fun HomeScreenNavHost(
         preferencesTab(
             toAddActivity = {
                 // TODO: Implement add activity flow
+            },
+            toSettings = {
+                parent.navigate(SettingsRoute)
             },
         )
     }

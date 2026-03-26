@@ -81,7 +81,7 @@ public fun TopBar(
             verticalAlignment = Alignment.CenterVertically,
             modifier =
                 Modifier
-                    .padding(horizontal = 4.dp)
+                    .padding(horizontal = 8.dp)
                     .fillMaxWidth()
                     .height(TopBarHeight),
         ) {

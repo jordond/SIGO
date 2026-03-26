@@ -28,6 +28,7 @@ import now.shouldigooutside.core.resources.preferences
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.Scaffold
 import now.shouldigooutside.core.ui.preferences.PreferencesList
+import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.settings.ui.components.SettingsTopBar
 import now.shouldigooutside.settings.ui.components.SettingsTopBarNav
 import org.koin.compose.viewmodel.koinViewModel
@@ -151,10 +152,12 @@ internal fun PreferencesScreen(
 @Composable
 private fun ScreenPreview() {
     var preferences by remember { mutableStateOf(Preferences.default) }
-    PreferencesScreen(
-        units = Units.Metric,
-        preferences = preferences,
-        update = { preferences = it },
-        onBack = {},
-    )
+    AppPreview {
+        PreferencesScreen(
+            units = Units.Metric,
+            preferences = preferences,
+            update = { preferences = it },
+            onBack = {},
+        )
+    }
 }
