@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,11 +31,13 @@ import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.toPersistentList
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.preferences.remainingActivities
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.preferences
 import now.shouldigooutside.core.ui.TabHeader
 import now.shouldigooutside.core.ui.activities.ActivitySelector
+import now.shouldigooutside.core.ui.ktx.debugBorder
 import now.shouldigooutside.core.ui.preferences.PreferencesList
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
@@ -96,12 +99,14 @@ public fun PreferencesTab(
             toSettings = dispatcher.rememberRelay(PreferencesAction.ToSettings),
         )
 
+        val canAdd = remember(activities) { activities.remainingActivities().isNotEmpty() }
         val activityList = remember(activities) { activities.keys.toPersistentList() }
         ActivitySelector(
             selected = selected,
             onSelected = dispatcher.rememberRelayOf(PreferencesAction::Select),
             onAddCustom = dispatcher.rememberRelay(PreferencesAction.ToAddActivity),
             activities = activityList,
+            canAdd = canAdd,
             contentPadding = PaddingValues(16.dp),
         )
 
@@ -117,6 +122,8 @@ public fun PreferencesTab(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
         )
+
+        Spacer(Modifier.height(100.dp))
     }
 }
 

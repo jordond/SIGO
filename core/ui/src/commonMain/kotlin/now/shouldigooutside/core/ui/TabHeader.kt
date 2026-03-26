@@ -39,6 +39,7 @@ public fun TabHeader(
                 onClick = toSettings,
             )
         },
+        windowInsets = null,
         modifier = modifier,
     )
 }

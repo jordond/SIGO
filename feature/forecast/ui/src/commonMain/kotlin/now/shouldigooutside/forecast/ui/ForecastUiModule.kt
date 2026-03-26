@@ -1,6 +1,7 @@
 package now.shouldigooutside.forecast.ui
 
 import now.shouldigooutside.forecast.ui.activities.ActivitiesModel
+import now.shouldigooutside.forecast.ui.activities.add.AddActivityModel
 import now.shouldigooutside.forecast.ui.forecast.ForecastHomeModel
 import now.shouldigooutside.forecast.ui.forecast.details.ForecastDetailsModel
 import org.koin.core.module.Module
@@ -12,4 +13,5 @@ public fun forecastUiModule(): Module =
         viewModelOf(::ForecastHomeModel)
         viewModelOf(::ForecastDetailsModel)
         viewModelOf(::ActivitiesModel)
+        viewModelOf(::AddActivityModel)
     }

@@ -34,7 +34,6 @@ import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.components.card.SelectionCard
 import now.shouldigooutside.core.ui.icons.AppIcons
-import now.shouldigooutside.core.ui.icons.lucide.Droplet
 import now.shouldigooutside.core.ui.icons.lucide.Plus
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
@@ -49,6 +48,7 @@ public fun ActivitySelector(
     onAddCustom: () -> Unit = {},
     state: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(8.dp),
+    canAdd: Boolean = true,
 ) {
     LaunchedEffect(selected) {
         val index = activities.indexOfFirst { it == selected }
@@ -73,13 +73,16 @@ public fun ActivitySelector(
             )
         }
 
-        item {
-            Item(
-                icon = AppIcons.Lucide.Plus,
-                label = Res.string.add.get(),
-                selected = false,
-                onClick = onAddCustom,
-            )
+        if (canAdd) {
+            item {
+                Item(
+                    icon = AppIcons.Lucide.Plus,
+                    label = Res.string.add.get(),
+                    selected = false,
+                    onClick = onAddCustom,
+                    modifier = Modifier.animateItem(),
+                )
+            }
         }
     }
 }

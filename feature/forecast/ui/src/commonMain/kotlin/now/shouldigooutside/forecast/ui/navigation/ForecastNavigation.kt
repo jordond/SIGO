@@ -8,6 +8,7 @@ import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.ui.navigation.Route
 import now.shouldigooutside.core.ui.navigation.popUpScreen
 import now.shouldigooutside.forecast.ui.activities.ActivitiesTab
+import now.shouldigooutside.forecast.ui.activities.add.AddActivityScreen
 import now.shouldigooutside.forecast.ui.forecast.ForecastHomeScreen
 import now.shouldigooutside.forecast.ui.forecast.details.ForecastDetailsScreen
 
@@ -27,6 +28,9 @@ internal class ForecastDetailsRoute private constructor(
 @Serializable
 public data object ActivitiesRoute : Route
 
+@Serializable
+public data object AddActivityRoute : Route
+
 public fun NavGraphBuilder.forecastNavigation(navController: NavController) {
     composable<ForecastHomeRoute> {
         ForecastHomeScreen(
@@ -42,5 +46,11 @@ public fun NavGraphBuilder.forecastNavigation(navController: NavController) {
 
     composable<ActivitiesRoute> {
         ActivitiesTab()
+    }
+
+    popUpScreen<AddActivityRoute> {
+        AddActivityScreen(
+            onBack = navController::popBackStack,
+        )
     }
 }

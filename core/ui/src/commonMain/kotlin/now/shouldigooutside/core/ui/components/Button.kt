@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.LocalContainerColor
 import now.shouldigooutside.core.ui.LocalContentColor
+import now.shouldigooutside.core.ui.LocalTextStyle
 import now.shouldigooutside.core.ui.components.BrutalDefaults.DisabledAlpha
 import now.shouldigooutside.core.ui.components.progressindicators.CircularProgressIndicator
 import now.shouldigooutside.core.ui.contentColorFor
@@ -245,7 +246,9 @@ private fun DefaultButtonContent(
             modifier = modifier,
             contentAlignment = Alignment.Center,
         ) {
-            content()
+            CompositionLocalProvider(LocalTextStyle provides textStyle) {
+                content()
+            }
         }
     }
 }

@@ -12,6 +12,9 @@ import now.shouldigooutside.core.resources.activity_title_hiking
 import now.shouldigooutside.core.resources.activity_title_running
 import now.shouldigooutside.core.resources.activity_title_swimming
 import now.shouldigooutside.core.resources.activity_title_walking
+import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.BrutalColors
+import now.shouldigooutside.core.ui.brutal
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.CloudSun
 import now.shouldigooutside.core.ui.icons.lucide.SlidersVertical
@@ -21,6 +24,17 @@ import now.shouldigooutside.core.ui.icons.tabler.Run
 import now.shouldigooutside.core.ui.icons.tabler.Swim
 import now.shouldigooutside.core.ui.icons.tabler.Walk
 import org.jetbrains.compose.resources.StringResource
+
+public fun Activity.key(): String =
+    when (this) {
+        is Activity.Custom -> "custom:$name"
+        is Activity.Cycling -> "cycling"
+        is Activity.General -> "general"
+        is Activity.Hiking -> "hiking"
+        is Activity.Running -> "running"
+        is Activity.Swimming -> "swimming"
+        is Activity.Walking -> "walking"
+    }
 
 @Composable
 public fun Activity.rememberStringResource(): StringResource =
@@ -48,4 +62,16 @@ public fun Activity.rememberIcon(): ImageVector =
             is Activity.Swimming -> AppIcons.Tabler.Swim
             is Activity.Walking -> AppIcons.Tabler.Walk
         }
+    }
+
+@Composable
+public fun Activity.colors(): BrutalColors =
+    when (this) {
+        is Activity.Custom -> AppTheme.colors.brutal.red
+        is Activity.Cycling -> AppTheme.colors.brutal.orange
+        is Activity.General -> AppTheme.colors.brutal.yellow
+        is Activity.Hiking -> AppTheme.colors.brutal.green
+        is Activity.Running -> AppTheme.colors.brutal.pink
+        is Activity.Swimming -> AppTheme.colors.brutal.blue
+        is Activity.Walking -> AppTheme.colors.brutal.purple
     }

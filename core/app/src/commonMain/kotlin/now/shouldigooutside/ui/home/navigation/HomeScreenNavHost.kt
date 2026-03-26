@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import now.shouldigooutside.core.ui.navigation.Route
 import now.shouldigooutside.forecast.ui.navigation.ActivitiesRoute
+import now.shouldigooutside.forecast.ui.navigation.AddActivityRoute
 import now.shouldigooutside.forecast.ui.navigation.ForecastHomeRoute
 import now.shouldigooutside.forecast.ui.navigation.forecastNavigation
 import now.shouldigooutside.settings.ui.navigation.PreferencesTabRoute
@@ -27,12 +28,8 @@ internal fun HomeScreenNavHost(
             navController = parent,
         )
         preferencesTab(
-            toAddActivity = {
-                // TODO: Implement add activity flow
-            },
-            toSettings = {
-                parent.navigate(SettingsRoute)
-            },
+            toAddActivity = { parent.navigate(AddActivityRoute) },
+            toSettings = { parent.navigate(SettingsRoute) },
         )
     }
 }
