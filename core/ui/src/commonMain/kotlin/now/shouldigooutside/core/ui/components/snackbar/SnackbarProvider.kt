@@ -2,6 +2,7 @@ package now.shouldigooutside.core.ui.components.snackbar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -51,6 +52,7 @@ public val LocalSnackbarProvider: ProvidableCompositionLocal<SnackbarProvider> =
         }
     }
 
+@Stable
 public interface SnackbarProvider {
     public val hostState: SnackbarHostState
 

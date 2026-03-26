@@ -1,5 +1,7 @@
 package now.shouldigooutside.core.model.forecast
 
+import androidx.compose.runtime.Immutable
+
 /**
  * Represents the wind data for a specific time and location.
  *
@@ -10,6 +12,7 @@ package now.shouldigooutside.core.model.forecast
  * @property meanSpeed Mean wind speed in base units, if not available, it will be the same as [speed].
  * @property minSpeed Minimum wind speed in base units, if not available, it will be the same as [speed].
  */
+@Immutable
 public data class Wind(
     val speed: Double,
     val gust: Double,

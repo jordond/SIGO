@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -13,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -20,17 +24,25 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.stateholder.dispatcher.rememberDispatcher
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.components.Scaffold
+import now.shouldigooutside.core.ui.components.snackbar.LocalSnackbarProvider
+import now.shouldigooutside.core.ui.components.snackbar.Snackbar
+import now.shouldigooutside.core.ui.components.snackbar.SnackbarHost
+import now.shouldigooutside.core.ui.components.snackbar.SnackbarProvider
+import now.shouldigooutside.core.ui.components.snackbar.rememberSnackbarProvider
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
+import now.shouldigooutside.forecast.ui.activities.ActivitiesTab
 import now.shouldigooutside.forecast.ui.forecast.ForecastHomeScreen
-import now.shouldigooutside.settings.ui.preferences.PreferencesTab
+import now.shouldigooutside.settings.ui.preferences.tab.PreferencesTab
 import now.shouldigooutside.ui.home.components.HomeBottomNav
 import now.shouldigooutside.ui.home.navigation.HomeScreenNavHost
 import now.shouldigooutside.ui.home.navigation.HomeTab
 import now.shouldigooutside.ui.home.navigation.route
+import now.shouldigooutside.ui.home.navigation.routeClass
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -42,12 +54,14 @@ internal fun HomeScreen(
     val current by tabNavController.currentBackStackEntryAsState()
     val currentHomeTab = remember(current) {
         HomeTab.entries.firstOrNull { entry ->
-            current?.destination?.hasRoute(entry.route) == true
+            current?.destination?.hasRoute(entry.routeClass) == true
         } ?: HomeTab.Forecast
     }
 
+    val snackbar = rememberSnackbarProvider()
     HomeScreen(
         selected = currentHomeTab,
+        snackbarProvider = snackbar,
         onTabClick = { tab ->
             model.updateSelectedTab(tab)
             tabNavController.navigate(tab.route) {
@@ -76,10 +90,22 @@ internal fun HomeScreen(
     selected: HomeTab,
     onTabClick: (HomeTab) -> Unit,
     modifier: Modifier = Modifier,
+    snackbarProvider: SnackbarProvider = rememberSnackbarProvider(),
     tabContent: @Composable BoxScope.() -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarProvider.hostState,
+                snackbar = { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                    )
+                },
+            )
+        },
         bottomBar = {
             HomeBottomNav(
                 selected = selected,
@@ -92,19 +118,27 @@ internal fun HomeScreen(
                 .padding(innerPadding)
                 .fillMaxSize(),
         ) {
-            tabContent()
+            CompositionLocalProvider(LocalSnackbarProvider provides snackbarProvider) {
+                tabContent()
+            }
         }
     }
+}
+
+private class Params : PreviewParameterProvider<HomeTab> {
+    override val values: Sequence<HomeTab> = HomeTab.entries.asSequence()
 }
 
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
-private fun Preview() {
-    var selected by remember { mutableStateOf(HomeTab.Forecast) }
+private fun Preview(
+    @PreviewParameter(Params::class) initial: HomeTab,
+) {
+    var selected by remember { mutableStateOf(initial) }
     AppPreview {
         HomeScreen(
-            selected = HomeTab.Forecast,
+            selected = selected,
             onTabClick = {},
             tabContent = {
                 when (selected) {
@@ -121,12 +155,17 @@ private fun Preview() {
                         )
                     }
                     HomeTab.Activities -> {
-                        TODO()
+                        ActivitiesTab(
+                            activities = PreviewData.Activities,
+                        )
                     }
                     HomeTab.Preferences -> {
                         PreferencesTab(
+                            selected = Activity.General,
+                            selectedPreferences = Preferences.default,
+                            activities = PreviewData.activities(2),
+                            onSelect = {},
                             units = Units.Metric,
-                            preferences = Preferences.default,
                             update = {},
                         )
                     }

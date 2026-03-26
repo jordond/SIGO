@@ -262,7 +262,7 @@ private fun LocationCardPreview() {
             LocationDetailsCard(
                 location = null,
                 isLoading = false,
-                status = LocationResult.Error,
+                status = LocationResult.Error(),
                 modifier = Modifier.padding(bottom = 16.dp),
             )
             Text("Success", style = AppTheme.typography.h3)

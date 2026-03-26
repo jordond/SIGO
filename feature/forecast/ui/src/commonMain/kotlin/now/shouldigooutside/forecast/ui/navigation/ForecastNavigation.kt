@@ -12,7 +12,7 @@ import now.shouldigooutside.forecast.ui.forecast.ForecastHomeScreen
 import now.shouldigooutside.forecast.ui.forecast.details.ForecastDetailsScreen
 
 @Serializable
-public data object ForecastHomeRoute
+public data object ForecastHomeRoute : Route
 
 @Serializable
 internal class ForecastDetailsRoute private constructor(
@@ -27,16 +27,10 @@ internal class ForecastDetailsRoute private constructor(
 @Serializable
 public data object ActivitiesRoute : Route
 
-public fun NavGraphBuilder.forecastNavigation(
-    navController: NavController,
-    toPreferences: () -> Unit,
-    toSettings: () -> Unit,
-) {
+public fun NavGraphBuilder.forecastNavigation(navController: NavController) {
     composable<ForecastHomeRoute> {
         ForecastHomeScreen(
             toViewDetails = { navController.navigate(ForecastDetailsRoute(it)) },
-            toPreferences = toPreferences,
-            toSettings = toSettings,
         )
     }
 

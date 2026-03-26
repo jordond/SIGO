@@ -2,6 +2,7 @@ package now.shouldigooutside.settings.ui.preferences
 
 import androidx.compose.runtime.Stable
 import dev.stateholder.extensions.viewmodel.StateViewModel
+import kotlinx.collections.immutable.PersistentMap
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import now.shouldigooutside.core.domain.settings.SettingsRepo
@@ -22,20 +23,24 @@ internal class PreferencesModel(
     private val settingsRepo: SettingsRepo,
 ) : StateViewModel<PreferencesModel.State>(
         State(
-            preferences = settingsRepo.settings.value.preferences,
+            activities = settingsRepo.settings.value.activities,
+            selected = settingsRepo.settings.value.selectedActivity,
             units = settingsRepo.settings.value.units,
         ),
     ) {
     init {
         settingsRepo.settings
-            .map { it.preferences to it.units }
+            .map { Triple(it.activities, it.selectedActivity, it.units) }
             .distinctUntilChanged()
-            .mergeState {
-                state,
-                (preferences, units),
-                ->
-                state.copy(preferences = preferences, units = units)
+            .mergeState { state, (activities, selected, units) ->
+                state.copy(activities = activities, selected = selected, units = units)
             }
+    }
+
+    fun selectActivity(activity: Activity) {
+        settingsRepo.update { settings ->
+            settings.copy(selectedActivity = activity)
+        }
     }
 
     fun update(preferences: Preferences) {
@@ -45,7 +50,8 @@ internal class PreferencesModel(
     }
 
     data class State(
-        val preferences: Preferences,
+        val activities: PersistentMap<Activity, Preferences>,
+        val selected: Activity,
         val units: Units,
         val rangeTempStart: Double = DEFAULT_MIN_TEMP_RANGE,
         val rangeTempEnd: Double = DEFAULT_MAX_TEMP_RANGE,
@@ -72,5 +78,7 @@ internal class PreferencesModel(
             from = WindSpeedUnit.KilometerPerHour,
             target = units.windSpeed,
         ).toFloat()
+
+        val preferences: Preferences = activities[selected] ?: Preferences.defaultFor(selected)
     }
 }

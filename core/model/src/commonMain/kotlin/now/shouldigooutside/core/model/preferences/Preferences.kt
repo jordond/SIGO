@@ -1,5 +1,8 @@
 package now.shouldigooutside.core.model.preferences
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 public data class Preferences(
     public val minTemperature: Int,
     public val maxTemperature: Int,
@@ -17,5 +20,46 @@ public data class Preferences(
             rain = false,
             snow = false,
         )
+
+        public fun defaultFor(activity: Activity): Preferences =
+            when (activity) {
+                is Activity.General -> default
+                is Activity.Walking -> default.copy(
+                    minTemperature = -10,
+                    maxTemperature = 30,
+                    windSpeed = 35,
+                    rain = true,
+                    snow = true,
+                )
+                is Activity.Running -> default.copy(
+                    minTemperature = 10,
+                    maxTemperature = 30,
+                    windSpeed = 25,
+                    rain = false,
+                    snow = false,
+                )
+                is Activity.Cycling -> default.copy(
+                    minTemperature = 10,
+                    maxTemperature = 30,
+                    windSpeed = 25,
+                    rain = false,
+                    snow = false,
+                )
+                is Activity.Hiking -> default.copy(
+                    minTemperature = 5,
+                    maxTemperature = 30,
+                    windSpeed = 35,
+                    rain = true,
+                    snow = true,
+                )
+                is Activity.Swimming -> default.copy(
+                    minTemperature = 20,
+                    maxTemperature = 35,
+                    windSpeed = 30,
+                    rain = false,
+                    snow = false,
+                )
+                is Activity.Custom -> default
+            }
     }
 }

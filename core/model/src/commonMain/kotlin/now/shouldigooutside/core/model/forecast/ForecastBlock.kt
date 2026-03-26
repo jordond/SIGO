@@ -1,5 +1,6 @@
 package now.shouldigooutside.core.model.forecast
 
+import androidx.compose.runtime.Immutable
 import kotlin.time.Instant
 
 /**
@@ -16,6 +17,7 @@ import kotlin.time.Instant
  * @property visibility Visibility in kilometers.
  * @property severeWeatherRisk Risk level of severe weather
  */
+@Immutable
 public data class ForecastBlock(
     val instant: Instant,
     val humidity: Double,

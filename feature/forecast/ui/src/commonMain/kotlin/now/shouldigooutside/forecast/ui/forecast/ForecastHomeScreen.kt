@@ -33,10 +33,6 @@ import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.PullToRefreshBox
-import now.shouldigooutside.core.ui.components.Scaffold
-import now.shouldigooutside.core.ui.components.snackbar.Snackbar
-import now.shouldigooutside.core.ui.components.snackbar.SnackbarHost
-import now.shouldigooutside.core.ui.components.snackbar.SnackbarHostState
 import now.shouldigooutside.core.ui.components.snackbar.rememberSnackbarProvider
 import now.shouldigooutside.core.ui.ktx.conditional
 import now.shouldigooutside.core.ui.preview.AppPreview
@@ -46,15 +42,12 @@ import now.shouldigooutside.forecast.ui.components.LoadingBox
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
 import now.shouldigooutside.forecast.ui.components.mappers.rememberInstant
 import now.shouldigooutside.forecast.ui.forecast.section.ForecastScoreContent
-import now.shouldigooutside.forecast.ui.forecast.section.HomeBottomBar
 import now.shouldigooutside.forecast.ui.forecast.section.search.LocationSearchSheet
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun ForecastHomeScreen(
     toViewDetails: (period: ForecastPeriod) -> Unit,
-    toPreferences: () -> Unit,
-    toSettings: () -> Unit,
     model: ForecastHomeModel = koinViewModel(),
 ) {
     val snackbar = rememberSnackbarProvider()
@@ -74,7 +67,6 @@ internal fun ForecastHomeScreen(
         loading = state.loading,
         refreshing = state.refreshing,
         permissionStatus = state.permissionStatus,
-        snackbarHostState = snackbar.hostState,
         showLocationSheet = state.showLocationSheet,
         usingCurrentLocation = state.usingCurrentLocation,
         searchQuery = state.searchQuery,
@@ -85,8 +77,6 @@ internal fun ForecastHomeScreen(
                 is ForecastHomeAction.Refresh -> model.fetch()
                 is ForecastHomeAction.ChangePeriod -> model.updatePeriod(action.period)
                 is ForecastHomeAction.ToViewDetails -> toViewDetails(state.period)
-                is ForecastHomeAction.ToPreferences -> toPreferences()
-                is ForecastHomeAction.ToSettings -> toSettings()
                 is ForecastHomeAction.OpenLocationSheet -> model.openLocationSheet()
                 is ForecastHomeAction.CloseLocationSheet -> model.closeLocationSheet()
                 is ForecastHomeAction.SearchLocation -> model.searchLocation(action.query)
@@ -109,7 +99,6 @@ public fun ForecastHomeScreen(
     loading: Boolean = false,
     refreshing: Boolean = false,
     permissionStatus: LocationPermissionStatus = LocationPermissionStatus.Unknown,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     showLocationSheet: Boolean = false,
     usingCurrentLocation: Boolean = true,
     searchQuery: String = "",
@@ -118,79 +107,54 @@ public fun ForecastHomeScreen(
 ) {
     val instant = data.rememberInstant()
 
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = { data ->
-                    Snackbar(
-                        snackbarData = data,
-                        modifier = Modifier.padding(bottom = 16.dp),
-                    )
-                },
-            )
-        },
-        bottomBar = {
-            HomeBottomBar(
-                canGoToDetails = !loading && data != null,
-                toDetails = dispatcher.rememberRelay(ForecastHomeAction.ToViewDetails),
-                toSettings = dispatcher.rememberRelay(ForecastHomeAction.ToSettings),
-                toPreferences = dispatcher.rememberRelay(ForecastHomeAction.ToPreferences),
-            )
-        },
-        modifier = modifier,
-    ) { innerPadding ->
-        PullToRefreshBox(
-            isRefreshing = refreshing,
-            onRefresh = dispatcher.rememberRelay(ForecastHomeAction.Refresh),
+    PullToRefreshBox(
+        isRefreshing = refreshing,
+        onRefresh = dispatcher.rememberRelay(ForecastHomeAction.Refresh),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = AppTheme.spacing.standard)
+                .fillMaxSize()
+                .conditional(!loading) {
+                    Modifier.verticalScroll(rememberScrollState())
+                }.height(IntrinsicSize.Max),
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = AppTheme.spacing.standard)
-                    .fillMaxSize()
-                    .conditional(!loading) {
-                        Modifier.verticalScroll(rememberScrollState())
-                    }.height(IntrinsicSize.Max)
-                    .padding(innerPadding),
-            ) {
-                Header(
-                    data = data,
-                    period = period,
-                    changePeriod = dispatcher.rememberRelayOf(ForecastHomeAction::ChangePeriod),
-                    location = location?.takeUnless { it.isDefaultName },
-                    onLocationClick = dispatcher.rememberRelay(ForecastHomeAction.OpenLocationSheet),
-                    instant = instant,
-                    modifier = Modifier.padding(top = AppTheme.spacing.standard),
-                )
+            Header(
+                data = data,
+                period = period,
+                changePeriod = dispatcher.rememberRelayOf(ForecastHomeAction::ChangePeriod),
+                location = location?.takeUnless { it.isDefaultName },
+                onLocationClick = dispatcher.rememberRelay(ForecastHomeAction.OpenLocationSheet),
+                instant = instant,
+                modifier = Modifier.padding(top = AppTheme.spacing.standard),
+            )
 
-                val crossfadeTarget = remember(data, loading) { loading to data }
-                Crossfade(
-                    targetState = crossfadeTarget,
-                    modifier = Modifier.padding(top = AppTheme.spacing.standard),
-                ) { target ->
-                    if (target.first && target.second == null) {
-                        Box(
-                            // contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            LoadingBox()
-                        }
-                    } else if (target.second != null) {
-                        val periodData = remember(target.second, period) {
-                            target.second?.forPeriod(period)
-                        }
+            val crossfadeTarget = remember(data, loading) { loading to data }
+            Crossfade(
+                targetState = crossfadeTarget,
+                modifier = Modifier.padding(top = AppTheme.spacing.standard),
+            ) { target ->
+                if (target.first && target.second == null) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        LoadingBox()
+                    }
+                } else if (target.second != null) {
+                    val periodData = remember(target.second, period) {
+                        target.second?.forPeriod(period)
+                    }
 
-                        if (periodData == null) {
-                            NoDataForPeriod()
-                        } else {
-                            ForecastScoreContent(
-                                updatedAt = instant,
-                                preferences = preferences,
-                                units = units,
-                                periodData = periodData,
-                                modifier = Modifier.padding(end = 2.dp),
-                            )
-                        }
+                    if (periodData == null) {
+                        NoDataForPeriod()
+                    } else {
+                        ForecastScoreContent(
+                            updatedAt = instant,
+                            preferences = preferences,
+                            units = units,
+                            periodData = periodData,
+                            modifier = Modifier.padding(end = 2.dp),
+                        )
                     }
                 }
             }

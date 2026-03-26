@@ -34,12 +34,10 @@ import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.forecast_period_now
 import now.shouldigooutside.core.resources.forecast_period_tomorrow
 import now.shouldigooutside.core.ui.AppTheme
-import now.shouldigooutside.core.ui.brutal
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.autoSize
-import now.shouldigooutside.core.ui.components.card.CardDefaults
-import now.shouldigooutside.core.ui.components.card.ElevatedCard
+import now.shouldigooutside.core.ui.components.card.SelectionCard
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.Droplet
 import now.shouldigooutside.core.ui.ktx.get
@@ -142,17 +140,9 @@ internal fun HourCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = if (isSelected) {
-        AppTheme.colors.brutal.yellow
-    } else {
-        AppTheme.colors.brutal.blue
-    }
-
-    ElevatedCard(
+    SelectionCard(
+        isSelected = isSelected,
         onClick = onClick,
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = if (isSelected) colors.bright else AppTheme.colors.surface,
-        ),
         modifier = modifier.width(100.dp),
     ) {
         Column(

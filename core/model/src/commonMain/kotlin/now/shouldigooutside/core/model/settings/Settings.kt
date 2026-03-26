@@ -1,5 +1,7 @@
 package now.shouldigooutside.core.model.settings
 
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentMap
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
@@ -19,11 +21,14 @@ public class Settings(
     public val useCustomLocation: Boolean = false,
     public val use24HourFormat: Boolean = false,
     public val units: Units = Units.Metric,
-    public val activities: Map<Activity, Preferences> = mapOf(Activity.General to Preferences.default),
+    public val selectedActivity: Activity = Activity.General,
+    public val activities: PersistentMap<Activity, Preferences> =
+        persistentMapOf(Activity.General to Preferences.default),
     public val enableHaptics: Boolean = true,
     public val internalSettings: InternalSettings = InternalSettings(),
     public val loaded: Boolean = false,
 ) {
+    @Deprecated("Use preferences for specific activity instead")
     public val preferences: Preferences
         get() = activities[Activity.General] ?: error("General preferences wasn't set!")
 
@@ -38,6 +43,16 @@ public class Settings(
         )
     }
 
+    public fun add(
+        activity: Activity,
+        value: Preferences,
+    ): Settings = fullCopy(activities = activities.toPersistentMap().put(activity, value))
+
+    public fun remove(activity: Activity): Settings {
+        if (activity is Activity.General) return this
+        return fullCopy(activities = activities.toPersistentMap().remove(activity))
+    }
+
     public fun copy(
         firstLaunch: Instant = this.firstLaunch,
         themeMode: ThemeMode = this.themeMode,
@@ -48,6 +63,7 @@ public class Settings(
         useCustomLocation: Boolean = this.useCustomLocation,
         use24HourFormat: Boolean = this.use24HourFormat,
         units: Units = this.units,
+        selectedActivity: Activity = this.selectedActivity,
         enableHaptics: Boolean = this.enableHaptics,
         internalSettings: InternalSettings = this.internalSettings,
         loaded: Boolean = this.loaded,
@@ -62,6 +78,7 @@ public class Settings(
             useCustomLocation = useCustomLocation,
             use24HourFormat = use24HourFormat,
             units = units,
+            selectedActivity = selectedActivity,
             enableHaptics = enableHaptics,
             internalSettings = internalSettings,
             loaded = loaded,
@@ -77,7 +94,8 @@ public class Settings(
         useCustomLocation: Boolean = this.useCustomLocation,
         use24HourFormat: Boolean = this.use24HourFormat,
         units: Units = this.units,
-        activities: Map<Activity, Preferences> = this.activities,
+        selectedActivity: Activity = this.selectedActivity,
+        activities: PersistentMap<Activity, Preferences> = this.activities,
         enableHaptics: Boolean = this.enableHaptics,
         internalSettings: InternalSettings = this.internalSettings,
         loaded: Boolean = this.loaded,
@@ -92,6 +110,7 @@ public class Settings(
             useCustomLocation = useCustomLocation,
             use24HourFormat = use24HourFormat,
             units = units,
+            selectedActivity = selectedActivity,
             activities = activities,
             enableHaptics = enableHaptics,
             internalSettings = internalSettings,
@@ -102,8 +121,9 @@ public class Settings(
         "Settings(firstLaunch=$firstLaunch, themeMode=$themeMode, use24HourFormat=$use24HourFormat, " +
             "hasCompletedOnboarding=$hasCompletedOnboarding, lastLocation=$lastLocation, " +
             "lastLocationUpdate=$lastLocationUpdate, customLocation=$customLocation, " +
-            "useCustomLocation=$useCustomLocation, units=$units, activities=$activities, " +
-            "enableHaptics=$enableHaptics, internalSettings=$internalSettings, loaded=$loaded)"
+            "useCustomLocation=$useCustomLocation, units=$units, selected=$selectedActivity, " +
+            "activities=$activities, enableHaptics=$enableHaptics, internalSettings=$internalSettings," +
+            " loaded=$loaded)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -120,6 +140,7 @@ public class Settings(
         if (useCustomLocation != other.useCustomLocation) return false
         if (use24HourFormat != other.use24HourFormat) return false
         if (units != other.units) return false
+        if (selectedActivity != other.selectedActivity) return false
         if (activities != other.activities) return false
         if (enableHaptics != other.enableHaptics) return false
         if (internalSettings != other.internalSettings) return false
@@ -138,6 +159,7 @@ public class Settings(
         result = 31 * result + useCustomLocation.hashCode()
         result = 31 * result + use24HourFormat.hashCode()
         result = 31 * result + units.hashCode()
+        result = 31 * result + selectedActivity.hashCode()
         result = 31 * result + activities.hashCode()
         result = 31 * result + enableHaptics.hashCode()
         result = 31 * result + internalSettings.hashCode()

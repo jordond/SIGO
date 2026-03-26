@@ -8,7 +8,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
@@ -293,7 +292,7 @@ private fun MeasureScope.placeLabelAndIcon(
 
 internal object NavigationBarDefaults {
     internal val NavigationBarHeight: Dp = 95.0.dp
-    val containerColor: Color @Composable get() = AppTheme.colors.background
+    val containerColor: Color @Composable get() = AppTheme.colors.surface
 
     val windowInsets: WindowInsets
         @Composable get() =
@@ -313,8 +312,8 @@ public object NavigationBarItemDefaults {
         selectedTextColor: Color = AppTheme.colors.onPrimary,
         unselectedIconColor: Color = AppTheme.colors.onSurface.copy(alpha = 0.8f),
         unselectedTextColor: Color = AppTheme.colors.onSurface.copy(alpha = 0.8f),
-        disabledIconColor: Color = AppTheme.colors.onBackground.copy(alpha = 0.3f),
-        disabledTextColor: Color = AppTheme.colors.onBackground.copy(alpha = 0.3f),
+        disabledIconColor: Color = AppTheme.colors.onSurface.copy(alpha = 0.3f),
+        disabledTextColor: Color = AppTheme.colors.onSurface.copy(alpha = 0.3f),
     ): NavigationBarItemColors =
         NavigationBarItemColors(
             selectedIconColor = selectedIconColor,
@@ -391,7 +390,7 @@ private fun Preview() {
             "Settings" to AppIcons.Lucide.Settings,
         )
 
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(16.dp).background(AppTheme.colors.background)) {
             NavigationBar {
                 items.forEach { (key, icon) ->
                     NavigationBarItem(

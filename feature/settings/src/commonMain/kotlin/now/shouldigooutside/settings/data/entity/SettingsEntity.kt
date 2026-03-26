@@ -1,7 +1,9 @@
 package now.shouldigooutside.settings.data.entity
 
+import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.model.ui.ThemeMode
 import now.shouldigooutside.core.model.units.Units
@@ -27,8 +29,10 @@ internal data class SettingsEntity(
     val use24HourFormat: Boolean = false,
     @SerialName("units")
     val units: UnitsEntity? = null,
+    @SerialName("selected_activity")
+    val selectedActivity: String = ActivityEntity.General,
     @SerialName("activities")
-    val activities: Map<ActivityEntity, PreferencesEntity> = emptyMap(),
+    val activities: Map<String, PreferencesEntity> = emptyMap(),
     @Deprecated("Use activities with preferences instead")
     @SerialName("preferences")
     val preferences: PreferencesEntity? = null,
@@ -56,14 +60,18 @@ internal fun SettingsEntity.toModel(): Settings {
         mapOf(ActivityEntity.General to preferences)
     } else {
         activities
-    }
+    }.toModel().toPersistentMap()
+
+    val selected = mapActivityEntityToModel(selectedActivity)
+    val selectedActivity = if (activities.containsKey(selected)) selected else Activity.General
 
     return Settings(
         firstLaunch = Instant.fromEpochMilliseconds(firstLaunch),
         themeMode = ThemeMode.from(theme),
         hasCompletedOnboarding = hasCompletedOnboarding,
         units = units,
-        activities = activities.toMap().toModel(),
+        selectedActivity = selectedActivity,
+        activities = activities,
         use24HourFormat = use24HourFormat,
         lastLocation = lastLocation?.toModel(),
         lastLocationUpdate = lastLocationUpdate?.let { Instant.fromEpochMilliseconds(it) },
@@ -81,6 +89,7 @@ internal fun Settings.toEntity() =
         theme = themeMode.name,
         hasCompletedOnboarding = hasCompletedOnboarding,
         units = units.toEntity(),
+        selectedActivity = selectedActivity.toEntity(),
         activities = activities.toEntity(),
         preferences = null, // Clear out old preferences field since we migrated to the new structure
         lastLocation = lastLocation?.toEntity(),

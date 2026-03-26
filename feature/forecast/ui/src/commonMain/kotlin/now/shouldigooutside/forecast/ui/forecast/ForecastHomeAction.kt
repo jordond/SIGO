@@ -8,10 +8,6 @@ import now.shouldigooutside.core.model.location.Location
 public sealed interface ForecastHomeAction {
     public data object Refresh : ForecastHomeAction
 
-    public data object ToSettings : ForecastHomeAction
-
-    public data object ToPreferences : ForecastHomeAction
-
     public data object ToViewDetails : ForecastHomeAction
 
     public data class ChangePeriod(

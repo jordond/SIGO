@@ -9,7 +9,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import dev.jordond.compass.Coordinates
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toPersistentMap
 import now.shouldigooutside.core.model.location.Location
+import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.preferences.Preferences
 import kotlin.time.Clock
 import dev.jordond.compass.Location as CompassLocation
 
@@ -36,6 +41,20 @@ public object PreviewData {
     public val Score: ScorePreviewData = ScorePreviewData
 
     public val Forecast: ForecastPreviewData = ForecastPreviewData
+
+    public val Activities: PersistentMap<Activity, Preferences> = persistentMapOf(
+        Activity.General to Preferences.default,
+        Activity.Running to Preferences.default,
+        Activity.Cycling to Preferences.default,
+        Activity.Hiking to Preferences.default,
+    )
+
+    public fun activities(count: Int = Activities.size): PersistentMap<Activity, Preferences> =
+        Activities
+            .toList()
+            .take(count)
+            .toMap()
+            .toPersistentMap()
 }
 
 internal val PreviewIcon: ImageVector

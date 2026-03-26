@@ -1,5 +1,8 @@
 package now.shouldigooutside.core.model.preferences
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 public sealed interface Activity {
     public data object General : Activity
 
