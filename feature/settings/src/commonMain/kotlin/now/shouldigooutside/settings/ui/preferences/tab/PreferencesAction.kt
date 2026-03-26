@@ -14,6 +14,10 @@ public sealed interface PreferencesAction {
         val preferences: Preferences,
     ) : PreferencesAction
 
+    public data object ResetPreferences : PreferencesAction
+
+    public data object Delete : PreferencesAction
+
     public data object ToAddActivity : PreferencesAction
 
     public data object ToSettings : PreferencesAction

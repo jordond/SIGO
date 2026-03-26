@@ -32,13 +32,13 @@ import now.shouldigooutside.core.model.location.LocationPermissionStatus
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.components.LoadingBox
 import now.shouldigooutside.core.ui.components.PullToRefreshBox
 import now.shouldigooutside.core.ui.components.snackbar.rememberSnackbarProvider
 import now.shouldigooutside.core.ui.ktx.conditional
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.Header
-import now.shouldigooutside.forecast.ui.components.LoadingBox
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
 import now.shouldigooutside.forecast.ui.components.mappers.rememberInstant
 import now.shouldigooutside.forecast.ui.forecast.section.ForecastScoreContent

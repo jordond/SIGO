@@ -139,7 +139,6 @@ public fun TemperatureRange(
                 },
                 valueRange = temperatureRange,
                 colors = colors.sliderColors(),
-                steps = 3,
                 tickLabel = { SliderDefaults.TickLabel(it) },
                 modifier = Modifier
                     .padding(horizontal = 12.dp)

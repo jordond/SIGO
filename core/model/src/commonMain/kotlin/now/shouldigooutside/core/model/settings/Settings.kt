@@ -50,7 +50,19 @@ public class Settings(
 
     public fun remove(activity: Activity): Settings {
         if (activity is Activity.General) return this
-        return fullCopy(activities = activities.toPersistentMap().remove(activity))
+        if (!activities.containsKey(activity)) return this
+
+        val newSelected = if (selectedActivity == activity) {
+            Activity.General
+        } else {
+            val index = activities.keys.indexOf(activity)
+            activities.keys.toList().getOrNull(index - 1) ?: Activity.General
+        }
+
+        return fullCopy(
+            selectedActivity = newSelected,
+            activities = activities.toPersistentMap().remove(activity),
+        )
     }
 
     public fun copy(

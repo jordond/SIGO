@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -19,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.semantics.paneTitle
@@ -35,14 +33,13 @@ import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.cancel
 import now.shouldigooutside.core.resources.okay
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.BrutalColors
 import now.shouldigooutside.core.ui.LocalContentColor
+import now.shouldigooutside.core.ui.brutal
 import now.shouldigooutside.core.ui.components.AlertDialogDefaults.ButtonsCrossAxisSpacing
 import now.shouldigooutside.core.ui.components.AlertDialogDefaults.ButtonsMainAxisSpacing
-import now.shouldigooutside.core.ui.components.AlertDialogDefaults.DialogElevation
 import now.shouldigooutside.core.ui.components.AlertDialogDefaults.DialogMaxWidth
 import now.shouldigooutside.core.ui.components.AlertDialogDefaults.DialogMinWidth
-import now.shouldigooutside.core.ui.components.AlertDialogDefaults.DialogPadding
-import now.shouldigooutside.core.ui.components.AlertDialogDefaults.DialogShape
 import now.shouldigooutside.core.ui.components.AlertDialogDefaults.IconPadding
 import now.shouldigooutside.core.ui.components.AlertDialogDefaults.TextPadding
 import now.shouldigooutside.core.ui.components.AlertDialogDefaults.TitlePadding
@@ -61,12 +58,10 @@ public fun AlertDialog(
     confirmButtonText: String = Res.string.okay.get(),
     dismissButtonText: String? = Res.string.cancel.get(),
     icon: (@Composable () -> Unit)? = null,
-    shape: Shape = DialogShape,
-    containerColor: Color = AppTheme.colors.surface,
+    colors: BrutalColors = AppTheme.colors.brutal.red,
     iconContentColor: Color = AppTheme.colors.onSurface,
     titleContentColor: Color = AppTheme.colors.onSurface,
     textContentColor: Color = AppTheme.colors.onSurface,
-    elevation: Dp = DialogElevation,
     properties: DialogProperties = DialogProperties(),
     content: @Composable (() -> Unit)? = null,
 ) {
@@ -96,12 +91,10 @@ public fun AlertDialog(
         icon = icon,
         title = { Text(text = title) },
         text = { Text(text = text) },
-        shape = shape,
-        containerColor = containerColor,
+        colors = colors,
         iconContentColor = iconContentColor,
         titleContentColor = titleContentColor,
         textContentColor = textContentColor,
-        elevation = elevation,
         properties = properties,
         content = content,
     )
@@ -112,8 +105,7 @@ public fun BasicAlertDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     properties: DialogProperties = DialogProperties(),
-    shape: Shape = DialogShape,
-    elevation: Dp = DialogElevation,
+    colors: BrutalColors = AppTheme.colors.brutal.red,
     content: @Composable () -> Unit,
 ) {
     Dialog(
@@ -124,18 +116,15 @@ public fun BasicAlertDialog(
         Box(
             modifier =
                 modifier
-                    .sizeIn(minWidth = DialogMinWidth + elevation, maxWidth = DialogMaxWidth + elevation)
+                    .sizeIn(minWidth = DialogMinWidth, maxWidth = DialogMaxWidth)
+                    .padding(BrutalElevationDefaults.Medium.default)
                     .then(Modifier.semantics { paneTitle = dialogPaneDescription }),
-            propagateMinConstraints = true,
         ) {
-            Box(Modifier.padding(elevation)) {
-                BrutalContainer(
-                    shape = shape,
-                    elevation = elevation,
-                    border = true,
-                ) {
-                    content()
-                }
+            RetroBox(
+                colors = colors,
+                maxWidth = DialogMaxWidth,
+            ) {
+                content()
             }
         }
     }
@@ -150,53 +139,40 @@ private fun AlertDialogComponent(
     icon: @Composable (() -> Unit)?,
     title: @Composable (() -> Unit)?,
     text: @Composable (() -> Unit)?,
-    shape: Shape,
-    containerColor: Color,
+    colors: BrutalColors,
     iconContentColor: Color,
     titleContentColor: Color,
     textContentColor: Color,
-    elevation: Dp,
     properties: DialogProperties,
     content: @Composable (() -> Unit)? = null,
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
+        modifier = modifier,
         properties = properties,
+        colors = colors,
     ) {
-        val dialogPaneDescription = "Dialog"
-
-        Box(
-            modifier =
-                modifier
-                    .sizeIn(minWidth = DialogMinWidth, maxWidth = DialogMaxWidth)
-                    .then(Modifier.semantics { paneTitle = dialogPaneDescription }),
-            propagateMinConstraints = true,
-        ) {
-            if (content != null) {
-                content()
-            } else {
-                AlertDialogContent(
-                    buttons = {
-                        AlertDialogFlowRow(
-                            mainAxisSpacing = ButtonsMainAxisSpacing,
-                            crossAxisSpacing = ButtonsCrossAxisSpacing,
-                        ) {
-                            dismissButton?.invoke()
-                            confirmButton()
-                        }
-                    },
-                    icon = icon,
-                    title = title,
-                    text = text,
-                    shape = shape,
-                    containerColor = containerColor,
-                    elevation = elevation,
-                    buttonContentColor = iconContentColor,
-                    iconContentColor = iconContentColor,
-                    titleContentColor = titleContentColor,
-                    textContentColor = textContentColor,
-                )
-            }
+        if (content != null) {
+            content()
+        } else {
+            AlertDialogContent(
+                buttons = {
+                    AlertDialogFlowRow(
+                        mainAxisSpacing = ButtonsMainAxisSpacing,
+                        crossAxisSpacing = ButtonsCrossAxisSpacing,
+                    ) {
+                        dismissButton?.invoke()
+                        confirmButton()
+                    }
+                },
+                icon = icon,
+                title = title,
+                text = text,
+                buttonContentColor = iconContentColor,
+                iconContentColor = iconContentColor,
+                titleContentColor = titleContentColor,
+                textContentColor = textContentColor,
+            )
         }
     }
 }
@@ -208,76 +184,66 @@ internal fun AlertDialogContent(
     icon: (@Composable () -> Unit)?,
     title: (@Composable () -> Unit)?,
     text: @Composable (() -> Unit)?,
-    shape: Shape,
-    containerColor: Color,
-    elevation: Dp,
     buttonContentColor: Color,
     iconContentColor: Color,
     titleContentColor: Color,
     textContentColor: Color,
 ) {
-    Surface(
-        modifier = modifier,
-        shape = shape,
-        color = containerColor,
-        shadowElevation = elevation,
-    ) {
-        Column(modifier = Modifier.padding(DialogPadding)) {
-            icon?.let {
-                CompositionLocalProvider(LocalContentColor provides iconContentColor) {
-                    Box(
-                        Modifier
-                            .padding(IconPadding)
-                            .align(Alignment.CenterHorizontally),
-                    ) {
-                        icon()
-                    }
-                }
-            }
-            title?.let {
-                ProvideContentColorTextStyle(
-                    contentColor = titleContentColor,
-                    textStyle = AppTheme.typography.h3,
+    Column(modifier = modifier) {
+        icon?.let {
+            CompositionLocalProvider(LocalContentColor provides iconContentColor) {
+                Box(
+                    Modifier
+                        .padding(IconPadding)
+                        .align(Alignment.CenterHorizontally),
                 ) {
-                    Box(
-                        Modifier
-                            .padding(TitlePadding)
-                            .align(
-                                if (icon == null) {
-                                    Alignment.Start
-                                } else {
-                                    Alignment.CenterHorizontally
-                                },
-                            ),
-                    ) {
-                        title()
-                    }
+                    icon()
                 }
             }
-            text?.let {
-                val textStyle = AppTheme.typography.body1
-                ProvideContentColorTextStyle(
-                    contentColor = textContentColor,
-                    textStyle = textStyle,
+        }
+        title?.let {
+            ProvideContentColorTextStyle(
+                contentColor = titleContentColor,
+                textStyle = AppTheme.typography.h3,
+            ) {
+                Box(
+                    Modifier
+                        .padding(TitlePadding)
+                        .align(
+                            if (icon == null) {
+                                Alignment.Start
+                            } else {
+                                Alignment.CenterHorizontally
+                            },
+                        ),
                 ) {
-                    Box(
-                        Modifier
-                            .weight(weight = 1f, fill = false)
-                            .padding(TextPadding)
-                            .align(Alignment.Start),
-                    ) {
-                        text()
-                    }
+                    title()
                 }
             }
-            Box(modifier = Modifier.align(Alignment.End)) {
-                val textStyle = AppTheme.typography.body2
-                ProvideContentColorTextStyle(
-                    contentColor = buttonContentColor,
-                    textStyle = textStyle,
-                    content = buttons,
-                )
+        }
+        text?.let {
+            val textStyle = AppTheme.typography.body1
+            ProvideContentColorTextStyle(
+                contentColor = textContentColor,
+                textStyle = textStyle,
+            ) {
+                Box(
+                    Modifier
+                        .weight(weight = 1f, fill = false)
+                        .padding(TextPadding)
+                        .align(Alignment.Start),
+                ) {
+                    text()
+                }
             }
+        }
+        Box(modifier = Modifier.align(Alignment.End)) {
+            val textStyle = AppTheme.typography.body2
+            ProvideContentColorTextStyle(
+                contentColor = buttonContentColor,
+                textStyle = textStyle,
+                content = buttons,
+            )
         }
     }
 }
@@ -381,13 +347,9 @@ public object AlertDialogDefaults {
     public val ButtonsMainAxisSpacing: Dp = 8.dp
     public val ButtonsCrossAxisSpacing: Dp = 12.dp
 
-    public val DialogPadding: PaddingValues = PaddingValues(all = 16.dp)
     public val IconPadding: PaddingValues = PaddingValues(bottom = 16.dp)
     public val TitlePadding: PaddingValues = PaddingValues(bottom = 8.dp)
     public val TextPadding: PaddingValues = PaddingValues(bottom = 24.dp)
-
-    public val DialogShape: CornerBasedShape @Composable get() = AppTheme.shapes.small
-    public val DialogElevation: Dp = BrutalElevationDefaults.Medium.default
 }
 
 @Preview

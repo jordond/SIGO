@@ -153,4 +153,17 @@ public object BrutalColor {
         lowest = Color(0xFFe3e0f3),
         onLowest = Color.Black,
     )
+
+    public val lime: BrutalColors = BrutalColors(
+        bright = Color(0xFFCCFF00),
+        onBright = Color.Black,
+        high = Color(0xFFD4E157),
+        onHigh = Color.Black,
+        normal = Color(0xFFDCE775),
+        onNormal = Color.Black,
+        low = Color(0xFFE6EE9C),
+        onLow = Color.Black,
+        lowest = Color(0xFFF0F4C3),
+        onLowest = Color.Black,
+    )
 }

@@ -43,7 +43,20 @@ internal class PreferencesModel(
 
     fun update(preferences: Preferences) {
         settingsRepo.update { settings ->
-            settings.updatePreferences(Activity.General, preferences)
+            settings.updatePreferences(state.value.selected, preferences)
+        }
+    }
+
+    fun deleteSelectedActivity() {
+        settingsRepo.update { settings ->
+            settings.remove(state.value.selected)
+        }
+    }
+
+    fun resetSelectedPreferences() {
+        val defaults = Preferences.defaultFor(state.value.selected)
+        settingsRepo.update { settings ->
+            settings.updatePreferences(state.value.selected, defaults)
         }
     }
 

@@ -9,7 +9,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -49,7 +51,8 @@ import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.activity_add_preferences_description
 import now.shouldigooutside.core.resources.activity_add_title
-import now.shouldigooutside.core.resources.add
+import now.shouldigooutside.core.resources.reset
+import now.shouldigooutside.core.resources.save
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.activities.key
 import now.shouldigooutside.core.ui.activities.rememberStringResource
@@ -131,7 +134,7 @@ internal fun AddActivityScreen(
                     onClick = dispatcher.rememberRelay(AddActivityAction.Save),
                     modifier = Modifier.height(75.dp).width(150.dp),
                 ) {
-                    Text(Res.string.add, style = AppTheme.typography.h2)
+                    Text(Res.string.save, style = AppTheme.typography.h2)
                 }
             }
         },
@@ -151,7 +154,7 @@ internal fun AddActivityScreen(
                 key = { it.key() },
                 contentType = { it },
             ) { item ->
-                val visible = activity == null || item == activity
+                val visible = activity == null
                 AnimatedVisibility(
                     visible = visible,
                     enter = fadeIn(tween(220)) + scaleIn(tween(220), initialScale = 0.8f),
@@ -165,7 +168,7 @@ internal fun AddActivityScreen(
                 ) {
                     AddActivityItem(
                         activity = item,
-                        selected = item == activity,
+                        selected = false,
                         onClick = { dispatcher.dispatch(AddActivityAction.Select(item)) },
                         modifier = Modifier.aspectRatio(1f),
                     )
@@ -173,22 +176,44 @@ internal fun AddActivityScreen(
             }
 
             item(key = "preferences", span = { GridItemSpan(maxLineSpan) }) {
-                if (activity != null) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItem(),
-                    ) {
-                        val title = activity.rememberStringResource().get()
-                        Text(Res.string.activity_add_preferences_description.get(title))
-                        PreferencesList(
-                            units = units,
-                            preferences = preferences,
-                            updatePreferences = dispatcher.rememberRelayOf(AddActivityAction::Update),
-                            temperatureRange = ranges.temperature,
-                            maxWindSpeed = ranges.maxWindSpeed,
-                        )
+                AnimatedVisibility(
+                    visible = activity != null,
+                    enter = fadeIn(tween(300)) + slideInVertically(tween(300)) { it / 2 },
+                    exit = fadeOut(tween(180)) + slideOutVertically(tween(180)) { it / 2 },
+                    modifier = Modifier.animateItem(),
+                ) {
+                    if (activity != null) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            AddActivityItem(
+                                activity = activity,
+                                selected = true,
+                                onClick = { dispatcher.dispatch(AddActivityAction.Select(activity)) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(100.dp),
+                            )
+
+                            val title = activity.rememberStringResource().get()
+                            Text(Res.string.activity_add_preferences_description.get(title))
+
+                            PreferencesList(
+                                units = units,
+                                preferences = preferences,
+                                updatePreferences = dispatcher.rememberRelayOf(AddActivityAction::Update),
+                                temperatureRange = ranges.temperature,
+                                maxWindSpeed = ranges.maxWindSpeed,
+                            )
+
+                            Button(
+                                variant = ButtonVariant.Outlined,
+                                onClick = dispatcher.rememberRelay(AddActivityAction.ResetPreferences),
+                            ) {
+                                Text(Res.string.reset)
+                            }
+                        }
                     }
                 }
             }

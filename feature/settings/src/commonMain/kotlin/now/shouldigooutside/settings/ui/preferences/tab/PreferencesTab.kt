@@ -1,11 +1,18 @@
 package now.shouldigooutside.settings.ui.preferences.tab
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -14,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,10 +40,24 @@ import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.preferences.remainingActivities
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.are_you_sure
+import now.shouldigooutside.core.resources.delete
+import now.shouldigooutside.core.resources.delete_activity_message
 import now.shouldigooutside.core.resources.preferences
+import now.shouldigooutside.core.resources.reset
+import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.TabHeader
 import now.shouldigooutside.core.ui.activities.ActivitySelector
-import now.shouldigooutside.core.ui.ktx.debugBorder
+import now.shouldigooutside.core.ui.components.AlertDialog
+import now.shouldigooutside.core.ui.components.Button
+import now.shouldigooutside.core.ui.components.ButtonVariant
+import now.shouldigooutside.core.ui.components.Icon
+import now.shouldigooutside.core.ui.components.IconButton
+import now.shouldigooutside.core.ui.components.IconButtonVariant
+import now.shouldigooutside.core.ui.components.Text
+import now.shouldigooutside.core.ui.icons.AppIcons
+import now.shouldigooutside.core.ui.icons.lucide.RotateCcw
+import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preferences.PreferencesList
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
@@ -61,6 +81,7 @@ internal fun PreferencesTab(
     model: PreferencesModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     PreferencesTab(
         selected = state.selected,
@@ -75,9 +96,21 @@ internal fun PreferencesTab(
                 is PreferencesAction.ToAddActivity -> toAddActivity()
                 is PreferencesAction.ToSettings -> toSettings()
                 is PreferencesAction.Update -> model.update(action.preferences)
+                is PreferencesAction.Delete -> showDeleteDialog = true
+                is PreferencesAction.ResetPreferences -> model.resetSelectedPreferences()
             }
         },
     )
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            onConfirmClick = { model.deleteSelectedActivity() },
+            title = Res.string.are_you_sure.get(),
+            text = Res.string.delete_activity_message.get(),
+            confirmButtonText = Res.string.delete.get(),
+        )
+    }
 }
 
 @Composable
@@ -123,6 +156,42 @@ public fun PreferencesTab(
                 .padding(horizontal = 16.dp),
         )
 
+        AnimatedVisibility(visible = selected != Activity.General) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .padding(top = 32.dp)
+                    .padding(horizontal = 16.dp)
+                    .widthIn(max = 400.dp)
+                    .height(65.dp),
+            ) {
+                Box(
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Button(
+                        onClick = dispatcher.rememberRelay(PreferencesAction.Delete),
+                        variant = ButtonVariant.DestructiveElevated,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        Text(Res.string.delete, style = AppTheme.typography.h3)
+                    }
+                }
+
+                IconButton(
+                    variant = IconButtonVariant.SecondaryElevated,
+                    onClick = dispatcher.rememberRelay(PreferencesAction.ResetPreferences),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f),
+                ) {
+                    Icon(
+                        icon = AppIcons.Lucide.RotateCcw,
+                        contentDescription = Res.string.reset.get(),
+                    )
+                }
+            }
+        }
+
         Spacer(Modifier.height(100.dp))
     }
 }
@@ -134,7 +203,7 @@ private fun Preview() {
     var preferences by remember { mutableStateOf(Preferences.default) }
     AppPreview {
         PreferencesTab(
-            selected = Activity.General,
+            selected = Activity.Running,
             selectedPreferences = preferences,
             activities = PreviewData.activities(2),
             units = Units.Metric,

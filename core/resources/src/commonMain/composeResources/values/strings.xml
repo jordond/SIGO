@@ -59,6 +59,8 @@
     <string name="settings">Settings</string>
     <string name="preferences">Preferences</string>
     <string name="percent">%1$d%</string>
+    <string name="delete">Delete</string>
+    <string name="delete_activity_message">This will remove the activity and its preferences.</string>
 
     <string name="url_title_website">Website</string>
     <string name="url_title_privacy">Privacy Policy</string>

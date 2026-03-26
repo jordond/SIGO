@@ -67,7 +67,7 @@ public fun Activity.rememberIcon(): ImageVector =
 @Composable
 public fun Activity.colors(): BrutalColors =
     when (this) {
-        is Activity.Custom -> AppTheme.colors.brutal.red
+        is Activity.Custom -> AppTheme.colors.brutal.lime
         is Activity.Cycling -> AppTheme.colors.brutal.orange
         is Activity.General -> AppTheme.colors.brutal.yellow
         is Activity.Hiking -> AppTheme.colors.brutal.green

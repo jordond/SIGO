@@ -107,7 +107,6 @@ public fun WindRange(
                 onValueChange = { update(preferences.copy(windSpeed = it.toInt())) },
                 valueRange = remember(maxWindSpeed) { 0f..maxWindSpeed },
                 colors = colors.sliderColors(),
-                steps = 3,
                 tickLabel = { SliderDefaults.TickLabel(it) },
                 modifier = Modifier
                     .padding(horizontal = 12.dp)
