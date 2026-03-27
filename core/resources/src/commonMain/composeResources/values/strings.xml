@@ -138,7 +138,8 @@
     <string name="unit_distance_km">km</string>
     <string name="unit_distance_mile">mi</string>
 
-    <string name="home_tab_forecast">Home</string>
+    <string name="home_tab_home">Home</string>
+    <string name="home_tab_forecast">Forecast</string>
     <string name="home_tab_activities">Activities</string>
     <string name="home_tab_preferences">Preferences</string>
 

@@ -114,7 +114,7 @@ internal fun PreferencesTab(
 }
 
 @Composable
-public fun PreferencesTab(
+internal fun PreferencesTab(
     selected: Activity,
     selectedPreferences: Preferences,
     activities: PersistentMap<Activity, Preferences>,
@@ -199,7 +199,7 @@ public fun PreferencesTab(
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
-private fun Preview() {
+public fun PreferencesTabPreview() {
     var preferences by remember { mutableStateOf(Preferences.default) }
     AppPreview {
         PreferencesTab(

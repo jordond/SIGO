@@ -13,6 +13,6 @@ internal class HomeModel : StateViewModel<HomeModel.State>(State()) {
 
     @Immutable
     data class State(
-        val selectedTab: HomeTab = HomeTab.Forecast,
+        val selectedTab: HomeTab = HomeTab.default,
     )
 }

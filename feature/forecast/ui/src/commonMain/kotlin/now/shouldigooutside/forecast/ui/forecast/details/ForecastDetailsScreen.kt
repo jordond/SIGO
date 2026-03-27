@@ -1,5 +1,6 @@
 package now.shouldigooutside.forecast.ui.forecast.details
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,18 +26,21 @@ import now.shouldigooutside.core.model.ForecastData
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.forecast_details_title
 import now.shouldigooutside.core.resources.something_went_wrong
 import now.shouldigooutside.core.ui.AppTheme
-import now.shouldigooutside.core.ui.components.Scaffold
+import now.shouldigooutside.core.ui.TabHeader
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.card.Card
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.ForecastPreviewData
+import now.shouldigooutside.core.ui.preview.PreviewData.location
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun ForecastDetailsScreen(
     onBack: () -> Unit,
+    toSettings: () -> Unit,
     model: ForecastDetailsModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
@@ -55,6 +61,7 @@ internal fun ForecastDetailsScreen(
             selectedScore = state.selectedScore?.result,
             onSelected = model::select,
             onBack = onBack,
+            toSettings = toSettings,
         )
     }
 }
@@ -67,55 +74,65 @@ internal fun ForecastDetailsScreen(
     onSelected: (ForecastBlock?) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    toSettings: () -> Unit = {},
 ) {
-    Scaffold(
-        topBar = {
-            DetailsTopBar(
-                location = data.forecast.location,
-                onBack = onBack,
-            )
-        },
-        modifier = modifier,
-    ) { innerPadding ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
+        TabHeader(
+            title = Res.string.forecast_details_title,
+            toSettings = toSettings,
+        )
+
+        val locationAlpha by animateFloatAsState(
+            targetValue = if (data.forecast.location.isDefaultName) 0f else 1f,
+        )
+        Text(
+            text = location.name,
+            style = AppTheme.typography.body1,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(innerPadding),
-        ) {
-            Spacer(modifier = Modifier.height(8.dp))
+                .padding(horizontal = AppTheme.spacing.standard)
+                .graphicsLayer {
+                    alpha = locationAlpha
+                },
+        )
 
-            SelectedConditionsHero(
-                block = selected ?: data.forecast.current,
-                today = data.forecast.today.block,
-                scoreResult = selectedScore,
-                units = data.forecast.units,
-                modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
-            )
+        Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(20.dp))
+        SelectedConditionsHero(
+            block = selected ?: data.forecast.current,
+            today = data.forecast.today.block,
+            scoreResult = selectedScore,
+            units = data.forecast.units,
+            modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
+        )
 
-            val hours = remember(data.forecast.today.hours) {
-                data.forecast.today.hours
-                    .toPersistentList()
-            }
-            HourlyForecastStrip(
-                now = data.forecast.current,
-                tomorrow = data.forecast.tomorrow?.block,
-                hours = hours,
-                selected = selected,
-                units = data.forecast.units,
-                onSelected = onSelected,
-            )
+        Spacer(modifier = Modifier.height(20.dp))
 
-            Spacer(modifier = Modifier.height(20.dp))
-
-            WeatherDetailsGrid(
-                block = selected ?: data.forecast.current,
-                units = data.forecast.units,
-                modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
-            )
+        val hours = remember(data.forecast.today.hours) {
+            data.forecast.today.hours
+                .toPersistentList()
         }
+        HourlyForecastStrip(
+            now = data.forecast.current,
+            tomorrow = data.forecast.tomorrow?.block,
+            hours = hours,
+            selected = selected,
+            units = data.forecast.units,
+            onSelected = onSelected,
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        WeatherDetailsGrid(
+            block = selected ?: data.forecast.current,
+            units = data.forecast.units,
+            modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
+        )
     }
 }
 
@@ -145,4 +162,9 @@ private fun ForecastDetailsScreenPreview(
             onBack = {},
         )
     }
+}
+
+@Composable
+public fun ForecastDetailsTabPreview() {
+    ForecastDetailsScreenPreview(Params().values.first())
 }

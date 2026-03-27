@@ -88,7 +88,7 @@ internal fun ForecastHomeScreen(
 }
 
 @Composable
-public fun ForecastHomeScreen(
+internal fun ForecastHomeScreen(
     location: Location?,
     preferences: Preferences,
     units: Units,
@@ -204,7 +204,7 @@ private fun ScreenPreview(data: ForecastData) {
 
 @Preview
 @Composable
-private fun SunnyPreview() {
+public fun SunnyPreview() {
     ScreenPreview(PreviewData.Forecast.forecastData(PreviewData.Forecast.createSunnyForecast()))
 }
 

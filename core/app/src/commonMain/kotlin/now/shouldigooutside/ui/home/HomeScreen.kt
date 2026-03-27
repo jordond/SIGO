@@ -22,11 +22,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import dev.stateholder.dispatcher.rememberDispatcher
-import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
-import now.shouldigooutside.core.model.preferences.Activity
-import now.shouldigooutside.core.model.preferences.Preferences
-import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.components.Scaffold
 import now.shouldigooutside.core.ui.components.snackbar.LocalSnackbarProvider
 import now.shouldigooutside.core.ui.components.snackbar.Snackbar
@@ -34,10 +29,10 @@ import now.shouldigooutside.core.ui.components.snackbar.SnackbarHost
 import now.shouldigooutside.core.ui.components.snackbar.SnackbarProvider
 import now.shouldigooutside.core.ui.components.snackbar.rememberSnackbarProvider
 import now.shouldigooutside.core.ui.preview.AppPreview
-import now.shouldigooutside.core.ui.preview.PreviewData
-import now.shouldigooutside.forecast.ui.activities.ActivitiesTab
-import now.shouldigooutside.forecast.ui.forecast.ForecastHomeScreen
-import now.shouldigooutside.settings.ui.preferences.tab.PreferencesTab
+import now.shouldigooutside.forecast.ui.activities.ActivityTabPreview
+import now.shouldigooutside.forecast.ui.forecast.SunnyPreview
+import now.shouldigooutside.forecast.ui.forecast.details.ForecastDetailsTabPreview
+import now.shouldigooutside.settings.ui.preferences.tab.PreferencesTabPreview
 import now.shouldigooutside.ui.home.components.HomeBottomNav
 import now.shouldigooutside.ui.home.navigation.HomeScreenNavHost
 import now.shouldigooutside.ui.home.navigation.HomeTab
@@ -55,7 +50,7 @@ internal fun HomeScreen(
     val currentHomeTab = remember(current) {
         HomeTab.entries.firstOrNull { entry ->
             current?.destination?.hasRoute(entry.routeClass) == true
-        } ?: HomeTab.Forecast
+        } ?: HomeTab.default
     }
 
     val snackbar = rememberSnackbarProvider()
@@ -142,32 +137,10 @@ private fun Preview(
             onTabClick = {},
             tabContent = {
                 when (selected) {
-                    HomeTab.Forecast -> {
-                        val forecast = PreviewData.Forecast.createForecastFrom(
-                            PreviewData.Forecast.severeWeather(SevereWeatherRisk.Low),
-                        )
-                        ForecastHomeScreen(
-                            location = PreviewData.location,
-                            preferences = Preferences.default,
-                            units = Units.Metric,
-                            data = PreviewData.Forecast.forecastData(forecast),
-                            dispatcher = rememberDispatcher { },
-                        )
-                    }
-                    HomeTab.Activities -> {
-                        ActivitiesTab(
-                            activities = PreviewData.Activities,
-                        )
-                    }
-                    HomeTab.Preferences -> {
-                        PreferencesTab(
-                            selected = Activity.General,
-                            selectedPreferences = Preferences.default,
-                            activities = PreviewData.activities(2),
-                            units = Units.Metric,
-                            dispatcher = rememberDispatcher { },
-                        )
-                    }
+                    HomeTab.Home -> SunnyPreview()
+                    HomeTab.Forecast -> ForecastDetailsTabPreview()
+                    HomeTab.Activities -> ActivityTabPreview()
+                    HomeTab.Preferences -> PreferencesTabPreview()
                 }
             },
         )

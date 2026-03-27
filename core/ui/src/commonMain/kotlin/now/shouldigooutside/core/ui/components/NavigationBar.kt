@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.LocalContentColor
+import now.shouldigooutside.core.ui.LocalTextStyle
 import now.shouldigooutside.core.ui.components.NavigationBarDefaults.NavigationBarHeight
 import now.shouldigooutside.core.ui.components.NavigationBarItemDefaults.ItemAnimationDurationMillis
 import now.shouldigooutside.core.ui.components.NavigationBarItemDefaults.NavigationBarItemHorizontalPadding
@@ -60,6 +61,7 @@ import now.shouldigooutside.core.ui.contentColorFor
 import now.shouldigooutside.core.ui.foundation.ProvideTextStyle
 import now.shouldigooutside.core.ui.foundation.systemBarsForVisualComponents
 import now.shouldigooutside.core.ui.icons.AppIcons
+import now.shouldigooutside.core.ui.icons.lucide.CloudSun
 import now.shouldigooutside.core.ui.icons.lucide.Grid2x2
 import now.shouldigooutside.core.ui.icons.lucide.House
 import now.shouldigooutside.core.ui.icons.lucide.Settings
@@ -183,7 +185,7 @@ public fun RowScope.NavigationBarItem(
                         width = BrutalDefaults.BorderWidth,
                         color = borderColor,
                         shape = RoundedCornerShape(12.dp),
-                    ).padding(horizontal = 8.dp),
+                    ),
                 contentAlignment = Alignment.Center,
             ) {
                 NavigationBarItemBaselineLayout(
@@ -325,7 +327,7 @@ public object NavigationBarItemDefaults {
         )
 
     @Composable
-    public fun textStyle(): TextStyle = AppTheme.typography.label2
+    public fun textStyle(): TextStyle = AppTheme.typography.label3
 }
 
 @ConsistentCopyVisibility
@@ -386,6 +388,7 @@ private fun Preview() {
         var selectedItem by remember { mutableStateOf("Activities") }
         val items = mapOf(
             "Home" to AppIcons.Lucide.House,
+            "Forecast" to AppIcons.Lucide.CloudSun,
             "Activities" to AppIcons.Lucide.Grid2x2,
             "Settings" to AppIcons.Lucide.Settings,
         )
@@ -395,7 +398,13 @@ private fun Preview() {
                 items.forEach { (key, icon) ->
                     NavigationBarItem(
                         icon = { Icon(icon, contentDescription = key) },
-                        label = { Text(key.uppercase()) },
+                        label = {
+                            Text(
+                                text = key.uppercase(),
+                                maxLines = 1,
+                                autoSize = LocalTextStyle.current.autoSize(),
+                            )
+                        },
                         selected = selectedItem == key,
                         onClick = { selectedItem = key },
                     )

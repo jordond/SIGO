@@ -9,10 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
+import now.shouldigooutside.core.ui.LocalTextStyle
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.NavigationBar
 import now.shouldigooutside.core.ui.components.NavigationBarItem
 import now.shouldigooutside.core.ui.components.Text
+import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.ui.home.navigation.HomeTab
@@ -32,7 +34,11 @@ internal fun HomeBottomNav(
                     Icon(icon = entry.icon, contentDescription = entry.title.get())
                 },
                 label = {
-                    Text(text = entry.title)
+                    Text(
+                        text = entry.title,
+                        autoSize = LocalTextStyle.current.autoSize(),
+                        maxLines = 1,
+                    )
                 },
                 onClick = { onClick(entry) },
             )
@@ -44,7 +50,7 @@ internal fun HomeBottomNav(
 @Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
 private fun Preview() {
-    var selected by remember { mutableStateOf(HomeTab.Forecast) }
+    var selected by remember { mutableStateOf(HomeTab.default) }
     AppPreview {
         HomeBottomNav(
             selected = selected,
