@@ -26,6 +26,8 @@ public data class ForecastScoreRequestQuery(
     public val allowSnow: Boolean? = null,
     @SerialName("max_aqi")
     public val maxAqi: Int? = null,
+    @SerialName("include_air_quality")
+    public val includeAirQuality: Boolean = true,
 )
 
 public fun ForecastScoreRequestQuery.toModels(): Pair<Location, Preferences> {

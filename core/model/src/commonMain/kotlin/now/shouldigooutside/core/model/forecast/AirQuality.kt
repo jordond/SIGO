@@ -18,5 +18,7 @@ public value class AirQuality(
 
     public companion object {
         public val None: AirQuality = AirQuality(0)
+
+        public fun from(value: Int?): AirQuality? = value?.let(::AirQuality)
     }
 }

@@ -3,7 +3,9 @@ import co.touchlab.kermit.koin.KermitKoinLogger
 import now.shouldigooutside.api.App
 import now.shouldigooutside.api.DefaultApp
 import now.shouldigooutside.api.provider.ApiVersionProvider
+import now.shouldigooutside.api.provider.KvCacheProvider
 import now.shouldigooutside.api.provider.WorkerTokenProvider
+import now.shouldigooutside.core.api.server.cache.CacheProvider
 import now.shouldigooutside.core.api.server.jsApiServerModule
 import now.shouldigooutside.core.domain.VersionProvider
 import now.shouldigooutside.core.domain.forecast.ApiTokenProvider
@@ -45,5 +47,6 @@ private fun workerModule() =
     module {
         singleOf(::WorkerTokenProvider) bind ApiTokenProvider::class
         singleOf(::ApiVersionProvider) bind VersionProvider::class
+        single { KvCacheProvider() } bind CacheProvider::class
         singleOf(::DefaultApp) bind App::class
     }
