@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.units.TemperatureUnit
@@ -148,8 +149,7 @@ public fun TemperatureRange(
     }
 }
 
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
+@PreviewLightDark
 @Composable
 private fun Preview() {
     AppPreview {

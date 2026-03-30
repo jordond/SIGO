@@ -16,7 +16,9 @@ abstract class AppVersion : DefaultTask() {
     val gitHash: Provider<String> = project.providers
         .exec {
             commandLine("git", "rev-parse", "--short", "HEAD")
+            isIgnoreExitValue = true
         }.standardOutput.asText
+        .map { it.trim().ifEmpty { "unknown" } }
 
     @get:Input
     abstract val version: Property<String>
@@ -45,7 +47,7 @@ abstract class AppVersion : DefaultTask() {
             public object Version {
                 public const val NAME: String = "${version.get()}"
                 public const val CODE: Int = ${code.get()}
-                public const val GIT_SHA: String = "${gitHash.get().trim()}"
+                public const val GIT_SHA: String = "${gitHash.get()}"
             }
             """.trimIndent(),
         )
