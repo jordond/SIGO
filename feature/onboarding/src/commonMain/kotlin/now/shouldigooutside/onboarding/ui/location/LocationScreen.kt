@@ -117,26 +117,6 @@ internal fun LocationScreen(
                 )
             }
 
-            Card(
-                colors = CardDefaults.disclaimerColors,
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                ) {
-                    Icon(
-                        icon = AppIcons.Lucide.Info,
-                        contentDescription = Res.string.info.get(),
-                    )
-
-                    Text(
-                        text = Res.string.onboarding_location_disclaimer,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-            }
-
             LocationServicesCard(
                 locationServicesAvailable = locationServicesAvailable,
             )
@@ -159,6 +139,27 @@ internal fun LocationScreen(
                     status = locationResult,
                     getLocation = dispatcher.rememberRelay(StartTracking),
                 )
+            }
+
+            Card(
+                colors = CardDefaults.disclaimerColors,
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(AppTheme.spacing.small),
+                    modifier = Modifier.padding(12.dp),
+                ) {
+                    Icon(
+                        icon = AppIcons.Lucide.Info,
+                        contentDescription = Res.string.info.get(),
+                    )
+
+                    Text(
+                        text = Res.string.onboarding_location_disclaimer,
+                        style = AppTheme.typography.body3,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
             }
         }
     }

@@ -9,7 +9,8 @@ api-server-version = "1.0.0"
 sdk-target = "36"
 sdk-compile = "36"
 sdk-min = "30"
-jvmTarget = "25"
+jvmTarget = "21"
+jvmTargetServer = "25"
 ############################
 
 kotlin = "2.3.20"

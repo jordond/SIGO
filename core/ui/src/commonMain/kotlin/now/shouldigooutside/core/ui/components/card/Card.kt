@@ -187,12 +187,7 @@ public object CardDefaults {
 
     public val disclaimerColors: CardColors
         @Composable get() = cardColors(
-            containerColor =
-                if (LocalThemeIsDark.current) {
-                    AppTheme.colors.onDisabled
-                } else {
-                    AppTheme.colors.disabled
-                },
+            containerColor = Color(0xFFECE1D5),
             contentColor = Color.Black,
         )
 
