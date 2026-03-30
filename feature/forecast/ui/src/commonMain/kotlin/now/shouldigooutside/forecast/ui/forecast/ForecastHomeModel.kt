@@ -14,22 +14,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
-import now.shouldigooutside.core.domain.location.LocationRepo
 import now.shouldigooutside.core.domain.location.SearchLocationUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
+import now.shouldigooutside.core.foundation.ktx.checkCancellation
 import now.shouldigooutside.core.foundation.ktx.ensureExecutionTime
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.ForecastData
 import now.shouldigooutside.core.model.ForecastPeriodData
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.location.Location
-import now.shouldigooutside.core.model.location.LocationPermissionStatus
-import now.shouldigooutside.core.model.location.LocationPermissionStatus.Granted
-import now.shouldigooutside.core.model.location.LocationPermissionStatus.Unknown
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.forecast.ui.forecast.ForecastHomeModel.State
-import kotlin.coroutines.cancellation.CancellationException
 
 private const val MIN_SEARCH_INDICATOR_MS = 500L
 
@@ -45,7 +41,6 @@ internal class ForecastHomeModel(
         ),
     ) {
     private val logger = Logger.withTag("ForecastHomeModel")
-
     private var searchJob: Job? = null
 
     fun updatePeriod(period: ForecastPeriod) {
@@ -61,8 +56,8 @@ internal class ForecastHomeModel(
     }
 
     fun closeLocationSheet() {
-        updateState {
-            it.copy(
+        updateState { state ->
+            state.copy(
                 showLocationSheet = false,
                 searchQuery = "",
                 searchResults = persistentListOf(),
@@ -83,10 +78,9 @@ internal class ForecastHomeModel(
                     searchLocationUseCase.search(query).toPersistentList()
                 }
                 updateState { it.copy(searchResults = results, searching = false) }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                logger.e(e) { "Location search failed" }
+            } catch (cause: Exception) {
+                cause.checkCancellation()
+                logger.e(cause) { "Location search failed" }
                 updateState { it.copy(searchResults = persistentListOf(), searching = false) }
             }
         }
