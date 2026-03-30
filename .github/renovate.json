@@ -2,5 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "matchFileNames": ["website/**"],
+      "groupName": "website dependencies"
+    },
+    {
+      "matchFileNames": ["apps/api/worker/**"],
+      "groupName": "api/worker dependencies"
+    }
   ]
 }
