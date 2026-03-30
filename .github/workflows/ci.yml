@@ -33,7 +33,7 @@ jobs:
           distribution: adopt
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Init ktlint
         run: ./sigo init ktlint --ci --version 1.8.0
@@ -57,7 +57,7 @@ jobs:
           distribution: adopt
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Copy sample app-env
         run: cp ./.github/ci-app-env.properties ./app-env.properties
