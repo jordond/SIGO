@@ -21,7 +21,6 @@ import dev.stateholder.dispatcher.rememberDebounceDispatcher
 import dev.stateholder.dispatcher.rememberDispatcher
 import dev.stateholder.dispatcher.rememberRelay
 import dev.stateholder.dispatcher.rememberRelayOf
-import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -35,7 +34,6 @@ import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.LoadingBox
 import now.shouldigooutside.core.ui.components.PullToRefreshBox
-import now.shouldigooutside.core.ui.components.snackbar.rememberSnackbarProvider
 import now.shouldigooutside.core.ui.ktx.conditional
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
@@ -51,13 +49,6 @@ internal fun ForecastHomeScreen(
     toViewDetails: (period: ForecastPeriod) -> Unit,
     model: ForecastHomeModel = koinViewModel(),
 ) {
-    val snackbar = rememberSnackbarProvider()
-    HandleEvents(model) { event ->
-        when (event) {
-            is ForecastHomeModel.Event.Error -> snackbar.error(event.message)
-        }
-    }
-
     val state by model.collectAsState()
     ForecastHomeScreen(
         location = state.location,
@@ -67,7 +58,6 @@ internal fun ForecastHomeScreen(
         period = state.period,
         loading = state.loading,
         refreshing = state.refreshing,
-        permissionStatus = state.permissionStatus,
         showLocationSheet = state.showLocationSheet,
         usingCurrentLocation = state.usingCurrentLocation,
         searchQuery = state.searchQuery,
@@ -99,7 +89,6 @@ internal fun ForecastHomeScreen(
     period: ForecastPeriod = ForecastPeriod.Today,
     loading: Boolean = false,
     refreshing: Boolean = false,
-    permissionStatus: LocationPermissionStatus = LocationPermissionStatus.Unknown,
     showLocationSheet: Boolean = false,
     usingCurrentLocation: Boolean = true,
     searchQuery: String = "",

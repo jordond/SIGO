@@ -3,7 +3,7 @@ package now.shouldigooutside.forecast.ui.forecast
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
-import dev.stateholder.extensions.viewmodel.UiStateViewModel
+import dev.stateholder.extensions.viewmodel.StateViewModel
 import dev.stateholder.provider.composedStateProvider
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -21,25 +21,14 @@ import now.shouldigooutside.core.foundation.ktx.ensureExecutionTime
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.ForecastData
 import now.shouldigooutside.core.model.ForecastPeriodData
-import now.shouldigooutside.core.model.errorOrNull
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.location.LocationPermissionStatus
-import now.shouldigooutside.core.model.location.LocationPermissionStatus.Denied
 import now.shouldigooutside.core.model.location.LocationPermissionStatus.Granted
 import now.shouldigooutside.core.model.location.LocationPermissionStatus.Unknown
-import now.shouldigooutside.core.model.location.LocationResult
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.units.Units
-import now.shouldigooutside.core.resources.Res
-import now.shouldigooutside.core.resources.forecast_error_generic
-import now.shouldigooutside.core.resources.location_geolocation_error
-import now.shouldigooutside.core.resources.location_geolocation_not_allowed
-import now.shouldigooutside.core.resources.location_geolocation_not_found
-import now.shouldigooutside.core.resources.location_geolocation_not_supported
-import now.shouldigooutside.forecast.ui.forecast.ForecastHomeModel.Event
 import now.shouldigooutside.forecast.ui.forecast.ForecastHomeModel.State
-import org.jetbrains.compose.resources.StringResource
 import kotlin.coroutines.cancellation.CancellationException
 
 private const val MIN_SEARCH_INDICATOR_MS = 500L
@@ -47,28 +36,17 @@ private const val MIN_SEARCH_INDICATOR_MS = 500L
 @Stable
 internal class ForecastHomeModel(
     private val settingsRepo: SettingsRepo,
-    locationRepo: LocationRepo,
     private val forecastStateHolder: ForecastStateHolder,
     private val searchLocationUseCase: SearchLocationUseCase,
-) : UiStateViewModel<State, Event>(
+) : StateViewModel<State>(
         state(
             settingsRepo = settingsRepo,
-            locationRepo = locationRepo,
             forecastStateHolder = forecastStateHolder,
         ),
     ) {
     private val logger = Logger.withTag("ForecastHomeModel")
 
-    init {
-        forecastStateHolder.start(viewModelScope)
-
-        viewModelScope.launch {
-            state
-                .map { it.status.errorOrNull() }
-                .distinctUntilChanged()
-                .collect { error -> error.handleForecastError() }
-        }
-    }
+    private var searchJob: Job? = null
 
     fun updatePeriod(period: ForecastPeriod) {
         updateState { it.copy(period = period) }
@@ -91,8 +69,6 @@ internal class ForecastHomeModel(
             )
         }
     }
-
-    private var searchJob: Job? = null
 
     fun searchLocation(query: String) {
         updateState { it.copy(searchQuery = query, searching = query.isNotBlank()) }
@@ -144,38 +120,12 @@ internal class ForecastHomeModel(
         }
     }
 
-    override fun onCleared() {
-        forecastStateHolder.stop()
-        super.onCleared()
-    }
-
-    private fun Throwable?.handleForecastError() {
-        if (this == null) return
-        val message = when (this) {
-            is LocationResult.Failed -> when (this) {
-                is LocationResult.Error -> Res.string.location_geolocation_error
-                is LocationResult.NotAllowed -> Res.string.location_geolocation_not_allowed
-                is LocationResult.NotFound -> Res.string.location_geolocation_not_found
-                is LocationResult.NotSupported -> Res.string.location_geolocation_not_supported
-            }
-            else -> Res.string.forecast_error_generic
-        }
-
-        logger.e(this) { "Error getting forecast" }
-        emit(Event.Error(message))
-
-        if (this is LocationResult.NotAllowed) {
-            updateState { it.copy(permissionStatus = Denied(permanent)) }
-        }
-    }
-
     data class State(
         val location: Location?,
         val preferences: Preferences,
         val units: Units,
         val status: AsyncResult<ForecastData>,
         val period: ForecastPeriod = ForecastPeriod.Now,
-        val permissionStatus: LocationPermissionStatus = Unknown,
         val forecast: ForecastData? = null,
         val usingCurrentLocation: Boolean = true,
         val showLocationSheet: Boolean = false,
@@ -186,12 +136,6 @@ internal class ForecastHomeModel(
         val loading: Boolean = status is AsyncResult.Loading
         val refreshing: Boolean = loading && forecast != null
         val data: ForecastPeriodData? = forecast?.forPeriod(period)
-    }
-
-    sealed interface Event {
-        data class Error(
-            val message: StringResource,
-        ) : Event
     }
 }
 
@@ -204,17 +148,15 @@ private data class SettingsSnapshot(
 
 private fun state(
     settingsRepo: SettingsRepo,
-    locationRepo: LocationRepo,
     forecastStateHolder: ForecastStateHolder,
 ) = composedStateProvider(
-    initialState = ForecastHomeModel.State(
+    initialState = State(
         location = settingsRepo.settings.value.run {
             if (useCustomLocation) customLocation else lastLocation
         },
         usingCurrentLocation = !settingsRepo.settings.value.useCustomLocation,
         preferences = settingsRepo.settings.value.preferences,
         units = settingsRepo.settings.value.units,
-        permissionStatus = if (locationRepo.hasPermission()) Granted else Unknown,
         status = forecastStateHolder.state.value,
     ),
 ) {

@@ -55,13 +55,14 @@ internal fun HomeScreen(
         } ?: HomeTab.default
     }
 
+    val snackbar = rememberSnackbarProvider()
     HandleEvents(model) { event ->
         when (event) {
             is HomeModel.Event.Navigate -> tabNavController.navigateHomeTab(event.tab)
+            is HomeModel.Event.Error -> snackbar.error(event.message)
         }
     }
 
-    val snackbar = rememberSnackbarProvider()
     HomeScreen(
         selected = currentHomeTab,
         snackbarProvider = snackbar,
