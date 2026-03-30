@@ -29,7 +29,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
-          java-version: 21
+          java-version: 25
           distribution: adopt
 
       - name: Setup Gradle
@@ -53,7 +53,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
-          java-version: 21
+          java-version: 25
           distribution: adopt
 
       - name: Setup Gradle
@@ -67,3 +67,55 @@ jobs:
 
       - name: Build
         run: ./sigo gradle compileDebugKotlin
+
+  build-docker:
+    name: Build Docker (API Server)
+    needs: [lint]
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Copy sample app-env
+        run: cp ./.github/ci-app-env.properties ./app-env.properties
+
+      - name: Build Docker image
+        run: docker build -f apps/api/server/Dockerfile -t sigo-api .
+
+  build-worker:
+    name: Build Cloudflare Worker
+    needs: [lint]
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: 25
+          distribution: adopt
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Copy sample app-env
+        run: cp ./.github/ci-app-env.properties ./app-env.properties
+
+      - name: Compile Kotlin to JS
+        run: ./sigo gradle :apps:api:worker:compileKotlinJs
+
+      - name: Install worker dependencies
+        working-directory: apps/api/worker
+        run: npm install
+
+      - name: Validate worker bundle
+        working-directory: apps/api/worker
+        run: npx wrangler deploy --dry-run --outdir dist
