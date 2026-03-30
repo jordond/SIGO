@@ -12,6 +12,8 @@ plugins {
 
 configureMultiplatform(Platforms.All, name = "core.api.model")
 
+base.archivesName.set("api-model")
+
 kotlin {
     sourceSets {
         commonMain.dependencies {
