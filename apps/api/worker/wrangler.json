@@ -1,7 +1,7 @@
 {
-  "$schema": "apps/api/worker/node_modules/wrangler/config-schema.json",
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "sigo-api-worker",
-  "main": "apps/api/worker/index.mjs",
+  "main": "index.mjs",
   "compatibility_date": "2026-02-25",
   "observability": {
     "enabled": true
@@ -28,6 +28,13 @@
           "custom_domain": true,
           "zone_name": "shouldigooutside.now"
         }
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "FORECAST_CACHE",
+          "id": "fd8858df78bb43a0991c6d4520a02494",
+          "remote": true
+        }
       ]
     },
     "dev": {
@@ -37,6 +44,13 @@
           "pattern": "dev.api.shouldigooutside.now",
           "custom_domain": true,
           "zone_name": "shouldigooutside.now"
+        }
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "FORECAST_CACHE",
+          "id": "dee0269597ea4b7d87d241bf727177c1",
+          "remote": true
         }
       ]
     }

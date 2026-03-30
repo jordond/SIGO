@@ -7,9 +7,11 @@ ROOT="$(cd "$CWD"/.. >/dev/null 2>&1 && pwd)"
 
 APP_ENV_PROPERTIES="$ROOT/app-env.properties"
 SECRET_FORECAST_API_KEY="FORECAST_API_KEY"
-WRANGLER_VARS="$ROOT/.dev.vars"
-WRANGLER_VARS_SAMPLE="$ROOT/.dev.vars.sample"
+WORKER_DIR="$ROOT/apps/api/worker"
+WRANGLER_VARS="$WORKER_DIR/.dev.vars"
+WRANGLER_VARS_SAMPLE="$WORKER_DIR/.dev.vars.sample"
 WRANGLER_COMMAND="$ROOT/apps/api/worker/node_modules/.bin/wrangler"
+WRANGLER_CONFIG="$WORKER_DIR/wrangler.json"
 API_SCRIPT="$ROOT/scripts/api.sh"
 KJS_OUTPUT_FILE="$ROOT/apps/api/worker/build/compileSync/js/main/productionExecutable/kotlin/index.mjs"
 
@@ -121,7 +123,6 @@ initialize() {
 
     echo "✅ npm found: $(npm --version)"
 
-    WORKER_DIR="$ROOT/apps/api/worker"
     cd "$WORKER_DIR"
     echo "📦 Installing npm dependencies..."
     if ! npm install >/dev/null; then
@@ -147,9 +148,9 @@ check_secrets_for_env() {
 
     local secret_output
     if [[ "$env" != "prod" ]]; then
-        secret_output=$("$WRANGLER_COMMAND" secret list --env "$env" 2>/dev/null || echo "[]")
+        secret_output=$("$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG" secret list --env "$env" 2>/dev/null || echo "[]")
     else
-        secret_output=$("$WRANGLER_COMMAND" secret list 2>/dev/null || echo "[]")
+        secret_output=$("$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG" secret list 2>/dev/null || echo "[]")
     fi
 
     # Check if FORECAST_API_KEY exists in the output
@@ -171,9 +172,9 @@ deploy_to_env() {
     local env="$1"
 
     if [[ "$env" != "prod" ]]; then
-        "$WRANGLER_COMMAND" deploy --env "$env"
+        "$WRANGLER_COMMAND" deploy --config "$WRANGLER_CONFIG" --env "$env"
     else
-        "$WRANGLER_COMMAND" deploy
+        "$WRANGLER_COMMAND" deploy --config "$WRANGLER_CONFIG"
     fi
 }
 
@@ -232,7 +233,7 @@ dev() {
     echo
 
     # 3. When wrangler exits (for any reason), cleanup will be called
-    "$WRANGLER_COMMAND" dev
+    "$WRANGLER_COMMAND" dev --config "$WRANGLER_CONFIG"
     cleanup
 }
 
@@ -401,7 +402,7 @@ secret)
     case "$subcommand" in
     check)
         echo "🔍 Checking for $SECRET_FORECAST_API_KEY secret..."
-        secret_output=$("$WRANGLER_COMMAND" secret list 2>/dev/null || echo "[]")
+        secret_output=$("$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG" secret list 2>/dev/null || echo "[]")
 
         if echo "$secret_output" | grep -q "$SECRET_FORECAST_API_KEY"; then
             echo "✅ $SECRET_FORECAST_API_KEY secret found in Cloudflare"
@@ -413,7 +414,7 @@ secret)
         ;;
     set)
         echo "🔐 Setting $SECRET_FORECAST_API_KEY secret..."
-        "$WRANGLER_COMMAND" secret put "$SECRET_FORECAST_API_KEY"
+        "$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG" secret put "$SECRET_FORECAST_API_KEY"
         ;;
     *)
         echo "❌ Error: Unknown secret subcommand '$subcommand'"
@@ -439,7 +440,6 @@ deploy)
     deploy "$NO_CLEAN_FLAG" "$ENV" "$ALL_FLAG"
     ;;
 update-wrangler)
-    WORKER_DIR="$ROOT/apps/api/worker"
     echo "📦 Updating Wrangler..."
     cd "$WORKER_DIR"
     npm i -D wrangler@latest
@@ -449,10 +449,10 @@ update-wrangler)
 wrangler)
     if [[ ${#WRANGLER_ARGS[@]} -eq 0 ]]; then
         echo "🔧 Running Wrangler..."
-        "$WRANGLER_COMMAND"
+        "$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG"
     else
         echo "🔧 Running Wrangler with arguments: ${WRANGLER_ARGS[*]}"
-        "$WRANGLER_COMMAND" "${WRANGLER_ARGS[@]}"
+        "$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG" "${WRANGLER_ARGS[@]}"
     fi
     ;;
 esac
