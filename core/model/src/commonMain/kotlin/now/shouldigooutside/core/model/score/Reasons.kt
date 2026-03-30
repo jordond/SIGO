@@ -8,4 +8,5 @@ public data class Reasons(
     val temperature: ReasonValue,
     val precipitation: ReasonValue,
     val severeWeather: ReasonValue,
+    val airQuality: ReasonValue,
 )

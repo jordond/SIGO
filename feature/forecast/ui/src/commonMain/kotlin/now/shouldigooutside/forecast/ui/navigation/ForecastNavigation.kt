@@ -2,6 +2,8 @@ package now.shouldigooutside.forecast.ui.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
@@ -32,12 +34,13 @@ public data object ActivitiesRoute : Route
 public data object AddActivityRoute : Route
 
 public fun NavGraphBuilder.forecastNavigation(
-    navController: NavController,
+    navController: NavHostController,
+    tabNavController: NavHostController,
     toSettings: () -> Unit,
 ) {
     composable<ForecastHomeRoute> {
         ForecastHomeScreen(
-            toViewDetails = { navController.navigate(ForecastDetailsRoute(it)) },
+            toViewDetails = { tabNavController.navigate(ForecastDetailsRoute(it)) },
         )
     }
 

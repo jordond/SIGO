@@ -17,6 +17,7 @@ public interface ScoreCalculator {
     public fun calculate(
         forecast: Forecast,
         preferences: Preferences,
+        includeAirQuality: Boolean,
     ): ForecastScore
 }
 
@@ -32,13 +33,14 @@ public class DefaultScoreCalculator(
     override fun calculate(
         forecast: Forecast,
         preferences: Preferences,
+        includeAirQuality: Boolean,
     ): ForecastScore {
         val metricForecast = forecast.convert(Units.Metric)
         val result = ForecastScore(
-            current = metricForecast.current.score(preferences),
-            today = metricForecast.today.block.score(preferences),
-            hours = metricForecast.today.hours.map { it.score(preferences) },
-            days = metricForecast.days.map { it.block.score(preferences) },
+            current = metricForecast.current.score(preferences, includeAirQuality),
+            today = metricForecast.today.block.score(preferences, includeAirQuality),
+            hours = metricForecast.today.hours.map { it.score(preferences, includeAirQuality) },
+            days = metricForecast.days.map { it.block.score(preferences, includeAirQuality) },
         )
         logger.d {
             "Score calculation complete:\n" +
@@ -50,7 +52,10 @@ public class DefaultScoreCalculator(
         return result
     }
 
-    private fun ForecastBlock.score(preferences: Preferences): Score {
+    private fun ForecastBlock.score(
+        preferences: Preferences,
+        includeAirQuality: Boolean,
+    ): Score {
         logger.d {
             "Scoring forecast block with temp=${temperature.value}°C, wind=${wind.speed}m/s, " +
                 "precip=${precipitation.probability}%"
@@ -66,11 +71,12 @@ public class DefaultScoreCalculator(
                 SevereWeatherRisk.High,
                 -> ReasonValue.Outside
             },
+            airQuality = airQualityReason(preferences),
         )
 
         logger.d { "Severe weather risk: $severeWeatherRisk -> ${reasons.severeWeather}" }
 
-        val result = reasons.toScoreResult()
+        val result = reasons.toScoreResult(includeAirQuality)
         logger.d { "Final score result: $result with reasons=$reasons" }
         return Score(result = result, reasons = reasons)
     }
@@ -148,21 +154,43 @@ public class DefaultScoreCalculator(
         }
     }
 
+    private fun ForecastBlock.airQualityReason(preferences: Preferences): ReasonValue {
+        val aqi = this.airQuality
+        val maxAqi = preferences.maxAqi
+        logger.d { "AQI evaluation: current=${aqi.value}, max=${maxAqi.value}" }
+
+        // No data available, don't penalize
+        if (!aqi.hasData) return ReasonValue.Inside
+
+        if (aqi.value > maxAqi.value) return ReasonValue.Outside
+
+        val nearThreshold = maxAqi.value * (1 - nearPercent)
+        if (aqi.value >= nearThreshold) return ReasonValue.Near
+
+        return ReasonValue.Inside
+    }
+
     /**
-     * Take all of the reason values in [Reasons] and determine whether the user should go outside
+     * Take all the reason values in [Reasons] and determine whether the user should go outside
      *
      * The ReasonValue can be Inside, near, or outside their acceptable preferences. We should determine the
      * Yes, No, or Maybe result based on how many of the reasons are near and how many are outside. Maybe some
      * of the results should be weighted heavier than others, like SevereWeatherRisk
      */
-    private fun Reasons.toScoreResult(): ScoreResult {
+    private fun Reasons.toScoreResult(includeAirQuality: Boolean): ScoreResult {
         // Severe weather is a primary safety concern, so check it first
         if (severeWeather == ReasonValue.Outside) {
             logger.d { "Severe weather is outside acceptable range, returning `No`" }
             return ScoreResult.No
         }
 
-        val all = listOf(wind, temperature, precipitation, severeWeather)
+        val all = listOfNotNull(
+            wind,
+            temperature,
+            precipitation,
+            severeWeather,
+            if (includeAirQuality) airQuality else null,
+        )
         val (outside, near) = all.fold(0 to 0) { (outsideCount, nearCount), value ->
             when (value) {
                 ReasonValue.Outside -> (outsideCount + 1) to nearCount
@@ -172,11 +200,12 @@ public class DefaultScoreCalculator(
         }
 
         logger.d {
-            listOf(
+            listOfNotNull(
                 "wind" to wind,
                 "temperature" to temperature,
                 "precipitation" to precipitation,
                 "severeWeather" to severeWeather,
+                if (includeAirQuality) "airQuality" to airQuality else null,
             ).joinToString { (name, value) -> "$name -> $value" }
         }
 

@@ -48,9 +48,9 @@ internal fun PreferenceResultCard(
     Card(
         colors = colors.cardColors(),
         modifier = modifier
-            .widthIn(min = 150.dp)
-            .width(IntrinsicSize.Min)
-            .then(if (height != null) Modifier.height(height) else Modifier),
+            .then(if (height != null) Modifier.height(height) else Modifier)
+            .widthIn(min = 150.dp, max = 150.dp)
+            .width(IntrinsicSize.Min),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),

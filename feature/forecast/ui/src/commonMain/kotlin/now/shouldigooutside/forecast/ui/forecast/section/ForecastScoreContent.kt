@@ -1,10 +1,12 @@
 package now.shouldigooutside.forecast.ui.forecast.section
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,22 +34,28 @@ import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.score.ReasonValue
+import now.shouldigooutside.core.model.ui.AppExperience
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.aqi_not_available
+import now.shouldigooutside.core.resources.aqi_value
 import now.shouldigooutside.core.resources.percent
 import now.shouldigooutside.core.resources.score_severe_weather_near
 import now.shouldigooutside.core.resources.score_severe_weather_outside
+import now.shouldigooutside.core.resources.unit_air_quality
 import now.shouldigooutside.core.resources.unit_precipitation_rain
 import now.shouldigooutside.core.resources.unit_precipitation_snow
 import now.shouldigooutside.core.resources.unit_temperature_short
 import now.shouldigooutside.core.resources.updated_at
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.card.Card
 import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.components.card.ElevatedCard
 import now.shouldigooutside.core.ui.icons.AppIcons
+import now.shouldigooutside.core.ui.icons.lucide.Info
 import now.shouldigooutside.core.ui.icons.lucide.OctagonAlert
 import now.shouldigooutside.core.ui.icons.lucide.TriangleAlert
 import now.shouldigooutside.core.ui.ktx.get
@@ -55,9 +63,12 @@ import now.shouldigooutside.core.ui.ktx.rememberTimeAgo
 import now.shouldigooutside.core.ui.mappers.units.colors
 import now.shouldigooutside.core.ui.mappers.units.rememberTitle
 import now.shouldigooutside.core.ui.mappers.units.rememberUnit
+import now.shouldigooutside.core.ui.preferences.AqiInfoSheet
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.PreferenceResultCard
+import now.shouldigooutside.forecast.ui.components.mappers.airQualityStatus
+import now.shouldigooutside.forecast.ui.components.mappers.aqiColors
 import now.shouldigooutside.forecast.ui.components.mappers.colors
 import now.shouldigooutside.forecast.ui.components.mappers.precipitationStatus
 import now.shouldigooutside.forecast.ui.components.mappers.rememberScoreText
@@ -78,7 +89,9 @@ internal fun ForecastScoreContent(
     periodData: ForecastPeriodData,
     modifier: Modifier = Modifier,
     now: Instant = Clock.System.now(),
+    onScoreClick: () -> Unit = {},
 ) {
+    var showAqiInfo by remember { mutableStateOf(false) }
     val elevation = CardDefaults.cardElevation()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -89,6 +102,7 @@ internal fun ForecastScoreContent(
     ) {
         val (containerColor, contentColor) = periodData.colors()
         ElevatedCard(
+            onClick = onScoreClick,
             elevation = elevation,
             colors = CardDefaults.elevatedCardColors(
                 containerColor = containerColor,
@@ -164,10 +178,9 @@ internal fun ForecastScoreContent(
 
             Spacer(modifier = Modifier.height(AppTheme.spacing.standard))
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
+            val includeAqi = LocalAppExperience.current.includeAirQuality
+
+            val temperatureCard: @Composable RowScope.() -> Unit = {
                 PreferenceResultCard(
                     title = Res.string.unit_temperature_short.get(),
                     text = periodData.score.reasons.temperatureStatus(
@@ -181,7 +194,9 @@ internal fun ForecastScoreContent(
                     },
                     modifier = Modifier.weight(1f),
                 )
+            }
 
+            val windCard: @Composable RowScope.() -> Unit = {
                 PreferenceResultCard(
                     title = units.windSpeed.rememberTitle(),
                     text = periodData.score.reasons.windStatus(),
@@ -192,7 +207,9 @@ internal fun ForecastScoreContent(
                     },
                     modifier = Modifier.weight(1f),
                 )
+            }
 
+            val precipitationCard: @Composable RowScope.() -> Unit = {
                 val precipitationTitle = remember(periodData.forecast.precipitation) {
                     if (periodData.forecast.precipitation.isRain) {
                         Res.string.unit_precipitation_rain
@@ -212,9 +229,62 @@ internal fun ForecastScoreContent(
                 )
             }
 
+            if (includeAqi) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        temperatureCard()
+                        windCard()
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        precipitationCard()
+
+                        PreferenceResultCard(
+                            title = Res.string.unit_air_quality.get(),
+                            text = periodData.score.reasons.airQualityStatus(),
+                            colors = aqiColors(periodData.forecast.airQuality),
+                            icon = AppIcons.Lucide.Info,
+                            value = {
+                                if (!periodData.forecast.airQuality.hasData) {
+                                    Res.string.aqi_not_available.get()
+                                } else {
+                                    Res.string.aqi_value.get(periodData.forecast.airQuality.value)
+                                }
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable { showAqiInfo = true },
+                        )
+                    }
+                }
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    temperatureCard()
+                    windCard()
+                    precipitationCard()
+                }
+            }
+
             Spacer(modifier = Modifier.height(AppTheme.spacing.small))
 
             UpdatedAtText(instant = updatedAt)
+
+            AqiInfoSheet(
+                isVisible = showAqiInfo,
+                onDismiss = { showAqiInfo = false },
+            )
         }
     }
 }
@@ -273,7 +343,7 @@ private fun SevereWeatherPreview() {
 @Composable
 private fun ForecastScoreContentPreview() {
     val data = PreviewData.Forecast.forecastData(PreviewData.Forecast.createWindyForecast())
-    AppPreview {
+    AppPreview(experience = AppExperience.default.copy(includeAirQuality = false)) {
         Box(
             modifier = Modifier
                 .padding(horizontal = AppTheme.spacing.standard, vertical = AppTheme.spacing.standard)

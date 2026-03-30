@@ -240,6 +240,41 @@
     <string name="score_severe_weather_outside">There is severe weather out there!</string>
     <string name="score_severe_weather_near">Chance of severe weather</string>
 
+    <!-- Air Quality -->
+    <string name="score_air_quality_inside">The air quality is great!</string>
+    <string name="score_air_quality_outside">The air quality is poor</string>
+    <string name="score_air_quality_near">The air quality is okay</string>
+    <string name="score_air_quality_status_inside">Good</string>
+    <string name="score_air_quality_status_outside">Poor</string>
+    <string name="score_air_quality_status_near">Fair</string>
+    <string name="unit_air_quality">Air Quality</string>
+    <string name="unit_air_quality_short">AQI</string>
+    <string name="preferences_aqi_title">Air Quality</string>
+    <string name="preferences_aqi_description">Maximum acceptable AQI (1-10)</string>
+    <string name="preferences_aqi_max">Max AQI</string>
+    <string name="aqi_not_available">N/A</string>
+    <string name="aqi_value">%1$d/10</string>
+    <string name="aqi_info_title">Air Quality Index (AQI)</string>
+    <string name="aqi_info_description">The Air Quality Index measures how clean or polluted the air is, on a scale of 1 to 10. Higher numbers mean worse air quality.</string>
+    <string name="aqi_info_good_title">Good</string>
+    <string name="aqi_info_good_range">1–2</string>
+    <string name="aqi_info_good_description">Air quality is satisfactory, and air pollution poses little or no risk.</string>
+    <string name="aqi_info_moderate_title">Moderate</string>
+    <string name="aqi_info_moderate_range">3–4</string>
+    <string name="aqi_info_moderate_description">Air quality is acceptable. However, there may be a risk for some people, particularly those who are unusually sensitive to air pollution.</string>
+    <string name="aqi_info_sensitive_title">Unhealthy for Sensitive Groups</string>
+    <string name="aqi_info_sensitive_range">5–6</string>
+    <string name="aqi_info_sensitive_description">Members of sensitive groups may experience health effects. The general public is less likely to be affected.</string>
+    <string name="aqi_info_unhealthy_title">Unhealthy</string>
+    <string name="aqi_info_unhealthy_range">7–8</string>
+    <string name="aqi_info_unhealthy_description">Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects.</string>
+    <string name="aqi_info_very_unhealthy_title">Very Unhealthy</string>
+    <string name="aqi_info_very_unhealthy_range">9</string>
+    <string name="aqi_info_very_unhealthy_description">Health alert: The risk of health effects is increased for everyone.</string>
+    <string name="aqi_info_hazardous_title">Hazardous</string>
+    <string name="aqi_info_hazardous_range">10</string>
+    <string name="aqi_info_hazardous_description">Health warning of emergency conditions: everyone is more likely to be affected.</string>
+
     <string name="settings_theme_title">Theme</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
@@ -249,10 +284,12 @@
     <string name="settings_experience_haptics_desc">Enable or disable subtle vibrations for certain interactions within the app.</string>
     <string name="settings_experience_24_hour_format">24 hour format</string>
     <string name="settings_experience_24_hour_format_desc">Use 24 hour time instead of 12 hour time.</string>
+    <string name="settings_experience_include_air_quality">Include Air Quality</string>
+    <string name="settings_experience_include_air_quality_desc">Include air quality when determining to go outside.</string>
+    <string name="settings_experience_enable_activities">Enable Activities</string>
+    <string name="settings_experience_enable_activities_desc">Enable or disable the activities feature, which allows you to set different preferences for different activities.</string>
     <string name="settings_experience_units">Units</string>
     <string name="settings_experience_units_desc">Update the units used in the app</string>
-    <string name="settings_experience_preferences">Preferences</string>
-    <string name="settings_experience_preferences_desc">Update your preferred weather preferences</string>
     <string name="settings_about_title">About</string>
     <string name="settings_about_share">Share</string>
     <string name="settings_about_rate">Rate the app</string>

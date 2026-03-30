@@ -27,6 +27,10 @@ internal data class SettingsEntity(
     val useCustomLocation: Boolean = false,
     @SerialName("use_24_hour_format")
     val use24HourFormat: Boolean = false,
+    @SerialName("include_air_quality")
+    val includeAirQuality: Boolean = true,
+    @SerialName("enable_activities")
+    val enableActivities: Boolean = true,
     @SerialName("units")
     val units: UnitsEntity? = null,
     @SerialName("selected_activity")
@@ -78,6 +82,8 @@ internal fun SettingsEntity.toModel(): Settings {
         customLocation = customLocation?.toModel(),
         useCustomLocation = useCustomLocation,
         enableHaptics = enableHaptics,
+        includeAirQuality = includeAirQuality,
+        enableActivities = enableActivities,
         internalSettings = internalSettings.toModel(),
         loaded = true,
     )
@@ -98,5 +104,7 @@ internal fun Settings.toEntity() =
         useCustomLocation = useCustomLocation,
         use24HourFormat = use24HourFormat,
         enableHaptics = enableHaptics,
+        includeAirQuality = includeAirQuality,
+        enableActivities = enableActivities,
         internalSettings = internalSettings.toEntity(),
     )

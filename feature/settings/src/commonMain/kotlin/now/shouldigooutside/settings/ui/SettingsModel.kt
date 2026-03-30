@@ -36,6 +36,14 @@ internal class SettingsModel(
         settingsRepo.update { settings -> settings.copy(use24HourFormat = !settings.use24HourFormat) }
     }
 
+    fun toggleAirQuality() {
+        settingsRepo.update { settings -> settings.copy(includeAirQuality = !settings.includeAirQuality) }
+    }
+
+    fun toggleActivities() {
+        settingsRepo.update { settings -> settings.copy(enableActivities = !settings.enableActivities) }
+    }
+
     fun clickAbout() {
         updateState { it.copy(aboutClicks = it.aboutClicks + 1) }
         Logger.d { "About tapped: ${state.value.aboutClicks} times." }

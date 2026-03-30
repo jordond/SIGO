@@ -27,6 +27,7 @@ internal fun HomeScreenNavHost(
     ) {
         forecastNavigation(
             navController = parent,
+            tabNavController = tabNavController,
             toSettings = { parent.navigate(SettingsRoute) },
         )
 

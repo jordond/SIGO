@@ -55,6 +55,8 @@ public data class ForecastBlockEntity(
     public val uvIndex: Int,
     @SerialName("visibility")
     public val visibility: Double,
+    @SerialName("air_quality")
+    public val airQuality: Int = 0,
     @SerialName("severe_weather_risk")
     public val severeWeatherRisk: String,
 )

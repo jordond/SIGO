@@ -153,6 +153,7 @@ internal fun ForecastHomeScreen(
                             preferences = preferences,
                             units = units,
                             periodData = periodData,
+                            onScoreClick = dispatcher.rememberRelay(ForecastHomeAction.ToViewDetails),
                             modifier = Modifier.padding(end = 2.dp),
                         )
                     }

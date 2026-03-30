@@ -15,8 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import dev.stateholder.extensions.collectAsState
 import now.shouldigooutside.core.model.ui.ThemeMode
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.LocalHaptics
-import now.shouldigooutside.core.ui.LocalUse24HourTime
 import now.shouldigooutside.core.ui.LocalWindowSizeClass
 import now.shouldigooutside.core.ui.calculateWindowSizeClass
 import now.shouldigooutside.core.ui.navigation.bottomsheet.BottomSheetNavigator
@@ -61,12 +61,12 @@ internal fun AppHost(
                 }
             }
             is UiState.Loaded -> {
-                val haptics = rememberHaptics(state.enableHaptics)
+                val haptics = rememberHaptics(state.appExperience.enableHaptics)
 
                 CompositionLocalProvider(
                     LocalWindowSizeClass provides windowSizeClass,
                     LocalHaptics provides haptics,
-                    LocalUse24HourTime provides state.settings.use24HourFormat,
+                    LocalAppExperience provides state.appExperience,
                 ) {
                     ModalBottomSheetLayout(
                         bottomSheetNavigator = bottomSheetNavigator,

@@ -10,20 +10,23 @@ import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.score.ForecastScore
 
-internal class DefaultGetScoreUseCast(
+// TODO: Need to use either the selected Activity, or do all activities
+internal class DefaultGetScoreUseCase(
     private val settingsRepo: SettingsRepo,
     private val scoreCalculator: ScoreCalculator,
 ) : GetScoreUseCase {
-    override fun scoreFor(forecast: Forecast): ForecastScore =
-        scoreCalculator.calculate(forecast, settingsRepo.settings.value.preferences)
+    override fun scoreFor(forecast: Forecast): ForecastScore {
+        val settings = settingsRepo.settings.value
+        return scoreCalculator.calculate(forecast, settings.preferences, settings.includeAirQuality)
+    }
 
     override fun scoreForFlow(forecast: Forecast): Flow<ForecastScore> =
         flow {
             settingsRepo.settings
-                .map { it.preferences }
+                .map { it.preferences to it.includeAirQuality }
                 .distinctUntilChanged()
-                .collect { preferences ->
-                    val result = scoreCalculator.calculate(forecast, preferences)
+                .collect { (preferences, includeAirQuality) ->
+                    val result = scoreCalculator.calculate(forecast, preferences, includeAirQuality)
                     emit(result)
                 }
         }

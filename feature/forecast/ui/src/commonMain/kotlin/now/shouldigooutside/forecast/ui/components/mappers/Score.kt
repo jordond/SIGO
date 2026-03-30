@@ -6,10 +6,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import now.shouldigooutside.core.model.ForecastPeriodData
+import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.score.Reasons
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.score_air_quality_inside
+import now.shouldigooutside.core.resources.score_air_quality_near
+import now.shouldigooutside.core.resources.score_air_quality_outside
+import now.shouldigooutside.core.resources.score_air_quality_status_inside
+import now.shouldigooutside.core.resources.score_air_quality_status_near
+import now.shouldigooutside.core.resources.score_air_quality_status_outside
 import now.shouldigooutside.core.resources.score_maybe
 import now.shouldigooutside.core.resources.score_no
 import now.shouldigooutside.core.resources.score_precipitation_rain_inside
@@ -37,6 +44,7 @@ import now.shouldigooutside.core.resources.score_wind_status_near
 import now.shouldigooutside.core.resources.score_wind_status_outside
 import now.shouldigooutside.core.resources.score_yes
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.AqiLevels
 import now.shouldigooutside.core.ui.BrutalColors
 import now.shouldigooutside.core.ui.brutal
 import now.shouldigooutside.core.ui.ktx.get
@@ -170,3 +178,26 @@ internal fun Reasons.precipitationText(isRain: Boolean): String =
             }
         }
     }.get()
+
+@Composable
+internal fun Reasons.airQualityStatus(): String =
+    remember(airQuality) {
+        when (airQuality) {
+            ReasonValue.Inside -> Res.string.score_air_quality_status_inside
+            ReasonValue.Near -> Res.string.score_air_quality_status_near
+            ReasonValue.Outside -> Res.string.score_air_quality_status_outside
+        }
+    }.get()
+
+@Composable
+internal fun Reasons.airQualityText(): String =
+    remember(airQuality) {
+        when (airQuality) {
+            ReasonValue.Inside -> Res.string.score_air_quality_inside
+            ReasonValue.Near -> Res.string.score_air_quality_near
+            ReasonValue.Outside -> Res.string.score_air_quality_outside
+        }
+    }.get()
+
+@Composable
+internal fun aqiColors(aqi: AirQuality): BrutalColors = AqiLevels.forValue(aqi).colors

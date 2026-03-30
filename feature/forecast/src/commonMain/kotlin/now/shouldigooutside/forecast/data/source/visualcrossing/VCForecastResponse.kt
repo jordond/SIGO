@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import now.shouldigooutside.core.foundation.NowProvider
+import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
@@ -176,6 +177,10 @@ internal data class VCForecastBlock(
     val solarEnergy: Double? = null,
     @SerialName("severerisk")
     val severeRisk: Double? = null,
+    @SerialName("aqius")
+    val aqiUs: Double? = null,
+    @SerialName("aqieur")
+    val aqiEur: Double? = null,
     @SerialName("hours")
     val hours: List<VCForecastBlock>? = null,
 )
@@ -259,6 +264,7 @@ private fun VCForecastBlock.toModel(): ForecastBlock {
         uvIndex = (uvIndex ?: 0.0).toInt(),
         visibility = visibility ?: 0.0,
         severeWeatherRisk = parseSevereWeatherRisk(severeRisk),
+        airQuality = normalizeAqi(aqiUs),
     )
 }
 
@@ -280,5 +286,34 @@ private fun parseSevereWeatherRisk(risk: Double?): SevereWeatherRisk {
         in 0..30 -> SevereWeatherRisk.Low
         in 31..70 -> SevereWeatherRisk.Moderate
         else -> SevereWeatherRisk.High
+    }
+}
+
+/**
+ * Normalizes EPA AQI (0-500) to a 1-10 scale.
+ * Returns 0 when no data is available.
+ *
+ * Mapping:
+ * - EPA 0-50 (Good) → 1-2
+ * - EPA 51-100 (Moderate) → 3-4
+ * - EPA 101-150 (Unhealthy for Sensitive Groups) → 5-6
+ * - EPA 151-200 (Unhealthy) → 7-8
+ * - EPA 201-300 (Very Unhealthy) → 9
+ * - EPA 301+ (Hazardous) → 10
+ */
+private fun normalizeAqi(raw: Double?): AirQuality {
+    if (raw == null || raw <= 0.0) return AirQuality(0)
+    val epa = raw.roundToInt()
+    return when {
+        epa <= 25 -> AirQuality(1)
+        epa <= 50 -> AirQuality(2)
+        epa <= 75 -> AirQuality(3)
+        epa <= 100 -> AirQuality(4)
+        epa <= 125 -> AirQuality(5)
+        epa <= 150 -> AirQuality(6)
+        epa <= 175 -> AirQuality(7)
+        epa <= 200 -> AirQuality(8)
+        epa <= 300 -> AirQuality(9)
+        else -> AirQuality(10)
     }
 }

@@ -1,5 +1,6 @@
 package now.shouldigooutside.core.model.settings
 
+import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentMap
@@ -11,6 +12,7 @@ import now.shouldigooutside.core.model.units.Units
 import kotlin.time.Clock
 import kotlin.time.Instant
 
+@Immutable
 public class Settings(
     public val firstLaunch: Instant = Clock.System.now(),
     public val themeMode: ThemeMode = ThemeMode.Light,
@@ -20,6 +22,8 @@ public class Settings(
     public val customLocation: Location? = null,
     public val useCustomLocation: Boolean = false,
     public val use24HourFormat: Boolean = false,
+    public val includeAirQuality: Boolean = true,
+    public val enableActivities: Boolean = true,
     public val units: Units = Units.Metric,
     public val selectedActivity: Activity = Activity.General,
     public val activities: PersistentMap<Activity, Preferences> =
@@ -74,6 +78,8 @@ public class Settings(
         customLocation: Location? = this.customLocation,
         useCustomLocation: Boolean = this.useCustomLocation,
         use24HourFormat: Boolean = this.use24HourFormat,
+        includeAirQuality: Boolean = this.includeAirQuality,
+        enableActivities: Boolean = this.enableActivities,
         units: Units = this.units,
         selectedActivity: Activity = this.selectedActivity,
         enableHaptics: Boolean = this.enableHaptics,
@@ -89,6 +95,8 @@ public class Settings(
             customLocation = customLocation,
             useCustomLocation = useCustomLocation,
             use24HourFormat = use24HourFormat,
+            includeAirQuality = includeAirQuality,
+            enableActivities = enableActivities,
             units = units,
             selectedActivity = selectedActivity,
             enableHaptics = enableHaptics,
@@ -105,6 +113,8 @@ public class Settings(
         customLocation: Location? = this.customLocation,
         useCustomLocation: Boolean = this.useCustomLocation,
         use24HourFormat: Boolean = this.use24HourFormat,
+        includeAirQuality: Boolean = this.includeAirQuality,
+        enableActivities: Boolean = this.enableActivities,
         units: Units = this.units,
         selectedActivity: Activity = this.selectedActivity,
         activities: PersistentMap<Activity, Preferences> = this.activities,
@@ -121,6 +131,8 @@ public class Settings(
             customLocation = customLocation,
             useCustomLocation = useCustomLocation,
             use24HourFormat = use24HourFormat,
+            includeAirQuality = includeAirQuality,
+            enableActivities = enableActivities,
             units = units,
             selectedActivity = selectedActivity,
             activities = activities,
@@ -134,8 +146,8 @@ public class Settings(
             "hasCompletedOnboarding=$hasCompletedOnboarding, lastLocation=$lastLocation, " +
             "lastLocationUpdate=$lastLocationUpdate, customLocation=$customLocation, " +
             "useCustomLocation=$useCustomLocation, units=$units, selected=$selectedActivity, " +
-            "activities=$activities, enableHaptics=$enableHaptics, internalSettings=$internalSettings," +
-            " loaded=$loaded)"
+            "activities=$activities, enableHaptics=$enableHaptics, internalSettings=$internalSettings, " +
+            "includeAirQuality=$includeAirQuality, enableActivities=$enableActivities, loaded=$loaded)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -151,6 +163,8 @@ public class Settings(
         if (customLocation != other.customLocation) return false
         if (useCustomLocation != other.useCustomLocation) return false
         if (use24HourFormat != other.use24HourFormat) return false
+        if (includeAirQuality != other.includeAirQuality) return false
+        if (enableActivities != other.enableActivities) return false
         if (units != other.units) return false
         if (selectedActivity != other.selectedActivity) return false
         if (activities != other.activities) return false
@@ -170,6 +184,8 @@ public class Settings(
         result = 31 * result + (customLocation?.hashCode() ?: 0)
         result = 31 * result + useCustomLocation.hashCode()
         result = 31 * result + use24HourFormat.hashCode()
+        result = 31 * result + includeAirQuality.hashCode()
+        result = 31 * result + enableActivities.hashCode()
         result = 31 * result + units.hashCode()
         result = 31 * result + selectedActivity.hashCode()
         result = 31 * result + activities.hashCode()

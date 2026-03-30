@@ -38,6 +38,8 @@ public data class ReasonsEntity(
     val precipitation: ReasonValue,
     @SerialName("severe_weather")
     val severeWeather: ReasonValue,
+    @SerialName("air_quality")
+    val airQuality: ReasonValue = ReasonValue.Inside,
 )
 
 public fun ForecastScore.toEntity(): ForecastScoreEntity =
@@ -60,6 +62,7 @@ private fun Reasons.toEntity() =
         temperature = temperature,
         precipitation = precipitation,
         severeWeather = severeWeather,
+        airQuality = airQuality,
     )
 
 public fun ForecastScoreEntity.toModel(): ForecastScore =
@@ -82,4 +85,5 @@ private fun ReasonsEntity.toModel() =
         temperature = temperature,
         precipitation = precipitation,
         severeWeather = severeWeather,
+        airQuality = airQuality,
     )

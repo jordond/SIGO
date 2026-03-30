@@ -41,7 +41,6 @@ public fun NavGraphBuilder.settingsNavigation(
             onBack = navController::popBackStack,
             toInternalSettings = { navController.navigate(InternalSettingsRoute) },
             toUnits = { navController.navigate(UnitsRoute) },
-            toPreferences = { navController.navigate(PreferencesRoute) },
             toWebView = toWebView,
         )
     }

@@ -2,6 +2,7 @@ package now.shouldigooutside.settings.data.entity
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.model.units.convertTemperature
@@ -24,6 +25,8 @@ internal data class PreferencesEntity(
     val rain: Boolean,
     @SerialName("snow")
     val snow: Boolean,
+    @SerialName("max_aqi")
+    val maxAqi: Int = 4,
 )
 
 @Suppress("DEPRECATION")
@@ -36,6 +39,7 @@ internal fun Preferences.toEntity() =
         windSpeed = windSpeed,
         rain = rain,
         snow = snow,
+        maxAqi = maxAqi.value,
     )
 
 /**
@@ -56,6 +60,7 @@ internal fun PreferencesEntity.toModel(): Preferences {
             windSpeed = windSpeed,
             rain = rain,
             snow = snow,
+            maxAqi = AirQuality(maxAqi),
         )
     }
 
@@ -80,5 +85,6 @@ internal fun PreferencesEntity.toModel(): Preferences {
         ).toInt(),
         rain = rain,
         snow = snow,
+        maxAqi = AirQuality(maxAqi),
     )
 }

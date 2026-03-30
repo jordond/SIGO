@@ -22,7 +22,7 @@ import now.shouldigooutside.forecast.domain.AppConfigScoreCalculator
 import now.shouldigooutside.forecast.domain.DefaultClearForecastUseCase
 import now.shouldigooutside.forecast.domain.DefaultForecastStateHolder
 import now.shouldigooutside.forecast.domain.DefaultGetForecastUseCase
-import now.shouldigooutside.forecast.domain.DefaultGetScoreUseCast
+import now.shouldigooutside.forecast.domain.DefaultGetScoreUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -34,7 +34,7 @@ private fun forecastBaseModule(): Module =
     module {
         factoryOf(::AppConfigScoreCalculator) bind ScoreCalculator::class
         factoryOf(::DefaultGetForecastUseCase) bind GetForecastUseCase::class
-        factoryOf(::DefaultGetScoreUseCast) bind GetScoreUseCase::class
+        factoryOf(::DefaultGetScoreUseCase) bind GetScoreUseCase::class
 
         factoryOf(::DefaultVisualCrossingApi) bind VisualCrossingApi::class
 

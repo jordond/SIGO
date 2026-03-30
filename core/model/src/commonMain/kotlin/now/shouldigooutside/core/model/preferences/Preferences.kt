@@ -1,6 +1,7 @@
 package now.shouldigooutside.core.model.preferences
 
 import androidx.compose.runtime.Immutable
+import now.shouldigooutside.core.model.forecast.AirQuality
 
 @Immutable
 public data class Preferences(
@@ -10,6 +11,7 @@ public data class Preferences(
     public val windSpeed: Int,
     public val rain: Boolean,
     public val snow: Boolean,
+    public val maxAqi: AirQuality,
 ) {
     public companion object {
         public val default: Preferences = Preferences(
@@ -19,6 +21,7 @@ public data class Preferences(
             windSpeed = 30,
             rain = false,
             snow = false,
+            maxAqi = AirQuality(3),
         )
 
         public fun defaultFor(activity: Activity): Preferences =
@@ -30,6 +33,7 @@ public data class Preferences(
                     windSpeed = 35,
                     rain = true,
                     snow = true,
+                    maxAqi = AirQuality(5),
                 )
                 is Activity.Running -> default.copy(
                     minTemperature = 10,
@@ -37,6 +41,7 @@ public data class Preferences(
                     windSpeed = 25,
                     rain = false,
                     snow = false,
+                    maxAqi = AirQuality(2),
                 )
                 is Activity.Cycling -> default.copy(
                     minTemperature = 10,
@@ -44,6 +49,7 @@ public data class Preferences(
                     windSpeed = 25,
                     rain = false,
                     snow = false,
+                    maxAqi = AirQuality(2),
                 )
                 is Activity.Hiking -> default.copy(
                     minTemperature = 5,
@@ -51,6 +57,7 @@ public data class Preferences(
                     windSpeed = 35,
                     rain = true,
                     snow = true,
+                    maxAqi = AirQuality(3),
                 )
                 is Activity.Swimming -> default.copy(
                     minTemperature = 20,
@@ -58,6 +65,7 @@ public data class Preferences(
                     windSpeed = 30,
                     rain = false,
                     snow = false,
+                    maxAqi = AirQuality(6),
                 )
                 is Activity.Custom -> default
             }

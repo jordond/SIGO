@@ -3,6 +3,7 @@ package now.shouldigooutside.core.ui.preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import now.shouldigooutside.core.domain.forecast.DefaultScoreCalculator
 import now.shouldigooutside.core.model.ForecastData
+import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
@@ -49,6 +50,7 @@ public object ForecastPreviewData {
             pressure = 1012.0, // hPa, typical sea level pressure
             uvIndex = 5,
             visibility = 20.0, // km
+            airQuality = AirQuality(3),
             severeWeatherRisk = SevereWeatherRisk.None,
         )
 
@@ -309,7 +311,8 @@ public object ForecastPreviewData {
     public fun score(
         forecast: Forecast,
         preferences: Preferences = Preferences.default,
-    ): ForecastScore = calculator.calculate(forecast, preferences)
+        includeAirQuality: Boolean = true,
+    ): ForecastScore = calculator.calculate(forecast, preferences, includeAirQuality)
 
     public fun forecastData(
         forecast: Forecast,

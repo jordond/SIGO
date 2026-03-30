@@ -19,6 +19,7 @@ import now.shouldigooutside.core.resources.preferences_precipitation_title
 import now.shouldigooutside.core.resources.rain
 import now.shouldigooutside.core.resources.snow
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.Droplet
@@ -34,6 +35,7 @@ public fun PreferencesList(
     temperatureRange: ClosedFloatingPointRange<Float> = -30f..30f,
     maxWindSpeed: Float = 40f,
 ) {
+    var showAqiInfo by remember { mutableStateOf(false) }
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier,
@@ -51,6 +53,14 @@ public fun PreferencesList(
             update = updatePreferences,
             maxWindSpeed = maxWindSpeed,
         )
+
+        if (LocalAppExperience.current.includeAirQuality) {
+            AqiRange(
+                preferences = preferences,
+                update = updatePreferences,
+                onInfoClick = { showAqiInfo = true },
+            )
+        }
 
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -80,6 +90,11 @@ public fun PreferencesList(
             }
         }
     }
+
+    AqiInfoSheet(
+        isVisible = showAqiInfo,
+        onDismiss = { showAqiInfo = false },
+    )
 }
 
 @Preview

@@ -154,6 +154,34 @@ public object BrutalColor {
         onLowest = Color.Black,
     )
 
+    /** Deep amber/vermilion — between orange and red */
+    public val vermilion: BrutalColors = BrutalColors(
+        bright = Color(0xFFFF5722),
+        onBright = Color.White,
+        high = Color(0xFFe86A45),
+        onHigh = Color.Black,
+        normal = Color(0xFFFF8A65),
+        onNormal = Color.Black,
+        low = Color(0xFFFFAB91),
+        onLow = Color.Black,
+        lowest = Color(0xFFfbe9e7),
+        onLowest = Color.Black,
+    )
+
+    /** Dark crimson/maroon — hazardous, emergency level */
+    public val maroon: BrutalColors = BrutalColors(
+        bright = Color(0xFFB71C1C),
+        onBright = Color.White,
+        high = Color(0xFFC62828),
+        onHigh = Color.White,
+        normal = Color(0xFFD32F2F),
+        onNormal = Color.White,
+        low = Color(0xFFE57373),
+        onLow = Color.Black,
+        lowest = Color(0xFFFFCDD2),
+        onLowest = Color.Black,
+    )
+
     public val lime: BrutalColors = BrutalColors(
         bright = Color(0xFFCCFF00),
         onBright = Color.Black,

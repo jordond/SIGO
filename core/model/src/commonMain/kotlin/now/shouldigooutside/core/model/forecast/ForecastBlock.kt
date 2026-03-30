@@ -16,6 +16,7 @@ import kotlin.time.Instant
  * @property uvIndex UV index value.
  * @property visibility Visibility in kilometers.
  * @property severeWeatherRisk Risk level of severe weather
+ * @property airQuality Normalized Air Quality Index (1-10 scale).
  */
 @Immutable
 public data class ForecastBlock(
@@ -29,4 +30,5 @@ public data class ForecastBlock(
     val uvIndex: Int,
     val visibility: Double,
     val severeWeatherRisk: SevereWeatherRisk,
+    val airQuality: AirQuality,
 )
