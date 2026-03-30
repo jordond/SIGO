@@ -340,6 +340,7 @@
     <string name="forecast_details_wind_direction_sw">SW</string>
     <string name="forecast_details_wind_direction_w">W</string>
     <string name="forecast_details_wind_direction_nw">NW</string>
+    <string name="forecast_details_air_quality">Air Quality</string>
 
     <string name="forecast_details_uv">%1$d</string>
     <string name="forecast_details_uv_low">Low</string>

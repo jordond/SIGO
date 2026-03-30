@@ -1,7 +1,6 @@
 package now.shouldigooutside.forecast.ui.forecast.section
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,12 +36,9 @@ import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.ui.AppExperience
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
-import now.shouldigooutside.core.resources.aqi_not_available
-import now.shouldigooutside.core.resources.aqi_value
 import now.shouldigooutside.core.resources.percent
 import now.shouldigooutside.core.resources.score_severe_weather_near
 import now.shouldigooutside.core.resources.score_severe_weather_outside
-import now.shouldigooutside.core.resources.unit_air_quality
 import now.shouldigooutside.core.resources.unit_precipitation_rain
 import now.shouldigooutside.core.resources.unit_precipitation_snow
 import now.shouldigooutside.core.resources.unit_temperature_short
@@ -55,7 +51,6 @@ import now.shouldigooutside.core.ui.components.card.Card
 import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.components.card.ElevatedCard
 import now.shouldigooutside.core.ui.icons.AppIcons
-import now.shouldigooutside.core.ui.icons.lucide.Info
 import now.shouldigooutside.core.ui.icons.lucide.OctagonAlert
 import now.shouldigooutside.core.ui.icons.lucide.TriangleAlert
 import now.shouldigooutside.core.ui.ktx.get
@@ -63,12 +58,11 @@ import now.shouldigooutside.core.ui.ktx.rememberTimeAgo
 import now.shouldigooutside.core.ui.mappers.units.colors
 import now.shouldigooutside.core.ui.mappers.units.rememberTitle
 import now.shouldigooutside.core.ui.mappers.units.rememberUnit
-import now.shouldigooutside.core.ui.preferences.AqiInfoSheet
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
+import now.shouldigooutside.forecast.ui.components.AirQualityResultCard
 import now.shouldigooutside.forecast.ui.components.PreferenceResultCard
 import now.shouldigooutside.forecast.ui.components.mappers.airQualityStatus
-import now.shouldigooutside.forecast.ui.components.mappers.aqiColors
 import now.shouldigooutside.forecast.ui.components.mappers.colors
 import now.shouldigooutside.forecast.ui.components.mappers.precipitationStatus
 import now.shouldigooutside.forecast.ui.components.mappers.rememberScoreText
@@ -91,7 +85,6 @@ internal fun ForecastScoreContent(
     now: Instant = Clock.System.now(),
     onScoreClick: () -> Unit = {},
 ) {
-    var showAqiInfo by remember { mutableStateOf(false) }
     val elevation = CardDefaults.cardElevation()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -248,21 +241,10 @@ internal fun ForecastScoreContent(
                     ) {
                         precipitationCard()
 
-                        PreferenceResultCard(
-                            title = Res.string.unit_air_quality.get(),
+                        AirQualityResultCard(
+                            airQuality = periodData.forecast.airQuality,
                             text = periodData.score.reasons.airQualityStatus(),
-                            colors = aqiColors(periodData.forecast.airQuality),
-                            icon = AppIcons.Lucide.Info,
-                            value = {
-                                if (!periodData.forecast.airQuality.hasData) {
-                                    Res.string.aqi_not_available.get()
-                                } else {
-                                    Res.string.aqi_value.get(periodData.forecast.airQuality.value)
-                                }
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .clickable { showAqiInfo = true },
+                            modifier = Modifier.weight(1f),
                         )
                     }
                 }
@@ -280,11 +262,6 @@ internal fun ForecastScoreContent(
             Spacer(modifier = Modifier.height(AppTheme.spacing.small))
 
             UpdatedAtText(instant = updatedAt)
-
-            AqiInfoSheet(
-                isVisible = showAqiInfo,
-                onDismiss = { showAqiInfo = false },
-            )
         }
     }
 }
