@@ -14,7 +14,7 @@ WORKDIR /home/gradle/src
 RUN gradle :apps:api:server:installDist --no-daemon
 
 # Stage 3: Create the Runtime Image
-FROM amazoncorretto:21 AS runtime
+FROM amazoncorretto:21.0.10 AS runtime
 EXPOSE 8080
 RUN mkdir /app
 COPY --from=build /home/gradle/src/apps/api/server/build/install/server /app
