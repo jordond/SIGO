@@ -59,6 +59,7 @@ compass = "3.0.2"
 connectivity = "2.4.1"
 lumo = "1.2.5"
 mordant = "3.0.2"
+turbine = "1.2.0"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
@@ -155,6 +156,7 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4jNop" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 stateHolder = { module = "dev.jordond.stateholder:core", version.ref = "stateHolder" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 stateHolder-dispatcher = { module = "dev.jordond.stateholder:dispatcher-compose", version.ref = "stateHolder" }
 stateHolder-compose = { module = "dev.jordond.stateholder:extensions-compose", version.ref = "stateHolder" }
 stateHolder-viewmodel = { module = "dev.jordond.stateholder:extensions-viewmodel", version.ref = "stateHolder" }

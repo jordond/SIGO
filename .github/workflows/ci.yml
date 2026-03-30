@@ -41,9 +41,32 @@ jobs:
       - name: Lint
         run: ./sigo lint --all
 
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: 25
+          distribution: adopt
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Copy sample app-env
+        run: cp ./.github/ci-app-env.properties ./app-env.properties
+
+      - name: Test
+        run: ./gradlew jvmTest
+
   build:
     name: Build
-    needs: [lint]
+    needs: [lint, test]
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     steps:

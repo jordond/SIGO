@@ -161,6 +161,8 @@ fun KotlinMultiplatformExtension.testDependencies() {
     sourceSets.commonTest.dependencies {
         implementation(kotlin("test"))
         implementation(project.libs.findLibrary("kotest-assertions").get())
+        implementation(project.libs.findLibrary("kotlinx-coroutines-test").get())
+        implementation(project.libs.findLibrary("turbine").get())
     }
 }
 

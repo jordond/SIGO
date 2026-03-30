@@ -12,7 +12,7 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "core.model")
+configureMultiplatform(Platforms.All, name = "core.model", tests = true)
 
 buildkonfig {
     packageName = "now.shouldigooutside.build"

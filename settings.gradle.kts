@@ -63,3 +63,5 @@ include(":feature:location")
 include(":feature:onboarding")
 include(":feature:settings")
 include(":feature:webview")
+
+include(":test")
