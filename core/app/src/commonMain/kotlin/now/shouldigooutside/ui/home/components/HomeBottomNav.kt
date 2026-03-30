@@ -9,6 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.LocalTextStyle
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.NavigationBar
@@ -18,6 +21,7 @@ import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.ui.home.navigation.HomeTab
+import now.shouldigooutside.ui.home.navigation.route
 
 @Composable
 internal fun HomeBottomNav(
@@ -25,7 +29,14 @@ internal fun HomeBottomNav(
     onClick: (HomeTab) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val entries = remember { HomeTab.entries.toList() }
+    val enableActivities = LocalAppExperience.current.enableActivities
+    val entries = remember(enableActivities) {
+        if (enableActivities) {
+            HomeTab.entries.toList()
+        } else {
+            HomeTab.entries.filterNot { it == HomeTab.Activities }
+        }
+    }
     NavigationBar {
         entries.forEach { entry ->
             NavigationBarItem(
@@ -43,6 +54,17 @@ internal fun HomeBottomNav(
                 onClick = { onClick(entry) },
             )
         }
+    }
+}
+
+public fun NavHostController.navigateHomeTab(tab: HomeTab) {
+    navigate(tab.route) {
+        val popRoute = graph.findStartDestination().route ?: error("No start destination found")
+        popUpTo(route = popRoute) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 

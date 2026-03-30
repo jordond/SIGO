@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
@@ -23,6 +23,8 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
@@ -33,6 +35,7 @@ import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.cancel
 import now.shouldigooutside.core.resources.okay
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.BrutalColor
 import now.shouldigooutside.core.ui.BrutalColors
 import now.shouldigooutside.core.ui.LocalContentColor
 import now.shouldigooutside.core.ui.brutal
@@ -342,7 +345,7 @@ internal fun AlertDialogFlowRow(
 
 public object AlertDialogDefaults {
     public val DialogMinWidth: Dp = 300.dp
-    public val DialogMaxWidth: Dp = 560.dp
+    public val DialogMaxWidth: Dp = 600.dp
 
     public val ButtonsMainAxisSpacing: Dp = 8.dp
     public val ButtonsCrossAxisSpacing: Dp = 12.dp
@@ -352,14 +355,21 @@ public object AlertDialogDefaults {
     public val TextPadding: PaddingValues = PaddingValues(bottom = 24.dp)
 }
 
+private class Params : PreviewParameterProvider<BrutalColors> {
+    override val values: Sequence<BrutalColors> = BrutalColor.all.asSequence()
+}
+
 @Preview
 @Composable
-private fun DialogPreview() {
+private fun DialogPreview(
+    @PreviewParameter(Params::class) colors: BrutalColors,
+) {
     AppPreview {
         Column(
-            modifier = Modifier.padding(16.dp).fillMaxSize(),
+            modifier = Modifier.size(400.dp),
         ) {
             AlertDialog(
+                colors = colors,
                 onDismissRequest = { },
                 onConfirmClick = { },
                 title = "Simple Alert",

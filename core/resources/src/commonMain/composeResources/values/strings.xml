@@ -4,6 +4,7 @@
     <string name="blank" />
     <string name="progress">%1$d%</string>
     <string name="dismiss">Dismiss</string>
+    <string name="disable">Disable</string>
     <string name="finish">Finish</string>
     <string name="back">Back</string>
     <string name="cancel">Cancel</string>
@@ -288,6 +289,8 @@
     <string name="settings_experience_include_air_quality_desc">Include air quality when determining to go outside.</string>
     <string name="settings_experience_enable_activities">Enable Activities</string>
     <string name="settings_experience_enable_activities_desc">Enable or disable the activities feature, which allows you to set different preferences for different activities.</string>
+    <string name="settings_experience_disable_activities">Disable Activities</string>
+    <string name="settings_experience_disable_activities_warning">Your score will be based on your general preferences only. Activities will be removed from the home screen, but your saved preferences for each activity will be kept if you re-enable later.</string>
     <string name="settings_experience_units">Units</string>
     <string name="settings_experience_units_desc">Update the units used in the app</string>
     <string name="settings_about_title">About</string>

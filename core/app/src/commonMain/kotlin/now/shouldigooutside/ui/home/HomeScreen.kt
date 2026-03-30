@@ -18,10 +18,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import dev.stateholder.extensions.HandleEvents
 import now.shouldigooutside.core.ui.components.Scaffold
 import now.shouldigooutside.core.ui.components.snackbar.LocalSnackbarProvider
 import now.shouldigooutside.core.ui.components.snackbar.Snackbar
@@ -34,9 +34,9 @@ import now.shouldigooutside.forecast.ui.forecast.SunnyPreview
 import now.shouldigooutside.forecast.ui.forecast.details.ForecastDetailsTabPreview
 import now.shouldigooutside.settings.ui.preferences.tab.PreferencesTabPreview
 import now.shouldigooutside.ui.home.components.HomeBottomNav
+import now.shouldigooutside.ui.home.components.navigateHomeTab
 import now.shouldigooutside.ui.home.navigation.HomeScreenNavHost
 import now.shouldigooutside.ui.home.navigation.HomeTab
-import now.shouldigooutside.ui.home.navigation.route
 import now.shouldigooutside.ui.home.navigation.routeClass
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -53,25 +53,17 @@ internal fun HomeScreen(
         } ?: HomeTab.default
     }
 
+    HandleEvents(model) { event ->
+        when (event) {
+            is HomeModel.Event.Navigate -> tabNavController.navigateHomeTab(event.tab)
+        }
+    }
+
     val snackbar = rememberSnackbarProvider()
     HomeScreen(
         selected = currentHomeTab,
         snackbarProvider = snackbar,
-        onTabClick = { tab ->
-            model.updateSelectedTab(tab)
-            tabNavController.navigate(tab.route) {
-                val popRoute = (
-                    tabNavController.graph.findStartDestination().route
-                        ?: error("No start destination found")
-                )
-
-                popUpTo(route = popRoute) {
-                    saveState = true
-                }
-                launchSingleTop = true
-                restoreState = true
-            }
-        },
+        onTabClick = model::updateSelectedTab,
     ) {
         HomeScreenNavHost(
             parent = navController,

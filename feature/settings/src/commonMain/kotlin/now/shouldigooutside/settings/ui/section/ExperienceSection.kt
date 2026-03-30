@@ -13,9 +13,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.disable
 import now.shouldigooutside.core.resources.open
 import now.shouldigooutside.core.resources.settings_experience_24_hour_format
 import now.shouldigooutside.core.resources.settings_experience_24_hour_format_desc
+import now.shouldigooutside.core.resources.settings_experience_disable_activities
+import now.shouldigooutside.core.resources.settings_experience_disable_activities_warning
 import now.shouldigooutside.core.resources.settings_experience_enable_activities
 import now.shouldigooutside.core.resources.settings_experience_enable_activities_desc
 import now.shouldigooutside.core.resources.settings_experience_haptics
@@ -26,6 +29,8 @@ import now.shouldigooutside.core.resources.settings_experience_title
 import now.shouldigooutside.core.resources.settings_experience_units
 import now.shouldigooutside.core.resources.settings_experience_units_desc
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.brutal
+import now.shouldigooutside.core.ui.components.AlertDialog
 import now.shouldigooutside.core.ui.components.Switch
 import now.shouldigooutside.core.ui.components.SwitchDefaults
 import now.shouldigooutside.core.ui.components.card.CardDefaults
@@ -37,6 +42,7 @@ import now.shouldigooutside.core.ui.icons.lucide.Vibrate
 import now.shouldigooutside.core.ui.icons.lucide.VibrateOff
 import now.shouldigooutside.core.ui.icons.lucide.Waves
 import now.shouldigooutside.core.ui.icons.phosphor.Hike
+import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.settings.ui.components.SettingsCard
 import now.shouldigooutside.settings.ui.components.SettingsTextRow
@@ -62,6 +68,8 @@ internal fun ExperienceSection(
     primary: Color = AppTheme.colors.primary,
     secondary: Color = AppTheme.colors.secondary,
 ) {
+    var showDisableActivitiesDialog by remember { mutableStateOf(false) }
+
     SettingsCard(
         text = Res.string.settings_experience_title,
         colors = CardDefaults.fromColor(primary),
@@ -126,7 +134,13 @@ internal fun ExperienceSection(
                 trailingContent = {
                     Switch(
                         checked = settings.enableActivities,
-                        onCheckedChange = { toggleActivities() },
+                        onCheckedChange = {
+                            if (settings.enableActivities) {
+                                showDisableActivitiesDialog = true
+                            } else {
+                                toggleActivities()
+                            }
+                        },
                         colors = SwitchDefaults.colors(checkedTrackColor = secondary),
                     )
                 },
@@ -142,6 +156,20 @@ internal fun ExperienceSection(
                 trailingContent = trailingContent,
             )
         }
+    }
+
+    if (showDisableActivitiesDialog) {
+        AlertDialog(
+            title = Res.string.settings_experience_disable_activities.get(),
+            text = Res.string.settings_experience_disable_activities_warning.get(),
+            colors = AppTheme.colors.brutal.blue,
+            confirmButtonText = Res.string.disable.get(),
+            onDismissRequest = { showDisableActivitiesDialog = false },
+            onConfirmClick = {
+                toggleActivities()
+                showDisableActivitiesDialog = false
+            },
+        )
     }
 }
 

@@ -194,4 +194,17 @@ public object BrutalColor {
         lowest = Color(0xFFF0F4C3),
         onLowest = Color.Black,
     )
+
+    public val all: List<BrutalColors> = listOf(
+        blue,
+        green,
+        red,
+        orange,
+        yellow,
+        pink,
+        purple,
+        vermilion,
+        maroon,
+        lime,
+    )
 }
