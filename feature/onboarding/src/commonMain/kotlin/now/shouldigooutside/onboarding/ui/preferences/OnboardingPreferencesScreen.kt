@@ -13,6 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.stateholder.extensions.collectAsState
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.units.Units
+import now.shouldigooutside.core.model.units.units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.onboarding_preferences
 import now.shouldigooutside.core.resources.onboarding_preferences_subtext
@@ -20,6 +22,7 @@ import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.preferences.PreferencesList
+import now.shouldigooutside.core.ui.units.UnitPresetCard
 import now.shouldigooutside.onboarding.ui.OnboardingScreenPreview
 import now.shouldigooutside.onboarding.ui.navigation.OnboardingDestination
 import org.koin.compose.viewmodel.koinViewModel
@@ -29,8 +32,10 @@ internal fun OnboardingPreferencesScreen(model: OnboardingPreferencesModel = koi
     val state by model.collectAsState()
 
     OnboardingPreferencesScreen(
+        units = state.units,
         preferences = state.preferences,
-        updatePreferences = model::update,
+        updatePreferences = model::updatePreferences,
+        updateUnits = model::updateUnits,
         temperatureRange = state.tempRange,
         maxWindSpeed = state.maxWindSpeed,
     )
@@ -38,8 +43,10 @@ internal fun OnboardingPreferencesScreen(model: OnboardingPreferencesModel = koi
 
 @Composable
 internal fun OnboardingPreferencesScreen(
+    units: Units,
     preferences: Preferences,
     updatePreferences: (Preferences) -> Unit,
+    updateUnits: (Units) -> Unit,
     modifier: Modifier = Modifier,
     temperatureRange: ClosedFloatingPointRange<Float> = -30f..30f,
     maxWindSpeed: Float = 40f,
@@ -68,7 +75,13 @@ internal fun OnboardingPreferencesScreen(
                 )
             }
 
+            UnitPresetCard(
+                units = units,
+                onSelect = { preset -> updateUnits(preset.units) },
+            )
+
             PreferencesList(
+                units = units,
                 preferences = preferences,
                 updatePreferences = updatePreferences,
                 temperatureRange = temperatureRange,

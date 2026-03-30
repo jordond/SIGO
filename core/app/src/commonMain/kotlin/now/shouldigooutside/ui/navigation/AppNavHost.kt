@@ -11,13 +11,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import now.shouldigooutside.core.platform.Platform
 import now.shouldigooutside.core.platform.platform
-import now.shouldigooutside.forecast.ui.navigation.ForecastHomeRoute
-import now.shouldigooutside.forecast.ui.navigation.forecastNavigation
 import now.shouldigooutside.onboarding.ui.navigation.OnboardingRoute
 import now.shouldigooutside.onboarding.ui.navigation.onboardingNavigation
-import now.shouldigooutside.settings.ui.navigation.PreferencesBottomSheet
-import now.shouldigooutside.settings.ui.navigation.SettingsRoute
 import now.shouldigooutside.settings.ui.navigation.settingsNavigation
+import now.shouldigooutside.ui.home.navigation.HomeRoute
+import now.shouldigooutside.ui.home.navigation.homeScreen
 import now.shouldigooutside.webview.navigation.WebViewRoute
 import now.shouldigooutside.webview.navigation.webViewNavigation
 import kotlin.reflect.KClass
@@ -35,14 +33,14 @@ internal fun AppNavHost(
     ) {
         onboardingNavigation(
             navController = navController,
-            onFinish = { navController.navigate(ForecastHomeRoute) },
+            onFinish = {
+                navController.navigate(HomeRoute) {
+                    popUpTo(HomeRoute)
+                }
+            },
         )
 
-        forecastNavigation(
-            navController = navController,
-            toPreferences = { navController.navigate(PreferencesBottomSheet) },
-            toSettings = { navController.navigate(SettingsRoute) },
-        )
+        homeScreen(navController)
 
         settingsNavigation(
             navController = navController,
@@ -57,7 +55,7 @@ internal fun AppNavHost(
 }
 
 @Composable
-private fun AppNavHost(
+internal fun AppNavHost(
     navController: NavHostController,
     startDestination: KClass<*>,
     modifier: Modifier = Modifier,

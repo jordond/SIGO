@@ -51,7 +51,6 @@ internal fun SettingsScreen(
     toInternalSettings: () -> Unit,
     toWebView: (title: String, url: String) -> Unit,
     toUnits: () -> Unit,
-    toPreferences: () -> Unit,
     model: SettingsModel = koinViewModel(),
 ) {
     HandleEvents(model) { event ->
@@ -80,11 +79,14 @@ internal fun SettingsScreen(
                 is SettingsAction.Toggle24HourFormat -> {
                     model.toggle24HourFormat()
                 }
+                is SettingsAction.ToggleAirQuality -> {
+                    model.toggleAirQuality()
+                }
+                is SettingsAction.ToggleActivities -> {
+                    model.toggleActivities()
+                }
                 is SettingsAction.ToUnitsScreen -> {
                     toUnits()
-                }
-                is SettingsAction.ToPreferencesScreen -> {
-                    toPreferences()
                 }
                 is SettingsAction.RateApp -> {
                     if (state.canEnableInternalSettings) {
@@ -171,8 +173,9 @@ internal fun SettingsScreen(
                 settings = settings,
                 toggleHaptics = dispatcher.rememberRelay(SettingsAction.ToggleHaptics),
                 toggle24HourFormat = dispatcher.rememberRelay(SettingsAction.Toggle24HourFormat),
+                toggleAirQuality = dispatcher.rememberRelay(SettingsAction.ToggleAirQuality),
+                toggleActivities = dispatcher.rememberRelay(SettingsAction.ToggleActivities),
                 unitsClick = dispatcher.rememberRelay(SettingsAction.ToUnitsScreen),
-                preferencesClick = dispatcher.rememberRelay(SettingsAction.ToPreferencesScreen),
                 primary = AppTheme.colors.secondary,
                 secondary = AppTheme.colors.primary,
             )

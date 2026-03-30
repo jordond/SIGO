@@ -2,10 +2,9 @@ package now.shouldigooutside.forecast.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,16 +47,15 @@ internal fun PreferenceResultCard(
     Card(
         colors = colors.cardColors(),
         modifier = modifier
-            .widthIn(min = 150.dp)
-            .width(IntrinsicSize.Min)
-            .then(if (height != null) Modifier.height(height) else Modifier),
+            .then(if (height != null) Modifier.height(height) else Modifier)
+            .widthIn(min = 150.dp, max = 150.dp)
+            .width(IntrinsicSize.Min),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
         ) {
             if (icon != null) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                Box(
                     modifier = Modifier
                         .background(colors.bright)
                         .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -66,13 +64,16 @@ internal fun PreferenceResultCard(
                     Icon(
                         icon = icon,
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier
+                            .size(16.dp)
+                            .align(Alignment.CenterStart),
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = title,
                         maxLines = 1,
                         style = AppTheme.typography.h4,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
             } else {

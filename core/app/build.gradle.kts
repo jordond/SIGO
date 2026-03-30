@@ -48,6 +48,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.room.runtime)
             implementation(libs.materialKolor)
+            implementation(libs.kotlinx.collections)
             api(libs.bundles.koin.compose)
             implementation(libs.bundles.stateHolder)
         }

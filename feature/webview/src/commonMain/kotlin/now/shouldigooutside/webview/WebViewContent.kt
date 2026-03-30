@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewState
@@ -20,6 +21,7 @@ import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.Scaffold
 import now.shouldigooutside.core.ui.components.progressindicators.LinearProgressIndicator
 import now.shouldigooutside.core.ui.components.topbar.TopBar
+import now.shouldigooutside.core.ui.components.topbar.TopBarDefaults
 import now.shouldigooutside.core.ui.ktx.get
 
 @Composable
@@ -30,10 +32,12 @@ internal fun WebViewContent(
     modifier: Modifier = Modifier,
 ) {
     val navigator = rememberWebViewNavigator()
+    val topBarScrollBehavior = TopBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         containerColor = AppTheme.colors.surface,
         topBar = {
             TopBar(
+                scrollBehavior = topBarScrollBehavior,
                 title = {
                     if (!title.isNullOrBlank()) {
                         Title(text = title)
@@ -66,7 +70,9 @@ internal fun WebViewContent(
             WebView(
                 state = state,
                 navigator = navigator,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .nestedScroll(topBarScrollBehavior.nestedScrollConnection),
             )
         }
     }

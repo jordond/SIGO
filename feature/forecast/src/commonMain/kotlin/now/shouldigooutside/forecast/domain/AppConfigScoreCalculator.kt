@@ -27,5 +27,6 @@ internal class AppConfigScoreCalculator(
     override fun calculate(
         forecast: Forecast,
         preferences: Preferences,
-    ): ForecastScore = calculator.calculate(forecast, preferences)
+        includeAirQuality: Boolean,
+    ): ForecastScore = calculator.calculate(forecast, preferences, includeAirQuality)
 }

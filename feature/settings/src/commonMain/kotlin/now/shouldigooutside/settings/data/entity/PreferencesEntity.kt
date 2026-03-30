@@ -2,12 +2,17 @@ package now.shouldigooutside.settings.data.entity
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.units.Units
+import now.shouldigooutside.core.model.units.convertTemperature
+import now.shouldigooutside.core.model.units.convertWindSpeed
 
 @Serializable
 internal data class PreferencesEntity(
+    @Deprecated("Units are now stored in Settings, not per-preference. Kept for migration only.")
     @SerialName("units")
-    val units: UnitsEntity,
+    val units: UnitsEntity? = null,
     @SerialName("min_temp")
     val minTemperature: Int,
     @SerialName("max_temp")
@@ -20,26 +25,66 @@ internal data class PreferencesEntity(
     val rain: Boolean,
     @SerialName("snow")
     val snow: Boolean,
+    @SerialName("max_aqi")
+    val maxAqi: Int = 4,
 )
 
+@Suppress("DEPRECATION")
 internal fun Preferences.toEntity() =
     PreferencesEntity(
-        units = units.toEntity(),
+        units = null,
         minTemperature = minTemperature,
         maxTemperature = maxTemperature,
         includeApparentTemperature = includeApparentTemperature,
         windSpeed = windSpeed,
         rain = rain,
         snow = snow,
+        maxAqi = maxAqi.value,
     )
 
-internal fun PreferencesEntity.toModel() =
-    Preferences(
-        units = units.toModel(),
-        minTemperature = minTemperature,
-        maxTemperature = maxTemperature,
+/**
+ * Converts stored preferences to the model. If [units] is present (pre-migration data),
+ * the values are converted from the stored unit system to Metric. If [units] is null,
+ * the values are already in Metric and used as-is.
+ */
+@Suppress("DEPRECATION")
+internal fun PreferencesEntity.toModel(): Preferences {
+    val storedUnits = units?.toModel()
+
+    // If no units stored, values are already in Metric — no conversion needed.
+    if (storedUnits == null) {
+        return Preferences(
+            minTemperature = minTemperature,
+            maxTemperature = maxTemperature,
+            includeApparentTemperature = includeApparentTemperature,
+            windSpeed = windSpeed,
+            rain = rain,
+            snow = snow,
+            maxAqi = AirQuality(maxAqi),
+        )
+    }
+
+    val metricUnits = Units.Metric
+
+    return Preferences(
+        minTemperature = convertTemperature(
+            value = minTemperature.toDouble(),
+            from = storedUnits.temperature,
+            target = metricUnits.temperature,
+        ).toInt(),
+        maxTemperature = convertTemperature(
+            value = maxTemperature.toDouble(),
+            from = storedUnits.temperature,
+            target = metricUnits.temperature,
+        ).toInt(),
         includeApparentTemperature = includeApparentTemperature,
-        windSpeed = windSpeed,
+        windSpeed = convertWindSpeed(
+            value = windSpeed.toDouble(),
+            from = storedUnits.windSpeed,
+            target = metricUnits.windSpeed,
+        ).toInt(),
         rain = rain,
         snow = snow,
+        maxAqi = AirQuality(maxAqi),
     )
+}

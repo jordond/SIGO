@@ -18,9 +18,11 @@ internal sealed interface SettingsAction {
 
     data object Toggle24HourFormat : SettingsAction
 
-    data object ToUnitsScreen : SettingsAction
+    data object ToggleAirQuality : SettingsAction
 
-    data object ToPreferencesScreen : SettingsAction
+    data object ToggleActivities : SettingsAction
+
+    data object ToUnitsScreen : SettingsAction
 
     data object ShareApp : SettingsAction
 

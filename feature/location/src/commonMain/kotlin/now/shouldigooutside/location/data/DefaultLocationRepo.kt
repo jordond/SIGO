@@ -65,7 +65,7 @@ internal class DefaultLocationRepo(
         }
 
         if (!canGeolocate()) {
-            return LocationResult.NotSupported
+            return LocationResult.NotSupported()
         }
 
         logger.d { "Getting location" }
@@ -160,14 +160,14 @@ internal class DefaultLocationRepo(
                         LocationResult.NotAllowed(permanent = this.forever)
                     }
                     is GeolocatorResult.NotSupported -> {
-                        LocationResult.NotSupported
+                        LocationResult.NotSupported()
                     }
                     is GeolocatorResult.NotFound -> {
-                        LocationResult.NotFound
+                        LocationResult.NotFound()
                     }
                     else -> {
                         logger.e { "Geolocation error: $this" }
-                        LocationResult.Error
+                        LocationResult.Error()
                     }
                 }
             }

@@ -1,7 +1,9 @@
 package now.shouldigooutside.core.model.settings
 
+import androidx.compose.runtime.Immutable
 import now.shouldigooutside.build.BuildConfig
 
+@Immutable
 public data class InternalSettings(
     val enabled: Boolean = BuildConfig.ENABLE_INTERNAL_SETTINGS,
     val simulateFailure: Boolean = false,

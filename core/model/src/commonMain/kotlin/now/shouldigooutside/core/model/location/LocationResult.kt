@@ -1,5 +1,8 @@
 package now.shouldigooutside.core.model.location
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 public sealed interface LocationResult {
     public sealed class Failed :
         Throwable(),
@@ -13,9 +16,9 @@ public sealed interface LocationResult {
         val permanent: Boolean,
     ) : Failed()
 
-    public data object NotFound : Failed()
+    public class NotFound : Failed()
 
-    public data object NotSupported : Failed()
+    public class NotSupported : Failed()
 
-    public data object Error : Failed()
+    public class Error : Failed()
 }

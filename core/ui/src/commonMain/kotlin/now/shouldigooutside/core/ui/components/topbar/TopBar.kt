@@ -81,7 +81,7 @@ public fun TopBar(
             verticalAlignment = Alignment.CenterVertically,
             modifier =
                 Modifier
-                    .padding(horizontal = 4.dp)
+                    .padding(horizontal = 8.dp)
                     .fillMaxWidth()
                     .height(TopBarHeight),
         ) {
@@ -177,7 +177,9 @@ internal fun TopBarLayout(
         }
 
     // calculating based on scrolling behaviour
-    val dynamicHeight = height.intValue + (scrollBehavior?.state?.heightOffset ?: 0).toInt()
+    val dynamicHeight =
+        (height.intValue + (scrollBehavior?.state?.heightOffset ?: 0).toInt())
+            .coerceAtLeast(0)
 
     Surface(modifier = modifier.then(topBarDragModifier), color = topBarContainerColor) {
         CompositionLocalProvider(LocalContentColor provides topBarContentColor) {

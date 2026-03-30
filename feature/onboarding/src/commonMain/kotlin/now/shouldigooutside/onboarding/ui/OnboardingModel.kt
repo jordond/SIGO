@@ -12,9 +12,8 @@ import now.shouldigooutside.onboarding.ui.navigation.OnboardingDestination
 
 private val destinations = listOfNotNull(
     OnboardingDestination.Welcome,
-    OnboardingDestination.Units,
-    OnboardingDestination.Preferences,
     OnboardingDestination.Location,
+    OnboardingDestination.Preferences,
     OnboardingDestination.Summary,
 )
 

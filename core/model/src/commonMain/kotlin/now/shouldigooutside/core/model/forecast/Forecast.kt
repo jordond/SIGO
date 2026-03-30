@@ -1,5 +1,6 @@
 package now.shouldigooutside.core.model.forecast
 
+import androidx.compose.runtime.Immutable
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.units.Units
 import kotlin.time.Instant
@@ -13,6 +14,7 @@ import kotlin.time.Instant
  * @property days A list of daily forecasts starting the day after [instant].
  * @property alerts A list of weather alerts.
  */
+@Immutable
 public data class Forecast(
     val location: Location,
     val current: ForecastBlock,

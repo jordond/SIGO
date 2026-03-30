@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import now.shouldigooutside.core.config.AppConfigRepo
 import now.shouldigooutside.core.domain.settings.SettingsRepo
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.model.ui.ThemeMode
 import org.jetbrains.compose.resources.getString
@@ -34,6 +35,24 @@ internal class SettingsModel(
 
     fun toggle24HourFormat() {
         settingsRepo.update { settings -> settings.copy(use24HourFormat = !settings.use24HourFormat) }
+    }
+
+    fun toggleAirQuality() {
+        settingsRepo.update { settings -> settings.copy(includeAirQuality = !settings.includeAirQuality) }
+    }
+
+    fun toggleActivities() {
+        settingsRepo.update { settings ->
+            val newSelected = if (settings.enableActivities) {
+                Activity.General
+            } else {
+                settings.selectedActivity
+            }
+            settings.copy(
+                enableActivities = !settings.enableActivities,
+                selectedActivity = newSelected,
+            )
+        }
     }
 
     fun clickAbout() {

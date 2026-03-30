@@ -2,42 +2,63 @@ package now.shouldigooutside.forecast.ui.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.ui.navigation.Route
 import now.shouldigooutside.core.ui.navigation.popUpScreen
-import now.shouldigooutside.forecast.ui.ForecastHomeScreen
-import now.shouldigooutside.forecast.ui.details.ForecastDetailsScreen
+import now.shouldigooutside.forecast.ui.activities.ActivitiesTab
+import now.shouldigooutside.forecast.ui.activities.add.AddActivityScreen
+import now.shouldigooutside.forecast.ui.forecast.ForecastHomeScreen
+import now.shouldigooutside.forecast.ui.forecast.details.ForecastDetailsScreen
 
 @Serializable
-public data object ForecastHomeRoute
+public data object ForecastHomeRoute : Route
 
 @Serializable
-internal class ForecastDetailsRoute private constructor(
-    private val periodString: String,
+public class ForecastDetailsRoute private constructor(
+    private val periodString: String = ForecastPeriod.Now.name,
 ) : Route {
-    constructor(period: ForecastPeriod) : this(periodString = period.name)
+    public constructor(period: ForecastPeriod = ForecastPeriod.Now) : this(periodString = period.name)
 
-    val period: ForecastPeriod
+    public val period: ForecastPeriod
         get() = ForecastPeriod.valueOf(periodString)
 }
 
+@Serializable
+public data object ActivitiesRoute : Route
+
+@Serializable
+public data object AddActivityRoute : Route
+
 public fun NavGraphBuilder.forecastNavigation(
-    navController: NavController,
-    toPreferences: () -> Unit,
+    navController: NavHostController,
+    tabNavController: NavHostController,
     toSettings: () -> Unit,
 ) {
     composable<ForecastHomeRoute> {
         ForecastHomeScreen(
-            toViewDetails = { navController.navigate(ForecastDetailsRoute(it)) },
-            toPreferences = toPreferences,
+            toViewDetails = { tabNavController.navigate(ForecastDetailsRoute(it)) },
+        )
+    }
+
+    composable<ForecastDetailsRoute> {
+        ForecastDetailsScreen(
+            onBack = navController::popBackStack,
             toSettings = toSettings,
         )
     }
 
-    popUpScreen<ForecastDetailsRoute> {
-        ForecastDetailsScreen(
+    composable<ActivitiesRoute> {
+        ActivitiesTab(
+            toSettings = toSettings,
+        )
+    }
+
+    popUpScreen<AddActivityRoute> {
+        AddActivityScreen(
             onBack = navController::popBackStack,
         )
     }

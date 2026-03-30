@@ -17,6 +17,7 @@ import now.shouldigooutside.core.api.server.util.roundCoordinate
 import now.shouldigooutside.core.api.server.util.validateCoordinates
 import now.shouldigooutside.core.domain.forecast.GetForecastUseCase
 import now.shouldigooutside.core.domain.forecast.ScoreCalculator
+import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.forecast.data.entity.ForecastScoreRequestQuery
@@ -47,13 +48,13 @@ public class ForecastScoreRoute(
         val location = Location.create(roundedLat, roundedLon, query.name)
         val defaults = Preferences.default
         val preferences = Preferences(
-            units = defaults.units,
             minTemperature = query.minTemp ?: defaults.minTemperature,
             maxTemperature = query.maxTemp ?: defaults.maxTemperature,
             windSpeed = query.maxWind ?: defaults.windSpeed,
             rain = query.allowRain ?: defaults.rain,
             snow = query.allowSnow ?: defaults.snow,
             includeApparentTemperature = defaults.includeApparentTemperature,
+            maxAqi = AirQuality.from(query.maxAqi) ?: defaults.maxAqi,
         )
 
         val cacheKey = buildString {
@@ -77,7 +78,7 @@ public class ForecastScoreRoute(
         }
 
         val forecast = getForecastUseCase.forecastFor(location).getOrThrow()
-        val score = scoreCalculator.calculate(forecast, preferences).toEntity()
+        val score = scoreCalculator.calculate(forecast, preferences, query.includeAirQuality).toEntity()
         val responseData = ForecastScoreResponse(forecast = forecast.toEntity(), score = score)
         val responseJson = json.encodeToString(ApiResponse(data = responseData))
         cache?.put(cacheKey, responseJson, ttl = FORECAST_CACHE_TTL)

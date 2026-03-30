@@ -1,5 +1,6 @@
 package now.shouldigooutside.api
 
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.promise
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -8,10 +9,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
+import now.shouldigooutside.api.provider.KvCache
+import now.shouldigooutside.api.provider.KvCacheProvider
 import now.shouldigooutside.api.provider.WorkerTokenProvider
 import now.shouldigooutside.core.api.server.ApiRouter
-import now.shouldigooutside.core.api.server.cache.ForecastCacheProvider
-import now.shouldigooutside.core.api.server.cache.KvForecastCache
 import now.shouldigooutside.core.api.server.http.toJsResponse
 import now.shouldigooutside.core.api.server.http.toServerRequest
 import now.shouldigooutside.core.api.server.util.serverError
@@ -37,7 +38,7 @@ class DefaultApp(
     scope: CoroutineScope,
     private val router: ApiRouter,
     private val tokenProvider: WorkerTokenProvider,
-    private val cacheProvider: ForecastCacheProvider,
+    private val cacheProvider: KvCacheProvider,
     private val json: Json,
 ) : App,
     CoroutineScope by scope {
@@ -48,6 +49,7 @@ class DefaultApp(
         val parsedEnv = try {
             json.decodeFromDynamic<Env>(env)
         } catch (cause: SerializationException) {
+            Logger.e(cause) { "Failed to deserialize the env: $env" }
             return promise { serverError(json = json).toJsResponse() }
         }
 
@@ -56,7 +58,7 @@ class DefaultApp(
         if (cacheProvider.cache == null) {
             val kvNamespace: dynamic = env.FORECAST_CACHE
             if (kvNamespace != null) {
-                cacheProvider.cache = KvForecastCache(kvNamespace)
+                cacheProvider.cache = KvCache(kvNamespace)
             }
         }
 

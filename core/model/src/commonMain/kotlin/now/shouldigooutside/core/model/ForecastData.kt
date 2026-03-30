@@ -1,11 +1,13 @@
 package now.shouldigooutside.core.model
 
+import androidx.compose.runtime.Immutable
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.Score
 
+@Immutable
 public data class ForecastData(
     val forecast: Forecast,
     val score: ForecastScore,

@@ -43,13 +43,19 @@ internal class DefaultForecastStateHolder(
     override val state: StateFlow<AsyncResult<ForecastData>> =
         combine(
             container.state.filterNotNull().distinctUntilChanged(),
-            settingsRepo.settings.map { it.preferences }.distinctUntilChanged(),
-            transform = { forecastResult, preferences -> forecastResult to preferences },
-        ).map { (forecastResult, preferences) ->
+            settingsRepo.settings.map { it.preferences to it.includeAirQuality }.distinctUntilChanged(),
+            transform = { forecastResult, preferences ->
+                Triple(
+                    forecastResult,
+                    preferences.first,
+                    preferences.second,
+                )
+            },
+        ).map { (forecastResult, preferences, includeAirQuality) ->
             forecastResult.mapSuccess { forecast ->
                 ForecastData(
                     forecast = forecast,
-                    score = scoreCalculator.calculate(forecast, preferences),
+                    score = scoreCalculator.calculate(forecast, preferences, includeAirQuality),
                 )
             }
         }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), AsyncResult.Loading)
@@ -89,7 +95,7 @@ internal class DefaultForecastStateHolder(
         container.update { AsyncResult.Loading }
 
         val location = locationRepo.location()
-        val units = settingsRepo.settings.value.preferences.units
+        val units = settingsRepo.settings.value.units
         when (location) {
             is LocationResult.Failed -> {
                 container.update { AsyncResult.Error(location) }

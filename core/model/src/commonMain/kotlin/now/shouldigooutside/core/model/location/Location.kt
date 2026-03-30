@@ -1,5 +1,7 @@
 package now.shouldigooutside.core.model.location
 
+import androidx.compose.runtime.Immutable
+
 /**
  * A location with a name and coordinates.
  *
@@ -9,6 +11,7 @@ package now.shouldigooutside.core.model.location
  * @property administrativeArea The state or province of the location.
  * @property country The country of the location.
  */
+@Immutable
 public data class Location(
     val latitude: Double,
     val longitude: Double,

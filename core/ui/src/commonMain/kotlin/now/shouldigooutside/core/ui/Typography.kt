@@ -10,6 +10,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import now.shouldigooutside.core.resources.LexendMega
 import now.shouldigooutside.core.resources.PublicSans
@@ -48,6 +50,18 @@ public val contentFont: FontFamily
 public val TextStyle.asDisplay: TextStyle
     @Composable
     get() = copy(fontFamily = displayFont)
+
+@Composable
+public fun TextStyle.asDisplay(letterSpacing: TextUnit = defaultDisplayLetterSpacing): TextStyle =
+    copy(fontFamily = displayFont, letterSpacing = letterSpacing)
+
+private val TextStyle.defaultDisplayLetterSpacing: TextUnit
+    @Composable
+    get() = when (this) {
+        defaultTypography.body1 -> -(0.2).em
+        defaultTypography.button -> -(0.4).em
+        else -> 0.em
+    }
 
 public val TextStyle.asContent: TextStyle
     @Composable

@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.foundation.initalize.Initializer
 import now.shouldigooutside.core.model.settings.Settings
+import now.shouldigooutside.core.model.ui.AppExperience
 import now.shouldigooutside.ui.navigation.AppStartDestination
 
 @Stable
@@ -20,7 +21,7 @@ internal class AppHostModel(
 
         settingsRepo.settings.mergeState { state, value ->
             if (!value.loaded) {
-                state.copy(value)
+                state.copy(settings = value)
             } else {
                 val startDestination = if (value.hasCompletedOnboarding) {
                     AppStartDestination.Home
@@ -40,7 +41,7 @@ internal class AppHostModel(
         val settings: Settings,
         val uiState: UiState = UiState.Loading,
     ) {
-        val enableHaptics: Boolean = settings.enableHaptics
+        val appExperience: AppExperience = AppExperience.from(settings)
 
         sealed interface UiState {
             data object Loading : UiState

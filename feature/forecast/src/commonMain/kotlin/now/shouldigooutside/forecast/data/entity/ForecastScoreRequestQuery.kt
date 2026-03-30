@@ -2,6 +2,7 @@ package now.shouldigooutside.forecast.data.entity
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Preferences
 
@@ -23,6 +24,10 @@ public data class ForecastScoreRequestQuery(
     public val allowRain: Boolean? = null,
     @SerialName("allow_snow")
     public val allowSnow: Boolean? = null,
+    @SerialName("max_aqi")
+    public val maxAqi: Int? = null,
+    @SerialName("include_air_quality")
+    public val includeAirQuality: Boolean = true,
 )
 
 public fun ForecastScoreRequestQuery.toModels(): Pair<Location, Preferences> {
@@ -33,12 +38,12 @@ public fun ForecastScoreRequestQuery.toModels(): Pair<Location, Preferences> {
 private fun ForecastScoreRequestQuery.toPreferences(): Preferences {
     val default = Preferences.default
     return Preferences(
-        units = default.units,
         minTemperature = minTemp ?: default.minTemperature,
         maxTemperature = maxTemp ?: default.maxTemperature,
         windSpeed = maxWind ?: default.windSpeed,
         rain = allowRain ?: default.rain,
         snow = allowSnow ?: default.snow,
         includeApparentTemperature = default.includeApparentTemperature,
+        maxAqi = maxAqi?.let { AirQuality(it) } ?: default.maxAqi,
     )
 }

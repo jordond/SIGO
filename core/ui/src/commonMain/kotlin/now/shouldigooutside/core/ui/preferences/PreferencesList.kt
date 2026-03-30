@@ -13,11 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.preferences_precipitation_title
 import now.shouldigooutside.core.resources.rain
 import now.shouldigooutside.core.resources.snow
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.Droplet
@@ -26,27 +28,39 @@ import now.shouldigooutside.core.ui.preview.AppPreview
 
 @Composable
 public fun PreferencesList(
+    units: Units,
     preferences: Preferences,
     updatePreferences: (Preferences) -> Unit,
     modifier: Modifier = Modifier,
     temperatureRange: ClosedFloatingPointRange<Float> = -30f..30f,
     maxWindSpeed: Float = 40f,
 ) {
+    var showAqiInfo by remember { mutableStateOf(false) }
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier,
     ) {
         TemperatureRange(
+            units = units,
             preferences = preferences,
             update = updatePreferences,
             temperatureRange = temperatureRange,
         )
 
         WindRange(
+            units = units,
             preferences = preferences,
             update = updatePreferences,
             maxWindSpeed = maxWindSpeed,
         )
+
+        if (LocalAppExperience.current.includeAirQuality) {
+            AqiRange(
+                preferences = preferences,
+                update = updatePreferences,
+                onInfoClick = { showAqiInfo = true },
+            )
+        }
 
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -76,6 +90,11 @@ public fun PreferencesList(
             }
         }
     }
+
+    AqiInfoSheet(
+        isVisible = showAqiInfo,
+        onDismiss = { showAqiInfo = false },
+    )
 }
 
 @Preview
@@ -85,6 +104,7 @@ private fun PreferencesListPreview() {
     AppPreview {
         Column(modifier = Modifier.padding(16.dp)) {
             PreferencesList(
+                units = Units.Metric,
                 preferences = preferences,
                 updatePreferences = { preferences = it },
             )
