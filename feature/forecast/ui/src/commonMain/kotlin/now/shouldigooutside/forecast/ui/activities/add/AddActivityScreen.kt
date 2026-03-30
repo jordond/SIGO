@@ -59,6 +59,7 @@ import now.shouldigooutside.core.ui.activities.rememberStringResource
 import now.shouldigooutside.core.ui.components.Button
 import now.shouldigooutside.core.ui.components.ButtonVariant
 import now.shouldigooutside.core.ui.components.Scaffold
+import now.shouldigooutside.core.ui.components.ScaffoldScope.innerPadding
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.topbar.TopBar
 import now.shouldigooutside.core.ui.components.topbar.TopBarDefaults
@@ -145,7 +146,7 @@ internal fun AddActivityScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(top = 12.dp, start = 12.dp, end = 12.dp, bottom = 150.dp),
             modifier = Modifier
-                .paddingWithoutNav(innerPadding)
+                .innerPadding(innerPadding, bottom = false)
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -108,6 +109,7 @@ internal fun ForecastHomeScreen(
     val instant = data.rememberInstant()
 
     PullToRefreshBox(
+        modifier = modifier.statusBarsPadding(),
         isRefreshing = refreshing,
         onRefresh = dispatcher.rememberRelay(ForecastHomeAction.Refresh),
     ) {

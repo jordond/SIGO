@@ -107,7 +107,7 @@ internal fun HomeScreen(
     ) { innerPadding ->
         Box(
             modifier = Modifier
-                .padding(innerPadding)
+                .innerPadding(innerPadding, top = false, bottom = false)
                 .nestedScroll(bottomBarScrollBehavior.nestedScrollConnection)
                 .fillMaxSize(),
         ) {

@@ -1,5 +1,6 @@
 package now.shouldigooutside.core.ui
 
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
@@ -40,7 +41,7 @@ public fun TabHeader(
             )
         },
         windowInsets = null,
-        modifier = modifier,
+        modifier = modifier.statusBarsPadding(),
     )
 }
 
