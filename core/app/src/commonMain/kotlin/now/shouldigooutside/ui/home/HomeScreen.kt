@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +24,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.stateholder.extensions.HandleEvents
 import now.shouldigooutside.core.ui.components.Scaffold
+import now.shouldigooutside.core.ui.components.bottombar.BottomBarDefaults
 import now.shouldigooutside.core.ui.components.snackbar.LocalSnackbarProvider
 import now.shouldigooutside.core.ui.components.snackbar.Snackbar
 import now.shouldigooutside.core.ui.components.snackbar.SnackbarHost
@@ -80,6 +82,8 @@ internal fun HomeScreen(
     snackbarProvider: SnackbarProvider = rememberSnackbarProvider(),
     tabContent: @Composable BoxScope.() -> Unit,
 ) {
+    val bottomBarScrollBehavior = BottomBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
         modifier = modifier,
         snackbarHost = {
@@ -97,12 +101,14 @@ internal fun HomeScreen(
             HomeBottomNav(
                 selected = selected,
                 onClick = onTabClick,
+                scrollBehavior = bottomBarScrollBehavior,
             )
         },
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .padding(innerPadding)
+                .nestedScroll(bottomBarScrollBehavior.nestedScrollConnection)
                 .fillMaxSize(),
         ) {
             CompositionLocalProvider(LocalSnackbarProvider provides snackbarProvider) {

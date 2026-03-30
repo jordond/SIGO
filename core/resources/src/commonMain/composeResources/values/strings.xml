@@ -161,6 +161,7 @@
     <string name="onboarding_units_subtext">Tell us which units you prefer</string>
     <string name="onboarding_preferences">Preferences</string>
     <string name="onboarding_preferences_subtext">Tell us your weather comfort levels</string>
+    <string name="onboarding_location_disclaimer">Your privacy matters. We do not store or share your exact coordinates. Only a rough location to get your forecast.</string>
     <string name="onboarding_location">Location</string>
     <string name="onboarding_location_subtext">We use your approximate location to fetch the weather</string>
     <string name="onboarding_summary_title">We're all set</string>

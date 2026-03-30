@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.LocalContainerColor
+import now.shouldigooutside.core.ui.LocalThemeIsDark
 import now.shouldigooutside.core.ui.LocalTypography
 import now.shouldigooutside.core.ui.components.BrutalContainer
 import now.shouldigooutside.core.ui.components.BrutalDefaults
@@ -182,6 +183,17 @@ public object CardDefaults {
         @Composable get() = cardColors(
             containerColor = AppTheme.colors.error,
             contentColor = AppTheme.colors.onError,
+        )
+
+    public val disclaimerColors: CardColors
+        @Composable get() = cardColors(
+            containerColor =
+                if (LocalThemeIsDark.current) {
+                    AppTheme.colors.onDisabled
+                } else {
+                    AppTheme.colors.disabled
+                },
+            contentColor = Color.Black,
         )
 
     @Composable

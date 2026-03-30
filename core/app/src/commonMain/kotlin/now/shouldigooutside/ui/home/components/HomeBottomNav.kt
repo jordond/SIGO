@@ -18,6 +18,7 @@ import now.shouldigooutside.core.ui.components.NavigationBar
 import now.shouldigooutside.core.ui.components.NavigationBarItem
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.autoSize
+import now.shouldigooutside.core.ui.components.bottombar.BottomBarScrollBehavior
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.ui.home.navigation.HomeTab
@@ -28,6 +29,7 @@ internal fun HomeBottomNav(
     selected: HomeTab,
     onClick: (HomeTab) -> Unit,
     modifier: Modifier = Modifier,
+    scrollBehavior: BottomBarScrollBehavior? = null,
 ) {
     val enableActivities = LocalAppExperience.current.enableActivities
     val entries = remember(enableActivities) {
@@ -37,7 +39,10 @@ internal fun HomeBottomNav(
             HomeTab.entries.filterNot { it == HomeTab.Activities }
         }
     }
-    NavigationBar {
+    NavigationBar(
+        modifier = modifier,
+        scrollBehavior = scrollBehavior,
+    ) {
         entries.forEach { entry ->
             NavigationBarItem(
                 selected = entry == selected,
