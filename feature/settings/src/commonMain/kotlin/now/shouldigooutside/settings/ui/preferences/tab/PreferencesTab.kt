@@ -105,7 +105,10 @@ internal fun PreferencesTab(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            onConfirmClick = { model.deleteSelectedActivity() },
+            onConfirmClick = {
+                model.deleteSelectedActivity()
+                showDeleteDialog = false
+            },
             title = Res.string.are_you_sure.get(),
             text = Res.string.delete_activity_message.get(),
             confirmButtonText = Res.string.delete.get(),

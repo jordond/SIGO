@@ -11,24 +11,24 @@ import now.shouldigooutside.core.resources.preferences_wind_max
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-public fun Preferences.minTemperatureString(unit: TemperatureUnit): String {
-    val unit = unit.rememberUnit()
+public fun Preferences.minTemperatureString(temperatureUnit: TemperatureUnit): String {
+    val unit = temperatureUnit.rememberUnit()
     return remember(unit, minTemperature) {
         "$minTemperature$unit"
     }
 }
 
 @Composable
-public fun Preferences.maxTemperatureString(unit: TemperatureUnit): String {
-    val unit = unit.rememberUnit()
+public fun Preferences.maxTemperatureString(temperatureUnit: TemperatureUnit): String {
+    val unit = temperatureUnit.rememberUnit()
     return remember(unit, maxTemperature) {
         "$maxTemperature$unit"
     }
 }
 
 @Composable
-public fun Preferences.maxWindSpeedString(unit: WindSpeedUnit): String {
-    val unit = unit.rememberUnit()
+public fun Preferences.maxWindSpeedString(windSpeedUnit: WindSpeedUnit): String {
+    val unit = windSpeedUnit.rememberUnit()
     return remember(unit, windSpeed) {
         "$windSpeed $unit"
     }

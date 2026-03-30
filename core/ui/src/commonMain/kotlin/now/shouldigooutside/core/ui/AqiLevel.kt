@@ -82,8 +82,8 @@ public object AqiLevels {
     public fun forValue(aqi: AirQuality): AqiLevel {
         val levels = all()
         return when {
-            aqi <= 3 -> levels[0]
-            aqi <= 5 -> levels[1]
+            aqi <= 2 -> levels[0]
+            aqi <= 4 -> levels[1]
             aqi <= 6 -> levels[2]
             aqi <= 8 -> levels[3]
             aqi <= 9 -> levels[4]

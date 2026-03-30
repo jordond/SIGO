@@ -59,8 +59,7 @@ public class Settings(
         val newSelected = if (selectedActivity == activity) {
             Activity.General
         } else {
-            val index = activities.keys.indexOf(activity)
-            activities.keys.toList().getOrNull(index - 1) ?: Activity.General
+            selectedActivity
         }
 
         return fullCopy(

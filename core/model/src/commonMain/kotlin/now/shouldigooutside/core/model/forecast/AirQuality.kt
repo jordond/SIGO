@@ -12,6 +12,10 @@ import kotlin.jvm.JvmInline
 public value class AirQuality(
     public val value: Int,
 ) {
+    init {
+        require(value in 0..10) { "AQI must be 0-10, was $value" }
+    }
+
     public val hasData: Boolean get() = value > 0
 
     public operator fun compareTo(other: Int): Int = value.compareTo(other)
@@ -19,6 +23,6 @@ public value class AirQuality(
     public companion object {
         public val None: AirQuality = AirQuality(0)
 
-        public fun from(value: Int?): AirQuality? = value?.let(::AirQuality)
+        public fun from(value: Int?): AirQuality? = value?.coerceIn(0, 10)?.let(::AirQuality)
     }
 }

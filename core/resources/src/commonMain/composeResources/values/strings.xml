@@ -245,7 +245,7 @@
     <string name="score_air_quality_inside">The air quality is great!</string>
     <string name="score_air_quality_outside">The air quality is poor</string>
     <string name="score_air_quality_near">The air quality is okay</string>
-    <string name="score_air_quality_status_inside">Good</string>
+    <string name="score_air_quality_status_inside">Ideal</string>
     <string name="score_air_quality_status_outside">Poor</string>
     <string name="score_air_quality_status_near">Fair</string>
     <string name="unit_air_quality">Air Quality</string>
