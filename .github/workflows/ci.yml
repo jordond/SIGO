@@ -110,7 +110,7 @@ jobs:
         run: cp ./.github/ci-app-env.properties ./app-env.properties
 
       - name: Compile Kotlin to JS
-        run: ./sigo gradle :apps:api:worker:compileKotlinJs
+        run: ./sigo gradle :apps:api:worker:compileProductionExecutableKotlinJs
 
       - name: Install worker dependencies
         working-directory: apps/api/worker
