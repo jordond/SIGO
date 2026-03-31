@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -69,9 +72,11 @@ internal fun Header(
         )
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = 4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
         ) {
             if (hasMultipleActivities) {
                 Box {
@@ -82,7 +87,7 @@ internal fun Header(
                         variant = ButtonVariant.PrimaryElevated,
                     ) {
                         Text(
-                            text = selectedActivity.rememberHeaderName(),
+                            text = selectedActivity.rememberDisplayName(),
                             style = AppTheme.typography.h2,
                         )
                     }
@@ -112,6 +117,8 @@ internal fun Header(
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.width(16.dp))
             } else {
                 Text(
                     text = Res.string.forecast_title_outside.get(),
@@ -186,13 +193,6 @@ internal fun Header(
         }
     }
 }
-
-@Composable
-private fun Activity.rememberHeaderName(): String =
-    when (this) {
-        is Activity.General -> Res.string.forecast_title_outside.get()
-        else -> rememberDisplayName()
-    }
 
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)

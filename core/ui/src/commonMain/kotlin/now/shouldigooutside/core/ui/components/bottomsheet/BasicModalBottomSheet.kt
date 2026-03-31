@@ -249,7 +249,7 @@ internal fun BoxScope.ModalBottomSheetContent(
                     color = containerColor,
                     shape = shape,
                 ).then(
-                    if (border) Modifier.brutalBorder(shape = shape) else Modifier,
+                    if (border) Modifier.brutalBorder(shape = shape, width = 8.dp) else Modifier,
                 ).windowInsetsPadding(contentWindowInsets())
                 .graphicsLayer {
                     val progress = predictiveBackProgress.value
