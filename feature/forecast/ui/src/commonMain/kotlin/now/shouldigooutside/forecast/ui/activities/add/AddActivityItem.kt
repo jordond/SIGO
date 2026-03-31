@@ -31,8 +31,8 @@ import now.shouldigooutside.core.resources.cancel
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.BrutalColors
 import now.shouldigooutside.core.ui.activities.colors
+import now.shouldigooutside.core.ui.activities.rememberDisplayName
 import now.shouldigooutside.core.ui.activities.rememberIcon
-import now.shouldigooutside.core.ui.activities.rememberStringResource
 import now.shouldigooutside.core.ui.asDisplay
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.IconButton
@@ -46,7 +46,6 @@ import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.X
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
-import org.jetbrains.compose.resources.StringResource
 
 @Composable
 internal fun AddActivityItem(
@@ -55,7 +54,7 @@ internal fun AddActivityItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val title = activity.rememberStringResource()
+    val title = activity.rememberDisplayName()
     val icon = activity.rememberIcon()
     val colors = activity.colors()
 
@@ -127,7 +126,7 @@ internal fun AddActivityItem(
 
 @Composable
 private fun Content(
-    title: StringResource,
+    title: String,
     colors: BrutalColors,
     icon: ImageVector,
     style: TextStyle,
@@ -143,7 +142,7 @@ private fun Content(
     ) {
         Icon(
             icon = icon,
-            contentDescription = title.get(),
+            contentDescription = title,
             tint = colors.containerContent,
             modifier = Modifier
                 .padding(12.dp)

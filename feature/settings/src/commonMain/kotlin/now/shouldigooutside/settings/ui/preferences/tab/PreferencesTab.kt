@@ -49,6 +49,7 @@ import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.TabHeader
 import now.shouldigooutside.core.ui.activities.ActivitySelector
+import now.shouldigooutside.core.ui.brutal
 import now.shouldigooutside.core.ui.components.AlertDialog
 import now.shouldigooutside.core.ui.components.Button
 import now.shouldigooutside.core.ui.components.ButtonVariant
@@ -113,6 +114,7 @@ internal fun PreferencesTab(
             title = Res.string.are_you_sure.get(),
             text = Res.string.delete_activity_message.get(),
             confirmButtonText = Res.string.delete.get(),
+            colors = AppTheme.colors.brutal.red,
         )
     }
 }

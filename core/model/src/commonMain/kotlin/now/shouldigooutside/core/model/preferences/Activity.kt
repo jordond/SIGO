@@ -21,7 +21,11 @@ public sealed interface Activity {
 
     public data class Custom(
         val name: String,
-    ) : Activity
+    ) : Activity {
+        public companion object {
+            public const val MAX_NAME_LENGTH: Int = 12
+        }
+    }
 
     public companion object {
         public val all: List<Activity> = listOf(

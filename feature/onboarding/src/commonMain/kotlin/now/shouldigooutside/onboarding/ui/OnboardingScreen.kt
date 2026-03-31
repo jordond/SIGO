@@ -38,6 +38,7 @@ import now.shouldigooutside.core.resources.next
 import now.shouldigooutside.core.resources.warning
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.asContent
+import now.shouldigooutside.core.ui.brutal
 import now.shouldigooutside.core.ui.components.AlertDialog
 import now.shouldigooutside.core.ui.components.Button
 import now.shouldigooutside.core.ui.components.ButtonVariant
@@ -107,6 +108,7 @@ internal fun OnboardingScreen(
             AlertDialog(
                 title = Res.string.warning.get(),
                 text = Res.string.location_warning_dialog_text.get(),
+                colors = AppTheme.colors.brutal.yellow,
                 onDismissRequest = { model.confirmLocationDialog(false) },
                 onConfirmClick = { model.confirmLocationDialog(true) },
             )

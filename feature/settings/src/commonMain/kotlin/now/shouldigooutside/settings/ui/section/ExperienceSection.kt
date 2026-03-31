@@ -29,7 +29,6 @@ import now.shouldigooutside.core.resources.settings_experience_title
 import now.shouldigooutside.core.resources.settings_experience_units
 import now.shouldigooutside.core.resources.settings_experience_units_desc
 import now.shouldigooutside.core.ui.AppTheme
-import now.shouldigooutside.core.ui.brutal
 import now.shouldigooutside.core.ui.components.AlertDialog
 import now.shouldigooutside.core.ui.components.Switch
 import now.shouldigooutside.core.ui.components.SwitchDefaults
@@ -162,7 +161,6 @@ internal fun ExperienceSection(
         AlertDialog(
             title = Res.string.settings_experience_disable_activities.get(),
             text = Res.string.settings_experience_disable_activities_warning.get(),
-            colors = AppTheme.colors.brutal.blue,
             confirmButtonText = Res.string.disable.get(),
             onDismissRequest = { showDisableActivitiesDialog = false },
             onConfirmClick = {

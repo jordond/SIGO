@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -28,7 +29,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
@@ -51,16 +54,21 @@ import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.activity_add_preferences_description
 import now.shouldigooutside.core.resources.activity_add_title
+import now.shouldigooutside.core.resources.activity_custom_name_placeholder
+import now.shouldigooutside.core.resources.activity_custom_name_title
+import now.shouldigooutside.core.resources.okay
 import now.shouldigooutside.core.resources.reset
 import now.shouldigooutside.core.resources.save
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.activities.key
 import now.shouldigooutside.core.ui.activities.rememberStringResource
+import now.shouldigooutside.core.ui.brutal
+import now.shouldigooutside.core.ui.components.AlertDialog
 import now.shouldigooutside.core.ui.components.Button
 import now.shouldigooutside.core.ui.components.ButtonVariant
 import now.shouldigooutside.core.ui.components.Scaffold
-import now.shouldigooutside.core.ui.components.ScaffoldScope.innerPadding
 import now.shouldigooutside.core.ui.components.Text
+import now.shouldigooutside.core.ui.components.textfield.TextField
 import now.shouldigooutside.core.ui.components.topbar.TopBar
 import now.shouldigooutside.core.ui.components.topbar.TopBarDefaults
 import now.shouldigooutside.core.ui.ktx.get
@@ -111,6 +119,13 @@ internal fun AddActivityScreen(
 ) {
     val scrollBehavior = TopBarDefaults.enterAlwaysScrollBehavior()
     val list = remember(activities) { activities + Activity.Custom("") }
+    var showCustomNameDialog by remember { mutableStateOf(false) }
+    var customName by remember { mutableStateOf("") }
+    val dismissCustomNameDialog = {
+        showCustomNameDialog = false
+        customName = ""
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -170,7 +185,13 @@ internal fun AddActivityScreen(
                     AddActivityItem(
                         activity = item,
                         selected = false,
-                        onClick = { dispatcher.dispatch(AddActivityAction.Select(item)) },
+                        onClick = {
+                            if (item is Activity.Custom) {
+                                showCustomNameDialog = true
+                            } else {
+                                dispatcher.dispatch(AddActivityAction.Select(item))
+                            }
+                        },
                         modifier = Modifier.aspectRatio(1f),
                     )
                 }
@@ -218,6 +239,38 @@ internal fun AddActivityScreen(
                     }
                 }
             }
+        }
+    }
+
+    if (showCustomNameDialog) {
+        AlertDialog(
+            onDismissRequest = dismissCustomNameDialog,
+            onConfirmClick = {
+                if (customName.isNotBlank()) {
+                    dispatcher.dispatch(AddActivityAction.Select(Activity.Custom(customName.trim())))
+                    dismissCustomNameDialog()
+                }
+            },
+            title = Res.string.activity_custom_name_title.get(),
+            confirmButtonText = Res.string.okay.get(),
+            confirmEnabled = customName.isNotBlank() && customName.length <= Activity.Custom.MAX_NAME_LENGTH,
+            colors = AppTheme.colors.brutal.green,
+        ) {
+            val isOverLimit = customName.length > Activity.Custom.MAX_NAME_LENGTH
+            TextField(
+                value = customName,
+                onValueChange = { customName = it },
+                placeholder = { Text(Res.string.activity_custom_name_placeholder) },
+                singleLine = true,
+                isError = isOverLimit,
+                supportingText = {
+                    Text(
+                        text = "${customName.length}/${Activity.Custom.MAX_NAME_LENGTH}",
+                        style = AppTheme.typography.body2,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                },
+            )
         }
     }
 }

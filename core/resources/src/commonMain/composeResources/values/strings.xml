@@ -153,6 +153,8 @@
     <string name="activity_title_custom">Custom</string>
     <string name="activity_add_title">Add Activity</string>
     <string name="activity_add_preferences_description">Set your desired preferences for %1$s</string>
+    <string name="activity_custom_name_title">Name your activity</string>
+    <string name="activity_custom_name_placeholder">e.g. Gardening, Fishing…</string>
 
     <string name="onboarding_welcome_preamble">Welcome to</string>
     <string name="onboarding_welcome">"Should I go outside today?"</string>

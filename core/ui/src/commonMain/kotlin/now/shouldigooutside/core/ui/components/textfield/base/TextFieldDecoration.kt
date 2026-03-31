@@ -173,15 +173,6 @@ internal fun CommonDecorationBox(
                 }
             }
 
-        val containerWithId: @Composable () -> Unit = {
-            Box(
-                Modifier.layoutId(ContainerId),
-                propagateMinConstraints = true,
-            ) {
-                container()
-            }
-        }
-
         val isFocused by interactionSource.collectIsFocusedAsState()
         val elevationColor by colors.containerOutlineColor(enabled, isError, interactionSource)
         val elevationDp by animateDpAsState(
@@ -193,29 +184,39 @@ internal fun CommonDecorationBox(
             },
         )
 
-        BrutalContainer(
-            shape = shape,
-            elevation = elevationDp,
-            color = elevationColor,
-        ) {
-            TextFieldLayout(
-                modifier = modifier,
-                textField = innerTextField,
-                placeholder = decoratedPlaceholder,
-                label = decoratedLabel,
-                leading = decoratedLeading,
-                trailing = decoratedTrailing,
-                prefix = decoratedPrefix,
-                suffix = decoratedSuffix,
-                container = containerWithId,
-                supporting = decoratedSupporting,
-                paddingValues = contentPadding,
-                labelPaddingValues = labelPadding,
-                supportingPaddingValues = supportingTextPadding,
-                leadingIconPaddingValues = leadingIconPadding,
-                trailingIconPaddingValues = trailingIconPadding,
-            )
+        val containerWithId: @Composable () -> Unit = {
+            BrutalContainer(
+                modifier = Modifier.layoutId(ContainerId),
+                shape = shape,
+                elevation = elevationDp,
+                color = elevationColor,
+            ) {
+                Box(
+                    Modifier.matchParentSize(),
+                    propagateMinConstraints = true,
+                ) {
+                    container()
+                }
+            }
         }
+
+        TextFieldLayout(
+            modifier = modifier,
+            textField = innerTextField,
+            placeholder = decoratedPlaceholder,
+            label = decoratedLabel,
+            leading = decoratedLeading,
+            trailing = decoratedTrailing,
+            prefix = decoratedPrefix,
+            suffix = decoratedSuffix,
+            container = containerWithId,
+            supporting = decoratedSupporting,
+            paddingValues = contentPadding,
+            labelPaddingValues = labelPadding,
+            supportingPaddingValues = supportingTextPadding,
+            leadingIconPaddingValues = leadingIconPadding,
+            trailingIconPaddingValues = trailingIconPadding,
+        )
     }
 }
 
