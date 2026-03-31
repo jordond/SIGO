@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
@@ -69,6 +70,7 @@ internal fun Header(
         Text(
             text = Res.string.forecast_title_prefix.get(),
             style = AppTheme.typography.h1,
+            fontStyle = FontStyle.Italic,
         )
 
         Row(
@@ -123,6 +125,7 @@ internal fun Header(
                 Text(
                     text = Res.string.forecast_title_outside.get(),
                     style = AppTheme.typography.h1,
+                    fontStyle = FontStyle.Italic,
                 )
             }
 
