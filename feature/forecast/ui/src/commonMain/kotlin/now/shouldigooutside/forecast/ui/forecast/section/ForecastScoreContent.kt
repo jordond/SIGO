@@ -65,7 +65,6 @@ import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.AirQualityResultCard
 import now.shouldigooutside.forecast.ui.components.PreferenceResultCard
-import now.shouldigooutside.forecast.ui.components.mappers.airQualityStatus
 import now.shouldigooutside.forecast.ui.components.mappers.colors
 import now.shouldigooutside.forecast.ui.components.mappers.precipitationStatus
 import now.shouldigooutside.forecast.ui.components.mappers.rememberText
@@ -247,7 +246,6 @@ internal fun ForecastScoreContent(
 
                         AirQualityResultCard(
                             airQuality = block.airQuality,
-                            text = score.reasons.airQualityStatus(),
                             modifier = Modifier.weight(1f),
                         )
                     }

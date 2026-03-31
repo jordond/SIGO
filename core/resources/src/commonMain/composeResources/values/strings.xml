@@ -242,18 +242,13 @@
     <string name="score_severe_weather_outside">There is severe weather out there!</string>
     <string name="score_severe_weather_near">Chance of severe weather</string>
 
-    <!-- Air Quality -->
     <string name="score_air_quality_inside">The air quality is great!</string>
     <string name="score_air_quality_outside">The air quality is poor</string>
     <string name="score_air_quality_near">The air quality is okay</string>
-    <string name="score_air_quality_status_inside">Ideal</string>
-    <string name="score_air_quality_status_outside">Poor</string>
-    <string name="score_air_quality_status_near">Fair</string>
     <string name="unit_air_quality">Air Quality</string>
     <string name="unit_air_quality_short">AQI</string>
     <string name="preferences_aqi_title">Air Quality</string>
     <string name="preferences_aqi_description">Maximum acceptable AQI (1-11)</string>
-    <string name="preferences_aqi_max">Max AQI</string>
     <string name="aqi_not_available">N/A</string>
     <string name="aqi_value">%1$d/11</string>
     <string name="aqi_info_title">Air Quality Index (AQI)</string>

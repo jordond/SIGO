@@ -10,12 +10,6 @@ import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.score.Reasons
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.resources.Res
-import now.shouldigooutside.core.resources.score_air_quality_inside
-import now.shouldigooutside.core.resources.score_air_quality_near
-import now.shouldigooutside.core.resources.score_air_quality_outside
-import now.shouldigooutside.core.resources.score_air_quality_status_inside
-import now.shouldigooutside.core.resources.score_air_quality_status_near
-import now.shouldigooutside.core.resources.score_air_quality_status_outside
 import now.shouldigooutside.core.resources.score_maybe
 import now.shouldigooutside.core.resources.score_no
 import now.shouldigooutside.core.resources.score_precipitation_rain_inside
@@ -169,26 +163,6 @@ internal fun Reasons.precipitationText(isRain: Boolean): String =
                 ReasonValue.Inside -> Res.string.score_precipitation_snow_inside
                 ReasonValue.Near -> Res.string.score_precipitation_snow_near
             }
-        }
-    }.get()
-
-@Composable
-internal fun Reasons.airQualityStatus(): String =
-    remember(airQuality) {
-        when (airQuality) {
-            ReasonValue.Inside -> Res.string.score_air_quality_status_inside
-            ReasonValue.Near -> Res.string.score_air_quality_status_near
-            ReasonValue.Outside -> Res.string.score_air_quality_status_outside
-        }
-    }.get()
-
-@Composable
-internal fun Reasons.airQualityText(): String =
-    remember(airQuality) {
-        when (airQuality) {
-            ReasonValue.Inside -> Res.string.score_air_quality_inside
-            ReasonValue.Near -> Res.string.score_air_quality_near
-            ReasonValue.Outside -> Res.string.score_air_quality_outside
         }
     }.get()
 

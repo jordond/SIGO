@@ -12,6 +12,7 @@ import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.foundation.ktx.mapDistinct
+import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
@@ -36,6 +37,7 @@ internal class ForecastDetailsModel(
                 forecast = forecastStateHolder.state.value.getOrNull(),
                 selectedActivity = settingsRepo.settings.value.selectedActivity,
                 activityScores = getActivitiesScoreUseCase.scores(),
+                loadingForecast = forecastStateHolder.state.value is AsyncResult.Loading,
             ),
         ) {
             forecastStateHolder.state.into { result ->
@@ -46,7 +48,12 @@ internal class ForecastDetailsModel(
                     } else {
                         selected
                     }
-                copy(forecast = forecast, selected = newSelected, hasLoaded = forecast != null)
+                copy(
+                    forecast = forecast,
+                    selected = newSelected,
+                    hasLoaded = forecast != null,
+                    loadingForecast = result is AsyncResult.Loading,
+                )
             }
 
             combine(
@@ -74,6 +81,7 @@ internal class ForecastDetailsModel(
         val activityScores: List<ActivityForecastScore> = emptyList(),
         val selected: ForecastBlock? = null,
         val hasLoaded: Boolean = false,
+        val loadingForecast: Boolean = false,
     ) {
         val currentScore: ForecastScore? =
             activityScores.firstOrNull { it.activity == selectedActivity }?.score

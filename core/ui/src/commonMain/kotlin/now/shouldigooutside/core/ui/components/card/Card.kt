@@ -152,7 +152,7 @@ public object CardDefaults {
     public val Shape: CornerBasedShape @Composable get() = AppTheme.shapes.medium
     public val ElevatedShape: CornerBasedShape @Composable get() = Shape
     public val BorderColor: Color @Composable get() = BrutalDefaults.Color
-    private val BorderWidth = BrutalDefaults.BorderWidth
+    private val BorderWidth = BrutalDefaults.BorderWidth + 1.dp
     private val ElevatedBorderWidth = BrutalDefaults.BorderWidth
 
     public val primaryColors: CardColors
