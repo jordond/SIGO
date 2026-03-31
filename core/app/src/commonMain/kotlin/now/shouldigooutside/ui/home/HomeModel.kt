@@ -13,8 +13,8 @@ import now.shouldigooutside.core.domain.location.LocationRepo
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.foundation.ktx.mapDistinct
 import now.shouldigooutside.core.model.AsyncResult
-import now.shouldigooutside.core.model.ForecastData
 import now.shouldigooutside.core.model.errorOrNull
+import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.location.LocationPermissionStatus
 import now.shouldigooutside.core.model.location.LocationPermissionStatus.Denied
 import now.shouldigooutside.core.model.location.LocationPermissionStatus.Granted
@@ -94,7 +94,7 @@ internal class HomeModel(
 
     @Immutable
     data class State(
-        val status: AsyncResult<ForecastData>,
+        val status: AsyncResult<Forecast>,
         val permissionStatus: LocationPermissionStatus,
         val selectedTab: HomeTab = HomeTab.default,
     )

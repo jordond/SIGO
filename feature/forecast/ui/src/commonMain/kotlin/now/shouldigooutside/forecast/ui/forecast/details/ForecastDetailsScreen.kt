@@ -14,16 +14,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
-import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import dev.stateholder.extensions.collectAsState
 import kotlinx.collections.immutable.toPersistentList
-import now.shouldigooutside.core.model.ForecastData
+import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.resources.Res
@@ -45,9 +42,9 @@ internal fun ForecastDetailsScreen(
     model: ForecastDetailsModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
-    val data = state.data
+    val forecast = state.forecast
 
-    if (data == null) {
+    if (forecast == null) {
         Card {
             Column(
                 modifier = Modifier.padding(AppTheme.spacing.standard),
@@ -57,7 +54,7 @@ internal fun ForecastDetailsScreen(
         }
     } else {
         ForecastDetailsScreen(
-            data = data,
+            forecast = forecast,
             selected = state.selected,
             selectedScore = state.selectedScore?.result,
             onSelected = model::select,
@@ -69,7 +66,7 @@ internal fun ForecastDetailsScreen(
 
 @Composable
 internal fun ForecastDetailsScreen(
-    data: ForecastData,
+    forecast: Forecast,
     selected: ForecastBlock?,
     selectedScore: ScoreResult?,
     onSelected: (ForecastBlock?) -> Unit,
@@ -88,7 +85,7 @@ internal fun ForecastDetailsScreen(
         )
 
         val locationAlpha by animateFloatAsState(
-            targetValue = if (data.forecast.location.isDefaultName) 0f else 1f,
+            targetValue = if (forecast.location.isDefaultName) 0f else 1f,
         )
         Text(
             text = location.name,
@@ -105,57 +102,58 @@ internal fun ForecastDetailsScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         SelectedConditionsHero(
-            block = selected ?: data.forecast.current,
-            today = data.forecast.today.block,
+            block = selected ?: forecast.current,
+            today = forecast.today.block,
             scoreResult = selectedScore,
-            units = data.forecast.units,
+            units = forecast.units,
             modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        val hours = remember(data.forecast.today.hours) {
-            data.forecast.today.hours
+        val hours = remember(forecast.today.hours) {
+            forecast.today.hours
                 .toPersistentList()
         }
         HourlyForecastStrip(
-            now = data.forecast.current,
-            tomorrow = data.forecast.tomorrow?.block,
+            now = forecast.current,
+            tomorrow = forecast.tomorrow?.block,
             hours = hours,
             selected = selected,
-            units = data.forecast.units,
+            units = forecast.units,
             onSelected = onSelected,
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         WeatherDetailsGrid(
-            block = selected ?: data.forecast.current,
-            units = data.forecast.units,
+            block = selected ?: forecast.current,
+            units = forecast.units,
             modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
         )
     }
 }
 
-private class Params : PreviewParameterProvider<ForecastData> {
-    override val values: Sequence<ForecastData>
+private class Params : PreviewParameterProvider<Forecast> {
+    override val values: Sequence<Forecast>
         get() = sequenceOf(
-            ForecastPreviewData.forecastData(ForecastPreviewData.createSunnyForecast()),
-            ForecastPreviewData.forecastData(ForecastPreviewData.createRainyForecast()),
-            ForecastPreviewData.forecastData(ForecastPreviewData.createColdForecast()),
+            ForecastPreviewData.createSunnyForecast(),
+            ForecastPreviewData.createRainyForecast(),
+            ForecastPreviewData.createColdForecast(),
         )
 }
 
 @PreviewLightDark
 @Composable
 private fun ForecastDetailsScreenPreview(
-    @PreviewParameter(Params::class) data: ForecastData,
+    @PreviewParameter(Params::class) forecast: Forecast,
 ) {
+    val score = ForecastPreviewData.score(forecast)
     AppPreview {
         ForecastDetailsScreen(
-            data = data,
-            selected = data.forecast.hour(1),
-            selectedScore = data.score.hours
+            forecast = forecast,
+            selected = forecast.hour(1),
+            selectedScore = score.hours
                 .getOrNull(1)
                 ?.result,
             onSelected = {},

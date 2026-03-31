@@ -2,6 +2,8 @@ package now.shouldigooutside.core.model.forecast
 
 import androidx.compose.runtime.Immutable
 import now.shouldigooutside.core.model.location.Location
+import now.shouldigooutside.core.model.score.ForecastScore
+import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.units.Units
 import kotlin.time.Instant
 
@@ -28,3 +30,35 @@ public data class Forecast(
 
     public fun hour(index: Int): ForecastBlock? = today.hours.getOrNull(index)
 }
+
+public fun Forecast.blockForPeriod(period: ForecastPeriod): ForecastBlock? =
+    when (period) {
+        ForecastPeriod.Today -> today.block
+        ForecastPeriod.Now -> current
+        ForecastPeriod.NextHour -> today.hours.getOrNull(0)
+        ForecastPeriod.NextHour2 -> today.hours.getOrNull(1)
+        ForecastPeriod.NextHour3 -> today.hours.getOrNull(2)
+        ForecastPeriod.Tomorrow -> days.getOrNull(0)?.block
+    }
+
+public fun Forecast.scoreForBlock(
+    block: ForecastBlock,
+    score: ForecastScore,
+): Score? =
+    when (block) {
+        current -> {
+            score.current
+        }
+        today.block -> {
+            score.today
+        }
+        tomorrow?.block -> {
+            score.days.getOrNull(0)
+        }
+        else -> {
+            today.hours
+                .indexOfFirst { it == block }
+                .takeIf { it >= 0 }
+                ?.let { score.hours.getOrNull(it) }
+        }
+    }

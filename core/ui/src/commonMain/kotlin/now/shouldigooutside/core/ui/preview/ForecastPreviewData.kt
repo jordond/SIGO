@@ -2,7 +2,6 @@ package now.shouldigooutside.core.ui.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import now.shouldigooutside.core.domain.forecast.DefaultScoreCalculator
-import now.shouldigooutside.core.model.ForecastData
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
@@ -313,15 +312,6 @@ public object ForecastPreviewData {
         preferences: Preferences = Preferences.default,
         includeAirQuality: Boolean = true,
     ): ForecastScore = calculator.calculate(forecast, preferences, includeAirQuality)
-
-    public fun forecastData(
-        forecast: Forecast,
-        preferences: Preferences = Preferences.default,
-    ): ForecastData =
-        ForecastData(
-            forecast = forecast,
-            score = score(forecast, preferences),
-        )
 
     public class ForecastBlockPreviewParameterProvider : PreviewParameterProvider<ForecastBlock> {
         override val values: Sequence<ForecastBlock> = sequenceOf(sunny(), rainy(), snowy(), hot(), cold())

@@ -75,7 +75,7 @@ public object AqiLevels {
         )
 
     /**
-     * Returns the [AqiLevel] for the given normalized AQI value (1-10 scale).
+     * Returns the [AqiLevel] for the given normalized AQI value (1-11 scale).
      * Returns the first level (Good) for 0 (no data).
      */
     @Composable
@@ -86,7 +86,7 @@ public object AqiLevels {
             aqi <= 4 -> levels[1]
             aqi <= 6 -> levels[2]
             aqi <= 8 -> levels[3]
-            aqi <= 9 -> levels[4]
+            aqi <= 10 -> levels[4]
             else -> levels[5]
         }
     }

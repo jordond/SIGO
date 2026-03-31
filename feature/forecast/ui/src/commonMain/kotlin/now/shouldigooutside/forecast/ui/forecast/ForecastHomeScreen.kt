@@ -24,12 +24,15 @@ import dev.stateholder.dispatcher.rememberRelayOf
 import dev.stateholder.extensions.collectAsState
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
-import now.shouldigooutside.core.model.ForecastData
+import now.shouldigooutside.core.model.forecast.Forecast
+import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
+import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.location.Location
-import now.shouldigooutside.core.model.location.LocationPermissionStatus
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.score.Score
+import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.LoadingBox
@@ -39,10 +42,10 @@ import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.Header
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
-import now.shouldigooutside.forecast.ui.components.mappers.rememberInstant
 import now.shouldigooutside.forecast.ui.forecast.section.ForecastScoreContent
 import now.shouldigooutside.forecast.ui.forecast.section.search.LocationSearchSheet
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.time.Clock
 
 @Composable
 internal fun ForecastHomeScreen(
@@ -52,9 +55,11 @@ internal fun ForecastHomeScreen(
     val state by model.collectAsState()
     ForecastHomeScreen(
         location = state.location,
-        preferences = state.preferences,
+        preferences = state.currentScore?.preferences ?: Preferences.default,
         units = state.units,
         data = state.forecast,
+        currentBlock = state.currentBlock,
+        currentPeriodScore = state.currentPeriodScore,
         period = state.period,
         loading = state.loading,
         refreshing = state.refreshing,
@@ -83,9 +88,11 @@ internal fun ForecastHomeScreen(
     location: Location?,
     preferences: Preferences,
     units: Units,
-    data: ForecastData?,
+    data: Forecast?,
     dispatcher: Dispatcher<ForecastHomeAction>,
     modifier: Modifier = Modifier,
+    currentBlock: ForecastBlock? = null,
+    currentPeriodScore: Score? = null,
     period: ForecastPeriod = ForecastPeriod.Today,
     loading: Boolean = false,
     refreshing: Boolean = false,
@@ -95,8 +102,6 @@ internal fun ForecastHomeScreen(
     searchResults: PersistentList<Location> = persistentListOf(),
     searching: Boolean = false,
 ) {
-    val instant = data.rememberInstant()
-
     PullToRefreshBox(
         modifier = modifier.statusBarsPadding(),
         isRefreshing = refreshing,
@@ -110,8 +115,8 @@ internal fun ForecastHomeScreen(
                     Modifier.verticalScroll(rememberScrollState())
                 }.height(IntrinsicSize.Max),
         ) {
+            val instant = remember(data) { data?.instant ?: Clock.System.now() }
             Header(
-                data = data,
                 period = period,
                 changePeriod = dispatcher.rememberRelayOf(ForecastHomeAction::ChangePeriod),
                 location = location?.takeUnless { it.isDefaultName },
@@ -132,18 +137,15 @@ internal fun ForecastHomeScreen(
                         LoadingBox()
                     }
                 } else if (target.second != null) {
-                    val periodData = remember(target.second, period) {
-                        target.second?.forPeriod(period)
-                    }
-
-                    if (periodData == null) {
+                    if (currentBlock == null || currentPeriodScore == null) {
                         NoDataForPeriod()
                     } else {
                         ForecastScoreContent(
                             updatedAt = instant,
                             preferences = preferences,
                             units = units,
-                            periodData = periodData,
+                            block = currentBlock,
+                            score = currentPeriodScore,
                             onScoreClick = dispatcher.rememberRelay(ForecastHomeAction.ToViewDetails),
                             modifier = Modifier.padding(end = 2.dp),
                         )
@@ -182,11 +184,14 @@ private fun LoadingPreview() {
 }
 
 @Composable
-private fun ScreenPreview(data: ForecastData) {
+private fun ScreenPreview(forecast: Forecast) {
+    val forecastScore = remember { PreviewData.Forecast.score(forecast) }
     AppPreview {
         ForecastHomeScreen(
             location = null,
-            data = data,
+            data = forecast,
+            currentBlock = forecast.blockForPeriod(ForecastPeriod.Today),
+            currentPeriodScore = forecastScore.scoreForPeriod(ForecastPeriod.Today),
             preferences = Preferences.default,
             units = Units.Metric,
             dispatcher = rememberDispatcher { },
@@ -197,39 +202,41 @@ private fun ScreenPreview(data: ForecastData) {
 @Preview
 @Composable
 public fun SunnyPreview() {
-    ScreenPreview(PreviewData.Forecast.forecastData(PreviewData.Forecast.createSunnyForecast()))
+    ScreenPreview(PreviewData.Forecast.createSunnyForecast())
 }
 
 @Preview
 @Composable
 private fun RainyPreview() {
-    ScreenPreview(PreviewData.Forecast.forecastData(PreviewData.Forecast.createRainyForecast()))
+    ScreenPreview(PreviewData.Forecast.createRainyForecast())
 }
 
 @Preview
 @Composable
 private fun ColdPreview() {
-    ScreenPreview(PreviewData.Forecast.forecastData(PreviewData.Forecast.createColdForecast()))
+    ScreenPreview(PreviewData.Forecast.createColdForecast())
 }
 
 @Preview
 @Composable
 private fun WindyPreview() {
-    ScreenPreview(PreviewData.Forecast.forecastData(PreviewData.Forecast.createWindyForecast()))
+    ScreenPreview(PreviewData.Forecast.createWindyForecast())
 }
 
 @Preview
 @Composable
 private fun SevereWeatherLowPreview() {
-    val forecast = PreviewData.Forecast.createForecastFrom(
-        PreviewData.Forecast.severeWeather(SevereWeatherRisk.Low),
+    ScreenPreview(
+        PreviewData.Forecast.createForecastFrom(
+            PreviewData.Forecast.severeWeather(SevereWeatherRisk.Low),
+        ),
     )
-    ScreenPreview(PreviewData.Forecast.forecastData(forecast))
 }
 
 @Preview
 @Composable
 private fun SevereWeatherHighPreview() {
-    val forecast = PreviewData.Forecast.createForecastFrom(PreviewData.Forecast.severeWeather())
-    ScreenPreview(PreviewData.Forecast.forecastData(forecast))
+    ScreenPreview(
+        PreviewData.Forecast.createForecastFrom(PreviewData.Forecast.severeWeather()),
+    )
 }

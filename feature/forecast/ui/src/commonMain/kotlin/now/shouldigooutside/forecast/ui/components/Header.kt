@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import now.shouldigooutside.core.model.ForecastData
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.resources.Res
@@ -35,18 +34,17 @@ import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.mappers.rememberText
 import now.shouldigooutside.core.ui.preview.AppPreview
-import now.shouldigooutside.forecast.ui.components.mappers.rememberInstant
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 @Composable
 internal fun Header(
-    data: ForecastData?,
     period: ForecastPeriod,
     changePeriod: (ForecastPeriod) -> Unit,
     location: Location?,
     onLocationClick: () -> Unit,
     modifier: Modifier = Modifier,
-    instant: Instant = data.rememberInstant(),
+    instant: Instant = Clock.System.now(),
 ) {
     var showPeriodDropdown by remember { mutableStateOf(false) }
     Column(
@@ -127,7 +125,6 @@ internal fun Header(
 private fun Preview() {
     AppPreview {
         Header(
-            data = null,
             period = ForecastPeriod.Today,
             changePeriod = {},
             location = null,
@@ -142,7 +139,6 @@ private fun Preview() {
 private fun LocationPreview() {
     AppPreview {
         Header(
-            data = null,
             period = ForecastPeriod.Today,
             changePeriod = {},
             location = Location(0.0, 0.0, "Sample"),

@@ -21,9 +21,9 @@ internal class DefaultGetActivitiesScoreUseCase(
 ) : GetActivitiesScoreUseCase {
     override fun scores(): List<ActivityForecastScore> {
         val settings = settingsRepo.settings.value
-        val result = forecastHolder.state.value.getOrNull() ?: return emptyList()
+        val forecast = forecastHolder.state.value.getOrNull() ?: return emptyList()
         return settings.activities.map { (activity, preference) ->
-            val score = scoreCalculator.calculate(result.forecast, preference, settings.includeAirQuality)
+            val score = scoreCalculator.calculate(forecast, preference, settings.includeAirQuality)
             ActivityForecastScore(
                 activity = activity,
                 preferences = preference,
@@ -35,7 +35,7 @@ internal class DefaultGetActivitiesScoreUseCase(
     override fun scoresFlow(): Flow<List<ActivityForecastScore>> =
         combine(
             settingsRepo.settings.mapDistinct { it.activities to it.includeAirQuality },
-            forecastHolder.state.mapNotNull { it.getOrNull()?.forecast },
+            forecastHolder.state.mapNotNull { it.getOrNull() },
         ) { (activities, includeAirQuality), forecast ->
             activities.map { (activity, preference) ->
                 val score = scoreCalculator.calculate(forecast, preference, includeAirQuality)

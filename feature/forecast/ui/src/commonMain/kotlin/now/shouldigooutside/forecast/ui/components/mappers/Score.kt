@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import now.shouldigooutside.core.model.ForecastPeriodData
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.score.Reasons
@@ -50,9 +49,6 @@ import now.shouldigooutside.core.ui.brutal
 import now.shouldigooutside.core.ui.ktx.get
 
 @Composable
-internal fun ForecastPeriodData.brutalColor(): BrutalColors = score.result.color()
-
-@Composable
 internal fun ScoreResult.color(): BrutalColors =
     when (this) {
         ScoreResult.Yes -> AppTheme.colors.brutal.green
@@ -61,16 +57,13 @@ internal fun ScoreResult.color(): BrutalColors =
     }
 
 @Composable
-internal fun ForecastPeriodData.colors(): Pair<Color, Color> {
-    val colors = brutalColor()
+internal fun ScoreResult.colors(): Pair<Color, Color> {
+    val colors = color()
     val containerColor by animateColorAsState(colors.container)
     val contentColor = colors.containerContent
 
     return containerColor to contentColor
 }
-
-@Composable
-internal fun ForecastPeriodData.rememberScoreText(): String = score.result.rememberText()
 
 @Composable
 internal fun ScoreResult.rememberText(): String {

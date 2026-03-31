@@ -13,17 +13,22 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import now.shouldigooutside.core.domain.forecast.ActivityForecastScore
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
+import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
 import now.shouldigooutside.core.domain.location.SearchLocationUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.foundation.ktx.checkCancellation
 import now.shouldigooutside.core.foundation.ktx.ensureExecutionTime
 import now.shouldigooutside.core.model.AsyncResult
-import now.shouldigooutside.core.model.ForecastData
-import now.shouldigooutside.core.model.ForecastPeriodData
+import now.shouldigooutside.core.model.forecast.Forecast
+import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
+import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.location.Location
-import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.score.Score
+import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.forecast.ui.forecast.ForecastHomeModel.State
 
@@ -34,10 +39,12 @@ internal class ForecastHomeModel(
     private val settingsRepo: SettingsRepo,
     private val forecastStateHolder: ForecastStateHolder,
     private val searchLocationUseCase: SearchLocationUseCase,
+    getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
 ) : StateViewModel<State>(
         state(
             settingsRepo = settingsRepo,
             forecastStateHolder = forecastStateHolder,
+            getActivitiesScoreUseCase = getActivitiesScoreUseCase,
         ),
     ) {
     private val logger = Logger.withTag("ForecastHomeModel")
@@ -116,11 +123,12 @@ internal class ForecastHomeModel(
 
     data class State(
         val location: Location?,
-        val preferences: Preferences,
+        val selectedActivity: Activity,
         val units: Units,
-        val status: AsyncResult<ForecastData>,
+        val status: AsyncResult<Forecast>,
+        val activityScores: PersistentList<ActivityForecastScore>,
         val period: ForecastPeriod = ForecastPeriod.Now,
-        val forecast: ForecastData? = null,
+        val forecast: Forecast? = null,
         val usingCurrentLocation: Boolean = true,
         val showLocationSheet: Boolean = false,
         val searchQuery: String = "",
@@ -129,13 +137,16 @@ internal class ForecastHomeModel(
     ) {
         val loading: Boolean = status is AsyncResult.Loading
         val refreshing: Boolean = loading && forecast != null
-        val data: ForecastPeriodData? = forecast?.forPeriod(period)
+        val currentScore: ActivityForecastScore? =
+            activityScores.firstOrNull { it.activity == selectedActivity }
+        val currentBlock: ForecastBlock? = forecast?.blockForPeriod(period)
+        val currentPeriodScore: Score? = currentScore?.score?.scoreForPeriod(period)
     }
 }
 
 private data class SettingsSnapshot(
     val location: Location?,
-    val preferences: Preferences,
+    val selectedActivity: Activity,
     val units: Units,
     val usingCurrentLocation: Boolean,
 )
@@ -143,26 +154,28 @@ private data class SettingsSnapshot(
 private fun state(
     settingsRepo: SettingsRepo,
     forecastStateHolder: ForecastStateHolder,
+    getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
 ) = composedStateProvider(
     initialState = State(
         location = settingsRepo.settings.value.run {
             if (useCustomLocation) customLocation else lastLocation
         },
         usingCurrentLocation = !settingsRepo.settings.value.useCustomLocation,
-        preferences = settingsRepo.settings.value.preferences,
+        selectedActivity = settingsRepo.settings.value.selectedActivity,
         units = settingsRepo.settings.value.units,
         status = forecastStateHolder.state.value,
+        activityScores = getActivitiesScoreUseCase.scores().toPersistentList(),
     ),
 ) {
     settingsRepo.settings
         .map { settings ->
             val location = if (settings.useCustomLocation) settings.customLocation else settings.lastLocation
-            SettingsSnapshot(location, settings.preferences, settings.units, !settings.useCustomLocation)
+            SettingsSnapshot(location, settings.selectedActivity, settings.units, !settings.useCustomLocation)
         }.distinctUntilChanged()
         .into { snapshot ->
             copy(
                 location = snapshot.location,
-                preferences = snapshot.preferences,
+                selectedActivity = snapshot.selectedActivity,
                 units = snapshot.units,
                 usingCurrentLocation = snapshot.usingCurrentLocation,
             )
@@ -174,4 +187,6 @@ private fun state(
             else -> copy(status = status)
         }
     }
+
+    getActivitiesScoreUseCase.scoresFlow() into { scores -> copy(activityScores = scores.toPersistentList()) }
 }
