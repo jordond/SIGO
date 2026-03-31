@@ -23,6 +23,7 @@ import now.shouldigooutside.core.ui.icons.phosphor.Hike
 import now.shouldigooutside.core.ui.icons.tabler.Run
 import now.shouldigooutside.core.ui.icons.tabler.Swim
 import now.shouldigooutside.core.ui.icons.tabler.Walk
+import now.shouldigooutside.core.ui.ktx.get
 import org.jetbrains.compose.resources.StringResource
 
 public fun Activity.key(): String =
@@ -48,6 +49,13 @@ public fun Activity.rememberStringResource(): StringResource =
             is Activity.Swimming -> Res.string.activity_title_swimming
             is Activity.Walking -> Res.string.activity_title_walking
         }
+    }
+
+@Composable
+public fun Activity.rememberDisplayName(): String =
+    when (this) {
+        is Activity.Custom -> name
+        else -> rememberStringResource().get()
     }
 
 @Composable

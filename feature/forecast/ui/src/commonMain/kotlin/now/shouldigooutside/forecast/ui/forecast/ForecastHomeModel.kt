@@ -9,9 +9,7 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import now.shouldigooutside.core.domain.forecast.ActivityForecastScore
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
@@ -50,8 +48,14 @@ internal class ForecastHomeModel(
     private val logger = Logger.withTag("ForecastHomeModel")
     private var searchJob: Job? = null
 
-    fun updatePeriod(period: ForecastPeriod) {
+    fun update(period: ForecastPeriod) {
         updateState { it.copy(period = period) }
+    }
+
+    fun update(activity: Activity) {
+        settingsRepo.update { settings ->
+            settings.copy(selectedActivity = activity)
+        }
     }
 
     fun fetch() {
@@ -134,7 +138,9 @@ internal class ForecastHomeModel(
         val searchQuery: String = "",
         val searchResults: PersistentList<Location> = persistentListOf(),
         val searching: Boolean = false,
+        val activities: PersistentList<Activity> = persistentListOf(Activity.General),
     ) {
+        val hasMultipleActivities: Boolean get() = activities.size > 1
         val loading: Boolean = status is AsyncResult.Loading
         val refreshing: Boolean = loading && forecast != null
         val currentScore: ActivityForecastScore? =
@@ -143,13 +149,6 @@ internal class ForecastHomeModel(
         val currentPeriodScore: Score? = currentScore?.score?.scoreForPeriod(period)
     }
 }
-
-private data class SettingsSnapshot(
-    val location: Location?,
-    val selectedActivity: Activity,
-    val units: Units,
-    val usingCurrentLocation: Boolean,
-)
 
 private fun state(
     settingsRepo: SettingsRepo,
@@ -168,16 +167,16 @@ private fun state(
     ),
 ) {
     settingsRepo.settings
-        .map { settings ->
+        .into { settings ->
             val location = if (settings.useCustomLocation) settings.customLocation else settings.lastLocation
-            SettingsSnapshot(location, settings.selectedActivity, settings.units, !settings.useCustomLocation)
-        }.distinctUntilChanged()
-        .into { snapshot ->
+            val activities =
+                if (settings.enableActivities) settings.activities.keys else listOf(Activity.General)
             copy(
-                location = snapshot.location,
-                selectedActivity = snapshot.selectedActivity,
-                units = snapshot.units,
-                usingCurrentLocation = snapshot.usingCurrentLocation,
+                location = location,
+                selectedActivity = settings.selectedActivity,
+                units = settings.units,
+                usingCurrentLocation = settings.useCustomLocation,
+                activities = activities.toPersistentList(),
             )
         }
 

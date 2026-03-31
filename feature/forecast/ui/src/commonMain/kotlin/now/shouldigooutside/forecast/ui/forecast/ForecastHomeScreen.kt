@@ -30,6 +30,7 @@ import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
 import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.location.Location
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.scoreForPeriod
@@ -68,16 +69,19 @@ internal fun ForecastHomeScreen(
         searchQuery = state.searchQuery,
         searchResults = state.searchResults,
         searching = state.searching,
+        selectedActivity = state.selectedActivity,
+        activities = state.activities,
         dispatcher = rememberDebounceDispatcher { action ->
             when (action) {
                 is ForecastHomeAction.Refresh -> model.fetch()
-                is ForecastHomeAction.ChangePeriod -> model.updatePeriod(action.period)
+                is ForecastHomeAction.ChangePeriod -> model.update(action.period)
                 is ForecastHomeAction.ToViewDetails -> toViewDetails(state.period)
                 is ForecastHomeAction.OpenLocationSheet -> model.openLocationSheet()
                 is ForecastHomeAction.CloseLocationSheet -> model.closeLocationSheet()
                 is ForecastHomeAction.SearchLocation -> model.searchLocation(action.query)
                 is ForecastHomeAction.SelectLocation -> model.selectLocation(action.location)
                 is ForecastHomeAction.UseCurrentLocation -> model.useCurrentLocation()
+                is ForecastHomeAction.ChangeActivity -> model.update(action.activity)
             }
         },
     )
@@ -101,6 +105,8 @@ internal fun ForecastHomeScreen(
     searchQuery: String = "",
     searchResults: PersistentList<Location> = persistentListOf(),
     searching: Boolean = false,
+    selectedActivity: Activity = Activity.General,
+    activities: PersistentList<Activity> = persistentListOf(),
 ) {
     PullToRefreshBox(
         modifier = modifier.statusBarsPadding(),
@@ -119,6 +125,9 @@ internal fun ForecastHomeScreen(
             Header(
                 period = period,
                 changePeriod = dispatcher.rememberRelayOf(ForecastHomeAction::ChangePeriod),
+                selectedActivity = selectedActivity,
+                activities = activities,
+                changeActivity = dispatcher.rememberRelayOf(ForecastHomeAction::ChangeActivity),
                 location = location?.takeUnless { it.isDefaultName },
                 onLocationClick = dispatcher.rememberRelay(ForecastHomeAction.OpenLocationSheet),
                 instant = instant,

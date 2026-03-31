@@ -33,7 +33,7 @@ public data object ActivitiesRoute : Route
 @Serializable
 public data object AddActivityRoute : Route
 
-public fun NavGraphBuilder.forecastNavigation(
+public fun NavGraphBuilder.forecastTab(
     navController: NavHostController,
     tabNavController: NavHostController,
     toSettings: () -> Unit,
@@ -56,7 +56,9 @@ public fun NavGraphBuilder.forecastNavigation(
             toSettings = toSettings,
         )
     }
+}
 
+public fun NavGraphBuilder.forecastNavigation(navController: NavHostController) {
     popUpScreen<AddActivityRoute> {
         AddActivityScreen(
             onBack = navController::popBackStack,
