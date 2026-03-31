@@ -59,7 +59,7 @@ class DefaultScoreCalculatorTest {
     }
 
     @Test
-    fun windExactlyAtMaxReturnsOutside() {
+    fun windJustAboveMaxReturnsOutside() {
         val block = testForecastBlock(wind = testWind(speed = 20.01))
         val score = scoreBlock(block)
         score.reasons.wind shouldBe ReasonValue.Outside
@@ -68,6 +68,13 @@ class DefaultScoreCalculatorTest {
     @Test
     fun windNearThresholdReturnsNear() {
         val block = testForecastBlock(wind = testWind(speed = 19.5))
+        val score = scoreBlock(block)
+        score.reasons.wind shouldBe ReasonValue.Near
+    }
+
+    @Test
+    fun windAtExactMaxReturnsNear() {
+        val block = testForecastBlock(wind = testWind(speed = 20.0))
         val score = scoreBlock(block)
         score.reasons.wind shouldBe ReasonValue.Near
     }
@@ -110,6 +117,20 @@ class DefaultScoreCalculatorTest {
     @Test
     fun tempNearMaxReturnsNear() {
         val block = testForecastBlock(temperature = testTemperature(value = 29.5))
+        val score = scoreBlock(block)
+        score.reasons.temperature shouldBe ReasonValue.Near
+    }
+
+    @Test
+    fun tempAtExactMinReturnsNear() {
+        val block = testForecastBlock(temperature = testTemperature(value = 10.0))
+        val score = scoreBlock(block)
+        score.reasons.temperature shouldBe ReasonValue.Near
+    }
+
+    @Test
+    fun tempAtExactMaxReturnsNear() {
+        val block = testForecastBlock(temperature = testTemperature(value = 30.0))
         val score = scoreBlock(block)
         score.reasons.temperature shouldBe ReasonValue.Near
     }
@@ -180,6 +201,24 @@ class DefaultScoreCalculatorTest {
     }
 
     @Test
+    fun chanceAtExactMaxReturnsNear() {
+        val block = testForecastBlock(
+            precipitation = testPrecipitation(probability = 40, types = setOf(PrecipitationType.Rain)),
+        )
+        val score = scoreBlock(block)
+        score.reasons.precipitation shouldBe ReasonValue.Near
+    }
+
+    @Test
+    fun chanceAtExactNearThresholdReturnsInside() {
+        val block = testForecastBlock(
+            precipitation = testPrecipitation(probability = 38, types = setOf(PrecipitationType.Rain)),
+        )
+        val score = scoreBlock(block)
+        score.reasons.precipitation shouldBe ReasonValue.Inside
+    }
+
+    @Test
     fun amountAboveModerateReturnsOutside() {
         val block = testForecastBlock(
             precipitation = testPrecipitation(amount = 6.0, probability = 0),
@@ -195,6 +234,24 @@ class DefaultScoreCalculatorTest {
         )
         val score = scoreBlock(block)
         score.reasons.precipitation shouldBe ReasonValue.Near
+    }
+
+    @Test
+    fun amountAtExactModerateReturnsNear() {
+        val block = testForecastBlock(
+            precipitation = testPrecipitation(amount = 5.0, probability = 0),
+        )
+        val score = scoreBlock(block)
+        score.reasons.precipitation shouldBe ReasonValue.Near
+    }
+
+    @Test
+    fun amountAtExactLowReturnsInside() {
+        val block = testForecastBlock(
+            precipitation = testPrecipitation(amount = 2.0, probability = 0),
+        )
+        val score = scoreBlock(block)
+        score.reasons.precipitation shouldBe ReasonValue.Inside
     }
 
     @Test

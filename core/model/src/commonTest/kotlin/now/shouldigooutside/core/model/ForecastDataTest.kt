@@ -232,6 +232,29 @@ class ForecastDataTest {
     }
 
     @Test
+    fun forBlock_tomorrowBlock_returnsTomorrowScore() {
+        val tomorrowBlock = makeBlock(Instant.fromEpochSeconds(86400))
+        val tomorrowScore = makeScore(ScoreResult.No)
+        val data = makeData(
+            days = listOf(ForecastDay(block = tomorrowBlock, hours = emptyList())),
+            dayScores = listOf(tomorrowScore),
+        )
+
+        data.forBlock(tomorrowBlock) shouldBe tomorrowScore
+    }
+
+    @Test
+    fun forBlock_hourBlockWithoutMatchingScore_returnsNull() {
+        val hour0 = makeBlock(Instant.fromEpochSeconds(3600))
+        val data = makeData(
+            todayHours = listOf(hour0),
+            hourScores = emptyList(),
+        )
+
+        data.forBlock(hour0) shouldBe null
+    }
+
+    @Test
     fun forBlock_unknownBlock_returnsNull() {
         val unknownBlock = makeBlock(Instant.fromEpochSeconds(99999))
         val data = makeData()
