@@ -11,6 +11,7 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import now.shouldigooutside.core.domain.AppStateHolder
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
 import now.shouldigooutside.core.domain.location.SearchLocationUseCase
@@ -37,19 +38,21 @@ internal class ForecastHomeModel(
     private val settingsRepo: SettingsRepo,
     private val forecastStateHolder: ForecastStateHolder,
     private val searchLocationUseCase: SearchLocationUseCase,
+    private val appStateHolder: AppStateHolder,
     getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
 ) : StateViewModel<State>(
         state(
             settingsRepo = settingsRepo,
             forecastStateHolder = forecastStateHolder,
             getActivitiesScoreUseCase = getActivitiesScoreUseCase,
+            appStateHolder = appStateHolder,
         ),
     ) {
     private val logger = Logger.withTag("ForecastHomeModel")
     private var searchJob: Job? = null
 
     fun update(period: ForecastPeriod) {
-        updateState { it.copy(period = period) }
+        appStateHolder.update(period)
     }
 
     fun update(activity: Activity) {
@@ -131,7 +134,7 @@ internal class ForecastHomeModel(
         val units: Units,
         val status: AsyncResult<Forecast>,
         val activityScores: PersistentList<ActivityForecastScore>,
-        val period: ForecastPeriod = ForecastPeriod.Now,
+        val period: ForecastPeriod,
         val forecast: Forecast? = null,
         val usingCurrentLocation: Boolean = true,
         val showLocationSheet: Boolean = false,
@@ -151,6 +154,7 @@ internal class ForecastHomeModel(
 }
 
 private fun state(
+    appStateHolder: AppStateHolder,
     settingsRepo: SettingsRepo,
     forecastStateHolder: ForecastStateHolder,
     getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
@@ -164,8 +168,11 @@ private fun state(
         units = settingsRepo.settings.value.units,
         status = forecastStateHolder.state.value,
         activityScores = getActivitiesScoreUseCase.scores().toPersistentList(),
+        period = appStateHolder.state.value.period,
     ),
 ) {
+    appStateHolder into { copy(period = it.period) }
+
     settingsRepo.settings
         .into { settings ->
             val location = if (settings.useCustomLocation) settings.customLocation else settings.lastLocation

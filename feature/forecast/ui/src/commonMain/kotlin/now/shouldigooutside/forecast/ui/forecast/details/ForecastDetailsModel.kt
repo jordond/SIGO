@@ -1,12 +1,11 @@
 package now.shouldigooutside.forecast.ui.forecast.details
 
 import androidx.compose.runtime.Stable
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.toRoute
 import dev.stateholder.extensions.viewmodel.StateViewModel
 import dev.stateholder.provider.composedStateProvider
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import now.shouldigooutside.core.domain.AppStateHolder
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
@@ -22,18 +21,17 @@ import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.score.ActivityForecastScore
 import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.Score
-import now.shouldigooutside.forecast.ui.navigation.ForecastDetailsRoute
 
 @Stable
 internal class ForecastDetailsModel(
-    savedStateHandle: SavedStateHandle,
     forecastStateHolder: ForecastStateHolder,
     settingsRepo: SettingsRepo,
     getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
+    appStateHolder: AppStateHolder,
 ) : StateViewModel<ForecastDetailsModel.State>(
         composedStateProvider(
             State(
-                initialPeriod = savedStateHandle.toRoute<ForecastDetailsRoute>().period,
+                initialPeriod = appStateHolder.state.value.period,
                 forecast = forecastStateHolder.state.value.getOrNull(),
                 selectedActivity = settingsRepo.settings.value.selectedActivity,
                 activityScores = getActivitiesScoreUseCase.scores(),

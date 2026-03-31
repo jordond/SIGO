@@ -18,6 +18,8 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.model)
 
+            implementation(libs.koin.core)
+            implementation(libs.compose.runtime.annotation)
             implementation(libs.compass.geolocation)
             implementation(libs.kotlinx.collections)
             implementation(libs.kotlinx.coroutines.core)

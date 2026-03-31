@@ -18,14 +18,7 @@ import now.shouldigooutside.forecast.ui.forecast.details.ForecastDetailsScreen
 public data object ForecastHomeRoute : Route
 
 @Serializable
-public class ForecastDetailsRoute private constructor(
-    private val periodString: String = ForecastPeriod.Now.name,
-) : Route {
-    public constructor(period: ForecastPeriod = ForecastPeriod.Now) : this(periodString = period.name)
-
-    public val period: ForecastPeriod
-        get() = ForecastPeriod.valueOf(periodString)
-}
+public data object ForecastDetailsRoute : Route
 
 @Serializable
 public data object ActivitiesRoute : Route
@@ -40,7 +33,7 @@ public fun NavGraphBuilder.forecastTab(
 ) {
     composable<ForecastHomeRoute> {
         ForecastHomeScreen(
-            toViewDetails = { tabNavController.navigate(ForecastDetailsRoute(it)) },
+            toViewDetails = { tabNavController.navigate(ForecastDetailsRoute) },
         )
     }
 
@@ -54,6 +47,7 @@ public fun NavGraphBuilder.forecastTab(
     composable<ActivitiesRoute> {
         ActivitiesTab(
             toSettings = toSettings,
+            toAddActivity = { navController.navigate(AddActivityRoute) },
         )
     }
 }

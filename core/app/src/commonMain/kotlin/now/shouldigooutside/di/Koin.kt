@@ -7,6 +7,7 @@ import io.ktor.client.request.header
 import now.shouldigooutside.core.api.client.apiClientModule
 import now.shouldigooutside.core.api.model.http.ApiHeaders
 import now.shouldigooutside.core.config.configModule
+import now.shouldigooutside.core.domain.domainModule
 import now.shouldigooutside.core.foundation.di.foundationModule
 import now.shouldigooutside.core.platform.ClientIdProvider
 import now.shouldigooutside.core.platform.di.getKoinInstance
@@ -34,6 +35,7 @@ public fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
             // Core
             apiClientModule(),
             configModule(),
+            domainModule(),
             foundationModule(),
             networkModule {
                 install(

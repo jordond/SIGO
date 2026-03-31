@@ -15,4 +15,6 @@ internal sealed interface ActivitiesTabAction {
     ) : ActivitiesTabAction
 
     object ToSettings : ActivitiesTabAction
+
+    object ToAddActivity : ActivitiesTabAction
 }

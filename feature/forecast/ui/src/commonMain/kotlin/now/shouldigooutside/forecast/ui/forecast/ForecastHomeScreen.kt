@@ -51,7 +51,7 @@ import kotlin.time.Clock
 
 @Composable
 internal fun ForecastHomeScreen(
-    toViewDetails: (period: ForecastPeriod) -> Unit,
+    toViewDetails: () -> Unit,
     model: ForecastHomeModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
@@ -76,7 +76,7 @@ internal fun ForecastHomeScreen(
             when (action) {
                 is ForecastHomeAction.Refresh -> model.fetch()
                 is ForecastHomeAction.ChangePeriod -> model.update(action.period)
-                is ForecastHomeAction.ToViewDetails -> toViewDetails(state.period)
+                is ForecastHomeAction.ToViewDetails -> toViewDetails()
                 is ForecastHomeAction.OpenLocationSheet -> model.openLocationSheet()
                 is ForecastHomeAction.CloseLocationSheet -> model.closeLocationSheet()
                 is ForecastHomeAction.SearchLocation -> model.searchLocation(action.query)

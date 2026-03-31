@@ -33,6 +33,7 @@ import now.shouldigooutside.core.ui.BrutalColors
 import now.shouldigooutside.core.ui.activities.colors
 import now.shouldigooutside.core.ui.activities.rememberDisplayName
 import now.shouldigooutside.core.ui.activities.rememberIcon
+import now.shouldigooutside.core.ui.activities.rememberStringResource
 import now.shouldigooutside.core.ui.asDisplay
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.IconButton
@@ -54,7 +55,6 @@ internal fun AddActivityItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val title = activity.rememberDisplayName()
     val icon = activity.rememberIcon()
     val colors = activity.colors()
 
@@ -89,7 +89,7 @@ internal fun AddActivityItem(
                         .padding(horizontal = 12.dp),
                 ) {
                     Content(
-                        title = title,
+                        title = activity.rememberDisplayName(),
                         colors = colors,
                         icon = icon,
                         style = AppTheme.typography.h2,
@@ -110,7 +110,7 @@ internal fun AddActivityItem(
                 }
             } else {
                 Content(
-                    title = title,
+                    title = activity.rememberStringResource().get(),
                     colors = colors,
                     icon = icon,
                     iconBoxColor = iconBoxColor,
