@@ -7,7 +7,6 @@ import dev.stateholder.extensions.viewmodel.StateViewModel
 import dev.stateholder.provider.composedStateProvider
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import now.shouldigooutside.core.domain.forecast.ActivityForecastScore
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
@@ -20,6 +19,7 @@ import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.forecast.scoreForBlock
 import now.shouldigooutside.core.model.getOrNull
 import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.score.ActivityForecastScore
 import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.forecast.ui.navigation.ForecastDetailsRoute

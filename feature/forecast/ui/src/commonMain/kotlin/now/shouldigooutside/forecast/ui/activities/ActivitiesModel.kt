@@ -5,14 +5,12 @@ import androidx.compose.runtime.Stable
 import dev.stateholder.extensions.viewmodel.StateViewModel
 import dev.stateholder.provider.composedStateProvider
 import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.collections.immutable.toPersistentMap
-import now.shouldigooutside.core.domain.forecast.ActivityForecastScore
 import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
+import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.preferences.Activity
-import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.score.ActivityForecastScore
 
 @Stable
 internal class ActivitiesModel(
@@ -21,18 +19,22 @@ internal class ActivitiesModel(
 ) : StateViewModel<ActivitiesModel.State>(
         composedStateProvider(
             State(
-                activities = settingsRepo.settings.value.activities
-                    .toPersistentMap(),
+                selected = settingsRepo.settings.value.selectedActivity,
                 scores = getActivitiesScoreUseCase.scores().toPersistentList(),
             ),
         ) {
-            settingsRepo.settings into { value -> copy(activities = value.activities.toPersistentMap()) }
+            settingsRepo.settings into { value -> copy(selected = value.selectedActivity) }
             getActivitiesScoreUseCase.scoresFlow() into { value -> copy(scores = value.toPersistentList()) }
         },
     ) {
+    fun update(period: ForecastPeriod) {
+        updateState { it.copy(period = period) }
+    }
+
     @Immutable
     data class State(
-        val activities: PersistentMap<Activity, Preferences>,
+        val selected: Activity,
         val scores: PersistentList<ActivityForecastScore>,
+        val period: ForecastPeriod = ForecastPeriod.Now,
     )
 }

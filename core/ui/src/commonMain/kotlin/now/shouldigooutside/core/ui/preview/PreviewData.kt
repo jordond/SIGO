@@ -9,12 +9,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import dev.jordond.compass.Coordinates
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.score.ActivityForecastScore
+import now.shouldigooutside.core.model.score.ForecastScore
 import kotlin.time.Clock
 import dev.jordond.compass.Location as CompassLocation
 
@@ -55,6 +59,30 @@ public object PreviewData {
             .take(count)
             .toMap()
             .toPersistentMap()
+
+    public fun activityScore(
+        activity: Activity = Activity.Running,
+        score: ForecastScore = Score.yes,
+    ): ActivityForecastScore =
+        ActivityForecastScore(
+            activity = activity,
+            score = score,
+            preferences = Preferences.defaultFor(activity),
+        )
+
+    public fun activityScores(
+        activities: List<Activity> = Activity.all,
+        score: ForecastScore = Score.yes,
+        block: (Int, Activity) -> ForecastScore = { _, _ -> score },
+    ): PersistentList<ActivityForecastScore> =
+        activities
+            .mapIndexed { index, activity ->
+                ActivityForecastScore(
+                    activity = activity,
+                    score = block(index, activity),
+                    preferences = Preferences.defaultFor(activity),
+                )
+            }.toPersistentList()
 }
 
 internal val PreviewIcon: ImageVector

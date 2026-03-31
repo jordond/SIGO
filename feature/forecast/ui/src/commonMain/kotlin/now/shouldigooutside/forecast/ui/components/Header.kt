@@ -42,7 +42,6 @@ import now.shouldigooutside.core.ui.components.HorizontalDivider
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.ktx.get
-import now.shouldigooutside.core.ui.mappers.rememberText
 import now.shouldigooutside.core.ui.preview.AppPreview
 import kotlin.time.Clock
 import kotlin.time.Instant
@@ -57,7 +56,7 @@ internal fun Header(
     location: Location?,
     onLocationClick: () -> Unit,
     modifier: Modifier = Modifier,
-    instant: Instant = Clock.System.now(),
+    instant: Instant = remember(period) { Clock.System.now() },
 ) {
     var showPeriodDropdown by remember { mutableStateOf(false) }
     var showActivityDropdown by remember { mutableStateOf(false) }
@@ -129,44 +128,11 @@ internal fun Header(
                 )
             }
 
-            Box {
-                Button(
-                    onClick = { showPeriodDropdown = !showPeriodDropdown },
-                    shape = AppTheme.shapes.extraSmall,
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
-                    variant = ButtonVariant.PrimaryElevated,
-                ) {
-                    Text(
-                        text = period.rememberText(instant),
-                        style = AppTheme.typography.h2,
-                    )
-                }
-                DropdownMenu(
-                    expanded = showPeriodDropdown,
-                    onDismissRequest = { showPeriodDropdown = false },
-                ) {
-                    val entries = remember(period) {
-                        ForecastPeriod.entries - period
-                    }
-                    entries.forEachIndexed { index, entry ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = entry.rememberText(instant),
-                                    style = AppTheme.typography.h3,
-                                )
-                            },
-                            onClick = {
-                                showPeriodDropdown = false
-                                changePeriod(entry)
-                            },
-                        )
-                        if (index != entries.lastIndex) {
-                            HorizontalDivider()
-                        }
-                    }
-                }
-            }
+            PeriodSelector(
+                period = period,
+                instant = instant,
+                changePeriod = changePeriod,
+            )
         }
 
         if (location != null) {
