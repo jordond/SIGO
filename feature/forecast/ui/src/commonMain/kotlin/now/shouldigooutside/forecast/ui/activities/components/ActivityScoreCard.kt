@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,17 +25,18 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.score.ActivityForecastScore
 import now.shouldigooutside.core.model.score.ReasonValue
-import now.shouldigooutside.core.model.score.Score
+import now.shouldigooutside.core.model.score.Reasons
+import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.units.Units
-import now.shouldigooutside.core.resources.Res
-import now.shouldigooutside.core.resources.recommendation
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.AqiLevels
 import now.shouldigooutside.core.ui.BrutalColors
 import now.shouldigooutside.core.ui.activities.colors
 import now.shouldigooutside.core.ui.activities.rememberDisplayName
@@ -47,17 +49,21 @@ import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.components.card.Card
 import now.shouldigooutside.core.ui.components.card.ElevatedCard
+import now.shouldigooutside.core.ui.icons.AppIcons
+import now.shouldigooutside.core.ui.icons.lucide.CloudRain
+import now.shouldigooutside.core.ui.icons.lucide.Thermometer
+import now.shouldigooutside.core.ui.icons.lucide.TriangleAlert
+import now.shouldigooutside.core.ui.icons.lucide.Waves
+import now.shouldigooutside.core.ui.icons.lucide.Wind
 import now.shouldigooutside.core.ui.ktx.get
-import now.shouldigooutside.core.ui.mappers.units.colors
-import now.shouldigooutside.core.ui.mappers.units.icon
-import now.shouldigooutside.core.ui.mappers.units.rememberUnit
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
+import now.shouldigooutside.forecast.ui.components.mappers.color
 import now.shouldigooutside.forecast.ui.components.mappers.precipitationStatus
 import now.shouldigooutside.forecast.ui.components.mappers.rememberText
+import now.shouldigooutside.forecast.ui.components.mappers.severeWeatherStatus
 import now.shouldigooutside.forecast.ui.components.mappers.temperatureStatus
 import now.shouldigooutside.forecast.ui.components.mappers.windStatus
-import kotlin.math.roundToInt
 
 @Composable
 internal fun ActivityScoreCard(
@@ -92,7 +98,9 @@ internal fun ActivityScoreCard(
                     text = data.activity.rememberDisplayName(),
                     style = AppTheme.typography.h2,
                     autoSize = AppTheme.typography.h2.autoSize(),
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .padding(horizontal = AppTheme.spacing.mini)
+                        .weight(1f),
                 )
 
                 Box(
@@ -116,13 +124,17 @@ internal fun ActivityScoreCard(
                 }
             }
 
-            if (score != null && block != null && units != null) {
+            if (score != null && block != null && score.result != ScoreResult.Yes) {
                 HorizontalDivider()
-                ActivityScoreContent(
-                    score = score,
-                    block = block,
-                    units = units,
+                LimitingFactors(
+                    reasons = score.reasons,
+                    temperatureValue = block.temperature.value,
                     maxTemperature = data.preferences.maxTemperature.toDouble(),
+                    airQuality = block.airQuality,
+                    modifier = Modifier.padding(
+                        horizontal = AppTheme.spacing.standard,
+                        vertical = AppTheme.spacing.small,
+                    ),
                 )
             }
         }
@@ -130,47 +142,56 @@ internal fun ActivityScoreCard(
 }
 
 @Composable
-private fun ActivityScoreContent(
-    score: Score,
-    block: ForecastBlock,
-    units: Units,
+private fun LimitingFactors(
+    reasons: Reasons,
+    temperatureValue: Double,
     maxTemperature: Double,
+    airQuality: AirQuality,
+    modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = Modifier.padding(AppTheme.spacing.standard),
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier,
     ) {
-        Text(
-            text = Res.string.recommendation
-                .get()
-                .uppercase(),
-            style = AppTheme.typography.label3,
-        )
-
-        val recommendation = score.primaryRecommendation(
-            temperatureValue = block.temperature.value,
-            maxTemperature = maxTemperature,
-        )
-        Text(
-            text = recommendation,
-            style = AppTheme.typography.h2,
-            modifier = Modifier.padding(bottom = AppTheme.spacing.small),
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            val tempUnit = units.temperature.rememberUnit()
+        if (reasons.severeWeather != ReasonValue.Inside) {
             WeatherValueCard(
-                icon = units.temperature.icon(),
-                value = "${block.temperature.value.roundToInt()}$tempUnit",
-                colors = units.temperature.colors(),
+                icon = AppIcons.Lucide.TriangleAlert,
+                value = reasons.severeWeatherStatus(),
+                colors = reasons.severeWeather.toResult().color(),
             )
+        }
 
-            val windUnit = units.windSpeed.rememberUnit()
+        if (reasons.temperature != ReasonValue.Inside) {
             WeatherValueCard(
-                icon = units.windSpeed.icon(),
-                value = "${block.wind.speed.roundToInt()} $windUnit",
-                colors = units.windSpeed.colors(),
+                icon = AppIcons.Lucide.Thermometer,
+                value = reasons.temperatureStatus(temperatureValue, maxTemperature),
+                colors = reasons.temperature.toResult().color(),
+            )
+        }
+
+        if (reasons.wind != ReasonValue.Inside) {
+            WeatherValueCard(
+                icon = AppIcons.Lucide.Wind,
+                value = reasons.windStatus(),
+                colors = reasons.wind.toResult().color(),
+            )
+        }
+
+        if (reasons.precipitation != ReasonValue.Inside) {
+            WeatherValueCard(
+                icon = AppIcons.Lucide.CloudRain,
+                value = reasons.precipitationStatus(),
+                colors = reasons.precipitation.toResult().color(),
+            )
+        }
+
+        if (reasons.airQuality != ReasonValue.Inside) {
+            val aqiLevel = AqiLevels.forValue(airQuality)
+            WeatherValueCard(
+                icon = AppIcons.Lucide.Waves,
+                value = aqiLevel.title.get(),
+                colors = aqiLevel.colors,
             )
         }
     }
@@ -200,26 +221,9 @@ private fun WeatherValueCard(
             )
             Text(
                 text = value,
-                style = AppTheme.typography.h3,
+                style = AppTheme.typography.h4,
             )
         }
-    }
-}
-
-@Composable
-private fun Score.primaryRecommendation(
-    temperatureValue: Double,
-    maxTemperature: Double,
-): String {
-    val r = reasons
-    return when {
-        r.temperature == ReasonValue.Outside -> r.temperatureStatus(temperatureValue, maxTemperature)
-        r.wind == ReasonValue.Outside -> r.windStatus()
-        r.precipitation == ReasonValue.Outside -> r.precipitationStatus()
-        r.temperature == ReasonValue.Near -> r.temperatureStatus(temperatureValue, maxTemperature)
-        r.wind == ReasonValue.Near -> r.windStatus()
-        r.precipitation == ReasonValue.Near -> r.precipitationStatus()
-        else -> r.temperatureStatus(temperatureValue, maxTemperature)
     }
 }
 

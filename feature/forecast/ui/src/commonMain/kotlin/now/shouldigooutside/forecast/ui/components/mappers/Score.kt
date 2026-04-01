@@ -10,6 +10,7 @@ import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.score.Reasons
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.blank
 import now.shouldigooutside.core.resources.score_maybe
 import now.shouldigooutside.core.resources.score_no
 import now.shouldigooutside.core.resources.score_precipitation_rain_inside
@@ -21,6 +22,8 @@ import now.shouldigooutside.core.resources.score_precipitation_snow_outside
 import now.shouldigooutside.core.resources.score_precipitation_status_inside
 import now.shouldigooutside.core.resources.score_precipitation_status_near
 import now.shouldigooutside.core.resources.score_precipitation_status_outside
+import now.shouldigooutside.core.resources.score_severe_weather_status_near
+import now.shouldigooutside.core.resources.score_severe_weather_status_outside
 import now.shouldigooutside.core.resources.score_temperature_inside
 import now.shouldigooutside.core.resources.score_temperature_near
 import now.shouldigooutside.core.resources.score_temperature_outside_high
@@ -163,6 +166,16 @@ internal fun Reasons.precipitationText(isRain: Boolean): String =
                 ReasonValue.Inside -> Res.string.score_precipitation_snow_inside
                 ReasonValue.Near -> Res.string.score_precipitation_snow_near
             }
+        }
+    }.get()
+
+@Composable
+internal fun Reasons.severeWeatherStatus(): String =
+    remember(severeWeather) {
+        when (severeWeather) {
+            ReasonValue.Outside -> Res.string.score_severe_weather_status_outside
+            ReasonValue.Near -> Res.string.score_severe_weather_status_near
+            ReasonValue.Inside -> Res.string.blank
         }
     }.get()
 

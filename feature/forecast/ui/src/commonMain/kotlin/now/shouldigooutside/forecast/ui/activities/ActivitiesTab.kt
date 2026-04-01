@@ -2,9 +2,13 @@ package now.shouldigooutside.forecast.ui.activities
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -12,7 +16,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,9 +38,11 @@ import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.score.ActivityForecastScore
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.home_tab_activities
+import now.shouldigooutside.core.resources.when_text
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.TabHeader
 import now.shouldigooutside.core.ui.activities.key
+import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.activities.ActivitiesModel.Event
@@ -104,11 +112,25 @@ internal fun ActivitiesTab(
 
         if (!activities.isEmpty()) {
             item(key = "period_selector") {
-                PeriodSelector(
-                    period = period,
-                    changePeriod = dispatcher.rememberRelayOf(ActivitiesTabAction::ChangePeriod),
-                    modifier = Modifier.animateItem(),
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = Res.string.when_text,
+                        fontStyle = FontStyle.Italic,
+                        style = AppTheme.typography.h2,
+                    )
+
+                    Spacer(Modifier.width(AppTheme.spacing.small))
+
+                    PeriodSelector(
+                        period = period,
+                        changePeriod = dispatcher.rememberRelayOf(ActivitiesTabAction::ChangePeriod),
+                        modifier = Modifier.animateItem(),
+                    )
+                }
             }
         }
 

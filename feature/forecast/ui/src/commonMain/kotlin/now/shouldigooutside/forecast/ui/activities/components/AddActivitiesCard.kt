@@ -18,8 +18,8 @@ import now.shouldigooutside.core.resources.activities_empty_button
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.Text
-import now.shouldigooutside.core.ui.components.card.Card
 import now.shouldigooutside.core.ui.components.card.CardDefaults
+import now.shouldigooutside.core.ui.components.card.ElevatedCard
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.Plus
 import now.shouldigooutside.core.ui.preview.AppPreview
@@ -29,34 +29,36 @@ internal fun AddActivityCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(AppTheme.colors.background),
-        border = CardDefaults.cardBorder(AppTheme.colors.onBackground),
+    Box(
         modifier = modifier,
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(
-                space = AppTheme.spacing.mini,
-                alignment = Alignment.CenterHorizontally,
-            ),
-            modifier = Modifier
-                .padding(
-                    vertical = AppTheme.spacing.large,
-                    horizontal = AppTheme.spacing.standard,
-                ).fillMaxWidth(),
+        ElevatedCard(
+            onClick = onClick,
+            colors = CardDefaults.cardColors(containerColor = AppTheme.colors.background),
         ) {
-            Text(
-                text = Res.string.activities_empty_button,
-                style = AppTheme.typography.h2,
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(
+                    space = AppTheme.spacing.mini,
+                    alignment = Alignment.CenterHorizontally,
+                ),
+                modifier = Modifier
+                    .padding(
+                        vertical = AppTheme.spacing.large,
+                        horizontal = AppTheme.spacing.standard,
+                    ).fillMaxWidth(),
+            ) {
+                Text(
+                    text = Res.string.activities_empty_button,
+                    style = AppTheme.typography.h2,
+                )
 
-            Icon(
-                icon = AppIcons.Lucide.Plus,
-                contentDescription = null,
-                modifier = Modifier.size(40.dp),
-            )
+                Icon(
+                    icon = AppIcons.Lucide.Plus,
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp),
+                )
+            }
         }
     }
 }
