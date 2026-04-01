@@ -12,6 +12,7 @@ import now.shouldigooutside.forecast.ui.navigation.forecastTab
 import now.shouldigooutside.settings.ui.navigation.PreferencesTabRoute
 import now.shouldigooutside.settings.ui.navigation.SettingsRoute
 import now.shouldigooutside.settings.ui.preferences.tab.preferencesTab
+import now.shouldigooutside.ui.home.components.navigateHomeTab
 import now.shouldigooutside.ui.navigation.AppNavHost
 import kotlin.reflect.KClass
 
@@ -29,6 +30,7 @@ internal fun HomeScreenNavHost(
             navController = parent,
             tabNavController = tabNavController,
             toSettings = { parent.navigate(SettingsRoute) },
+            toHome = { tabNavController.navigateHomeTab(HomeTab.Home) },
         )
 
         preferencesTab(

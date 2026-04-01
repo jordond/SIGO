@@ -71,11 +71,13 @@ public object PreviewData {
         )
 
     public fun activityScores(
+        count: Int = Activity.all.size,
         activities: List<Activity> = Activity.all,
         score: ForecastScore = Score.yes,
         block: (Int, Activity) -> ForecastScore = { _, _ -> score },
     ): PersistentList<ActivityForecastScore> =
         activities
+            .take(count)
             .mapIndexed { index, activity ->
                 ActivityForecastScore(
                     activity = activity,

@@ -30,6 +30,7 @@ public fun NavGraphBuilder.forecastTab(
     navController: NavHostController,
     tabNavController: NavHostController,
     toSettings: () -> Unit,
+    toHome: () -> Unit,
 ) {
     composable<ForecastHomeRoute> {
         ForecastHomeScreen(
@@ -48,6 +49,7 @@ public fun NavGraphBuilder.forecastTab(
         ActivitiesTab(
             toSettings = toSettings,
             toAddActivity = { navController.navigate(AddActivityRoute) },
+            toHome = toHome,
         )
     }
 }
