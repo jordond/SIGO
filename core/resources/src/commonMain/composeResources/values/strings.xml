@@ -155,6 +155,7 @@
     <string name="activities_empty_title">No activities yet</string>
     <string name="activities_empty_description">Add activities to see personalized forecasts for your favorite outdoor activities.</string>
     <string name="activities_empty_button">Add Activity</string>
+    <string name="activities_add_button">Add another activity</string>
     <string name="activity_add_title">Add Activity</string>
     <string name="activity_add_preferences_description">Set your desired preferences for %1$s</string>
     <string name="activity_custom_name_title">Name your activity</string>

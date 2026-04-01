@@ -79,7 +79,7 @@ internal fun ActivityScoreCard(
     ElevatedCard(
         colors = colors.cardColors(),
         onClick = onClick,
-        modifier = modifier.widthIn(max = 400.dp),
+        modifier = modifier,
     ) {
         Column {
             Row(

@@ -17,4 +17,6 @@ internal sealed interface ActivitiesTabAction {
     object ToSettings : ActivitiesTabAction
 
     object ToAddActivity : ActivitiesTabAction
+
+    object ToLocationPicker : ActivitiesTabAction
 }

@@ -2,13 +2,10 @@ package now.shouldigooutside.forecast.ui.activities
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -18,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,21 +31,20 @@ import kotlinx.collections.immutable.persistentListOf
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.blockForPeriod
+import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.score.ActivityForecastScore
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.home_tab_activities
-import now.shouldigooutside.core.resources.when_text
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.TabHeader
 import now.shouldigooutside.core.ui.activities.key
-import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.activities.ActivitiesModel.Event
+import now.shouldigooutside.forecast.ui.activities.components.ActivityFilterRow
 import now.shouldigooutside.forecast.ui.activities.components.ActivityScoreCard
 import now.shouldigooutside.forecast.ui.activities.components.AddActivityCard
 import now.shouldigooutside.forecast.ui.activities.components.NoActivitiesCard
-import now.shouldigooutside.forecast.ui.components.PeriodSelector
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -57,6 +52,7 @@ internal fun ActivitiesTab(
     toSettings: () -> Unit,
     toAddActivity: () -> Unit,
     toHome: () -> Unit,
+    toLocationPicker: () -> Unit,
     model: ActivitiesModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
@@ -72,12 +68,14 @@ internal fun ActivitiesTab(
         activities = state.scores,
         forecast = state.forecast,
         canAdd = state.canAddMore,
+        location = state.location?.takeUnless { it.isDefaultName },
         dispatcher = rememberDebounceDispatcher { action ->
             when (action) {
                 is ActivitiesTabAction.ActivityClick -> model.activityCardClick(action.activity)
                 is ActivitiesTabAction.ChangePeriod -> model.update(action.period)
                 is ActivitiesTabAction.ToSettings -> toSettings()
                 is ActivitiesTabAction.ToAddActivity -> toAddActivity()
+                is ActivitiesTabAction.ToLocationPicker -> toLocationPicker()
             }
         },
     )
@@ -90,12 +88,14 @@ internal fun ActivitiesTab(
     modifier: Modifier = Modifier,
     canAdd: Boolean = true,
     forecast: Forecast? = null,
+    location: Location? = null,
     dispatcher: Dispatcher<ActivitiesTabAction> = rememberDispatcher {},
     listState: LazyListState = rememberLazyListState(),
 ) {
     val block = remember(forecast, period) { forecast?.blockForPeriod(period) }
     val units = forecast?.units
     LazyColumn(
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.standard),
         contentPadding = PaddingValues(
             horizontal = AppTheme.spacing.standard,
@@ -112,25 +112,13 @@ internal fun ActivitiesTab(
 
         if (!activities.isEmpty()) {
             item(key = "period_selector") {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(
-                        text = Res.string.when_text,
-                        fontStyle = FontStyle.Italic,
-                        style = AppTheme.typography.h2,
-                    )
-
-                    Spacer(Modifier.width(AppTheme.spacing.small))
-
-                    PeriodSelector(
-                        period = period,
-                        changePeriod = dispatcher.rememberRelayOf(ActivitiesTabAction::ChangePeriod),
-                        modifier = Modifier.animateItem(),
-                    )
-                }
+                ActivityFilterRow(
+                    period = period,
+                    changePeriod = dispatcher.rememberRelayOf(ActivitiesTabAction::ChangePeriod),
+                    location = location,
+                    onLocationClick = dispatcher.rememberRelay(ActivitiesTabAction.ToLocationPicker),
+                    modifier = Modifier.animateItem(),
+                )
             }
         }
 
@@ -149,7 +137,9 @@ internal fun ActivitiesTab(
                     onClick = { dispatcher.dispatch(ActivitiesTabAction.ActivityClick(score.activity)) },
                     block = block,
                     units = units,
-                    modifier = Modifier.animateItem(),
+                    modifier = Modifier
+                        .widthIn(max = 500.dp)
+                        .animateItem(),
                 )
             }
 
@@ -157,7 +147,9 @@ internal fun ActivitiesTab(
                 item(key = "add_button") {
                     AddActivityCard(
                         onClick = dispatcher.rememberRelay(ActivitiesTabAction.ToAddActivity),
-                        modifier = Modifier.animateItem(),
+                        modifier = Modifier
+                            .widthIn(max = 500.dp)
+                            .animateItem(),
                     )
                 }
             }
@@ -186,6 +178,7 @@ public fun ActivityTabPreview() {
                 }
             },
             forecast = forecast,
+            location = Location(0.0, 0.0, "Toronto"),
         )
     }
 }

@@ -32,6 +32,9 @@ public class Settings(
     public val internalSettings: InternalSettings = InternalSettings(),
     public val loaded: Boolean = false,
 ) {
+    public val location: Location?
+        get() = if (useCustomLocation) customLocation else lastLocation
+
     @Deprecated("Use preferences for specific activity instead")
     public val preferences: Preferences
         get() = activities[Activity.General] ?: error("General preferences wasn't set!")

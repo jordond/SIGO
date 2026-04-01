@@ -45,13 +45,13 @@ import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.Header
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
 import now.shouldigooutside.forecast.ui.forecast.section.ForecastScoreContent
-import now.shouldigooutside.forecast.ui.forecast.section.search.LocationSearchSheet
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
 
 @Composable
 internal fun ForecastHomeScreen(
     toViewDetails: () -> Unit,
+    toLocationPicker: () -> Unit,
     model: ForecastHomeModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
@@ -65,11 +65,6 @@ internal fun ForecastHomeScreen(
         period = state.period,
         loading = state.loading,
         refreshing = state.refreshing,
-        showLocationSheet = state.showLocationSheet,
-        usingCurrentLocation = state.usingCurrentLocation,
-        searchQuery = state.searchQuery,
-        searchResults = state.searchResults,
-        searching = state.searching,
         selectedActivity = state.selectedActivity,
         activities = state.activities,
         dispatcher = rememberDebounceDispatcher { action ->
@@ -77,11 +72,7 @@ internal fun ForecastHomeScreen(
                 is ForecastHomeAction.Refresh -> model.fetch()
                 is ForecastHomeAction.ChangePeriod -> model.update(action.period)
                 is ForecastHomeAction.ToViewDetails -> toViewDetails()
-                is ForecastHomeAction.OpenLocationSheet -> model.openLocationSheet()
-                is ForecastHomeAction.CloseLocationSheet -> model.closeLocationSheet()
-                is ForecastHomeAction.SearchLocation -> model.searchLocation(action.query)
-                is ForecastHomeAction.SelectLocation -> model.selectLocation(action.location)
-                is ForecastHomeAction.UseCurrentLocation -> model.useCurrentLocation()
+                is ForecastHomeAction.OpenLocationSheet -> toLocationPicker()
                 is ForecastHomeAction.ChangeActivity -> model.update(action.activity)
             }
         },
@@ -101,11 +92,6 @@ internal fun ForecastHomeScreen(
     period: ForecastPeriod = ForecastPeriod.Today,
     loading: Boolean = false,
     refreshing: Boolean = false,
-    showLocationSheet: Boolean = false,
-    usingCurrentLocation: Boolean = true,
-    searchQuery: String = "",
-    searchResults: PersistentList<Location> = persistentListOf(),
-    searching: Boolean = false,
     selectedActivity: Activity = Activity.General,
     activities: PersistentList<Activity> = persistentListOf(),
 ) {
@@ -164,18 +150,6 @@ internal fun ForecastHomeScreen(
             }
         }
     }
-
-    LocationSearchSheet(
-        isVisible = showLocationSheet,
-        usingCurrentLocation = usingCurrentLocation,
-        query = searchQuery,
-        results = searchResults,
-        searching = searching,
-        onQueryChange = dispatcher.rememberRelayOf(ForecastHomeAction::SearchLocation),
-        onSelectLocation = dispatcher.rememberRelayOf(ForecastHomeAction::SelectLocation),
-        onUseCurrentLocation = dispatcher.rememberRelay(ForecastHomeAction.UseCurrentLocation),
-        onDismiss = dispatcher.rememberRelay(ForecastHomeAction.CloseLocationSheet),
-    )
 }
 
 @Preview

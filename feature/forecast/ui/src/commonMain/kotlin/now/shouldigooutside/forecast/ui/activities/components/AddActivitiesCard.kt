@@ -14,10 +14,11 @@ import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.resources.Res
-import now.shouldigooutside.core.resources.activities_empty_button
+import now.shouldigooutside.core.resources.activities_add_button
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.Text
+import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.components.card.ElevatedCard
 import now.shouldigooutside.core.ui.icons.AppIcons
@@ -44,19 +45,21 @@ internal fun AddActivityCard(
                 ),
                 modifier = Modifier
                     .padding(
-                        vertical = AppTheme.spacing.large,
+                        vertical = AppTheme.spacing.standard,
                         horizontal = AppTheme.spacing.standard,
                     ).fillMaxWidth(),
             ) {
                 Text(
-                    text = Res.string.activities_empty_button,
-                    style = AppTheme.typography.h2,
+                    text = Res.string.activities_add_button,
+                    style = AppTheme.typography.h3,
+                    maxLines = 1,
+                    autoSize = AppTheme.typography.h3.autoSize(),
                 )
 
                 Icon(
                     icon = AppIcons.Lucide.Plus,
                     contentDescription = null,
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(32.dp),
                 )
             }
         }
