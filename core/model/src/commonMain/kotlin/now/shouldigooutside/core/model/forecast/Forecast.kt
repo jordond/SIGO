@@ -42,37 +42,39 @@ public fun Forecast.blockForPeriod(period: ForecastPeriod): ForecastBlock? =
         ForecastPeriod.Tomorrow -> days.getOrNull(0)?.block
     }
 
+@Immutable
 public data class WeatherWindow(
     val start: Instant,
     val end: Instant,
 )
 
-public fun Forecast.goodWeatherWindows(score: ForecastScore): List<WeatherWindow> {
-    val hours = today.hours
-    val scores = score.hours
-    if (hours.isEmpty() || scores.isEmpty()) return emptyList()
-
-    val windows = mutableListOf<WeatherWindow>()
-    var windowStart: Instant? = null
-
-    for (i in hours.indices) {
-        val hourScore = scores.getOrNull(i) ?: break
-        if (hourScore.result == ScoreResult.Yes) {
-            if (windowStart == null) windowStart = hours[i].instant
-        } else {
-            if (windowStart != null) {
-                windows += WeatherWindow(start = windowStart, end = hours[i].instant)
+/**
+ * Finds contiguous time windows where the hourly score is [ScoreResult.Yes].
+ *
+ * Pairs [today]'s hourly blocks with [score]'s hourly scores (truncated to the shorter list)
+ * and groups consecutive `Yes` results into [WeatherWindow]s.
+ *
+ * @param score The forecast score to evaluate, or `null` to return an empty list.
+ * @return An ordered list of good weather windows, or an empty list if [score] is `null`
+ *   or no hours scored `Yes`.
+ */
+public fun Forecast.goodWeatherWindows(score: ForecastScore?): List<WeatherWindow> =
+    buildList {
+        if (score == null) return emptyList()
+        val paired = today.hours.zip(score.hours)
+        var windowStart: Instant? = null
+        for ((hour, hourScore) in paired) {
+            if (hourScore.result == ScoreResult.Yes) {
+                if (windowStart == null) windowStart = hour.instant
+            } else if (windowStart != null) {
+                add(WeatherWindow(start = windowStart, end = hour.instant))
                 windowStart = null
             }
         }
+        if (windowStart != null) {
+            add(WeatherWindow(start = windowStart, end = paired.last().first.instant))
+        }
     }
-
-    if (windowStart != null) {
-        windows += WeatherWindow(start = windowStart, end = hours.last().instant)
-    }
-
-    return windows
-}
 
 public fun Forecast.scoreForBlock(
     block: ForecastBlock,

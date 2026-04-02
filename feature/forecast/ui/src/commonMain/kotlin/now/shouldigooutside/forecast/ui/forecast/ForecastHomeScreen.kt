@@ -45,7 +45,6 @@ import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.Header
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
-import now.shouldigooutside.forecast.ui.components.WeatherWindowBanner
 import now.shouldigooutside.forecast.ui.forecast.section.ForecastScoreContent
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
@@ -125,15 +124,6 @@ internal fun ForecastHomeScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            if (goodWindow != null) {
-                WeatherWindowBanner(
-                    window = goodWindow,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = AppTheme.spacing.small),
-                )
-            }
-
             val crossfadeTarget = remember(data, loading) { loading to data }
             Crossfade(
                 targetState = crossfadeTarget,
@@ -155,6 +145,7 @@ internal fun ForecastHomeScreen(
                             units = units,
                             block = currentBlock,
                             score = currentPeriodScore,
+                            goodWindow = goodWindow,
                             onScoreClick = dispatcher.rememberRelay(ForecastHomeAction.ToViewDetails),
                             modifier = Modifier.padding(end = 2.dp),
                         )
@@ -236,4 +227,23 @@ private fun SevereWeatherHighPreview() {
     ScreenPreview(
         PreviewData.Forecast.createForecastFrom(PreviewData.Forecast.severeWeather()),
     )
+}
+
+@Preview
+@Composable
+private fun GoodWeatherWindowPreview() {
+    val forecast = PreviewData.Forecast.createGoodWindowForecast()
+    val forecastScore = remember { PreviewData.Forecast.score(forecast) }
+    AppPreview {
+        ForecastHomeScreen(
+            location = null,
+            data = forecast,
+            currentBlock = forecast.blockForPeriod(ForecastPeriod.Today),
+            currentPeriodScore = forecastScore.scoreForPeriod(ForecastPeriod.Today),
+            goodWindow = remember { PreviewData.Forecast.goodWindow(forecast) },
+            preferences = Preferences.default,
+            units = Units.Metric,
+            dispatcher = rememberDispatcher { },
+        )
+    }
 }

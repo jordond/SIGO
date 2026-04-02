@@ -31,6 +31,7 @@ import kotlinx.coroutines.isActive
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
+import now.shouldigooutside.core.model.forecast.WeatherWindow
 import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.score.ReasonValue
@@ -65,6 +66,7 @@ import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.AirQualityResultCard
 import now.shouldigooutside.forecast.ui.components.PreferenceResultCard
+import now.shouldigooutside.forecast.ui.components.WeatherWindowBanner
 import now.shouldigooutside.forecast.ui.components.mappers.colors
 import now.shouldigooutside.forecast.ui.components.mappers.precipitationStatus
 import now.shouldigooutside.forecast.ui.components.mappers.rememberText
@@ -85,6 +87,7 @@ internal fun ForecastScoreContent(
     block: ForecastBlock,
     score: Score,
     modifier: Modifier = Modifier,
+    goodWindow: WeatherWindow? = null,
     now: Instant = Clock.System.now(),
     onScoreClick: () -> Unit = {},
 ) {
@@ -261,6 +264,15 @@ internal fun ForecastScoreContent(
                 }
             }
 
+            if (goodWindow != null) {
+                WeatherWindowBanner(
+                    window = goodWindow,
+                    modifier = Modifier
+                        .padding(top = AppTheme.spacing.small)
+                        .fillMaxWidth(),
+                )
+            }
+
             Spacer(modifier = Modifier.height(AppTheme.spacing.small))
 
             UpdatedAtText(instant = updatedAt)
@@ -336,6 +348,29 @@ private fun ForecastScoreContentPreview() {
                 units = Units.Metric,
                 block = forecast.blockForPeriod(ForecastPeriod.Today)!!,
                 score = score.scoreForPeriod(ForecastPeriod.Today)!!,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun GoodWeatherWindowPreview() {
+    val forecast = PreviewData.Forecast.createGoodWindowForecast()
+    val forecastScore = PreviewData.Forecast.score(forecast)
+    AppPreview {
+        Box(
+            modifier = Modifier
+                .padding(horizontal = AppTheme.spacing.standard, vertical = AppTheme.spacing.standard)
+                .height(700.dp),
+        ) {
+            ForecastScoreContent(
+                updatedAt = forecast.instant,
+                preferences = Preferences.default,
+                units = Units.Metric,
+                block = forecast.blockForPeriod(ForecastPeriod.Today)!!,
+                score = forecastScore.scoreForPeriod(ForecastPeriod.Today)!!,
+                goodWindow = PreviewData.Forecast.goodWindow(forecast),
             )
         }
     }

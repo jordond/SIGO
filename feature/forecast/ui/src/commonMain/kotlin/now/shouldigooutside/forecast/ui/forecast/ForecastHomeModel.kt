@@ -70,8 +70,7 @@ internal class ForecastHomeModel(
             activityScores.firstOrNull { it.activity == selectedActivity }
         val currentBlock: ForecastBlock? = forecast?.blockForPeriod(period)
         val currentPeriodScore: Score? = currentScore?.score?.scoreForPeriod(period)
-        val goodWindow: WeatherWindow? =
-            forecast?.let { f -> currentScore?.score?.let { s -> f.goodWeatherWindows(s).firstOrNull() } }
+        val goodWindow: WeatherWindow? = forecast?.goodWeatherWindows(currentScore?.score)?.firstOrNull()
     }
 }
 
