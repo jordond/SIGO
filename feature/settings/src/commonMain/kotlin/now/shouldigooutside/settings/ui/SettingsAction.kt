@@ -22,6 +22,8 @@ internal sealed interface SettingsAction {
 
     data object ToggleActivities : SettingsAction
 
+    data object ToggleRememberActivity : SettingsAction
+
     data object ToUnitsScreen : SettingsAction
 
     data object ShareApp : SettingsAction

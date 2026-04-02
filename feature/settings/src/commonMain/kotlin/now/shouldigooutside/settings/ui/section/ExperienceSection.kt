@@ -25,6 +25,8 @@ import now.shouldigooutside.core.resources.settings_experience_haptics
 import now.shouldigooutside.core.resources.settings_experience_haptics_desc
 import now.shouldigooutside.core.resources.settings_experience_include_air_quality
 import now.shouldigooutside.core.resources.settings_experience_include_air_quality_desc
+import now.shouldigooutside.core.resources.settings_experience_remember_activity
+import now.shouldigooutside.core.resources.settings_experience_remember_activity_desc
 import now.shouldigooutside.core.resources.settings_experience_title
 import now.shouldigooutside.core.resources.settings_experience_units
 import now.shouldigooutside.core.resources.settings_experience_units_desc
@@ -62,6 +64,7 @@ internal fun ExperienceSection(
     toggle24HourFormat: () -> Unit,
     toggleAirQuality: () -> Unit,
     toggleActivities: () -> Unit,
+    toggleRememberActivity: () -> Unit,
     unitsClick: () -> Unit,
     modifier: Modifier = Modifier,
     primary: Color = AppTheme.colors.primary,
@@ -146,6 +149,22 @@ internal fun ExperienceSection(
             )
         }
 
+        Item {
+            SettingsTextRow(
+                text = Res.string.settings_experience_remember_activity,
+                description = Res.string.settings_experience_remember_activity_desc,
+                icon = AppIcons.Lucide.Hourglass,
+                onClick = toggleRememberActivity,
+                trailingContent = {
+                    Switch(
+                        checked = settings.rememberActivity,
+                        onCheckedChange = { toggleRememberActivity() },
+                        colors = SwitchDefaults.colors(checkedTrackColor = secondary),
+                    )
+                },
+            )
+        }
+
         Item(isLast = true) {
             SettingsTextRow(
                 text = Res.string.settings_experience_units,
@@ -188,6 +207,7 @@ private fun ExperienceSectionPreview() {
                 unitsClick = {},
                 toggleActivities = {},
                 toggleAirQuality = {},
+                toggleRememberActivity = {},
             )
         }
     }

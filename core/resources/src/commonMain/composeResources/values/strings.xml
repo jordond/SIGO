@@ -297,6 +297,8 @@
     <string name="settings_experience_enable_activities_desc">Enable or disable the activities feature, which allows you to set different preferences for different activities.</string>
     <string name="settings_experience_disable_activities">Disable Activities</string>
     <string name="settings_experience_disable_activities_warning">Your score will be based on your general preferences only. Activities will be removed from the home screen, but your saved preferences for each activity will be kept if you re-enable later.</string>
+    <string name="settings_experience_remember_activity">Remember Activity</string>
+    <string name="settings_experience_remember_activity_desc">When enabled the app will remember the last selected activity and use it as the default when opening the app.</string>
     <string name="settings_experience_units">Units</string>
     <string name="settings_experience_units_desc">Update the units used in the app</string>
     <string name="settings_about_title">About</string>

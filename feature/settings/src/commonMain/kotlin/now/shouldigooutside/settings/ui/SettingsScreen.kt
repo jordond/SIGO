@@ -87,6 +87,9 @@ internal fun SettingsScreen(
                 is SettingsAction.ToggleActivities -> {
                     model.toggleActivities()
                 }
+                is SettingsAction.ToggleRememberActivity -> {
+                    model.toggleRememberActivity()
+                }
                 is SettingsAction.ToUnitsScreen -> {
                     toUnits()
                 }
@@ -173,6 +176,7 @@ internal fun SettingsScreen(
                 toggle24HourFormat = dispatcher.rememberRelay(SettingsAction.Toggle24HourFormat),
                 toggleAirQuality = dispatcher.rememberRelay(SettingsAction.ToggleAirQuality),
                 toggleActivities = dispatcher.rememberRelay(SettingsAction.ToggleActivities),
+                toggleRememberActivity = dispatcher.rememberRelay(SettingsAction.ToggleRememberActivity),
                 unitsClick = dispatcher.rememberRelay(SettingsAction.ToUnitsScreen),
                 primary = AppTheme.colors.secondary,
                 secondary = AppTheme.colors.primary,
