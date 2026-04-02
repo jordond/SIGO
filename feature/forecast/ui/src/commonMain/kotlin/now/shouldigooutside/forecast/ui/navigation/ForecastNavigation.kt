@@ -1,12 +1,9 @@
 package now.shouldigooutside.forecast.ui.navigation
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
-import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.ui.navigation.Route
 import now.shouldigooutside.core.ui.navigation.bottomsheet.bottomSheet
 import now.shouldigooutside.core.ui.navigation.popUpScreen
@@ -57,6 +54,7 @@ public fun NavGraphBuilder.forecastTab(
             toAddActivity = { navController.navigate(AddActivityRoute) },
             toHome = toHome,
             toLocationPicker = { navController.navigate(LocationSearchRoute) },
+            toForecastDetails = { tabNavController.navigate(ForecastDetailsRoute) },
         )
     }
 }
