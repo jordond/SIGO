@@ -33,7 +33,7 @@ internal class KeyValueWhatsNewRepo(
     Initializable {
     override val unseenEntries: StateFlow<PersistentList<WhatsNewPage>> = store.data
         .map { state ->
-            val seen = state.lastSeenVersionCode ?: versionProvider.provide().code
+            val seen = state.lastSeenVersionCode ?: (versionProvider.provide().code - 1)
             registry.pages.filter { it.version > seen }.toPersistentList()
         }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
@@ -44,7 +44,7 @@ internal class KeyValueWhatsNewRepo(
                 current
             } else {
                 val current = versionProvider.provide().code
-                val code = if (settings.hasCompletedOnboarding) current else current + 1
+                val code = if (settings.hasCompletedOnboarding) current else current
                 WhatsNewStateEntity(initialized = true, lastSeenVersionCode = code)
             }
         }
@@ -60,7 +60,7 @@ internal class KeyValueWhatsNewRepo(
         }
     }
 
-    override suspend fun reset() {
+    override fun reset() {
         scope.launch {
             store.update { current ->
                 val existing = current ?: WhatsNewStateEntity(initialized = true)

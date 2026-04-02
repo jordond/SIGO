@@ -33,9 +33,7 @@ internal class InternalSettingsModel(
     }
 
     fun showWhatsNew() {
-        viewModelScope.launch {
-            whatsNewRepo.reset()
-        }
+        whatsNewRepo.reset()
     }
 
     data class State(

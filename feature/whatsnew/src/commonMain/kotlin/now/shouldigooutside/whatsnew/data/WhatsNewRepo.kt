@@ -23,5 +23,5 @@ public interface WhatsNewRepo {
     /**
      * Clear all seen state so entries reappear. Used by internal settings for testing
      */
-    public suspend fun reset()
+    public fun reset()
 }
