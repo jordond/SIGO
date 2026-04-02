@@ -2,18 +2,14 @@ package now.shouldigooutside.settings.data
 
 import app.cash.turbine.test
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.model.ui.ThemeMode
-import now.shouldigooutside.core.platform.store.Store
 import now.shouldigooutside.settings.data.entity.SettingsEntity
 import now.shouldigooutside.settings.data.entity.toEntity
 import now.shouldigooutside.settings.data.entity.toModel
+import now.shouldigooutside.test.NullableStore
 import kotlin.test.Test
 import kotlin.time.Instant
 
@@ -104,26 +100,4 @@ class KeyValueSettingsRepoTest {
             store.get()?.toModel()?.themeMode shouldBe ThemeMode.Light
             store.get()?.toModel()?.includeAirQuality shouldBe true
         }
-}
-
-private class NullableStore<T : Any>(
-    initial: T? = null,
-) : Store<T> {
-    private val state = MutableStateFlow(initial)
-
-    override val data: Flow<T> = state.filterNotNull()
-
-    override suspend fun get(): T? = state.value
-
-    override suspend fun set(data: T) {
-        state.value = data
-    }
-
-    override suspend fun update(block: (T?) -> T) {
-        state.update(block)
-    }
-
-    override suspend fun clear() {
-        state.value = null
-    }
 }

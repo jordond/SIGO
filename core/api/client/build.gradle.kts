@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "core.api.client")
+configureMultiplatform(Platforms.All, name = "core.api.client", tests = true)
 
 kotlin {
     sourceSets {

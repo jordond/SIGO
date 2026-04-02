@@ -2,6 +2,7 @@ package now.shouldigooutside.core.domain.forecast
 
 import io.kotest.matchers.shouldBe
 import now.shouldigooutside.core.model.forecast.AirQuality
+import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.PrecipitationType
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
 import now.shouldigooutside.core.model.preferences.Preferences
@@ -30,7 +31,7 @@ class DefaultScoreCalculatorTest {
     private val calculator = DefaultScoreCalculator()
 
     private fun scoreBlock(
-        block: now.shouldigooutside.core.model.forecast.ForecastBlock,
+        block: ForecastBlock,
         preferences: Preferences = defaultPreferences,
         includeAirQuality: Boolean = false,
     ) = calculator

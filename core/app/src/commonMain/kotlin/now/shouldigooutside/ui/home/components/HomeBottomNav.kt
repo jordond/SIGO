@@ -9,10 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.em
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.LocalTextStyle
+import now.shouldigooutside.core.ui.asDisplay
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.NavigationBar
 import now.shouldigooutside.core.ui.components.NavigationBarItem
@@ -53,6 +55,9 @@ internal fun HomeBottomNav(
                     Text(
                         text = entry.title,
                         autoSize = LocalTextStyle.current.autoSize(),
+                        style = LocalTextStyle.current.asDisplay.copy(
+                            letterSpacing = -(0.1).em,
+                        ),
                         maxLines = 1,
                     )
                 },

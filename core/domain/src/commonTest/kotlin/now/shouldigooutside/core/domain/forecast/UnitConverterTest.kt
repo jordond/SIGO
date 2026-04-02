@@ -1,7 +1,9 @@
 package now.shouldigooutside.core.domain.forecast
 
+import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import now.shouldigooutside.core.model.forecast.PrecipitationType
+import now.shouldigooutside.core.model.units.PrecipitationUnit
 import now.shouldigooutside.core.model.units.PressureUnit
 import now.shouldigooutside.core.model.units.TemperatureUnit
 import now.shouldigooutside.core.model.units.Units
@@ -16,14 +18,9 @@ import now.shouldigooutside.test.testForecastDay
 import now.shouldigooutside.test.testPrecipitation
 import now.shouldigooutside.test.testTemperature
 import now.shouldigooutside.test.testWind
-import kotlin.math.abs
 import kotlin.test.Test
 
 private const val EPSILON = 1e-6
-
-private infix fun Double.shouldBeClose(expected: Double) {
-    (abs(this - expected) < EPSILON) shouldBe true
-}
 
 class UnitConverterTest {
     @Test
@@ -35,7 +32,6 @@ class UnitConverterTest {
 
     @Test
     fun convertsTemperature() {
-        // SI = Kelvin; Metric = Celsius; 300K -> 26.85°C
         val kelvin = 300.0
         val expectedCelsius = convertTemperature(kelvin, TemperatureUnit.Kelvin, TemperatureUnit.Celsius)
         val block = testForecastBlock(
@@ -49,15 +45,14 @@ class UnitConverterTest {
 
         val converted = forecast.convert(Units.Metric)
 
-        converted.current.temperature.value shouldBeClose expectedCelsius
-        converted.current.temperature.feelsLike shouldBeClose expectedCelsius
-        converted.current.temperature.max shouldBeClose expectedCelsius
-        converted.current.temperature.min shouldBeClose expectedCelsius
+        converted.current.temperature.value shouldBe (expectedCelsius plusOrMinus EPSILON)
+        converted.current.temperature.feelsLike shouldBe (expectedCelsius plusOrMinus EPSILON)
+        converted.current.temperature.max shouldBe (expectedCelsius plusOrMinus EPSILON)
+        converted.current.temperature.min shouldBe (expectedCelsius plusOrMinus EPSILON)
     }
 
     @Test
     fun convertsWindSpeed() {
-        // SI windSpeed = MeterPerSecond; Metric = KilometerPerHour; 10 m/s -> 36 kph
         val mps = 10.0
         val expectedKph = convertWindSpeed(mps, WindSpeedUnit.MeterPerSecond, WindSpeedUnit.KilometerPerHour)
         val block = testForecastBlock(
@@ -67,21 +62,20 @@ class UnitConverterTest {
 
         val converted = forecast.convert(Units.Metric)
 
-        converted.current.wind.speed shouldBeClose expectedKph
-        converted.current.wind.gust shouldBeClose expectedKph
-        converted.current.wind.maxSpeed shouldBeClose expectedKph
-        converted.current.wind.meanSpeed shouldBeClose expectedKph
-        converted.current.wind.minSpeed shouldBeClose expectedKph
+        converted.current.wind.speed shouldBe (expectedKph plusOrMinus EPSILON)
+        converted.current.wind.gust shouldBe (expectedKph plusOrMinus EPSILON)
+        converted.current.wind.maxSpeed shouldBe (expectedKph plusOrMinus EPSILON)
+        converted.current.wind.meanSpeed shouldBe (expectedKph plusOrMinus EPSILON)
+        converted.current.wind.minSpeed shouldBe (expectedKph plusOrMinus EPSILON)
     }
 
     @Test
     fun convertsPrecipitation() {
-        // Imperial precipitation = Inch; Metric = Millimeter; 1 inch -> 25.4 mm
         val inches = 1.0
         val expectedMm = convertPrecipitation(
             inches,
-            now.shouldigooutside.core.model.units.PrecipitationUnit.Inch,
-            now.shouldigooutside.core.model.units.PrecipitationUnit.Millimeter,
+            PrecipitationUnit.Inch,
+            PrecipitationUnit.Millimeter,
         )
         val block = testForecastBlock(
             precipitation = testPrecipitation(
@@ -95,15 +89,13 @@ class UnitConverterTest {
 
         val converted = forecast.convert(Units.Metric)
 
-        converted.current.precipitation.amount shouldBeClose expectedMm
-        // Non-unit fields preserved
+        converted.current.precipitation.amount shouldBe (expectedMm plusOrMinus EPSILON)
         converted.current.precipitation.probability shouldBe 50
         converted.current.precipitation.types shouldBe setOf(PrecipitationType.Rain)
     }
 
     @Test
     fun convertsPressure() {
-        // Imperial pressure = InchMercury; Metric = HectoPascal; 29.92 inHg -> ~1013.25 hPa
         val inHg = 29.92
         val expectedHpa = convertPressure(inHg, PressureUnit.InchMercury, PressureUnit.HectoPascal)
         val block = testForecastBlock(pressure = inHg)
@@ -112,7 +104,7 @@ class UnitConverterTest {
 
         val converted = forecast.convert(Units.Metric)
 
-        converted.current.pressure shouldBeClose expectedHpa
+        converted.current.pressure shouldBe (expectedHpa plusOrMinus EPSILON)
     }
 
     @Test
@@ -152,7 +144,7 @@ class UnitConverterTest {
 
         converted.today.hours.size shouldBe 3
         converted.today.hours.forEach { hour ->
-            hour.temperature.value shouldBeClose expectedCelsius
+            hour.temperature.value shouldBe (expectedCelsius plusOrMinus EPSILON)
         }
     }
 
@@ -175,7 +167,7 @@ class UnitConverterTest {
 
         converted.days.size shouldBe 2
         converted.days.forEach { day ->
-            day.block.temperature.value shouldBeClose expectedCelsius
+            day.block.temperature.value shouldBe (expectedCelsius plusOrMinus EPSILON)
         }
     }
 }
