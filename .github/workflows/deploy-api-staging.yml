@@ -13,6 +13,9 @@ on:
       - "gradle.properties"
       - "settings.gradle.kts"
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     name: "Deploy"
