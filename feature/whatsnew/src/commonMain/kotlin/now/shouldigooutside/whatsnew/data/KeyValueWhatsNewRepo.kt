@@ -43,19 +43,21 @@ internal class KeyValueWhatsNewRepo(
             if (current?.initialized == true) {
                 current
             } else {
-                val current = versionProvider.provide().code
-                val code = if (settings.hasCompletedOnboarding) current else current
-                WhatsNewStateEntity(initialized = true, lastSeenVersionCode = code)
+                val versionCode = versionProvider.provide().code
+                val latestEntry = registry.pages.maxOfOrNull { it.version } ?: versionCode
+                val lastSeen = if (settings.hasCompletedOnboarding) latestEntry - 1 else versionCode
+                WhatsNewStateEntity(initialized = true, lastSeenVersionCode = lastSeen)
             }
         }
     }
 
     override suspend fun markSeen() {
+        val versionCode = versionProvider.provide().code
         store.update { entity ->
-            entity?.copy(lastSeenVersionCode = versionProvider.provide().code)
+            entity?.copy(lastSeenVersionCode = versionCode)
                 ?: WhatsNewStateEntity(
                     initialized = true,
-                    lastSeenVersionCode = versionProvider.provide().code,
+                    lastSeenVersionCode = versionCode,
                 )
         }
     }

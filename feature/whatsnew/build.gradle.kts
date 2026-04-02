@@ -10,10 +10,14 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.Compose, name = "whatsnew")
+configureMultiplatform(Platforms.Compose, name = "whatsnew", tests = true)
 
 kotlin {
     sourceSets {
+        commonTest.dependencies {
+            implementation(projects.test)
+        }
+
         commonMain.dependencies {
             implementation(projects.core.model)
             implementation(projects.core.domain)

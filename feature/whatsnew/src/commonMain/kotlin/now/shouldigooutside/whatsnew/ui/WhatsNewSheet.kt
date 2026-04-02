@@ -141,21 +141,19 @@ private fun WhatsNewPageContent(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier.padding(horizontal = AppTheme.spacing.small),
     ) {
-        if (page.image != null) {
-            ElevatedCard {
-                Image(
-                    painter = painterResource(page.image),
-                    contentDescription = page.title.get(),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clip(AppTheme.shapes.medium)
-                        .height(250.dp)
-                        .fillMaxWidth(),
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
+        ElevatedCard {
+            Image(
+                painter = painterResource(page.image),
+                contentDescription = page.title.get(),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .clip(AppTheme.shapes.medium)
+                    .height(250.dp)
+                    .fillMaxWidth(),
+            )
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = page.title,

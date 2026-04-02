@@ -10,5 +10,5 @@ public data class WhatsNewPage(
     val version: Int,
     val title: StringResource,
     val description: StringResource,
-    val image: DrawableResource? = null,
+    val image: DrawableResource,
 )
