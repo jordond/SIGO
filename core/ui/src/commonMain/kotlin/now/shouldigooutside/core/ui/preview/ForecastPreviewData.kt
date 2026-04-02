@@ -11,7 +11,9 @@ import now.shouldigooutside.core.model.forecast.Precipitation
 import now.shouldigooutside.core.model.forecast.PrecipitationType
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
 import now.shouldigooutside.core.model.forecast.Temperature
+import now.shouldigooutside.core.model.forecast.WeatherWindow
 import now.shouldigooutside.core.model.forecast.Wind
+import now.shouldigooutside.core.model.forecast.goodWeatherWindows
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.score.ForecastScore
@@ -305,6 +307,18 @@ public object ForecastPreviewData {
             instant = instant,
         )
 
+    public fun createGoodWindowForecast(instant: Instant = Clock.System.now()): Forecast =
+        createForecast(
+            instant = instant,
+            hours = listOf(
+                rainy(instant.plus(1.hours)),
+                sunny(instant.plus(2.hours)),
+                sunny(instant.plus(3.hours)),
+                sunny(instant.plus(4.hours)),
+                rainy(instant.plus(5.hours)),
+            ),
+        )
+
     private val calculator = DefaultScoreCalculator()
 
     public fun score(
@@ -312,6 +326,11 @@ public object ForecastPreviewData {
         preferences: Preferences = Preferences.default,
         includeAirQuality: Boolean = true,
     ): ForecastScore = calculator.calculate(forecast, preferences, includeAirQuality)
+
+    public fun goodWindow(
+        forecast: Forecast,
+        preferences: Preferences = Preferences.default,
+    ): WeatherWindow? = forecast.goodWeatherWindows(score(forecast, preferences)).firstOrNull()
 
     public class ForecastBlockPreviewParameterProvider : PreviewParameterProvider<ForecastBlock> {
         override val values: Sequence<ForecastBlock> = sequenceOf(sunny(), rainy(), snowy(), hot(), cold())

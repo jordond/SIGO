@@ -33,6 +33,7 @@ import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.score.ActivityForecastScore
+import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.home_tab_activities
 import now.shouldigooutside.core.ui.AppTheme
@@ -44,6 +45,7 @@ import now.shouldigooutside.forecast.ui.activities.ActivitiesModel.Event
 import now.shouldigooutside.forecast.ui.activities.components.ActivityFilterRow
 import now.shouldigooutside.forecast.ui.activities.components.ActivityScoreCard
 import now.shouldigooutside.forecast.ui.activities.components.AddActivityCard
+import now.shouldigooutside.forecast.ui.activities.components.CurrentConditionsCard
 import now.shouldigooutside.forecast.ui.activities.components.NoActivitiesCard
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -53,6 +55,7 @@ internal fun ActivitiesTab(
     toAddActivity: () -> Unit,
     toHome: () -> Unit,
     toLocationPicker: () -> Unit,
+    toForecastDetails: () -> Unit,
     model: ActivitiesModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
@@ -67,6 +70,7 @@ internal fun ActivitiesTab(
         period = state.period,
         activities = state.scores,
         forecast = state.forecast,
+        units = state.units,
         canAdd = state.canAddMore,
         location = state.location?.takeUnless { it.isDefaultName },
         dispatcher = rememberDebounceDispatcher { action ->
@@ -76,6 +80,7 @@ internal fun ActivitiesTab(
                 is ActivitiesTabAction.ToSettings -> toSettings()
                 is ActivitiesTabAction.ToAddActivity -> toAddActivity()
                 is ActivitiesTabAction.ToLocationPicker -> toLocationPicker()
+                is ActivitiesTabAction.ToForecastDetails -> toForecastDetails()
             }
         },
     )
@@ -86,6 +91,7 @@ internal fun ActivitiesTab(
     period: ForecastPeriod,
     activities: PersistentList<ActivityForecastScore>,
     modifier: Modifier = Modifier,
+    units: Units = Units.Metric,
     canAdd: Boolean = true,
     forecast: Forecast? = null,
     location: Location? = null,
@@ -118,6 +124,19 @@ internal fun ActivitiesTab(
                     onLocationClick = dispatcher.rememberRelay(ActivitiesTabAction.ToLocationPicker),
                     modifier = Modifier.animateItem(),
                 )
+            }
+
+            if (block != null) {
+                item(key = "current_conditions") {
+                    CurrentConditionsCard(
+                        block = block,
+                        units = units,
+                        onClick = dispatcher.rememberRelay(ActivitiesTabAction.ToForecastDetails),
+                        modifier = Modifier
+                            .widthIn(max = 500.dp)
+                            .animateItem(),
+                    )
+                }
             }
         }
 

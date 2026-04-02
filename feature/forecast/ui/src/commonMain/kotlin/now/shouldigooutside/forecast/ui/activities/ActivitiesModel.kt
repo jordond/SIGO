@@ -17,6 +17,7 @@ import now.shouldigooutside.core.model.getOrNull
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.score.ActivityForecastScore
+import now.shouldigooutside.core.model.units.Units
 
 @Stable
 internal class ActivitiesModel(
@@ -32,6 +33,7 @@ internal class ActivitiesModel(
                 scores = getActivitiesScoreUseCase.scores().toState(),
                 forecast = forecastStateHolder.state.value.getOrNull(),
                 location = settingsRepo.settings.value.location,
+                units = settingsRepo.settings.value.units,
             ),
         ) {
             appStateHolder into { value -> copy(period = value.period) }
@@ -39,6 +41,7 @@ internal class ActivitiesModel(
                 copy(
                     selected = value.selectedActivity,
                     location = value.location,
+                    units = value.units,
                 )
             }
             getActivitiesScoreUseCase.scoresFlow() into { value -> copy(scores = value.toState()) }
@@ -63,6 +66,7 @@ internal class ActivitiesModel(
         val scores: PersistentList<ActivityForecastScore>,
         val forecast: Forecast? = null,
         val location: Location? = null,
+        val units: Units = Units.Metric,
     ) {
         val canAddMore: Boolean =
             scores.size < Activity.all.size - 1 ||

@@ -39,6 +39,7 @@ import now.shouldigooutside.core.ui.components.ButtonVariant
 import now.shouldigooutside.core.ui.components.DropdownMenu
 import now.shouldigooutside.core.ui.components.DropdownMenuItem
 import now.shouldigooutside.core.ui.components.HorizontalDivider
+import now.shouldigooutside.core.ui.components.MenuDefaults
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.ktx.get
@@ -58,7 +59,6 @@ internal fun Header(
     modifier: Modifier = Modifier,
     instant: Instant = remember(period) { Clock.System.now() },
 ) {
-    var showPeriodDropdown by remember { mutableStateOf(false) }
     var showActivityDropdown by remember { mutableStateOf(false) }
     val hasMultipleActivities = activities.size > 1
 
@@ -85,15 +85,17 @@ internal fun Header(
                         onClick = { showActivityDropdown = !showActivityDropdown },
                         shape = AppTheme.shapes.extraSmall,
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
-                        variant = ButtonVariant.PrimaryElevated,
+                        variant = ButtonVariant.TertiaryElevated,
                     ) {
                         Text(
                             text = selectedActivity.rememberDisplayName(),
                             style = AppTheme.typography.h2,
                         )
                     }
+
                     DropdownMenu(
                         expanded = showActivityDropdown,
+                        containerColor = AppTheme.colors.tertiary,
                         onDismissRequest = { showActivityDropdown = false },
                     ) {
                         val otherActivities = remember(activities, selectedActivity) {
@@ -111,6 +113,9 @@ internal fun Header(
                                     showActivityDropdown = false
                                     changeActivity(activity)
                                 },
+                                colors = MenuDefaults.itemColors(
+                                    textColor = AppTheme.colors.onTertiary,
+                                ),
                             )
                             if (index != otherActivities.lastIndex) {
                                 HorizontalDivider()
@@ -145,6 +150,7 @@ internal fun Header(
                     text = Res.string.forecast_title_in.get(),
                     style = AppTheme.typography.h2,
                 )
+
                 Button(
                     onClick = onLocationClick,
                     shape = AppTheme.shapes.extraSmall,

@@ -123,6 +123,7 @@
     <string name="unit_wind_mph">mph</string>
     <string name="unit_wind_kph">km/h</string>
     <string name="unit_wind_ms">m/s</string>
+    <string name="unit_wind_knots">kn</string>
     <string name="unit_temperature">Temperature</string>
     <string name="unit_temperature_short">Temp</string>
     <string name="unit_temperature_celsius">°C</string>
@@ -152,6 +153,7 @@
     <string name="activity_title_hiking">Hiking</string>
     <string name="activity_title_swimming">Swimming</string>
     <string name="activity_title_custom">Custom</string>
+    <string name="activities_current_conditions">Current Conditions</string>
     <string name="activities_empty_title">No activities yet</string>
     <string name="activities_empty_description">Add activities to see personalized forecasts for your favorite outdoor activities.</string>
     <string name="activities_empty_button">Add Activity</string>
@@ -220,6 +222,9 @@
     <string name="forecast_period_tomorrow">Tomorrow</string>
     <string name="forecast_period_no_data">There is no data available for this time period, please select a different period.</string>
     <string name="forecast_view_details">View Details</string>
+
+    <string name="weather_window_title">Best Window</string>
+    <string name="weather_window_description">Good conditions from %1$s – %2$s</string>
 
     <string name="score_yes">Yes</string>
     <string name="score_maybe">Maybe</string>

@@ -4,7 +4,9 @@ import androidx.compose.runtime.Immutable
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.Score
+import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.Units
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 /**
@@ -39,6 +41,40 @@ public fun Forecast.blockForPeriod(period: ForecastPeriod): ForecastBlock? =
         ForecastPeriod.NextHour2 -> today.hours.getOrNull(1)
         ForecastPeriod.NextHour3 -> today.hours.getOrNull(2)
         ForecastPeriod.Tomorrow -> days.getOrNull(0)?.block
+    }
+
+@Immutable
+public data class WeatherWindow(
+    val start: Instant,
+    val end: Instant,
+)
+
+/**
+ * Finds contiguous time windows where the hourly score is [ScoreResult.Yes].
+ *
+ * Pairs [today]'s hourly blocks with [score]'s hourly scores (truncated to the shorter list)
+ * and groups consecutive `Yes` results into [WeatherWindow]s.
+ *
+ * @param score The forecast score to evaluate, or `null` to return an empty list.
+ * @return An ordered list of good weather windows, or an empty list if [score] is `null`
+ *   or no hours scored `Yes`.
+ */
+public fun Forecast.goodWeatherWindows(score: ForecastScore?): List<WeatherWindow> =
+    buildList {
+        if (score == null) return emptyList()
+        val paired = today.hours.zip(score.hours)
+        var windowStart: Instant? = null
+        for ((hour, hourScore) in paired) {
+            if (hourScore.result == ScoreResult.Yes) {
+                if (windowStart == null) windowStart = hour.instant
+            } else if (windowStart != null) {
+                add(WeatherWindow(start = windowStart, end = hour.instant))
+                windowStart = null
+            }
+        }
+        if (windowStart != null) {
+            add(WeatherWindow(start = windowStart, end = paired.last().first.instant + 1.hours))
+        }
     }
 
 public fun Forecast.scoreForBlock(
