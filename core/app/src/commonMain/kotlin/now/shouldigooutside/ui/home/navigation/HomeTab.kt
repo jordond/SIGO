@@ -21,13 +21,13 @@ public enum class HomeTab(
         title = Res.string.home_tab_home,
         icon = AppIcons.Lucide.House,
     ),
-    Activities(
-        title = Res.string.home_tab_activities,
-        icon = AppIcons.Lucide.Grid2x2,
-    ),
     Forecast(
         title = Res.string.home_tab_forecast,
         icon = AppIcons.Lucide.CloudSun,
+    ),
+    Activities(
+        title = Res.string.home_tab_activities,
+        icon = AppIcons.Lucide.Grid2x2,
     ),
     Preferences(
         title = Res.string.home_tab_preferences,

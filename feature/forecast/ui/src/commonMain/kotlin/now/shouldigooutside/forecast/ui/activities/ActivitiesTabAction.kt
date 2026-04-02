@@ -19,4 +19,6 @@ internal sealed interface ActivitiesTabAction {
     data object ToAddActivity : ActivitiesTabAction
 
     data object ToLocationPicker : ActivitiesTabAction
+
+    data object ToForecastDetails : ActivitiesTabAction
 }
