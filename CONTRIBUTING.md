@@ -165,3 +165,4 @@ time** via the BuildKonfig Gradle plugin — values are baked into the binary, n
 - [`docs/build/ios.md`](docs/build/ios.md) — iOS build and Xcode setup
 - [`docs/api/server.md`](docs/api/server.md) — JVM API server operations
 - [`docs/api/cloudflare.md`](docs/api/cloudflare.md) — Cloudflare Worker deployment
+- [`docs/api/release.md`](docs/api/release.md) — API Worker release guide

@@ -31,6 +31,7 @@ Must be run from the project root.
 | `release:app [options]`         | Release both Android and iOS                |
 | `release:app:android [options]` | Build and release Android AAB               |
 | `release:app:ios [options]`     | Bump iOS version and prepare Xcode release  |
+| `release:api [options]`         | Release and deploy the API worker            |
 | `xcode`                         | Open the Xcode workspace                    |
 | `generate-image-sizes`          | Generate image resource sizes               |
 
@@ -331,6 +332,54 @@ platform separately if you need exact version control).
 ```
 
 **Script:** `scripts/release-app.sh`
+
+### `./sigo release:api`
+
+Bumps the API worker version, builds, commits, tags, pushes, and optionally deploys to Cloudflare.
+
+Must be on `main` or a `release/*` branch (unless `--no-branch-check` is passed).
+
+```
+./sigo release:api [options]
+```
+
+| Option                    | Description                                          |
+|---------------------------|------------------------------------------------------|
+| `-v`, `--version <ver>`   | Set exact version (e.g. `1.0.1`)                     |
+| `-s`, `--semver <level>`  | Bump version: `major`, `minor`, `patch`, `none`      |
+| `--no-tag`                | Skip creating git tag                                |
+| `--no-commit`             | Skip creating git commit                             |
+| `--no-push`               | Skip pushing to remote                               |
+| `--no-git`                | Skip both tagging and committing                     |
+| `--no-deploy`             | Skip deploying to Cloudflare                         |
+| `--no-clean`              | Skip clean before building                           |
+| `--no-branch-check`       | Skip branch verification                             |
+| `--deploy-env <env>`      | Deploy environment: `prod`, `staging`, `dev` (default: `prod`) |
+| `--deploy-all`            | Deploy to all environments (prod, staging, dev)      |
+
+Either `--version` or `--semver` is required.
+
+The script:
+
+1. Increments `api-server-version` in `gradle/libs.versions.toml`
+2. Builds the Kotlin/JS worker via `./sigo api build`
+3. Commits: `bump for api release <version> [skip-ci]`
+4. Creates tag `release/api/<version>`
+5. Pushes commit and tag
+6. Prompts for deploy confirmation, then deploys via `./sigo api:worker deploy`
+
+If the build fails, the version bump in `libs.versions.toml` is automatically reverted.
+
+```shell
+./sigo release:api --semver patch
+./sigo release:api --version 2.0.0 --no-deploy
+./sigo release:api --semver minor --deploy-all
+./sigo release:api --semver patch --deploy-env staging --no-push
+```
+
+See [API Release Guide](api/release.md) for the full workflow.
+
+**Script:** `scripts/release-api.sh`
 
 ---
 

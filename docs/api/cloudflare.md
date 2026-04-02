@@ -71,6 +71,16 @@ Deploy to staging or dev with `--env`:
 The worker will be available at `https://api.shouldigooutside.now` (or `dev`/
 `staging.api.shouldigooutside.now`).
 
+### Releasing
+
+For versioned releases (bump, tag, build, deploy), use the release command instead:
+
+```shell
+./sigo release:api --semver patch
+```
+
+See [API Release Guide](release.md) for the full workflow.
+
 ### Misc
 
 Wrangler is installed to `apps/api/worker/node_modules`. Run it via the wrapper:

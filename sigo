@@ -29,6 +29,7 @@ print_usage() {
     echo "    release:app [options]          Release both Android and iOS"
     echo "    release:app:android [options]  Build and release Android AAB"
     echo "    release:app:ios [options]      Bump iOS version and prepare for Xcode release"
+    echo "    release:api [options]          Release and deploy the API worker"
 }
 
 check_directory() {
@@ -175,6 +176,10 @@ release:app:ios)
 release:app)
     shift
     "$ROOT"/scripts/release-app.sh "$@"
+    ;;
+release:api)
+    shift
+    "$ROOT"/scripts/release-api.sh "$@"
     ;;
 *)
     echo "Unknown command: $1"

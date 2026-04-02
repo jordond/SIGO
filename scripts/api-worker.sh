@@ -27,6 +27,7 @@ print_usage() {
     echo "  deploy [options]        Deploy the worker to Cloudflare (default=prod)"
     echo "    --env <env>               Environment to deploy to (prod, staging, dev)"
     echo "    --no-clean                Skip cleaning before building"
+    echo "    --skip-build              Skip building (use existing build output)"
     echo "    --all                     Deploy to all environments (prod, staging, dev)"
     echo "  update-wrangler         Update Wrangler to the latest version"
     echo "  wrangler [command]      Wrapper around Cloudflare's Wrangler"
@@ -241,6 +242,7 @@ deploy() {
     local no_clean_flag="$1"
     local env="$2"
     local all_flag="$3"
+    local skip_build_flag="$4"
 
     if [[ "$all_flag" == "true" ]]; then
         local environments=("prod" "staging" "dev")
@@ -251,16 +253,14 @@ deploy() {
 
             check_secrets_for_env "$target_env"
 
-            # Build: clean only on first deploy if --no-clean is not specified
-            if [[ "$first_deploy" == "true" ]]; then
+            # Build: skip if already built, clean only on first deploy if --no-clean is not specified
+            if [[ "$skip_build_flag" != "true" && "$first_deploy" == "true" ]]; then
                 if [[ "$no_clean_flag" == "true" ]]; then
                     "$API_SCRIPT" build
                 else
                     "$API_SCRIPT" build --clean
                 fi
                 first_deploy=false
-            else
-                "$API_SCRIPT" build
             fi
 
             deploy_to_env "$target_env"
@@ -275,10 +275,12 @@ deploy() {
         # Single environment deployment
         check_secrets_for_env "$env"
 
-        if [[ "$no_clean_flag" == "true" ]]; then
-            "$API_SCRIPT" build
-        else
-            "$API_SCRIPT" build --clean
+        if [[ "$skip_build_flag" != "true" ]]; then
+            if [[ "$no_clean_flag" == "true" ]]; then
+                "$API_SCRIPT" build
+            else
+                "$API_SCRIPT" build --clean
+            fi
         fi
 
         deploy_to_env "$env"
@@ -300,6 +302,7 @@ COMMAND=""
 ENV="prod"
 NO_CLEAN_FLAG="false"
 ALL_FLAG="false"
+SKIP_BUILD_FLAG="false"
 WRANGLER_ARGS=()
 
 while [[ $# -gt 0 ]]; do
@@ -337,6 +340,10 @@ while [[ $# -gt 0 ]]; do
             case "$1" in
             --no-clean)
                 NO_CLEAN_FLAG="true"
+                shift
+                ;;
+            --skip-build)
+                SKIP_BUILD_FLAG="true"
                 shift
                 ;;
             --all)
@@ -437,7 +444,7 @@ deploy)
         echo "🌍 Deploying to '$ENV' environment"
     fi
 
-    deploy "$NO_CLEAN_FLAG" "$ENV" "$ALL_FLAG"
+    deploy "$NO_CLEAN_FLAG" "$ENV" "$ALL_FLAG" "$SKIP_BUILD_FLAG"
     ;;
 update-wrangler)
     echo "📦 Updating Wrangler..."
