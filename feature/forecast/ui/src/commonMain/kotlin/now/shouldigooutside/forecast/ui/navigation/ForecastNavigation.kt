@@ -45,6 +45,7 @@ public fun NavGraphBuilder.forecastTab(
         ForecastDetailsScreen(
             onBack = navController::popBackStack,
             toSettings = toSettings,
+            toLocationPicker = { navController.navigate(LocationSearchRoute) },
         )
     }
 

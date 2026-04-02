@@ -35,18 +35,36 @@ import now.shouldigooutside.core.ui.components.LoadingBox
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.ForecastPreviewData
+import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.core.ui.preview.PreviewData.location
+import now.shouldigooutside.forecast.ui.components.NoLocation
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun ForecastDetailsScreen(
     onBack: () -> Unit,
     toSettings: () -> Unit,
+    toLocationPicker: () -> Unit,
     model: ForecastDetailsModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
     Crossfade(state.forecast to state.loadingForecast) { (forecast, loading) ->
-        if (forecast == null || loading) {
+        if (forecast == null && !loading) {
+            Column(
+                modifier = Modifier
+                    .systemBarsPadding()
+                    .fillMaxSize(),
+            ) {
+                TabHeader(
+                    title = Res.string.forecast_details_title,
+                    toSettings = toSettings,
+                )
+                NoLocation(
+                    onSetLocation = toLocationPicker,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+        } else if (forecast == null) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -169,4 +187,25 @@ private fun ForecastDetailsScreenPreview(
 @Composable
 public fun ForecastDetailsTabPreview() {
     ForecastDetailsScreenPreview(Params().values.first())
+}
+
+@PreviewLightDark
+@Composable
+private fun NoLocationPreview() {
+    AppPreview {
+        Column(
+            modifier = Modifier
+                .systemBarsPadding()
+                .fillMaxSize(),
+        ) {
+            TabHeader(
+                title = Res.string.forecast_details_title,
+                toSettings = {},
+            )
+            NoLocation(
+                onSetLocation = {},
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+    }
 }

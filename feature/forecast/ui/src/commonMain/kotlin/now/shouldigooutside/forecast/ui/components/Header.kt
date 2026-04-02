@@ -27,6 +27,8 @@ import kotlinx.collections.immutable.toPersistentList
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.platform.Platform
+import now.shouldigooutside.core.platform.platform
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.forecast_title_in
 import now.shouldigooutside.core.resources.forecast_title_outside
@@ -131,6 +133,10 @@ internal fun Header(
                     style = AppTheme.typography.h1,
                     fontStyle = FontStyle.Italic,
                 )
+
+                if (platform == Platform.iOS) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
             }
 
             PeriodSelector(
@@ -150,6 +156,10 @@ internal fun Header(
                     text = Res.string.forecast_title_in.get(),
                     style = AppTheme.typography.h2,
                 )
+
+                if (platform == Platform.iOS) {
+                    Spacer(Modifier.width(4.dp))
+                }
 
                 Button(
                     onClick = onLocationClick,

@@ -212,6 +212,9 @@
     <string name="location_searching">Searching…</string>
     <string name="location_no_results">No results found</string>
 
+    <string name="forecast_no_location_title">No location set</string>
+    <string name="forecast_no_location_description">Set your location to get a weather forecast.</string>
+    <string name="forecast_set_location">Set Location</string>
     <string name="forecast_error_generic">Unable to get the current forecast for your location, please try again.</string>
     <string name="forecast_title_prefix">Should I go</string>
     <string name="forecast_title_outside">outside</string>

@@ -45,6 +45,7 @@ import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.Header
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
+import now.shouldigooutside.forecast.ui.components.NoLocation
 import now.shouldigooutside.forecast.ui.forecast.section.ForecastScoreContent
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
@@ -150,9 +151,29 @@ internal fun ForecastHomeScreen(
                             modifier = Modifier.padding(end = 2.dp),
                         )
                     }
+                } else {
+                    NoLocation(
+                        onSetLocation = dispatcher.rememberRelay(ForecastHomeAction.OpenLocationSheet),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun NoLocationPreview() {
+    AppPreview {
+        ForecastHomeScreen(
+            location = null,
+            data = null,
+            loading = false,
+            preferences = Preferences.default,
+            units = Units.Metric,
+            dispatcher = rememberDispatcher { },
+        )
     }
 }
 
