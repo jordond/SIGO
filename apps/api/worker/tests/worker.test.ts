@@ -1,9 +1,12 @@
 import { SELF } from "cloudflare:test";
 import { describe, it, expect } from "vitest";
 
+const ALLOWED_ORIGIN = "https://shouldigooutside.now";
+const VALID_CLIENT_ID = "550e8400-e29b-41d4-a716-446655440000";
+
 const VALID_HEADERS = {
-  Origin: "https://shouldigooutside.now",
-  "X-Client-ID": "550e8400-e29b-41d4-a716-446655440000",
+  Origin: ALLOWED_ORIGIN,
+  "X-Client-ID": VALID_CLIENT_ID,
 };
 
 describe("Worker", () => {
@@ -24,9 +27,7 @@ describe("Worker", () => {
         headers: VALID_HEADERS,
       });
 
-      expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-        "https://shouldigooutside.now",
-      );
+      expect(response.headers.get("Access-Control-Allow-Origin")).toBe(ALLOWED_ORIGIN);
     });
 
     it("includes cache-control header", async () => {
@@ -41,7 +42,7 @@ describe("Worker", () => {
   describe("Authentication", () => {
     it("returns 401 when X-Client-ID is missing", async () => {
       const response = await SELF.fetch("https://api.test/", {
-        headers: { Origin: "https://shouldigooutside.now" },
+        headers: { Origin: ALLOWED_ORIGIN },
       });
 
       expect(response.status).toBe(401);
@@ -64,7 +65,7 @@ describe("Worker", () => {
       const response = await SELF.fetch("https://api.test/", {
         headers: {
           Origin: "https://evil.example.com",
-          "X-Client-ID": "550e8400-e29b-41d4-a716-446655440000",
+          "X-Client-ID": VALID_CLIENT_ID,
         },
       });
 
@@ -74,13 +75,11 @@ describe("Worker", () => {
     it("handles OPTIONS preflight request", async () => {
       const response = await SELF.fetch("https://api.test/", {
         method: "OPTIONS",
-        headers: { Origin: "https://shouldigooutside.now" },
+        headers: { Origin: ALLOWED_ORIGIN },
       });
 
       expect(response.status).toBe(204);
-      expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-        "https://shouldigooutside.now",
-      );
+      expect(response.headers.get("Access-Control-Allow-Origin")).toBe(ALLOWED_ORIGIN);
       expect(response.headers.get("Access-Control-Allow-Methods")).toContain(
         "GET",
       );
@@ -90,7 +89,7 @@ describe("Worker", () => {
       const response = await SELF.fetch("https://api.test/", {
         headers: {
           Origin: "http://localhost:4321",
-          "X-Client-ID": "550e8400-e29b-41d4-a716-446655440000",
+          "X-Client-ID": VALID_CLIENT_ID,
         },
       });
 
