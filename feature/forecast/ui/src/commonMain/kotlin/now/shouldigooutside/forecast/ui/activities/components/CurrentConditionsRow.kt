@@ -101,7 +101,7 @@ internal fun CurrentConditionsCard(
 
                 VerticalDivider()
 
-                val isRain = remember(block.precipitation) { block.precipitation.isRain }
+                val isRain = block.precipitation.isRain
                 ConditionItem(
                     icon = if (isRain) AppIcons.Lucide.CloudRain else AppIcons.Lucide.Snowflake,
                     value = Res.string.percent.get(block.precipitation.probability),
@@ -117,7 +117,7 @@ internal fun CurrentConditionsCard(
                 if (includeAqi) {
                     VerticalDivider()
 
-                    val aqiLevel = AqiLevels.forValue(block.airQuality)
+                    val aqiLevel = remember(block.airQuality) { AqiLevels.forValue(block.airQuality) }
                     ConditionItem(
                         icon = AppIcons.Lucide.Waves,
                         value = aqiLevel.title.get(),
