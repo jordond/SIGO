@@ -26,8 +26,10 @@ jobs:
         include:
           - language: actions
             build-mode: none
-          - language: java-kotlin
-            build-mode: manual
+          # TODO: Re-enable once CodeQL supports Kotlin 2.3.20
+          # https://github.com/github/codeql/issues/21484
+          # - language: java-kotlin
+          #   build-mode: manual
           - language: javascript-typescript
             build-mode: none
 
