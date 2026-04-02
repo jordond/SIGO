@@ -29,6 +29,7 @@ import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
+import now.shouldigooutside.core.model.forecast.WeatherWindow
 import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
@@ -62,6 +63,7 @@ internal fun ForecastHomeScreen(
         data = state.forecast,
         currentBlock = state.currentBlock,
         currentPeriodScore = state.currentPeriodScore,
+        goodWindow = state.goodWindow,
         period = state.period,
         loading = state.loading,
         refreshing = state.refreshing,
@@ -89,6 +91,7 @@ internal fun ForecastHomeScreen(
     modifier: Modifier = Modifier,
     currentBlock: ForecastBlock? = null,
     currentPeriodScore: Score? = null,
+    goodWindow: WeatherWindow? = null,
     period: ForecastPeriod = ForecastPeriod.Today,
     loading: Boolean = false,
     refreshing: Boolean = false,
@@ -142,6 +145,7 @@ internal fun ForecastHomeScreen(
                             units = units,
                             block = currentBlock,
                             score = currentPeriodScore,
+                            goodWindow = goodWindow,
                             onScoreClick = dispatcher.rememberRelay(ForecastHomeAction.ToViewDetails),
                             modifier = Modifier.padding(end = 2.dp),
                         )
@@ -223,4 +227,23 @@ private fun SevereWeatherHighPreview() {
     ScreenPreview(
         PreviewData.Forecast.createForecastFrom(PreviewData.Forecast.severeWeather()),
     )
+}
+
+@Preview
+@Composable
+private fun GoodWeatherWindowPreview() {
+    val forecast = PreviewData.Forecast.createGoodWindowForecast()
+    val forecastScore = remember { PreviewData.Forecast.score(forecast) }
+    AppPreview {
+        ForecastHomeScreen(
+            location = null,
+            data = forecast,
+            currentBlock = forecast.blockForPeriod(ForecastPeriod.Today),
+            currentPeriodScore = forecastScore.scoreForPeriod(ForecastPeriod.Today),
+            goodWindow = remember { PreviewData.Forecast.goodWindow(forecast) },
+            preferences = Preferences.default,
+            units = Units.Metric,
+            dispatcher = rememberDispatcher { },
+        )
+    }
 }

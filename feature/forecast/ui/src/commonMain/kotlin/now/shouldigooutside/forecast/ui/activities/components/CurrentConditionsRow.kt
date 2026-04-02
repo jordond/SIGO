@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -117,7 +116,7 @@ internal fun CurrentConditionsCard(
                 if (includeAqi) {
                     VerticalDivider()
 
-                    val aqiLevel = remember(block.airQuality) { AqiLevels.forValue(block.airQuality) }
+                    val aqiLevel = AqiLevels.forValue(block.airQuality)
                     ConditionItem(
                         icon = AppIcons.Lucide.Waves,
                         value = aqiLevel.title.get(),

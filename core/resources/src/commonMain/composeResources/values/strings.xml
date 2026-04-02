@@ -223,6 +223,9 @@
     <string name="forecast_period_no_data">There is no data available for this time period, please select a different period.</string>
     <string name="forecast_view_details">View Details</string>
 
+    <string name="weather_window_title">Best Window</string>
+    <string name="weather_window_description">Good conditions from %1$s – %2$s</string>
+
     <string name="score_yes">Yes</string>
     <string name="score_maybe">Maybe</string>
     <string name="score_no">No</string>

@@ -14,7 +14,9 @@ import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
+import now.shouldigooutside.core.model.forecast.WeatherWindow
 import now.shouldigooutside.core.model.forecast.blockForPeriod
+import now.shouldigooutside.core.model.forecast.goodWeatherWindows
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.score.ActivityForecastScore
@@ -60,6 +62,7 @@ internal class ForecastHomeModel(
         val period: ForecastPeriod,
         val forecast: Forecast? = null,
         val activities: PersistentList<Activity> = persistentListOf(Activity.General),
+        val goodWindow: WeatherWindow? = null,
     ) {
         val hasMultipleActivities: Boolean get() = activities.size > 1
         val loading: Boolean = status is AsyncResult.Loading
@@ -70,6 +73,9 @@ internal class ForecastHomeModel(
         val currentPeriodScore: Score? = currentScore?.score?.scoreForPeriod(period)
     }
 }
+
+private fun State.withGoodWindow(): State =
+    copy(goodWindow = forecast?.goodWeatherWindows(currentScore?.score)?.firstOrNull())
 
 private fun state(
     appStateHolder: AppStateHolder,
@@ -98,15 +104,17 @@ private fun state(
                 selectedActivity = settings.selectedActivity,
                 units = settings.units,
                 activities = activities.toPersistentList(),
-            )
+            ).withGoodWindow()
         }
 
     forecastStateHolder.state.into { status ->
         when (status) {
-            is AsyncResult.Success -> copy(status = status, forecast = status.data)
+            is AsyncResult.Success -> copy(status = status, forecast = status.data).withGoodWindow()
             else -> copy(status = status)
         }
     }
 
-    getActivitiesScoreUseCase.scoresFlow() into { scores -> copy(activityScores = scores.toPersistentList()) }
+    getActivitiesScoreUseCase.scoresFlow() into { scores ->
+        copy(activityScores = scores.toPersistentList()).withGoodWindow()
+    }
 }
