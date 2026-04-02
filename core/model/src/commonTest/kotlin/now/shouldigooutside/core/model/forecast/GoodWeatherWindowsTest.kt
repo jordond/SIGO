@@ -58,7 +58,7 @@ class GoodWeatherWindowsTest {
 
         windows shouldHaveSize 1
         windows[0].start shouldBe hour(0)
-        windows[0].end shouldBe hour(3)
+        windows[0].end shouldBe hour(4)
     }
 
     @Test
@@ -106,7 +106,7 @@ class GoodWeatherWindowsTest {
 
         windows shouldHaveSize 1
         windows[0].start shouldBe hour(3)
-        windows[0].end shouldBe hour(4)
+        windows[0].end shouldBe hour(5)
     }
 
     @Test
@@ -136,7 +136,7 @@ class GoodWeatherWindowsTest {
         windows[1].start shouldBe hour(2)
         windows[1].end shouldBe hour(3)
         windows[2].start shouldBe hour(5)
-        windows[2].end shouldBe hour(6)
+        windows[2].end shouldBe hour(7)
     }
 
     @Test
@@ -150,7 +150,7 @@ class GoodWeatherWindowsTest {
         windows[0].start shouldBe hour(0)
         windows[0].end shouldBe hour(2)
         windows[1].start shouldBe hour(3)
-        windows[1].end shouldBe hour(4)
+        windows[1].end shouldBe hour(5)
     }
 
     @Test
@@ -174,7 +174,7 @@ class GoodWeatherWindowsTest {
 
         windows shouldHaveSize 1
         windows[0].start shouldBe hour(1)
-        windows[0].end shouldBe hour(2)
+        windows[0].end shouldBe hour(3)
     }
 
     @Test
@@ -186,7 +186,7 @@ class GoodWeatherWindowsTest {
 
         windows shouldHaveSize 1
         windows[0].start shouldBe hour(0)
-        windows[0].end shouldBe hour(0)
+        windows[0].end shouldBe hour(1)
     }
 
     @Test

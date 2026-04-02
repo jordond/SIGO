@@ -6,6 +6,7 @@ import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.Units
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 /**
@@ -72,7 +73,7 @@ public fun Forecast.goodWeatherWindows(score: ForecastScore?): List<WeatherWindo
             }
         }
         if (windowStart != null) {
-            add(WeatherWindow(start = windowStart, end = paired.last().first.instant))
+            add(WeatherWindow(start = windowStart, end = paired.last().first.instant + 1.hours))
         }
     }
 

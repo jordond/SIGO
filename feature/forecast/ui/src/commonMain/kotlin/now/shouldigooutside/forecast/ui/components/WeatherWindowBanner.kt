@@ -63,7 +63,10 @@ internal fun WeatherWindowBanner(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(48.dp)
-                    .background(AppTheme.colors.onPrimary.copy(alpha = 0.15f)),
+                    .background(
+                        color = AppTheme.colors.onPrimary.copy(alpha = 0.15f),
+                        shape = AppTheme.shapes.small,
+                    ),
             ) {
                 Icon(
                     AppIcons.Lucide.Sun,
