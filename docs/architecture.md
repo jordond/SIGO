@@ -97,6 +97,12 @@ graph TD
         onboarding --> resources
         onboarding --> ui
         onboarding --> ui-icons
+        whatsnew --> model
+        whatsnew --> domain
+        whatsnew --> foundation
+        whatsnew --> platform
+        whatsnew --> resources
+        whatsnew --> ui
         webview --> foundation
         webview --> platform
         webview --> model
@@ -111,6 +117,7 @@ graph TD
     app --> location
     app --> onboarding
     app --> settings
+    app --> whatsnew
     app --> webview
 
     subgraph apps
@@ -220,6 +227,9 @@ reverse geocoding, and autocomplete. Handles runtime location permissions on mob
 KStore. Uses the `AppVersion` toolchain plugin to inject the version string at compile time.
 
 **feature/onboarding** - First-launch onboarding flow.
+
+**feature/whatsnew** - What's New bottom sheet for returning users after app updates. Uses its own
+KStore-backed persistence, separate from settings. See [docs/whats-new.md](whats-new.md).
 
 **feature/webview** - In-app webview for displaying external content (e.g., privacy policy, terms).
 

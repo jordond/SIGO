@@ -373,7 +373,15 @@
     <string name="forecast_details_visibility_km">%1$d km</string>
 
     <string name="forecast_details_precipitation_type_default">Rain</string>
-
     <string name="forecast_details_percent">%1$d%</string>
 
+    <string name="settings_internal_show_whats_new">Show What's New</string>
+    <string name="settings_internal_show_whats_new_desc">Preview the What's New bottom sheet</string>
+    <string name="whats_new_title">What's New</string>
+    <string name="whats_new_got_it">Got it</string>
+
+    <string name="whats_new_activities">Activities</string>
+    <string name="whats_new_activities_desc">Set preferences for specific activities like running, cycling, or hiking to get personalized recommendations. If you like the old experience, Activities can be toggled off in the Settings</string>
+    <string name="whats_new_air_quality">Air Quality</string>
+    <string name="whats_new_air_quality_desc">Air quality is now included, so you can make better decisions about when to head outside. When the air is clean, it’s a great sign that conditions are better for getting out for a walk, spending time outdoors, or planning part of your day outside. If you’d rather keep things simpler, you can turn air quality off anytime in Settings.</string>
 </resources>

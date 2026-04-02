@@ -1,6 +1,8 @@
 package now.shouldigooutside.forecast.ui.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.aqi_not_available
@@ -71,6 +74,8 @@ private fun Preview(
     @PreviewParameter(Params::class) airQuality: AirQuality,
 ) {
     AppPreview {
-        AirQualityResultCard(airQuality = airQuality)
+        Box(modifier = Modifier.padding(16.dp)) {
+            AirQualityResultCard(airQuality = airQuality)
+        }
     }
 }

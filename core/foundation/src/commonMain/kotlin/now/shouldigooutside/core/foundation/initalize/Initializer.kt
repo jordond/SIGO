@@ -1,5 +1,6 @@
 package now.shouldigooutside.core.foundation.initalize
 
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import now.shouldigooutside.core.model.Initializable
 import kotlin.coroutines.coroutineContext
@@ -17,7 +18,7 @@ internal class DefaultInitializer(
         if (didInitialize) return
 
         for (item in items) {
-            coroutineContext.ensureActive()
+            currentCoroutineContext().ensureActive()
             item.initialize()
         }
         didInitialize = true

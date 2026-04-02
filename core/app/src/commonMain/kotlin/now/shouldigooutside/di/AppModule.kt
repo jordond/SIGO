@@ -1,6 +1,7 @@
 package now.shouldigooutside.di
 
 import now.shouldigooutside.core.api.client.ApiUrlProvider
+import now.shouldigooutside.core.domain.VersionProvider
 import now.shouldigooutside.core.domain.forecast.ApiTokenProvider
 import now.shouldigooutside.data.AppApiUrlProvider
 import now.shouldigooutside.data.forecast.ApiForecastSource
@@ -19,6 +20,7 @@ internal fun appModule() =
         includes(uiModule())
 
         factory<QueryCostLogger> { QueryCostLogger {} }
+        factoryOf(::AppVersionProvider) bind VersionProvider::class
         factoryOf(::AppTokenProvider) bind ApiTokenProvider::class
         factoryOf(::AppApiUrlProvider) bind ApiUrlProvider::class
         factoryOf(::ApiForecastSource) bind ForecastSource::class

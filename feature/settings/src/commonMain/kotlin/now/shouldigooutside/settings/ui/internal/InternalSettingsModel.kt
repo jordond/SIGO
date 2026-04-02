@@ -7,10 +7,12 @@ import now.shouldigooutside.core.domain.forecast.ClearForecastUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.model.settings.InternalSettings
 import now.shouldigooutside.core.model.settings.Settings
+import now.shouldigooutside.whatsnew.data.WhatsNewRepo
 
 internal class InternalSettingsModel(
     private val settingsRepo: SettingsRepo,
     private val clearForecastUseCase: ClearForecastUseCase,
+    private val whatsNewRepo: WhatsNewRepo,
 ) : UiStateViewModel<InternalSettingsModel.State, InternalSettingsModel.Event>(
         State(settingsRepo.settings.value),
     ) {
@@ -27,6 +29,12 @@ internal class InternalSettingsModel(
     fun clearCache() {
         viewModelScope.launch {
             clearForecastUseCase.clear()
+        }
+    }
+
+    fun showWhatsNew() {
+        viewModelScope.launch {
+            whatsNewRepo.reset()
         }
     }
 

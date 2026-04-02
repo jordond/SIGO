@@ -40,6 +40,7 @@ import now.shouldigooutside.ui.home.components.navigateHomeTab
 import now.shouldigooutside.ui.home.navigation.HomeScreenNavHost
 import now.shouldigooutside.ui.home.navigation.HomeTab
 import now.shouldigooutside.ui.home.navigation.routeClass
+import now.shouldigooutside.whatsnew.ui.WhatsNewSheet
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -73,6 +74,8 @@ internal fun HomeScreen(
             tabNavController = tabNavController,
         )
     }
+
+    WhatsNewSheet()
 }
 
 @Composable

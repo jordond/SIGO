@@ -33,6 +33,7 @@ kotlin {
             implementation(projects.feature.location)
             implementation(projects.feature.onboarding)
             implementation(projects.feature.settings)
+            implementation(projects.feature.whatsnew)
             implementation(projects.feature.webview)
 
             implementation(libs.compose.windowSizeClass)
