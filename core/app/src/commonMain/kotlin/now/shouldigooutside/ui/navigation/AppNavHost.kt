@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import now.shouldigooutside.core.platform.Platform
 import now.shouldigooutside.core.platform.platform
+import now.shouldigooutside.forecast.ui.navigation.forecastNavigation
 import now.shouldigooutside.onboarding.ui.navigation.OnboardingRoute
 import now.shouldigooutside.onboarding.ui.navigation.onboardingNavigation
 import now.shouldigooutside.settings.ui.navigation.settingsNavigation
@@ -41,6 +42,8 @@ internal fun AppNavHost(
         )
 
         homeScreen(navController)
+
+        forecastNavigation(navController)
 
         settingsNavigation(
             navController = navController,

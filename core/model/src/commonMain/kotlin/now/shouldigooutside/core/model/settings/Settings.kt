@@ -1,6 +1,7 @@
 package now.shouldigooutside.core.model.settings
 
 import androidx.compose.runtime.Immutable
+import dev.drewhamilton.poko.Poko
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentMap
@@ -12,6 +13,7 @@ import now.shouldigooutside.core.model.units.Units
 import kotlin.time.Clock
 import kotlin.time.Instant
 
+@Poko
 @Immutable
 public class Settings(
     public val firstLaunch: Instant = Clock.System.now(),
@@ -24,6 +26,7 @@ public class Settings(
     public val use24HourFormat: Boolean = false,
     public val includeAirQuality: Boolean = true,
     public val enableActivities: Boolean = true,
+    public val rememberActivity: Boolean = true,
     public val units: Units = Units.Metric,
     public val selectedActivity: Activity = Activity.General,
     public val activities: PersistentMap<Activity, Preferences> =
@@ -32,6 +35,9 @@ public class Settings(
     public val internalSettings: InternalSettings = InternalSettings(),
     public val loaded: Boolean = false,
 ) {
+    public val location: Location?
+        get() = if (useCustomLocation) customLocation else lastLocation
+
     @Deprecated("Use preferences for specific activity instead")
     public val preferences: Preferences
         get() = activities[Activity.General] ?: error("General preferences wasn't set!")
@@ -79,6 +85,7 @@ public class Settings(
         use24HourFormat: Boolean = this.use24HourFormat,
         includeAirQuality: Boolean = this.includeAirQuality,
         enableActivities: Boolean = this.enableActivities,
+        rememberActivity: Boolean = this.rememberActivity,
         units: Units = this.units,
         selectedActivity: Activity = this.selectedActivity,
         enableHaptics: Boolean = this.enableHaptics,
@@ -96,6 +103,7 @@ public class Settings(
             use24HourFormat = use24HourFormat,
             includeAirQuality = includeAirQuality,
             enableActivities = enableActivities,
+            rememberActivity = rememberActivity,
             units = units,
             selectedActivity = selectedActivity,
             enableHaptics = enableHaptics,
@@ -114,6 +122,7 @@ public class Settings(
         use24HourFormat: Boolean = this.use24HourFormat,
         includeAirQuality: Boolean = this.includeAirQuality,
         enableActivities: Boolean = this.enableActivities,
+        rememberActivity: Boolean = this.rememberActivity,
         units: Units = this.units,
         selectedActivity: Activity = this.selectedActivity,
         activities: PersistentMap<Activity, Preferences> = this.activities,
@@ -134,63 +143,10 @@ public class Settings(
             enableActivities = enableActivities,
             units = units,
             selectedActivity = selectedActivity,
+            rememberActivity = rememberActivity,
             activities = activities,
             enableHaptics = enableHaptics,
             internalSettings = internalSettings,
             loaded = loaded,
         )
-
-    override fun toString(): String =
-        "Settings(firstLaunch=$firstLaunch, themeMode=$themeMode, use24HourFormat=$use24HourFormat, " +
-            "hasCompletedOnboarding=$hasCompletedOnboarding, lastLocation=$lastLocation, " +
-            "lastLocationUpdate=$lastLocationUpdate, customLocation=$customLocation, " +
-            "useCustomLocation=$useCustomLocation, units=$units, selected=$selectedActivity, " +
-            "activities=$activities, enableHaptics=$enableHaptics, internalSettings=$internalSettings, " +
-            "includeAirQuality=$includeAirQuality, enableActivities=$enableActivities, loaded=$loaded)"
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as Settings
-
-        if (firstLaunch != other.firstLaunch) return false
-        if (themeMode != other.themeMode) return false
-        if (hasCompletedOnboarding != other.hasCompletedOnboarding) return false
-        if (lastLocation != other.lastLocation) return false
-        if (lastLocationUpdate != other.lastLocationUpdate) return false
-        if (customLocation != other.customLocation) return false
-        if (useCustomLocation != other.useCustomLocation) return false
-        if (use24HourFormat != other.use24HourFormat) return false
-        if (includeAirQuality != other.includeAirQuality) return false
-        if (enableActivities != other.enableActivities) return false
-        if (units != other.units) return false
-        if (selectedActivity != other.selectedActivity) return false
-        if (activities != other.activities) return false
-        if (enableHaptics != other.enableHaptics) return false
-        if (internalSettings != other.internalSettings) return false
-        if (loaded != other.loaded) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = firstLaunch.hashCode()
-        result = 31 * result + themeMode.hashCode()
-        result = 31 * result + hasCompletedOnboarding.hashCode()
-        result = 31 * result + (lastLocation?.hashCode() ?: 0)
-        result = 31 * result + (lastLocationUpdate?.hashCode() ?: 0)
-        result = 31 * result + (customLocation?.hashCode() ?: 0)
-        result = 31 * result + useCustomLocation.hashCode()
-        result = 31 * result + use24HourFormat.hashCode()
-        result = 31 * result + includeAirQuality.hashCode()
-        result = 31 * result + enableActivities.hashCode()
-        result = 31 * result + units.hashCode()
-        result = 31 * result + selectedActivity.hashCode()
-        result = 31 * result + activities.hashCode()
-        result = 31 * result + enableHaptics.hashCode()
-        result = 31 * result + internalSettings.hashCode()
-        result = 31 * result + loaded.hashCode()
-        return result
-    }
 }

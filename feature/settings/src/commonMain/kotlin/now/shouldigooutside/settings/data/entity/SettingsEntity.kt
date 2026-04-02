@@ -31,6 +31,8 @@ internal data class SettingsEntity(
     val includeAirQuality: Boolean = true,
     @SerialName("enable_activities")
     val enableActivities: Boolean = true,
+    @SerialName("remember_activity")
+    val rememberActivity: Boolean = true,
     @SerialName("units")
     val units: UnitsEntity? = null,
     @SerialName("selected_activity")

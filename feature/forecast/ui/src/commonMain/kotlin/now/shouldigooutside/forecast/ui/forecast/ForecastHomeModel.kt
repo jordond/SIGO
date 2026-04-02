@@ -1,234 +1,103 @@
 package now.shouldigooutside.forecast.ui.forecast
 
 import androidx.compose.runtime.Stable
-import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Logger
-import dev.stateholder.extensions.viewmodel.UiStateViewModel
+import dev.stateholder.extensions.viewmodel.StateViewModel
 import dev.stateholder.provider.composedStateProvider
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import now.shouldigooutside.core.domain.AppStateHolder
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
-import now.shouldigooutside.core.domain.location.LocationRepo
-import now.shouldigooutside.core.domain.location.SearchLocationUseCase
+import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
-import now.shouldigooutside.core.foundation.ktx.ensureExecutionTime
 import now.shouldigooutside.core.model.AsyncResult
-import now.shouldigooutside.core.model.ForecastData
-import now.shouldigooutside.core.model.ForecastPeriodData
-import now.shouldigooutside.core.model.errorOrNull
+import now.shouldigooutside.core.model.forecast.Forecast
+import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
+import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.location.Location
-import now.shouldigooutside.core.model.location.LocationPermissionStatus
-import now.shouldigooutside.core.model.location.LocationPermissionStatus.Denied
-import now.shouldigooutside.core.model.location.LocationPermissionStatus.Granted
-import now.shouldigooutside.core.model.location.LocationPermissionStatus.Unknown
-import now.shouldigooutside.core.model.location.LocationResult
-import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.score.ActivityForecastScore
+import now.shouldigooutside.core.model.score.Score
+import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.units.Units
-import now.shouldigooutside.core.resources.Res
-import now.shouldigooutside.core.resources.forecast_error_generic
-import now.shouldigooutside.core.resources.location_geolocation_error
-import now.shouldigooutside.core.resources.location_geolocation_not_allowed
-import now.shouldigooutside.core.resources.location_geolocation_not_found
-import now.shouldigooutside.core.resources.location_geolocation_not_supported
-import now.shouldigooutside.forecast.ui.forecast.ForecastHomeModel.Event
 import now.shouldigooutside.forecast.ui.forecast.ForecastHomeModel.State
-import org.jetbrains.compose.resources.StringResource
-import kotlin.coroutines.cancellation.CancellationException
-
-private const val MIN_SEARCH_INDICATOR_MS = 500L
 
 @Stable
 internal class ForecastHomeModel(
     private val settingsRepo: SettingsRepo,
-    locationRepo: LocationRepo,
     private val forecastStateHolder: ForecastStateHolder,
-    private val searchLocationUseCase: SearchLocationUseCase,
-) : UiStateViewModel<State, Event>(
+    private val appStateHolder: AppStateHolder,
+    getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
+) : StateViewModel<State>(
         state(
             settingsRepo = settingsRepo,
-            locationRepo = locationRepo,
             forecastStateHolder = forecastStateHolder,
+            getActivitiesScoreUseCase = getActivitiesScoreUseCase,
+            appStateHolder = appStateHolder,
         ),
     ) {
-    private val logger = Logger.withTag("ForecastHomeModel")
-
-    init {
-        forecastStateHolder.start(viewModelScope)
-
-        viewModelScope.launch {
-            state
-                .map { it.status.errorOrNull() }
-                .distinctUntilChanged()
-                .collect { error -> error.handleForecastError() }
-        }
+    fun update(period: ForecastPeriod) {
+        appStateHolder.update(period)
     }
 
-    fun updatePeriod(period: ForecastPeriod) {
-        updateState { it.copy(period = period) }
+    fun update(activity: Activity) {
+        settingsRepo.update { settings ->
+            settings.copy(selectedActivity = activity)
+        }
     }
 
     fun fetch() {
         forecastStateHolder.fetch()
     }
 
-    fun openLocationSheet() {
-        updateState { it.copy(showLocationSheet = true) }
-    }
-
-    fun closeLocationSheet() {
-        updateState {
-            it.copy(
-                showLocationSheet = false,
-                searchQuery = "",
-                searchResults = persistentListOf(),
-            )
-        }
-    }
-
-    private var searchJob: Job? = null
-
-    fun searchLocation(query: String) {
-        updateState { it.copy(searchQuery = query, searching = query.isNotBlank()) }
-        searchJob?.cancel()
-        if (query.isBlank()) {
-            updateState { it.copy(searchResults = persistentListOf(), searching = false) }
-            return
-        }
-        searchJob = viewModelScope.launch {
-            try {
-                val results = ensureExecutionTime(MIN_SEARCH_INDICATOR_MS) {
-                    searchLocationUseCase.search(query).toPersistentList()
-                }
-                updateState { it.copy(searchResults = results, searching = false) }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                logger.e(e) { "Location search failed" }
-                updateState { it.copy(searchResults = persistentListOf(), searching = false) }
-            }
-        }
-    }
-
-    fun selectLocation(location: Location) {
-        settingsRepo.update { settings ->
-            settings.copy(
-                customLocation = location,
-                useCustomLocation = true,
-            )
-        }
-        closeLocationSheet()
-        viewModelScope.launch {
-            settingsRepo.settings.first { it.useCustomLocation && it.customLocation == location }
-            forecastStateHolder.fetch()
-        }
-    }
-
-    fun useCurrentLocation() {
-        settingsRepo.update { settings ->
-            settings.copy(
-                customLocation = null,
-                useCustomLocation = false,
-            )
-        }
-        closeLocationSheet()
-        viewModelScope.launch {
-            settingsRepo.settings.first { !it.useCustomLocation }
-            forecastStateHolder.fetch()
-        }
-    }
-
-    override fun onCleared() {
-        forecastStateHolder.stop()
-        super.onCleared()
-    }
-
-    private fun Throwable?.handleForecastError() {
-        if (this == null) return
-        val message = when (this) {
-            is LocationResult.Failed -> when (this) {
-                is LocationResult.Error -> Res.string.location_geolocation_error
-                is LocationResult.NotAllowed -> Res.string.location_geolocation_not_allowed
-                is LocationResult.NotFound -> Res.string.location_geolocation_not_found
-                is LocationResult.NotSupported -> Res.string.location_geolocation_not_supported
-            }
-            else -> Res.string.forecast_error_generic
-        }
-
-        logger.e(this) { "Error getting forecast" }
-        emit(Event.Error(message))
-
-        if (this is LocationResult.NotAllowed) {
-            updateState { it.copy(permissionStatus = Denied(permanent)) }
-        }
-    }
-
     data class State(
         val location: Location?,
-        val preferences: Preferences,
+        val selectedActivity: Activity,
         val units: Units,
-        val status: AsyncResult<ForecastData>,
-        val period: ForecastPeriod = ForecastPeriod.Now,
-        val permissionStatus: LocationPermissionStatus = Unknown,
-        val forecast: ForecastData? = null,
-        val usingCurrentLocation: Boolean = true,
-        val showLocationSheet: Boolean = false,
-        val searchQuery: String = "",
-        val searchResults: PersistentList<Location> = persistentListOf(),
-        val searching: Boolean = false,
+        val status: AsyncResult<Forecast>,
+        val activityScores: PersistentList<ActivityForecastScore>,
+        val period: ForecastPeriod,
+        val forecast: Forecast? = null,
+        val activities: PersistentList<Activity> = persistentListOf(Activity.General),
     ) {
+        val hasMultipleActivities: Boolean get() = activities.size > 1
         val loading: Boolean = status is AsyncResult.Loading
         val refreshing: Boolean = loading && forecast != null
-        val data: ForecastPeriodData? = forecast?.forPeriod(period)
-    }
-
-    sealed interface Event {
-        data class Error(
-            val message: StringResource,
-        ) : Event
+        val currentScore: ActivityForecastScore? =
+            activityScores.firstOrNull { it.activity == selectedActivity }
+        val currentBlock: ForecastBlock? = forecast?.blockForPeriod(period)
+        val currentPeriodScore: Score? = currentScore?.score?.scoreForPeriod(period)
     }
 }
 
-private data class SettingsSnapshot(
-    val location: Location?,
-    val preferences: Preferences,
-    val units: Units,
-    val usingCurrentLocation: Boolean,
-)
-
 private fun state(
+    appStateHolder: AppStateHolder,
     settingsRepo: SettingsRepo,
-    locationRepo: LocationRepo,
     forecastStateHolder: ForecastStateHolder,
+    getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
 ) = composedStateProvider(
-    initialState = ForecastHomeModel.State(
-        location = settingsRepo.settings.value.run {
-            if (useCustomLocation) customLocation else lastLocation
-        },
-        usingCurrentLocation = !settingsRepo.settings.value.useCustomLocation,
-        preferences = settingsRepo.settings.value.preferences,
+    initialState = State(
+        location = settingsRepo.settings.value.location,
+        selectedActivity = settingsRepo.settings.value.selectedActivity,
         units = settingsRepo.settings.value.units,
-        permissionStatus = if (locationRepo.hasPermission()) Granted else Unknown,
         status = forecastStateHolder.state.value,
+        activityScores = getActivitiesScoreUseCase.scores().toPersistentList(),
+        period = appStateHolder.state.value.period,
     ),
 ) {
+    appStateHolder into { copy(period = it.period) }
+
     settingsRepo.settings
-        .map { settings ->
-            val location = if (settings.useCustomLocation) settings.customLocation else settings.lastLocation
-            SettingsSnapshot(location, settings.preferences, settings.units, !settings.useCustomLocation)
-        }.distinctUntilChanged()
-        .into { snapshot ->
+        .into { settings ->
+            val location = settings.location
+            val activities =
+                if (settings.enableActivities) settings.activities.keys else listOf(Activity.General)
             copy(
-                location = snapshot.location,
-                preferences = snapshot.preferences,
-                units = snapshot.units,
-                usingCurrentLocation = snapshot.usingCurrentLocation,
+                location = location,
+                selectedActivity = settings.selectedActivity,
+                units = settings.units,
+                activities = activities.toPersistentList(),
             )
         }
 
@@ -238,4 +107,6 @@ private fun state(
             else -> copy(status = status)
         }
     }
+
+    getActivitiesScoreUseCase.scoresFlow() into { scores -> copy(activityScores = scores.toPersistentList()) }
 }

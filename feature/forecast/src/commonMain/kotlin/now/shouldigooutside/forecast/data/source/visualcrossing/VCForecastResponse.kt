@@ -290,7 +290,7 @@ private fun parseSevereWeatherRisk(risk: Double?): SevereWeatherRisk {
 }
 
 /**
- * Normalizes EPA AQI (0-500) to a 1-10 scale.
+ * Normalizes EPA AQI (0-500) to a 1-11 scale.
  * Returns 0 when no data is available.
  *
  * Mapping:
@@ -298,8 +298,8 @@ private fun parseSevereWeatherRisk(risk: Double?): SevereWeatherRisk {
  * - EPA 51-100 (Moderate) → 3-4
  * - EPA 101-150 (Unhealthy for Sensitive Groups) → 5-6
  * - EPA 151-200 (Unhealthy) → 7-8
- * - EPA 201-300 (Very Unhealthy) → 9
- * - EPA 301+ (Hazardous) → 10
+ * - EPA 201-300 (Very Unhealthy) → 9-10
+ * - EPA 301+ (Hazardous) → 11
  */
 private fun normalizeAqi(raw: Double?): AirQuality {
     if (raw == null || raw <= 0.0) return AirQuality(0)
@@ -313,7 +313,8 @@ private fun normalizeAqi(raw: Double?): AirQuality {
         epa <= 150 -> AirQuality(6)
         epa <= 175 -> AirQuality(7)
         epa <= 200 -> AirQuality(8)
-        epa <= 300 -> AirQuality(9)
-        else -> AirQuality(10)
+        epa <= 250 -> AirQuality(9)
+        epa <= 300 -> AirQuality(10)
+        else -> AirQuality(11)
     }
 }

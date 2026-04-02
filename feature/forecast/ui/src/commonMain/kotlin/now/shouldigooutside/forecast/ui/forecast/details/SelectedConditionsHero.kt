@@ -24,6 +24,7 @@ import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.Text
+import now.shouldigooutside.core.ui.components.card.Card
 import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.components.card.ElevatedCard
 import now.shouldigooutside.core.ui.mappers.units.rememberUnit
@@ -47,11 +48,12 @@ internal fun SelectedConditionsHero(
     )
     val contentColor = brutalColors?.containerContent ?: AppTheme.colors.onSurface
 
-    ElevatedCard(
-        colors = CardDefaults.elevatedCardColors(
+    Card(
+        colors = CardDefaults.cardColors(
             containerColor = containerColor,
             contentColor = contentColor,
         ),
+        border = CardDefaults.cardBorder().copy(width = 4.dp),
         modifier = modifier.fillMaxWidth(),
     ) {
         Column(

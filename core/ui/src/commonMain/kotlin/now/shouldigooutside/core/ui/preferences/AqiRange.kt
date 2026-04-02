@@ -42,7 +42,7 @@ import now.shouldigooutside.core.ui.icons.lucide.Waves
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
 
-private val AqiSliderRange = 1f..10f
+private val AqiSliderRange = 1f..11f
 
 @Composable
 public fun AqiRange(
@@ -145,7 +145,7 @@ public fun AqiRange(
                 value = preferences.maxAqi.value.toFloat(),
                 onValueChange = { update(preferences.copy(maxAqi = AirQuality(it.toInt()))) },
                 valueRange = AqiSliderRange,
-                steps = 8,
+                steps = 9,
                 colors = SliderDefaults.colors(
                     activeTrackColor = sliderActive,
                     inactiveTrackColor = sliderInactive,

@@ -47,7 +47,7 @@ internal class AddActivityModel(
     fun save() {
         val activity = state.value.activity ?: return
         settingsRepo.update { settings ->
-            settings.add(activity, state.value.preferences)
+            settings.add(activity, state.value.preferences).copy(selectedActivity = activity)
         }
 
         emit(Event.Finished)

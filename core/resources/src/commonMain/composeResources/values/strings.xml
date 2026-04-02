@@ -62,6 +62,7 @@
     <string name="percent">%1$d%</string>
     <string name="delete">Delete</string>
     <string name="delete_activity_message">This will remove the activity and its preferences.</string>
+    <string name="when_text">When</string>
 
     <string name="url_title_website">Website</string>
     <string name="url_title_privacy">Privacy Policy</string>
@@ -151,8 +152,14 @@
     <string name="activity_title_hiking">Hiking</string>
     <string name="activity_title_swimming">Swimming</string>
     <string name="activity_title_custom">Custom</string>
+    <string name="activities_empty_title">No activities yet</string>
+    <string name="activities_empty_description">Add activities to see personalized forecasts for your favorite outdoor activities.</string>
+    <string name="activities_empty_button">Add Activity</string>
+    <string name="activities_add_button">Add another activity</string>
     <string name="activity_add_title">Add Activity</string>
     <string name="activity_add_preferences_description">Set your desired preferences for %1$s</string>
+    <string name="activity_custom_name_title">Name your activity</string>
+    <string name="activity_custom_name_placeholder">e.g. Gardening, Fishing…</string>
 
     <string name="onboarding_welcome_preamble">Welcome to</string>
     <string name="onboarding_welcome">"Should I go outside today?"</string>
@@ -161,6 +168,7 @@
     <string name="onboarding_units_subtext">Tell us which units you prefer</string>
     <string name="onboarding_preferences">Preferences</string>
     <string name="onboarding_preferences_subtext">Tell us your weather comfort levels</string>
+    <string name="onboarding_location_disclaimer">Your privacy matters. We only use a rough location to get your forecast. Your exact coordinates are never stored or shared.</string>
     <string name="onboarding_location">Location</string>
     <string name="onboarding_location_subtext">We use your approximate location to fetch the weather</string>
     <string name="onboarding_summary_title">We're all set</string>
@@ -203,7 +211,8 @@
     <string name="location_no_results">No results found</string>
 
     <string name="forecast_error_generic">Unable to get the current forecast for your location, please try again.</string>
-    <string name="forecast_title">Should I go outside</string>
+    <string name="forecast_title_prefix">Should I go</string>
+    <string name="forecast_title_outside">outside</string>
     <string name="forecast_title_in">in</string>
     <string name="forecast_period_now">Now</string>
     <string name="forecast_period_today">Today</string>
@@ -239,41 +248,38 @@
     <string name="score_precipitation_status_outside">Too much</string>
     <string name="score_precipitation_status_near">Some</string>
     <string name="score_severe_weather_outside">There is severe weather out there!</string>
-    <string name="score_severe_weather_near">Chance of severe weather</string>
+    <string name="score_severe_weather_near">Possible severe weather</string>
+    <string name="score_severe_weather_status_outside">Severe weather</string>
+    <string name="score_severe_weather_status_near">Possible</string>
 
-    <!-- Air Quality -->
     <string name="score_air_quality_inside">The air quality is great!</string>
     <string name="score_air_quality_outside">The air quality is poor</string>
     <string name="score_air_quality_near">The air quality is okay</string>
-    <string name="score_air_quality_status_inside">Ideal</string>
-    <string name="score_air_quality_status_outside">Poor</string>
-    <string name="score_air_quality_status_near">Fair</string>
     <string name="unit_air_quality">Air Quality</string>
     <string name="unit_air_quality_short">AQI</string>
     <string name="preferences_aqi_title">Air Quality</string>
-    <string name="preferences_aqi_description">Maximum acceptable AQI (1-10)</string>
-    <string name="preferences_aqi_max">Max AQI</string>
+    <string name="preferences_aqi_description">Maximum acceptable AQI (1-11+)</string>
     <string name="aqi_not_available">N/A</string>
-    <string name="aqi_value">%1$d/10</string>
+    <string name="aqi_value">%1$d/11+</string>
     <string name="aqi_info_title">Air Quality Index (AQI)</string>
-    <string name="aqi_info_description">The Air Quality Index measures how clean or polluted the air is, on a scale of 1 to 10. Higher numbers mean worse air quality.</string>
+    <string name="aqi_info_description">The Air Quality Index measures how clean or polluted the air is, on a scale of 1 to 11. Higher numbers mean worse air quality.</string>
     <string name="aqi_info_good_title">Good</string>
     <string name="aqi_info_good_range">1–2</string>
     <string name="aqi_info_good_description">Air quality is satisfactory, and air pollution poses little or no risk.</string>
     <string name="aqi_info_moderate_title">Moderate</string>
     <string name="aqi_info_moderate_range">3–4</string>
     <string name="aqi_info_moderate_description">Air quality is acceptable. However, there may be a risk for some people, particularly those who are unusually sensitive to air pollution.</string>
-    <string name="aqi_info_sensitive_title">Unhealthy for Sensitive Groups</string>
+    <string name="aqi_info_sensitive_title">Sensitive</string>
     <string name="aqi_info_sensitive_range">5–6</string>
     <string name="aqi_info_sensitive_description">Members of sensitive groups may experience health effects. The general public is less likely to be affected.</string>
     <string name="aqi_info_unhealthy_title">Unhealthy</string>
     <string name="aqi_info_unhealthy_range">7–8</string>
     <string name="aqi_info_unhealthy_description">Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects.</string>
-    <string name="aqi_info_very_unhealthy_title">Very Unhealthy</string>
-    <string name="aqi_info_very_unhealthy_range">9</string>
+    <string name="aqi_info_very_unhealthy_title">Very Poor</string>
+    <string name="aqi_info_very_unhealthy_range">9–10</string>
     <string name="aqi_info_very_unhealthy_description">Health alert: The risk of health effects is increased for everyone.</string>
     <string name="aqi_info_hazardous_title">Hazardous</string>
-    <string name="aqi_info_hazardous_range">10</string>
+    <string name="aqi_info_hazardous_range">11+</string>
     <string name="aqi_info_hazardous_description">Health warning of emergency conditions: everyone is more likely to be affected.</string>
 
     <string name="settings_theme_title">Theme</string>
@@ -291,6 +297,8 @@
     <string name="settings_experience_enable_activities_desc">Enable or disable the activities feature, which allows you to set different preferences for different activities.</string>
     <string name="settings_experience_disable_activities">Disable Activities</string>
     <string name="settings_experience_disable_activities_warning">Your score will be based on your general preferences only. Activities will be removed from the home screen, but your saved preferences for each activity will be kept if you re-enable later.</string>
+    <string name="settings_experience_remember_activity">Remember Activity</string>
+    <string name="settings_experience_remember_activity_desc">When enabled the app will remember the last selected activity and use it as the default when opening the app.</string>
     <string name="settings_experience_units">Units</string>
     <string name="settings_experience_units_desc">Update the units used in the app</string>
     <string name="settings_about_title">About</string>
@@ -340,6 +348,7 @@
     <string name="forecast_details_wind_direction_sw">SW</string>
     <string name="forecast_details_wind_direction_w">W</string>
     <string name="forecast_details_wind_direction_nw">NW</string>
+    <string name="forecast_details_air_quality">Air Quality</string>
 
     <string name="forecast_details_uv">%1$d</string>
     <string name="forecast_details_uv_low">Low</string>

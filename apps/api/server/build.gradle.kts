@@ -9,6 +9,14 @@ plugins {
     application
 }
 
+kotlin {
+    jvmToolchain(
+        libs.versions.jvmTargetServer
+            .get()
+            .toInt(),
+    )
+}
+
 val versionTask = tasks.named<AppVersion>("appVersion") {
     version = libs.versions.api.server.version
         .get()

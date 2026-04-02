@@ -1,7 +1,6 @@
 package now.shouldigooutside.forecast.ui.forecast.section
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,20 +28,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import now.shouldigooutside.core.model.ForecastPeriodData
+import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
+import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.score.ReasonValue
+import now.shouldigooutside.core.model.score.Score
+import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.ui.AppExperience
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
-import now.shouldigooutside.core.resources.aqi_not_available
-import now.shouldigooutside.core.resources.aqi_value
 import now.shouldigooutside.core.resources.percent
 import now.shouldigooutside.core.resources.score_severe_weather_near
 import now.shouldigooutside.core.resources.score_severe_weather_outside
-import now.shouldigooutside.core.resources.unit_air_quality
 import now.shouldigooutside.core.resources.unit_precipitation_rain
 import now.shouldigooutside.core.resources.unit_precipitation_snow
 import now.shouldigooutside.core.resources.unit_temperature_short
@@ -55,7 +54,6 @@ import now.shouldigooutside.core.ui.components.card.Card
 import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.components.card.ElevatedCard
 import now.shouldigooutside.core.ui.icons.AppIcons
-import now.shouldigooutside.core.ui.icons.lucide.Info
 import now.shouldigooutside.core.ui.icons.lucide.OctagonAlert
 import now.shouldigooutside.core.ui.icons.lucide.TriangleAlert
 import now.shouldigooutside.core.ui.ktx.get
@@ -63,15 +61,13 @@ import now.shouldigooutside.core.ui.ktx.rememberTimeAgo
 import now.shouldigooutside.core.ui.mappers.units.colors
 import now.shouldigooutside.core.ui.mappers.units.rememberTitle
 import now.shouldigooutside.core.ui.mappers.units.rememberUnit
-import now.shouldigooutside.core.ui.preferences.AqiInfoSheet
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
+import now.shouldigooutside.forecast.ui.components.AirQualityResultCard
 import now.shouldigooutside.forecast.ui.components.PreferenceResultCard
-import now.shouldigooutside.forecast.ui.components.mappers.airQualityStatus
-import now.shouldigooutside.forecast.ui.components.mappers.aqiColors
 import now.shouldigooutside.forecast.ui.components.mappers.colors
 import now.shouldigooutside.forecast.ui.components.mappers.precipitationStatus
-import now.shouldigooutside.forecast.ui.components.mappers.rememberScoreText
+import now.shouldigooutside.forecast.ui.components.mappers.rememberText
 import now.shouldigooutside.forecast.ui.components.mappers.temperatureStatus
 import now.shouldigooutside.forecast.ui.components.mappers.windStatus
 import kotlin.math.roundToInt
@@ -86,12 +82,12 @@ internal fun ForecastScoreContent(
     updatedAt: Instant,
     preferences: Preferences,
     units: Units,
-    periodData: ForecastPeriodData,
+    block: ForecastBlock,
+    score: Score,
     modifier: Modifier = Modifier,
     now: Instant = Clock.System.now(),
     onScoreClick: () -> Unit = {},
 ) {
-    var showAqiInfo by remember { mutableStateOf(false) }
     val elevation = CardDefaults.cardElevation()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -100,7 +96,7 @@ internal fun ForecastScoreContent(
             .padding(horizontal = elevation.default)
             .padding(bottom = elevation.default),
     ) {
-        val (containerColor, contentColor) = periodData.colors()
+        val (containerColor, contentColor) = score.result.colors()
         ElevatedCard(
             onClick = onScoreClick,
             elevation = elevation,
@@ -118,7 +114,7 @@ internal fun ForecastScoreContent(
                     .padding(32.dp)
                     .fillMaxSize(),
             ) {
-                val text = periodData.rememberScoreText()
+                val text = score.result.rememberText()
                 Text(
                     text = text,
                     maxLines = 1,
@@ -133,8 +129,8 @@ internal fun ForecastScoreContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.weight(1f),
         ) {
-            val text = remember(periodData.score.reasons.severeWeather) {
-                when (periodData.score.reasons.severeWeather) {
+            val text = remember(score.reasons.severeWeather) {
+                when (score.reasons.severeWeather) {
                     ReasonValue.Inside -> null
                     ReasonValue.Near -> Res.string.score_severe_weather_near
                     ReasonValue.Outside -> Res.string.score_severe_weather_outside
@@ -144,7 +140,7 @@ internal fun ForecastScoreContent(
                 visible = text != null,
                 modifier = Modifier.padding(top = AppTheme.spacing.small),
             ) {
-                val colors = when (periodData.score.reasons.severeWeather) {
+                val colors = when (score.reasons.severeWeather) {
                     ReasonValue.Inside -> CardDefaults.cardColors()
                     ReasonValue.Near -> CardDefaults.primaryColors
                     ReasonValue.Outside -> CardDefaults.errorColors
@@ -163,8 +159,8 @@ internal fun ForecastScoreContent(
                                 horizontal = AppTheme.spacing.standard,
                             ),
                     ) {
-                        val icon = remember(periodData.score.reasons.severeWeather) {
-                            if (periodData.score.reasons.severeWeather == ReasonValue.Outside) {
+                        val icon = remember(score.reasons.severeWeather) {
+                            if (score.reasons.severeWeather == ReasonValue.Outside) {
                                 AppIcons.Lucide.OctagonAlert
                             } else {
                                 AppIcons.Lucide.TriangleAlert
@@ -183,14 +179,14 @@ internal fun ForecastScoreContent(
             val temperatureCard: @Composable RowScope.() -> Unit = {
                 PreferenceResultCard(
                     title = Res.string.unit_temperature_short.get(),
-                    text = periodData.score.reasons.temperatureStatus(
-                        value = periodData.forecast.temperature.value,
+                    text = score.reasons.temperatureStatus(
+                        value = block.temperature.value,
                         max = preferences.maxTemperature.toDouble(),
                     ),
                     colors = units.temperature.colors(),
                     value = {
                         val unit = units.temperature.rememberUnit()
-                        "${periodData.forecast.temperature.value.roundToInt()}$unit"
+                        "${block.temperature.value.roundToInt()}$unit"
                     },
                     modifier = Modifier.weight(1f),
                 )
@@ -199,19 +195,19 @@ internal fun ForecastScoreContent(
             val windCard: @Composable RowScope.() -> Unit = {
                 PreferenceResultCard(
                     title = units.windSpeed.rememberTitle(),
-                    text = periodData.score.reasons.windStatus(),
+                    text = score.reasons.windStatus(),
                     colors = units.windSpeed.colors(),
                     value = {
                         val unit = units.windSpeed.rememberUnit()
-                        "${periodData.forecast.wind.speed.roundToInt()} $unit"
+                        "${block.wind.speed.roundToInt()} $unit"
                     },
                     modifier = Modifier.weight(1f),
                 )
             }
 
             val precipitationCard: @Composable RowScope.() -> Unit = {
-                val precipitationTitle = remember(periodData.forecast.precipitation) {
-                    if (periodData.forecast.precipitation.isRain) {
+                val precipitationTitle = remember(block.precipitation) {
+                    if (block.precipitation.isRain) {
                         Res.string.unit_precipitation_rain
                     } else {
                         Res.string.unit_precipitation_snow
@@ -220,10 +216,10 @@ internal fun ForecastScoreContent(
 
                 PreferenceResultCard(
                     title = precipitationTitle,
-                    text = periodData.score.reasons.precipitationStatus(),
+                    text = score.reasons.precipitationStatus(),
                     colors = units.precipitation.colors(),
                     value = {
-                        Res.string.percent.get(periodData.forecast.precipitation.probability)
+                        Res.string.percent.get(block.precipitation.probability)
                     },
                     modifier = Modifier.weight(1f),
                 )
@@ -248,21 +244,9 @@ internal fun ForecastScoreContent(
                     ) {
                         precipitationCard()
 
-                        PreferenceResultCard(
-                            title = Res.string.unit_air_quality.get(),
-                            text = periodData.score.reasons.airQualityStatus(),
-                            colors = aqiColors(periodData.forecast.airQuality),
-                            icon = AppIcons.Lucide.Info,
-                            value = {
-                                if (!periodData.forecast.airQuality.hasData) {
-                                    Res.string.aqi_not_available.get()
-                                } else {
-                                    Res.string.aqi_value.get(periodData.forecast.airQuality.value)
-                                }
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .clickable { showAqiInfo = true },
+                        AirQualityResultCard(
+                            airQuality = block.airQuality,
+                            modifier = Modifier.weight(1f),
                         )
                     }
                 }
@@ -280,11 +264,6 @@ internal fun ForecastScoreContent(
             Spacer(modifier = Modifier.height(AppTheme.spacing.small))
 
             UpdatedAtText(instant = updatedAt)
-
-            AqiInfoSheet(
-                isVisible = showAqiInfo,
-                onDismiss = { showAqiInfo = false },
-            )
         }
     }
 }
@@ -322,7 +301,7 @@ private fun SevereWeatherPreview() {
             level = SevereWeatherRisk.Low,
         ),
     )
-    val data = PreviewData.Forecast.forecastData(forecast)
+    val score = PreviewData.Forecast.score(forecast)
     AppPreview {
         Box(
             modifier = Modifier
@@ -333,7 +312,8 @@ private fun SevereWeatherPreview() {
                 updatedAt = Clock.System.now().minus(1.minutes),
                 preferences = Preferences.default,
                 units = Units.Metric,
-                periodData = data.forPeriod(ForecastPeriod.Today)!!,
+                block = forecast.blockForPeriod(ForecastPeriod.Today)!!,
+                score = score.scoreForPeriod(ForecastPeriod.Today)!!,
             )
         }
     }
@@ -342,7 +322,8 @@ private fun SevereWeatherPreview() {
 @Preview
 @Composable
 private fun ForecastScoreContentPreview() {
-    val data = PreviewData.Forecast.forecastData(PreviewData.Forecast.createWindyForecast())
+    val forecast = PreviewData.Forecast.createWindyForecast()
+    val score = PreviewData.Forecast.score(forecast)
     AppPreview(experience = AppExperience.default.copy(includeAirQuality = false)) {
         Box(
             modifier = Modifier
@@ -353,7 +334,8 @@ private fun ForecastScoreContentPreview() {
                 updatedAt = Clock.System.now().minus(1.minutes),
                 preferences = Preferences.default,
                 units = Units.Metric,
-                periodData = data.forPeriod(ForecastPeriod.Today)!!,
+                block = forecast.blockForPeriod(ForecastPeriod.Today)!!,
+                score = score.scoreForPeriod(ForecastPeriod.Today)!!,
             )
         }
     }

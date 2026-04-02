@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -64,12 +65,12 @@ public fun ModalBottomSheet(
 internal object BottomSheetDefaults {
     val parent = now.shouldigooutside.core.ui.components.bottomsheet.BottomSheetDefaults
 
-    private val DragHandleHeight = 6.dp
-    private val DragHandleWidth = 36.dp
-    private val DragHandleShape = RoundedCornerShape(50)
+    private val DragHandleHeight = 8.dp
+    private val DragHandleWidth = 42.dp
+    private val DragHandleShape = RoundedCornerShape(10)
     private val DragHandlePadding = 12.dp
     val ModalBottomSheetShape: CornerBasedShape
-        @Composable get() = AppTheme.shapes.large
+        @Composable get() = AppTheme.shapes.large.copy(bottomStart = CornerSize(0), bottomEnd = CornerSize(0))
 
     @Composable
     fun DragHandle() {

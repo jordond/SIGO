@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.LocalContainerColor
+import now.shouldigooutside.core.ui.LocalThemeIsDark
 import now.shouldigooutside.core.ui.LocalTypography
 import now.shouldigooutside.core.ui.components.BrutalContainer
 import now.shouldigooutside.core.ui.components.BrutalDefaults
@@ -96,7 +97,7 @@ public fun ElevatedCard(
     shape: Shape = CardDefaults.ElevatedShape,
     colors: CardColors = CardDefaults.elevatedCardColors(),
     elevation: CardElevation = CardDefaults.cardElevation(),
-    border: BorderStroke? = CardDefaults.cardBorder(),
+    border: BorderStroke? = CardDefaults.elevatedCardBorder(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val elevationValue by elevation.shadowElevation(enabled = true, interactionSource = null)
@@ -124,7 +125,7 @@ public fun ElevatedCard(
     shape: Shape = CardDefaults.Shape,
     colors: CardColors = CardDefaults.elevatedCardColors(),
     elevation: CardElevation = CardDefaults.cardElevation(),
-    border: BorderStroke = CardDefaults.cardBorder(),
+    border: BorderStroke = CardDefaults.elevatedCardBorder(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -151,7 +152,8 @@ public object CardDefaults {
     public val Shape: CornerBasedShape @Composable get() = AppTheme.shapes.medium
     public val ElevatedShape: CornerBasedShape @Composable get() = Shape
     public val BorderColor: Color @Composable get() = BrutalDefaults.Color
-    private val BorderWidth = BrutalDefaults.BorderWidth
+    private val BorderWidth = BrutalDefaults.BorderWidth + 1.dp
+    private val ElevatedBorderWidth = BrutalDefaults.BorderWidth
 
     public val primaryColors: CardColors
         @Composable get() = cardColors(
@@ -181,6 +183,12 @@ public object CardDefaults {
         @Composable get() = cardColors(
             containerColor = AppTheme.colors.error,
             contentColor = AppTheme.colors.onError,
+        )
+
+    public val disclaimerColors: CardColors
+        @Composable get() = cardColors(
+            containerColor = Color(0xFFECE1D5),
+            contentColor = Color.Black,
         )
 
     @Composable
@@ -242,6 +250,10 @@ public object CardDefaults {
     @Composable
     public fun cardBorder(color: Color = BorderColor): BorderStroke =
         remember(color) { BorderStroke(BorderWidth, color) }
+
+    @Composable
+    public fun elevatedCardBorder(color: Color = BorderColor): BorderStroke =
+        cardBorder(color).copy(width = ElevatedBorderWidth)
 }
 
 @ConsistentCopyVisibility

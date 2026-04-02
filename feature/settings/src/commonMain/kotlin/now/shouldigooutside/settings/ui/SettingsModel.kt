@@ -55,6 +55,10 @@ internal class SettingsModel(
         }
     }
 
+    fun toggleRememberActivity() {
+        settingsRepo.update { it.copy(rememberActivity = !it.rememberActivity) }
+    }
+
     fun clickAbout() {
         updateState { it.copy(aboutClicks = it.aboutClicks + 1) }
         Logger.d { "About tapped: ${state.value.aboutClicks} times." }

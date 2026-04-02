@@ -57,6 +57,9 @@ import now.shouldigooutside.core.ui.components.NavigationBarDefaults.NavigationB
 import now.shouldigooutside.core.ui.components.NavigationBarItemDefaults.ItemAnimationDurationMillis
 import now.shouldigooutside.core.ui.components.NavigationBarItemDefaults.NavigationBarItemHorizontalPadding
 import now.shouldigooutside.core.ui.components.NavigationBarItemDefaults.NavigationBarItemVerticalPadding
+import now.shouldigooutside.core.ui.components.bottombar.BottomBarDefaults.BottomBarHeight
+import now.shouldigooutside.core.ui.components.bottombar.BottomBarLayout
+import now.shouldigooutside.core.ui.components.bottombar.BottomBarScrollBehavior
 import now.shouldigooutside.core.ui.contentColorFor
 import now.shouldigooutside.core.ui.foundation.ProvideTextStyle
 import now.shouldigooutside.core.ui.foundation.systemBarsForVisualComponents
@@ -75,24 +78,29 @@ public fun NavigationBar(
     containerColor: Color = NavigationBarDefaults.containerColor,
     contentColor: Color = contentColorFor(containerColor),
     windowInsets: WindowInsets = NavigationBarDefaults.windowInsets,
+    scrollBehavior: BottomBarScrollBehavior? = null,
     content: @Composable RowScope.() -> Unit,
 ) {
-    Surface(
-        color = containerColor,
-        contentColor = contentColor,
+    BottomBarLayout(
         modifier = modifier,
+        scrollBehavior = scrollBehavior,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .windowInsetsPadding(windowInsets)
-                .height(NavigationBarHeight),
+        Surface(
+            color = containerColor,
+            contentColor = contentColor,
         ) {
-            HorizontalDivider(thickness = 6.dp)
-            Row(
-                modifier = Modifier.selectableGroup(),
-                content = content,
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .windowInsetsPadding(windowInsets)
+                    .height(NavigationBarHeight),
+            ) {
+                HorizontalDivider(thickness = 6.dp)
+                Row(
+                    modifier = Modifier.selectableGroup(),
+                    content = content,
+                )
+            }
         }
     }
 }
@@ -293,7 +301,7 @@ private fun MeasureScope.placeLabelAndIcon(
 }
 
 internal object NavigationBarDefaults {
-    internal val NavigationBarHeight: Dp = 95.0.dp
+    internal val NavigationBarHeight: Dp = BottomBarHeight
     val containerColor: Color @Composable get() = AppTheme.colors.surface
 
     val windowInsets: WindowInsets

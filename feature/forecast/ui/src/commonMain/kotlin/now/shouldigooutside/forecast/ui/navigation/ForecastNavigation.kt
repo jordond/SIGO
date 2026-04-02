@@ -8,24 +8,19 @@ import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.ui.navigation.Route
+import now.shouldigooutside.core.ui.navigation.bottomsheet.bottomSheet
 import now.shouldigooutside.core.ui.navigation.popUpScreen
 import now.shouldigooutside.forecast.ui.activities.ActivitiesTab
 import now.shouldigooutside.forecast.ui.activities.add.AddActivityScreen
 import now.shouldigooutside.forecast.ui.forecast.ForecastHomeScreen
 import now.shouldigooutside.forecast.ui.forecast.details.ForecastDetailsScreen
+import now.shouldigooutside.forecast.ui.location.LocationSearchBottomSheet
 
 @Serializable
 public data object ForecastHomeRoute : Route
 
 @Serializable
-public class ForecastDetailsRoute private constructor(
-    private val periodString: String = ForecastPeriod.Now.name,
-) : Route {
-    public constructor(period: ForecastPeriod = ForecastPeriod.Now) : this(periodString = period.name)
-
-    public val period: ForecastPeriod
-        get() = ForecastPeriod.valueOf(periodString)
-}
+public data object ForecastDetailsRoute : Route
 
 @Serializable
 public data object ActivitiesRoute : Route
@@ -33,14 +28,19 @@ public data object ActivitiesRoute : Route
 @Serializable
 public data object AddActivityRoute : Route
 
-public fun NavGraphBuilder.forecastNavigation(
+@Serializable
+public data object LocationSearchRoute : Route
+
+public fun NavGraphBuilder.forecastTab(
     navController: NavHostController,
     tabNavController: NavHostController,
     toSettings: () -> Unit,
+    toHome: () -> Unit,
 ) {
     composable<ForecastHomeRoute> {
         ForecastHomeScreen(
-            toViewDetails = { tabNavController.navigate(ForecastDetailsRoute(it)) },
+            toViewDetails = { tabNavController.navigate(ForecastDetailsRoute) },
+            toLocationPicker = { navController.navigate(LocationSearchRoute) },
         )
     }
 
@@ -54,12 +54,21 @@ public fun NavGraphBuilder.forecastNavigation(
     composable<ActivitiesRoute> {
         ActivitiesTab(
             toSettings = toSettings,
+            toAddActivity = { navController.navigate(AddActivityRoute) },
+            toHome = toHome,
+            toLocationPicker = { navController.navigate(LocationSearchRoute) },
         )
     }
+}
 
+public fun NavGraphBuilder.forecastNavigation(navController: NavHostController) {
     popUpScreen<AddActivityRoute> {
         AddActivityScreen(
             onBack = navController::popBackStack,
         )
+    }
+
+    bottomSheet<LocationSearchRoute> {
+        LocationSearchBottomSheet(onBack = navController::popBackStack)
     }
 }
