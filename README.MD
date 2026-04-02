@@ -23,7 +23,8 @@
   <img src="screenshots/02.png" width="150" alt="No - stay inside" />
   <img src="screenshots/03.png" width="150" alt="Maybe - you decide" />
   <img src="screenshots/04.png" width="150" alt="Forecast details" />
-  <img src="screenshots/05.png" width="150" alt="Preferences" />
+  <img src="screenshots/06.png" width="150" alt="Preferences" />
+  <img src="screenshots/05.png" width="150" alt="Activities" />
 </p>
 
 ## About
