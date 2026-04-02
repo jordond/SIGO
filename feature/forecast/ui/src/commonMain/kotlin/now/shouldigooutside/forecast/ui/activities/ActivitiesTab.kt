@@ -93,7 +93,6 @@ internal fun ActivitiesTab(
     listState: LazyListState = rememberLazyListState(),
 ) {
     val block = remember(forecast, period) { forecast?.blockForPeriod(period) }
-    val units = forecast?.units
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.standard),
@@ -136,7 +135,6 @@ internal fun ActivitiesTab(
                     data = score,
                     onClick = { dispatcher.dispatch(ActivitiesTabAction.ActivityClick(score.activity)) },
                     block = block,
-                    units = units,
                     modifier = Modifier
                         .widthIn(max = 500.dp)
                         .animateItem(),

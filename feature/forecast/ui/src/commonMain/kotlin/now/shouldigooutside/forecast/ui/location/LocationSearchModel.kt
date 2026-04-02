@@ -11,12 +11,14 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.location.SearchLocationUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.foundation.ktx.checkCancellation
 import now.shouldigooutside.core.foundation.ktx.ensureExecutionTime
 import now.shouldigooutside.core.model.location.Location
+import kotlin.time.Duration.Companion.seconds
 
 private const val MIN_SEARCH_INDICATOR_MS = 500L
 
@@ -62,7 +64,9 @@ internal class LocationSearchModel(
             )
         }
         viewModelScope.launch {
-            settingsRepo.settings.first { it.useCustomLocation && it.customLocation == location }
+            withTimeoutOrNull(5.seconds) {
+                settingsRepo.settings.first { it.useCustomLocation && it.customLocation == location }
+            }
             forecastStateHolder.fetch()
         }
     }
@@ -75,7 +79,9 @@ internal class LocationSearchModel(
             )
         }
         viewModelScope.launch {
-            settingsRepo.settings.first { !it.useCustomLocation }
+            withTimeoutOrNull(5.seconds) {
+                settingsRepo.settings.first { !it.useCustomLocation }
+            }
             forecastStateHolder.fetch()
         }
     }

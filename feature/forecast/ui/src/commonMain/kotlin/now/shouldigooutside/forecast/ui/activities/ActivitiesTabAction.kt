@@ -14,9 +14,9 @@ internal sealed interface ActivitiesTabAction {
         val activity: Activity,
     ) : ActivitiesTabAction
 
-    object ToSettings : ActivitiesTabAction
+    data object ToSettings : ActivitiesTabAction
 
-    object ToAddActivity : ActivitiesTabAction
+    data object ToAddActivity : ActivitiesTabAction
 
-    object ToLocationPicker : ActivitiesTabAction
+    data object ToLocationPicker : ActivitiesTabAction
 }

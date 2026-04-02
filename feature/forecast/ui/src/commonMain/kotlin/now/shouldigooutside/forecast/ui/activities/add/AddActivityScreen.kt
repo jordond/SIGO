@@ -253,7 +253,10 @@ internal fun AddActivityScreen(
             },
             title = Res.string.activity_custom_name_title.get(),
             confirmButtonText = Res.string.okay.get(),
-            confirmEnabled = customName.isNotBlank() && customName.length <= Activity.Custom.MAX_NAME_LENGTH,
+            confirmEnabled = customName.trim().let {
+                it.isNotBlank() &&
+                    it.length <= Activity.Custom.MAX_NAME_LENGTH
+            },
             colors = AppTheme.colors.brutal.green,
         ) {
             val isOverLimit = customName.length > Activity.Custom.MAX_NAME_LENGTH

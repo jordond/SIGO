@@ -34,7 +34,6 @@ import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.score.Reasons
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.score.scoreForPeriod
-import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.AqiLevels
 import now.shouldigooutside.core.ui.BrutalColors
@@ -72,7 +71,6 @@ internal fun ActivityScoreCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     block: ForecastBlock? = null,
-    units: Units? = null,
 ) {
     val colors = data.activity.colors()
     val score = remember(data, period) { data.score.scoreForPeriod(period) }
@@ -249,7 +247,6 @@ private fun Preview(
                 data = score,
                 onClick = {},
                 block = forecast.current,
-                units = forecast.units,
             )
         }
     }

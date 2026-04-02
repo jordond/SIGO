@@ -24,7 +24,7 @@ internal class KeyValueSettingsRepo(
         .mapNotNull { entity ->
             val model = entity.toModel()
             model.copy(
-                selectedActivity = if (model.enableActivities) model.selectedActivity else Activity.General,
+                selectedActivity = if (model.rememberActivity) model.selectedActivity else Activity.General,
             )
         }.stateIn(
             scope = scope,

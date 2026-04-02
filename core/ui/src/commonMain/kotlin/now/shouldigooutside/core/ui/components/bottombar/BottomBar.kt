@@ -73,9 +73,7 @@ public fun BottomBarLayout(
             measurable.measure(constraints)
         }
 
-        if (placeables.isEmpty() || placeables.size > 1) {
-            throw IllegalStateException("BottomBarLayout expects one child!")
-        }
+        require(placeables.size == 1) { "BottomBarLayout expects exactly one child, got ${placeables.size}" }
 
         if (height.floatValue == 0f) {
             height.floatValue = placeables.first().height.toFloat()
@@ -113,7 +111,7 @@ public object BottomBarDefaults {
 
 @Composable
 public fun rememberBottomBarState(
-    initialHeightOffsetLimit: Float = Float.MAX_VALUE,
+    initialHeightOffsetLimit: Float = 0f,
     initialHeightOffset: Float = 0f,
     initialContentOffset: Float = 0f,
 ): BottomBarState =

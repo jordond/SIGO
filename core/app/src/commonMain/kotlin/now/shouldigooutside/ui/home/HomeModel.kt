@@ -40,7 +40,7 @@ internal class HomeModel(
             permissionStatus = if (locationRepo.hasPermission()) Granted else Unknown,
         ),
     ) {
-    private val logger = Logger.withTag("AppHostModel")
+    private val logger = Logger.withTag("HomeModel")
 
     init {
         forecastStateHolder.start(viewModelScope)
