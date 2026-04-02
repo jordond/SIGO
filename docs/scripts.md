@@ -31,7 +31,7 @@ Must be run from the project root.
 | `release:app [options]`         | Release both Android and iOS                |
 | `release:app:android [options]` | Build and release Android AAB               |
 | `release:app:ios [options]`     | Bump iOS version and prepare Xcode release  |
-| `release:api [options]`         | Release and deploy the API worker            |
+| `release:api [options]`         | Release and deploy the API worker           |
 | `xcode`                         | Open the Xcode workspace                    |
 | `generate-image-sizes`          | Generate image resource sizes               |
 
@@ -260,17 +260,17 @@ Must be on `main` or a `release/*` branch (unless `--no-branch-check` is passed)
 ./sigo release:app:android [options]
 ```
 
-| Option                    | Description                                          |
-|---------------------------|------------------------------------------------------|
-| `-v`, `--version <ver>`   | Set exact version (e.g. `1.0.1`)                     |
-| `-s`, `--semver <level>`  | Bump version: `major`, `minor`, `patch`, `none`      |
-| `-o`, `--output <dir>`    | Output directory for AAB (default: `./release`)      |
-| `--no-tag`                | Skip creating git tags                               |
-| `--no-commit`             | Skip creating git commit                             |
-| `--no-push`               | Skip pushing to remote                               |
-| `--no-git`                | Skip both tagging and committing                     |
-| `--no-clean`              | Skip clean before building                           |
-| `--no-branch-check`       | Skip branch verification                             |
+| Option                   | Description                                     |
+|--------------------------|-------------------------------------------------|
+| `-v`, `--version <ver>`  | Set exact version (e.g. `1.0.1`)                |
+| `-s`, `--semver <level>` | Bump version: `major`, `minor`, `patch`, `none` |
+| `-o`, `--output <dir>`   | Output directory for AAB (default: `./release`) |
+| `--no-tag`               | Skip creating git tags                          |
+| `--no-commit`            | Skip creating git commit                        |
+| `--no-push`              | Skip pushing to remote                          |
+| `--no-git`               | Skip both tagging and committing                |
+| `--no-clean`             | Skip clean before building                      |
+| `--no-branch-check`      | Skip branch verification                        |
 
 If neither `--version` nor `--semver` is provided, defaults to a **patch** bump.
 
@@ -301,15 +301,15 @@ via Xcode.
 ./sigo release:app:ios [options]
 ```
 
-| Option                    | Description                                          |
-|---------------------------|------------------------------------------------------|
-| `-v`, `--version <ver>`   | Set exact version (e.g. `1.0.1`)                     |
-| `-s`, `--semver <level>`  | Bump version: `major`, `minor`, `patch`, `none`      |
-| `--no-tag`                | Skip creating git tags                               |
-| `--no-commit`             | Skip creating git commit                             |
-| `--no-push`               | Skip pushing to remote                               |
-| `--no-git`                | Skip both tagging and committing                     |
-| `--no-branch-check`       | Skip branch verification                             |
+| Option                   | Description                                     |
+|--------------------------|-------------------------------------------------|
+| `-v`, `--version <ver>`  | Set exact version (e.g. `1.0.1`)                |
+| `-s`, `--semver <level>` | Bump version: `major`, `minor`, `patch`, `none` |
+| `--no-tag`               | Skip creating git tags                          |
+| `--no-commit`            | Skip creating git commit                        |
+| `--no-push`              | Skip pushing to remote                          |
+| `--no-git`               | Skip both tagging and committing                |
+| `--no-branch-check`      | Skip branch verification                        |
 
 After running, follow the printed steps to archive and upload via Xcode.
 
@@ -343,19 +343,19 @@ Must be on `main` or a `release/*` branch (unless `--no-branch-check` is passed)
 ./sigo release:api [options]
 ```
 
-| Option                    | Description                                          |
-|---------------------------|------------------------------------------------------|
-| `-v`, `--version <ver>`   | Set exact version (e.g. `1.0.1`)                     |
-| `-s`, `--semver <level>`  | Bump version: `major`, `minor`, `patch`, `none`      |
-| `--no-tag`                | Skip creating git tag                                |
-| `--no-commit`             | Skip creating git commit                             |
-| `--no-push`               | Skip pushing to remote                               |
-| `--no-git`                | Skip both tagging and committing                     |
-| `--no-deploy`             | Skip deploying to Cloudflare                         |
-| `--no-clean`              | Skip clean before building                           |
-| `--no-branch-check`       | Skip branch verification                             |
-| `--deploy-env <env>`      | Deploy environment: `prod`, `staging`, `dev` (default: `prod`) |
-| `--deploy-all`            | Deploy to all environments (prod, staging, dev)      |
+| Option                   | Description                                                    |
+|--------------------------|----------------------------------------------------------------|
+| `-v`, `--version <ver>`  | Set exact version (e.g. `1.0.1`)                               |
+| `-s`, `--semver <level>` | Bump version: `major`, `minor`, `patch`, `none`                |
+| `--no-tag`               | Skip creating git tag                                          |
+| `--no-commit`            | Skip creating git commit                                       |
+| `--no-push`              | Skip pushing to remote                                         |
+| `--no-git`               | Skip both tagging and committing                               |
+| `--no-deploy`            | Skip deploying to Cloudflare                                   |
+| `--no-clean`             | Skip clean before building                                     |
+| `--no-branch-check`      | Skip branch verification                                       |
+| `--deploy-env <env>`     | Deploy environment: `prod`, `staging`, `dev` (default: `prod`) |
+| `--deploy-all`           | Deploy to all environments (prod, staging, dev)                |
 
 Either `--version` or `--semver` is required.
 

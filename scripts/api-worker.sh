@@ -46,6 +46,19 @@ check_prerequisites() {
         exit 1
     fi
 
+    if ! command -v pnpm &>/dev/null; then
+        echo "❌ pnpm not found. Please install pnpm first."
+        exit 1
+    fi
+
+    if ! (
+        cd "$WORKER_DIR"
+        pnpm install >/dev/null
+    ); then
+        echo "❌ pnpm install failed"
+        exit 1
+    fi
+
     if ! $WRANGLER_COMMAND --version >/dev/null; then
         echo "❌ Wrangler not found. Please run ./sigo init api:worker"
         exit 1
