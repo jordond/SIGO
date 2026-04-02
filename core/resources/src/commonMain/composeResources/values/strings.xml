@@ -123,6 +123,7 @@
     <string name="unit_wind_mph">mph</string>
     <string name="unit_wind_kph">km/h</string>
     <string name="unit_wind_ms">m/s</string>
+    <string name="unit_wind_knots">kn</string>
     <string name="unit_temperature">Temperature</string>
     <string name="unit_temperature_short">Temp</string>
     <string name="unit_temperature_celsius">°C</string>

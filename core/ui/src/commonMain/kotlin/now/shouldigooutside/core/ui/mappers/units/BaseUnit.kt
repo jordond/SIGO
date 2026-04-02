@@ -20,6 +20,7 @@ import now.shouldigooutside.core.resources.unit_temperature_celsius
 import now.shouldigooutside.core.resources.unit_temperature_fahrenheit
 import now.shouldigooutside.core.resources.unit_temperature_kelvin
 import now.shouldigooutside.core.resources.unit_wind
+import now.shouldigooutside.core.resources.unit_wind_knots
 import now.shouldigooutside.core.resources.unit_wind_kph
 import now.shouldigooutside.core.resources.unit_wind_mph
 import now.shouldigooutside.core.resources.unit_wind_ms
@@ -67,6 +68,7 @@ public fun BaseUnit.unitResource(): StringResource =
             WindSpeedUnit.MeterPerSecond -> Res.string.unit_wind_ms
             WindSpeedUnit.KilometerPerHour -> Res.string.unit_wind_kph
             WindSpeedUnit.MilePerHour -> Res.string.unit_wind_mph
+            WindSpeedUnit.Knot -> Res.string.unit_wind_knots
         }
     }
 
