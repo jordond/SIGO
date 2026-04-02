@@ -14,6 +14,13 @@ configureMultiplatform(Platforms.All, name = "core.api.client", tests = true)
 
 kotlin {
     sourceSets {
+        commonTest.dependencies {
+            implementation(projects.test)
+            implementation(libs.ktor.client.mock)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.serialization.json)
+        }
+
         commonMain.dependencies {
             implementation(projects.core.api.model)
             implementation(projects.core.domain)
