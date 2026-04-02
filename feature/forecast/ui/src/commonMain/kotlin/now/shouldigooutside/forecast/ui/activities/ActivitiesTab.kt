@@ -45,7 +45,7 @@ import now.shouldigooutside.forecast.ui.activities.ActivitiesModel.Event
 import now.shouldigooutside.forecast.ui.activities.components.ActivityFilterRow
 import now.shouldigooutside.forecast.ui.activities.components.ActivityScoreCard
 import now.shouldigooutside.forecast.ui.activities.components.AddActivityCard
-import now.shouldigooutside.forecast.ui.activities.components.CurrentConditionsRow
+import now.shouldigooutside.forecast.ui.activities.components.CurrentConditionsCard
 import now.shouldigooutside.forecast.ui.activities.components.NoActivitiesCard
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -55,6 +55,7 @@ internal fun ActivitiesTab(
     toAddActivity: () -> Unit,
     toHome: () -> Unit,
     toLocationPicker: () -> Unit,
+    toForecastDetails: () -> Unit,
     model: ActivitiesModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
@@ -79,6 +80,7 @@ internal fun ActivitiesTab(
                 is ActivitiesTabAction.ToSettings -> toSettings()
                 is ActivitiesTabAction.ToAddActivity -> toAddActivity()
                 is ActivitiesTabAction.ToLocationPicker -> toLocationPicker()
+                is ActivitiesTabAction.ToForecastDetails -> toForecastDetails()
             }
         },
     )
@@ -126,9 +128,10 @@ internal fun ActivitiesTab(
 
             if (block != null) {
                 item(key = "current_conditions") {
-                    CurrentConditionsRow(
+                    CurrentConditionsCard(
                         block = block,
                         units = units,
+                        onClick = dispatcher.rememberRelay(ActivitiesTabAction.ToForecastDetails),
                         modifier = Modifier
                             .widthIn(max = 500.dp)
                             .animateItem(),

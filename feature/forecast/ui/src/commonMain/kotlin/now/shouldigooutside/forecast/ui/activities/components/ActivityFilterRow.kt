@@ -3,6 +3,7 @@ package now.shouldigooutside.forecast.ui.activities.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
@@ -39,6 +40,7 @@ internal fun ActivityFilterRow(
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.small, Alignment.CenterVertically),
         itemVerticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth(),
     ) {
@@ -58,26 +60,30 @@ internal fun ActivityFilterRow(
         if (location != null) {
             Spacer(Modifier.width(AppTheme.spacing.small))
 
-            Text(
-                text = Res.string.forecast_title_in.get(),
-                fontStyle = FontStyle.Italic,
-                style = AppTheme.typography.h2,
-            )
-
-            Spacer(Modifier.width(AppTheme.spacing.small))
-
-            Button(
-                onClick = onLocationClick,
-                shape = AppTheme.shapes.extraSmall,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
-                variant = ButtonVariant.SecondaryElevated,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = location.name,
-                    style = AppTheme.typography.h3.asDisplay,
-                    autoSize = AppTheme.typography.h3.autoSize(),
-                    maxLines = 1,
+                    text = Res.string.forecast_title_in.get(),
+                    fontStyle = FontStyle.Italic,
+                    style = AppTheme.typography.h2,
                 )
+
+                Spacer(Modifier.width(AppTheme.spacing.small))
+
+                Button(
+                    onClick = onLocationClick,
+                    shape = AppTheme.shapes.extraSmall,
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+                    variant = ButtonVariant.SecondaryElevated,
+                ) {
+                    Text(
+                        text = location.name,
+                        style = AppTheme.typography.h3.asDisplay,
+                        autoSize = AppTheme.typography.h3.autoSize(),
+                        maxLines = 1,
+                    )
+                }
             }
         }
     }

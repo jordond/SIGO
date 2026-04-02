@@ -153,6 +153,7 @@
     <string name="activity_title_hiking">Hiking</string>
     <string name="activity_title_swimming">Swimming</string>
     <string name="activity_title_custom">Custom</string>
+    <string name="activities_current_conditions">Current Conditions</string>
     <string name="activities_empty_title">No activities yet</string>
     <string name="activities_empty_description">Add activities to see personalized forecasts for your favorite outdoor activities.</string>
     <string name="activities_empty_button">Add Activity</string>
