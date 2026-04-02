@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.Score
+import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.Units
 import kotlin.time.Instant
 
@@ -40,6 +41,38 @@ public fun Forecast.blockForPeriod(period: ForecastPeriod): ForecastBlock? =
         ForecastPeriod.NextHour3 -> today.hours.getOrNull(2)
         ForecastPeriod.Tomorrow -> days.getOrNull(0)?.block
     }
+
+public data class WeatherWindow(
+    val start: Instant,
+    val end: Instant,
+)
+
+public fun Forecast.goodWeatherWindows(score: ForecastScore): List<WeatherWindow> {
+    val hours = today.hours
+    val scores = score.hours
+    if (hours.isEmpty() || scores.isEmpty()) return emptyList()
+
+    val windows = mutableListOf<WeatherWindow>()
+    var windowStart: Instant? = null
+
+    for (i in hours.indices) {
+        val hourScore = scores.getOrNull(i) ?: break
+        if (hourScore.result == ScoreResult.Yes) {
+            if (windowStart == null) windowStart = hours[i].instant
+        } else {
+            if (windowStart != null) {
+                windows += WeatherWindow(start = windowStart, end = hours[i].instant)
+                windowStart = null
+            }
+        }
+    }
+
+    if (windowStart != null) {
+        windows += WeatherWindow(start = windowStart, end = hours.last().instant)
+    }
+
+    return windows
+}
 
 public fun Forecast.scoreForBlock(
     block: ForecastBlock,

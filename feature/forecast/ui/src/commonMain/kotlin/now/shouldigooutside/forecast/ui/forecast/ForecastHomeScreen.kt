@@ -29,6 +29,7 @@ import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
+import now.shouldigooutside.core.model.forecast.WeatherWindow
 import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
@@ -44,6 +45,7 @@ import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.Header
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
+import now.shouldigooutside.forecast.ui.components.WeatherWindowBanner
 import now.shouldigooutside.forecast.ui.forecast.section.ForecastScoreContent
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
@@ -62,6 +64,7 @@ internal fun ForecastHomeScreen(
         data = state.forecast,
         currentBlock = state.currentBlock,
         currentPeriodScore = state.currentPeriodScore,
+        goodWindow = state.goodWindow,
         period = state.period,
         loading = state.loading,
         refreshing = state.refreshing,
@@ -89,6 +92,7 @@ internal fun ForecastHomeScreen(
     modifier: Modifier = Modifier,
     currentBlock: ForecastBlock? = null,
     currentPeriodScore: Score? = null,
+    goodWindow: WeatherWindow? = null,
     period: ForecastPeriod = ForecastPeriod.Today,
     loading: Boolean = false,
     refreshing: Boolean = false,
@@ -120,6 +124,15 @@ internal fun ForecastHomeScreen(
                 instant = instant,
                 modifier = Modifier.fillMaxWidth(),
             )
+
+            if (goodWindow != null) {
+                WeatherWindowBanner(
+                    window = goodWindow,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = AppTheme.spacing.small),
+                )
+            }
 
             val crossfadeTarget = remember(data, loading) { loading to data }
             Crossfade(

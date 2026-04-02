@@ -14,7 +14,9 @@ import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
+import now.shouldigooutside.core.model.forecast.WeatherWindow
 import now.shouldigooutside.core.model.forecast.blockForPeriod
+import now.shouldigooutside.core.model.forecast.goodWeatherWindows
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.score.ActivityForecastScore
@@ -68,6 +70,8 @@ internal class ForecastHomeModel(
             activityScores.firstOrNull { it.activity == selectedActivity }
         val currentBlock: ForecastBlock? = forecast?.blockForPeriod(period)
         val currentPeriodScore: Score? = currentScore?.score?.scoreForPeriod(period)
+        val goodWindow: WeatherWindow? =
+            forecast?.let { f -> currentScore?.score?.let { s -> f.goodWeatherWindows(s).firstOrNull() } }
     }
 }
 
