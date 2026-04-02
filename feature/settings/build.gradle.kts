@@ -12,10 +12,14 @@ plugins {
     alias(libs.plugins.toolchain.version)
 }
 
-configureMultiplatform(Platforms.Compose, name = "settings")
+configureMultiplatform(Platforms.Compose, name = "settings", tests = true)
 
 kotlin {
     sourceSets {
+        commonTest.dependencies {
+            implementation(projects.test)
+        }
+
         commonMain.dependencies {
             implementation(projects.core.config)
             implementation(projects.core.domain)

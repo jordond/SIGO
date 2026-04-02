@@ -1,0 +1,72 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "28 5 * * 3"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          # TODO: Re-enable once CodeQL supports Kotlin 2.3.20
+          # https://github.com/github/codeql/issues/21484
+          # - language: java-kotlin
+          #   build-mode: manual
+          - language: javascript-typescript
+            build-mode: none
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        if: matrix.language == 'java-kotlin'
+        uses: actions/setup-java@v5
+        with:
+          java-version: 25
+          distribution: adopt
+
+      - name: Setup Gradle
+        if: matrix.language == 'java-kotlin'
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+
+      - name: Copy sample app-env
+        if: matrix.language == 'java-kotlin'
+        run: cp ./.github/ci-app-env.properties ./app-env.properties
+
+      - name: Copy CI google-services.json
+        if: matrix.language == 'java-kotlin'
+        run: cp ./.github/ci-google-services.json ./apps/android/google-services.json
+
+      - name: Build
+        if: matrix.build-mode == 'manual'
+        run: ./sigo gradle compileDebugKotlin
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"

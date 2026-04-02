@@ -60,6 +60,7 @@ compass = "3.0.2"
 connectivity = "2.4.1"
 lumo = "1.2.5"
 mordant = "3.0.2"
+turbine = "1.2.1"
 poko = "0.22.0"
 
 [libraries]
@@ -146,6 +147,7 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
@@ -157,6 +159,7 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4jNop" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 stateHolder = { module = "dev.jordond.stateholder:core", version.ref = "stateHolder" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 stateHolder-dispatcher = { module = "dev.jordond.stateholder:dispatcher-compose", version.ref = "stateHolder" }
 stateHolder-compose = { module = "dev.jordond.stateholder:extensions-compose", version.ref = "stateHolder" }
 stateHolder-viewmodel = { module = "dev.jordond.stateholder:extensions-viewmodel", version.ref = "stateHolder" }
