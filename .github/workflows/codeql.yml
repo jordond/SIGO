@@ -14,78 +14,57 @@ permissions:
   contents: read
 
 jobs:
-  analyze-kotlin:
-    name: Analyze (java-kotlin)
+  analyze:
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
     permissions:
       security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: java-kotlin
+            build-mode: manual
+          - language: javascript-typescript
+            build-mode: none
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Setup Java
+        if: matrix.language == 'java-kotlin'
         uses: actions/setup-java@v5
         with:
           java-version: 25
           distribution: adopt
 
       - name: Setup Gradle
+        if: matrix.language == 'java-kotlin'
         uses: gradle/actions/setup-gradle@v6
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: java-kotlin
-          build-mode: manual
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
 
       - name: Copy sample app-env
+        if: matrix.language == 'java-kotlin'
         run: cp ./.github/ci-app-env.properties ./app-env.properties
 
       - name: Copy CI google-services.json
+        if: matrix.language == 'java-kotlin'
         run: cp ./.github/ci-google-services.json ./apps/android/google-services.json
 
       - name: Build
+        if: matrix.build-mode == 'manual'
         run: ./sigo gradle compileDebugKotlin
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/language:java-kotlin"
-
-  analyze-javascript:
-    name: Analyze (javascript-typescript)
-    runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript-typescript
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:javascript-typescript"
-
-  analyze-actions:
-    name: Analyze (actions)
-    runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: actions
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:actions"
+          category: "/language:${{ matrix.language }}"
