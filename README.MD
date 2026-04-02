@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.producthunt.com/products/should-i-go-outside?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-should-i-go-outside" target="_blank" rel="noopener noreferrer"><img alt="Should I Go Outside? - Weather app that tells you when to go outside. | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1114533&amp;theme=neutral&amp;t=1775160375187"></a>
+  <a href="https://www.producthunt.com/products/should-i-go-outside?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-should-i-go-outside" target="_blank" rel="noopener noreferrer"><img alt="Should I Go Outside? - Weather app that tells you when to go outside. | Product Hunt" width="150" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1114533&amp;theme=neutral&amp;t=1775160375187"></a>
 </p>
 
 <p align="center">
