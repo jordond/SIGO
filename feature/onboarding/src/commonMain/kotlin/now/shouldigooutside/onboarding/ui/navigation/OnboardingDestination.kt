@@ -17,5 +17,8 @@ internal sealed interface OnboardingDestination : Route {
     data object Location : OnboardingDestination
 
     @Serializable
+    data object Activities : OnboardingDestination
+
+    @Serializable
     data object Summary : OnboardingDestination
 }

@@ -170,6 +170,10 @@
     <string name="onboarding_units_subtext">Tell us which units you prefer</string>
     <string name="onboarding_preferences">Preferences</string>
     <string name="onboarding_preferences_subtext">Tell us your weather comfort levels</string>
+    <string name="onboarding_activities">Activities</string>
+    <string name="onboarding_activities_subtext">Each activity has its own weather preferences tuned for that activity. Add one now, or skip and add them later.</string>
+    <string name="onboarding_activities_pro_tip">PRO TIP</string>
+    <string name="onboarding_activities_pro_tip_text">Choosing multiple activities lets you quickly check the best times to go out for each one, each with its own weather preferences.</string>
     <string name="onboarding_location_disclaimer">Your privacy matters. We only use a rough location to get your forecast. Your exact coordinates are never stored or shared.</string>
     <string name="onboarding_location">Location</string>
     <string name="onboarding_location_subtext">We use your approximate location to fetch the weather</string>

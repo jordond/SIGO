@@ -27,6 +27,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toPersistentList
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
@@ -60,6 +63,7 @@ import now.shouldigooutside.core.ui.icons.lucide.ArrowLeft
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.onboarding.ui.OnboardingModel.Event
+import now.shouldigooutside.onboarding.ui.activities.OnboardingActivitiesScreen
 import now.shouldigooutside.onboarding.ui.location.LocationScreen
 import now.shouldigooutside.onboarding.ui.navigation.OnboardingDestination
 import now.shouldigooutside.onboarding.ui.navigation.OnboardingNavHost
@@ -233,6 +237,13 @@ internal fun OnboardingScreenPreview(
                 OnboardingDestination.Location -> {
                     LocationScreen(location = null)
                 }
+                OnboardingDestination.Activities -> {
+                    OnboardingActivitiesScreen(
+                        selectedActivities = persistentSetOf(Activity.Running),
+                        activities = Activity.all.toPersistentList(),
+                        onToggleActivity = {},
+                    )
+                }
                 OnboardingDestination.Summary -> {
                     SummaryScreen()
                 }
@@ -263,4 +274,10 @@ private fun LocationPreview() {
 @Composable
 private fun SummaryPreview() {
     OnboardingScreenPreview(OnboardingDestination.Summary)
+}
+
+@Preview
+@Composable
+private fun ActivitiesPreview() {
+    OnboardingScreenPreview(OnboardingDestination.Activities)
 }
