@@ -66,7 +66,7 @@ public fun ActivitySelector(
         items(activities) { activity ->
             Item(
                 icon = activity.rememberIcon(),
-                label = activity.rememberStringResource().get(),
+                label = activity.rememberDisplayName(),
                 selected = activity == selected,
                 onClick = { onSelected(activity) },
                 modifier = Modifier.animateItem(),

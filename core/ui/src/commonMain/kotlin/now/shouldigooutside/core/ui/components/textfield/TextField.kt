@@ -31,6 +31,8 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -116,11 +118,13 @@ public fun TextField(
                     value = value,
                     innerTextField = innerTextField,
                     visualTransformation = visualTransformation,
+                    label = label,
                     placeholder = placeholder,
                     leadingIcon = leadingIcon,
                     trailingIcon = trailingIcon,
                     prefix = prefix,
                     suffix = suffix,
+                    supportingText = supportingText,
                     enabled = enabled,
                     isError = isError,
                     interactionSource = interactionSource,
@@ -193,16 +197,18 @@ public fun TextField(
                     value = value.text,
                     innerTextField = innerTextField,
                     visualTransformation = visualTransformation,
+                    label = label,
                     placeholder = placeholder,
                     leadingIcon = leadingIcon,
                     trailingIcon = trailingIcon,
                     prefix = prefix,
                     suffix = suffix,
+                    supportingText = supportingText,
                     enabled = enabled,
                     isError = isError,
                     interactionSource = interactionSource,
                     elevation = elevation,
-                    colors = TextFieldDefaults.colors(),
+                    colors = colors,
                     shape = shape,
                 )
             },
@@ -268,11 +274,13 @@ public object TextFieldDefaults {
         visualTransformation: VisualTransformation,
         interactionSource: InteractionSource,
         isError: Boolean = false,
+        label: @Composable (() -> Unit)? = null,
         placeholder: @Composable (() -> Unit)? = null,
         leadingIcon: @Composable (() -> Unit)? = null,
         trailingIcon: @Composable (() -> Unit)? = null,
         prefix: @Composable (() -> Unit)? = null,
         suffix: @Composable (() -> Unit)? = null,
+        supportingText: @Composable (() -> Unit)? = null,
         shape: Shape = Shape,
         elevation: BrutalElevation = Elevation,
         colors: TextFieldColors = colors(),
@@ -284,11 +292,13 @@ public object TextFieldDefaults {
             value = value,
             innerTextField = innerTextField,
             visualTransformation = visualTransformation,
+            label = label,
             placeholder = placeholder,
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
             prefix = prefix,
             suffix = suffix,
+            supportingText = supportingText,
             enabled = enabled,
             isError = isError,
             interactionSource = interactionSource,
@@ -421,74 +431,66 @@ public object TextFieldDefaults {
         )
 }
 
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
 private fun TextFieldPreview() {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.padding(16.dp),
-    ) {
-        TextField(
-            value = "Basic input",
-            onValueChange = {},
-        )
-        TextField(
-            value = "With label",
-            onValueChange = {},
-            label = { Text(text = "Label", style = AppTheme.typography.label1) },
-        )
-        TextField(
-            value = "",
-            onValueChange = {},
-            placeholder = { Text(text = "Placeholder", style = AppTheme.typography.body1) },
-        )
-        TextField(
-            value = "Error state",
-            onValueChange = {},
-            isError = true,
-            supportingText = { Text(text = "Error message", style = AppTheme.typography.body2) },
-        )
-        TextField(
-            value = "With icons",
-            onValueChange = {},
-            leadingIcon = { Icon(PreviewData.Icon) },
-            trailingIcon = { Icon(PreviewData.Icon) },
-        )
-        TextField(
-            value = "With supporting text",
-            onValueChange = {},
-            supportingText = {
-                Text(
-                    text = "Supporting text",
-                    style = AppTheme.typography.body2,
-                )
-            },
-        )
-        CompositionLocalProvider(
-            LocalContainerColor provides Color.White,
+    AppPreview {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(16.dp),
         ) {
             TextField(
-                value = "With prefix and suffix",
+                value = "Basic input",
                 onValueChange = {},
-                prefix = { Text(text = "$ ", style = AppTheme.typography.button) },
-                suffix = { Text(text = " USD", style = AppTheme.typography.button) },
+            )
+            TextField(
+                value = "With label",
+                onValueChange = {},
+                label = { Text(text = "Label", style = AppTheme.typography.label1) },
+            )
+            TextField(
+                value = "",
+                onValueChange = {},
+                placeholder = { Text(text = "Placeholder", style = AppTheme.typography.body1) },
+            )
+            TextField(
+                value = "Error state",
+                onValueChange = {},
+                isError = true,
+                supportingText = { Text(text = "Error message", style = AppTheme.typography.body2) },
+            )
+            TextField(
+                value = "With icons",
+                onValueChange = {},
+                leadingIcon = { Icon(PreviewData.Icon) },
+                trailingIcon = { Icon(PreviewData.Icon) },
+            )
+            TextField(
+                value = "With supporting text",
+                onValueChange = {},
+                supportingText = {
+                    Text(
+                        text = "Supporting text",
+                        style = AppTheme.typography.body2,
+                    )
+                },
+            )
+            CompositionLocalProvider(
+                LocalContainerColor provides Color.White,
+            ) {
+                TextField(
+                    value = "With prefix and suffix",
+                    onValueChange = {},
+                    prefix = { Text(text = "$ ", style = AppTheme.typography.button) },
+                    suffix = { Text(text = " USD", style = AppTheme.typography.button) },
+                )
+            }
+            TextField(
+                value = "Disabled state",
+                onValueChange = {},
+                enabled = false,
             )
         }
-        TextField(
-            value = "Disabled state",
-            onValueChange = {},
-            enabled = false,
-        )
     }
-}
-
-@Preview
-@Composable
-internal fun TextFieldPreviewLight() {
-    AppPreview { TextFieldPreview() }
-}
-
-@Preview
-@Composable
-internal fun TextFieldPreviewDark() {
-    AppPreview(isDarkTheme = true) { TextFieldPreview() }
 }

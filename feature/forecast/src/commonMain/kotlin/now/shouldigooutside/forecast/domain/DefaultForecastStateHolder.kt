@@ -7,25 +7,20 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import now.shouldigooutside.core.config.AppConfigRepo
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetForecastUseCase
-import now.shouldigooutside.core.domain.forecast.ScoreCalculator
 import now.shouldigooutside.core.domain.location.LocationRepo
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.foundation.ktx.ensureExecutionTime
 import now.shouldigooutside.core.model.AsyncResult
-import now.shouldigooutside.core.model.ForecastData
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.location.LocationResult
-import now.shouldigooutside.core.model.mapSuccess
 import now.shouldigooutside.core.model.toAsyncResult
 
 internal class DefaultForecastStateHolder(
@@ -33,32 +28,17 @@ internal class DefaultForecastStateHolder(
     private val getForecastUseCase: GetForecastUseCase,
     private val settingsRepo: SettingsRepo,
     private val appConfigRepo: AppConfigRepo,
-    private val scoreCalculator: ScoreCalculator,
     private val coroutineScope: CoroutineScope,
 ) : ForecastStateHolder {
     private val logger = Logger.withTag("ForecastStateHolder")
     private val delayDuration = appConfigRepo.value.maxCacheAge
 
     private val container = stateContainer<AsyncResult<Forecast>?>(null)
-    override val state: StateFlow<AsyncResult<ForecastData>> =
-        combine(
-            container.state.filterNotNull().distinctUntilChanged(),
-            settingsRepo.settings.map { it.preferences to it.includeAirQuality }.distinctUntilChanged(),
-            transform = { forecastResult, preferences ->
-                Triple(
-                    forecastResult,
-                    preferences.first,
-                    preferences.second,
-                )
-            },
-        ).map { (forecastResult, preferences, includeAirQuality) ->
-            forecastResult.mapSuccess { forecast ->
-                ForecastData(
-                    forecast = forecast,
-                    score = scoreCalculator.calculate(forecast, preferences, includeAirQuality),
-                )
-            }
-        }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), AsyncResult.Loading)
+    override val state: StateFlow<AsyncResult<Forecast>> =
+        container.state
+            .filterNotNull()
+            .distinctUntilChanged()
+            .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), AsyncResult.Loading)
 
     private var fetchJob: Job? = null
     private var refreshJob: Job? = null

@@ -75,12 +75,14 @@ public fun TopBar(
         modifier = modifier,
         scrollBehavior = scrollBehavior,
         colors = colors,
-        windowInsets = windowInsets,
     ) {
+        val density = LocalDensity.current
+        val windowInsetsPaddingValues = windowInsets?.asPaddingValues(density) ?: PaddingValues()
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier =
                 Modifier
+                    .padding(windowInsetsPaddingValues)
                     .padding(horizontal = 8.dp)
                     .fillMaxWidth()
                     .height(TopBarHeight),
@@ -125,15 +127,10 @@ public fun TopBar(
 internal fun TopBarLayout(
     modifier: Modifier = Modifier,
     colors: TopBarColors = TopBarDefaults.topBarColors(),
-    windowInsets: WindowInsets? = TopBarDefaults.windowInsets,
     scrollBehavior: TopBarScrollBehavior? = null,
     content: @Composable () -> Unit,
 ) {
     val height = remember { mutableIntStateOf(0) }
-
-    val density = LocalDensity.current
-
-    val windowInsetsPaddingValues = windowInsets?.asPaddingValues(density) ?: PaddingValues()
 
     val heightOffsetLimit = -height.intValue.toFloat()
     SideEffect {
@@ -185,10 +182,7 @@ internal fun TopBarLayout(
         CompositionLocalProvider(LocalContentColor provides topBarContentColor) {
             Layout(
                 content = content,
-                modifier =
-                    Modifier
-                        .padding(windowInsetsPaddingValues)
-                        .clipToBounds(),
+                modifier = Modifier.clipToBounds(),
             ) { measurables, constraints ->
                 val placeables =
                     measurables.map { measurable ->

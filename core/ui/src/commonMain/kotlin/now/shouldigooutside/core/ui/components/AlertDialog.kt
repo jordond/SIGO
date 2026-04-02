@@ -46,6 +46,7 @@ import now.shouldigooutside.core.ui.components.AlertDialogDefaults.DialogMinWidt
 import now.shouldigooutside.core.ui.components.AlertDialogDefaults.IconPadding
 import now.shouldigooutside.core.ui.components.AlertDialogDefaults.TextPadding
 import now.shouldigooutside.core.ui.components.AlertDialogDefaults.TitlePadding
+import now.shouldigooutside.core.ui.components.textfield.TextField
 import now.shouldigooutside.core.ui.foundation.ProvideContentColorTextStyle
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
@@ -61,7 +62,7 @@ public fun AlertDialog(
     confirmButtonText: String = Res.string.okay.get(),
     dismissButtonText: String? = Res.string.cancel.get(),
     icon: (@Composable () -> Unit)? = null,
-    colors: BrutalColors = AppTheme.colors.brutal.red,
+    colors: BrutalColors = AppTheme.colors.brutal.blue,
     iconContentColor: Color = AppTheme.colors.onSurface,
     titleContentColor: Color = AppTheme.colors.onSurface,
     textContentColor: Color = AppTheme.colors.onSurface,
@@ -104,11 +105,63 @@ public fun AlertDialog(
 }
 
 @Composable
+public fun AlertDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmClick: () -> Unit,
+    title: String,
+    modifier: Modifier = Modifier,
+    confirmButtonText: String = Res.string.okay.get(),
+    confirmEnabled: Boolean = true,
+    dismissButtonText: String? = Res.string.cancel.get(),
+    icon: (@Composable () -> Unit)? = null,
+    colors: BrutalColors = AppTheme.colors.brutal.blue,
+    iconContentColor: Color = AppTheme.colors.onSurface,
+    titleContentColor: Color = AppTheme.colors.onSurface,
+    contentColor: Color = AppTheme.colors.onSurface,
+    properties: DialogProperties = DialogProperties(),
+    content: @Composable () -> Unit,
+) {
+    AlertDialogComponent(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            Button(
+                variant = ButtonVariant.PrimaryElevated,
+                text = confirmButtonText,
+                onClick = onConfirmClick,
+                enabled = confirmEnabled,
+                modifier = Modifier.widthIn(min = 100.dp),
+            )
+        },
+        modifier = modifier,
+        dismissButton =
+            if (dismissButtonText == null) {
+                null
+            } else {
+                {
+                    Button(
+                        variant = ButtonVariant.Elevated,
+                        text = dismissButtonText,
+                        onClick = onDismissRequest,
+                    )
+                }
+            },
+        icon = icon,
+        title = { Text(text = title) },
+        text = content,
+        colors = colors,
+        iconContentColor = iconContentColor,
+        titleContentColor = titleContentColor,
+        textContentColor = contentColor,
+        properties = properties,
+    )
+}
+
+@Composable
 public fun BasicAlertDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     properties: DialogProperties = DialogProperties(),
-    colors: BrutalColors = AppTheme.colors.brutal.red,
+    colors: BrutalColors = AppTheme.colors.brutal.blue,
     content: @Composable () -> Unit,
 ) {
     Dialog(
@@ -455,6 +508,56 @@ private fun AlertDialogPreviews() {
                             "displaying terms and conditions or detailed information to users.",
                     confirmButtonText = "Accept",
                     dismissButtonText = "Decline",
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ContentDialogPreview() {
+    AppPreview {
+        Column(
+            modifier = Modifier.size(400.dp),
+        ) {
+            AlertDialog(
+                onDismissRequest = { },
+                onConfirmClick = { },
+                title = "Name your activity",
+                confirmButtonText = "OK",
+                confirmEnabled = true,
+            ) {
+                TextField(
+                    value = "Gardening",
+                    onValueChange = {},
+                    placeholder = { Text(text = "e.g. Gardening, Fishing...") },
+                    singleLine = true,
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ContentDialogDisabledPreview() {
+    AppPreview {
+        Column(
+            modifier = Modifier.size(400.dp),
+        ) {
+            AlertDialog(
+                onDismissRequest = { },
+                onConfirmClick = { },
+                title = "Name your activity",
+                confirmButtonText = "OK",
+                confirmEnabled = false,
+            ) {
+                TextField(
+                    value = "",
+                    onValueChange = {},
+                    placeholder = { Text(text = "e.g. Gardening, Fishing...") },
+                    singleLine = true,
                 )
             }
         }

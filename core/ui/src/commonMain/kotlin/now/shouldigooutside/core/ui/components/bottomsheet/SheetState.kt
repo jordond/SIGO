@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CancellationException
+import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.bottomsheet.SheetState.Companion.Saver
 import now.shouldigooutside.core.ui.foundation.AnchoredDraggableState
 import now.shouldigooutside.core.ui.foundation.animateTo
@@ -187,7 +188,7 @@ public class SheetState(
 
     /**
      * Animate the bottom sheet and suspend until it is partially expanded or animation has been
-     * cancelled.
+     * canceled.
      *
      * @throws [CancellationException] if the animation is interrupted
      * @throws [IllegalStateException] if [skipPartiallyExpanded] is set to true
@@ -217,7 +218,7 @@ public class SheetState(
 
     /**
      * Hide the bottom sheet with animation and suspend until it is fully hidden or animation has
-     * been cancelled.
+     * been canceled.
      *
      * @throws [CancellationException] if the animation is interrupted
      */
@@ -332,13 +333,13 @@ public enum class SheetValue {
 @Stable
 public object BottomSheetDefaults {
     public val ExpandedShape: Shape
-        @Composable get() = RoundedCornerShape(16.dp)
+        @Composable get() = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
 
     public val ContainerColor: Color
-        @Composable get() = Color.White
+        @Composable get() = AppTheme.colors.surface
 
     public val ScrimColor: Color
-        @Composable get() = Color.Black.copy(alpha = 0.32f)
+        @Composable get() = AppTheme.colors.scrim.copy(alpha = 0.32f)
 
     public val SheetMaxWidth: Dp = 640.dp
 

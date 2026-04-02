@@ -9,7 +9,8 @@ api-server-version = "1.0.0"
 sdk-target = "36"
 sdk-compile = "36"
 sdk-min = "30"
-jvmTarget = "25"
+jvmTarget = "21"
+jvmTargetServer = "25"
 ############################
 
 kotlin = "2.3.20"
@@ -60,6 +61,7 @@ connectivity = "2.4.1"
 lumo = "1.2.5"
 mordant = "3.0.2"
 turbine = "1.2.0"
+poko = "0.22.0"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
@@ -203,5 +205,6 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 lumo = { id = "com.nomanr.plugin.lumo", version.ref = "lumo" }
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
+poko = { id = "dev.drewhamilton.poko", version.ref = "poko" }
 convention-multiplatform = { id = "convention.multiplatform", version = "0" }
 toolchain-version = { id = "toolchain.version", version = "0" }

@@ -31,6 +31,7 @@ import now.shouldigooutside.core.resources.cancel
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.BrutalColors
 import now.shouldigooutside.core.ui.activities.colors
+import now.shouldigooutside.core.ui.activities.rememberDisplayName
 import now.shouldigooutside.core.ui.activities.rememberIcon
 import now.shouldigooutside.core.ui.activities.rememberStringResource
 import now.shouldigooutside.core.ui.asDisplay
@@ -46,7 +47,6 @@ import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.X
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
-import org.jetbrains.compose.resources.StringResource
 
 @Composable
 internal fun AddActivityItem(
@@ -55,7 +55,6 @@ internal fun AddActivityItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val title = activity.rememberStringResource()
     val icon = activity.rememberIcon()
     val colors = activity.colors()
 
@@ -90,7 +89,7 @@ internal fun AddActivityItem(
                         .padding(horizontal = 12.dp),
                 ) {
                     Content(
-                        title = title,
+                        title = activity.rememberDisplayName(),
                         colors = colors,
                         icon = icon,
                         style = AppTheme.typography.h2,
@@ -111,7 +110,7 @@ internal fun AddActivityItem(
                 }
             } else {
                 Content(
-                    title = title,
+                    title = activity.rememberStringResource().get(),
                     colors = colors,
                     icon = icon,
                     iconBoxColor = iconBoxColor,
@@ -127,7 +126,7 @@ internal fun AddActivityItem(
 
 @Composable
 private fun Content(
-    title: StringResource,
+    title: String,
     colors: BrutalColors,
     icon: ImageVector,
     style: TextStyle,
@@ -143,7 +142,7 @@ private fun Content(
     ) {
         Icon(
             icon = icon,
-            contentDescription = title.get(),
+            contentDescription = title,
             tint = colors.containerContent,
             modifier = Modifier
                 .padding(12.dp)

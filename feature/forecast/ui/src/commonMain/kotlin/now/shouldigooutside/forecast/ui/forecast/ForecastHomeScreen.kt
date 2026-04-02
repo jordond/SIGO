@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -20,68 +22,58 @@ import dev.stateholder.dispatcher.rememberDebounceDispatcher
 import dev.stateholder.dispatcher.rememberDispatcher
 import dev.stateholder.dispatcher.rememberRelay
 import dev.stateholder.dispatcher.rememberRelayOf
-import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
-import now.shouldigooutside.core.model.ForecastData
+import now.shouldigooutside.core.model.forecast.Forecast
+import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
+import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.location.Location
-import now.shouldigooutside.core.model.location.LocationPermissionStatus
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.score.Score
+import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.LoadingBox
 import now.shouldigooutside.core.ui.components.PullToRefreshBox
-import now.shouldigooutside.core.ui.components.snackbar.rememberSnackbarProvider
 import now.shouldigooutside.core.ui.ktx.conditional
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.Header
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
-import now.shouldigooutside.forecast.ui.components.mappers.rememberInstant
 import now.shouldigooutside.forecast.ui.forecast.section.ForecastScoreContent
-import now.shouldigooutside.forecast.ui.forecast.section.search.LocationSearchSheet
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.time.Clock
 
 @Composable
 internal fun ForecastHomeScreen(
-    toViewDetails: (period: ForecastPeriod) -> Unit,
+    toViewDetails: () -> Unit,
+    toLocationPicker: () -> Unit,
     model: ForecastHomeModel = koinViewModel(),
 ) {
-    val snackbar = rememberSnackbarProvider()
-    HandleEvents(model) { event ->
-        when (event) {
-            is ForecastHomeModel.Event.Error -> snackbar.error(event.message)
-        }
-    }
-
     val state by model.collectAsState()
     ForecastHomeScreen(
         location = state.location,
-        preferences = state.preferences,
+        preferences = state.currentScore?.preferences ?: Preferences.default,
         units = state.units,
         data = state.forecast,
+        currentBlock = state.currentBlock,
+        currentPeriodScore = state.currentPeriodScore,
         period = state.period,
         loading = state.loading,
         refreshing = state.refreshing,
-        permissionStatus = state.permissionStatus,
-        showLocationSheet = state.showLocationSheet,
-        usingCurrentLocation = state.usingCurrentLocation,
-        searchQuery = state.searchQuery,
-        searchResults = state.searchResults,
-        searching = state.searching,
+        selectedActivity = state.selectedActivity,
+        activities = state.activities,
         dispatcher = rememberDebounceDispatcher { action ->
             when (action) {
                 is ForecastHomeAction.Refresh -> model.fetch()
-                is ForecastHomeAction.ChangePeriod -> model.updatePeriod(action.period)
-                is ForecastHomeAction.ToViewDetails -> toViewDetails(state.period)
-                is ForecastHomeAction.OpenLocationSheet -> model.openLocationSheet()
-                is ForecastHomeAction.CloseLocationSheet -> model.closeLocationSheet()
-                is ForecastHomeAction.SearchLocation -> model.searchLocation(action.query)
-                is ForecastHomeAction.SelectLocation -> model.selectLocation(action.location)
-                is ForecastHomeAction.UseCurrentLocation -> model.useCurrentLocation()
+                is ForecastHomeAction.ChangePeriod -> model.update(action.period)
+                is ForecastHomeAction.ToViewDetails -> toViewDetails()
+                is ForecastHomeAction.OpenLocationSheet -> toLocationPicker()
+                is ForecastHomeAction.ChangeActivity -> model.update(action.activity)
             }
         },
     )
@@ -92,22 +84,19 @@ internal fun ForecastHomeScreen(
     location: Location?,
     preferences: Preferences,
     units: Units,
-    data: ForecastData?,
+    data: Forecast?,
     dispatcher: Dispatcher<ForecastHomeAction>,
     modifier: Modifier = Modifier,
+    currentBlock: ForecastBlock? = null,
+    currentPeriodScore: Score? = null,
     period: ForecastPeriod = ForecastPeriod.Today,
     loading: Boolean = false,
     refreshing: Boolean = false,
-    permissionStatus: LocationPermissionStatus = LocationPermissionStatus.Unknown,
-    showLocationSheet: Boolean = false,
-    usingCurrentLocation: Boolean = true,
-    searchQuery: String = "",
-    searchResults: PersistentList<Location> = persistentListOf(),
-    searching: Boolean = false,
+    selectedActivity: Activity = Activity.General,
+    activities: PersistentList<Activity> = persistentListOf(),
 ) {
-    val instant = data.rememberInstant()
-
     PullToRefreshBox(
+        modifier = modifier.statusBarsPadding(),
         isRefreshing = refreshing,
         onRefresh = dispatcher.rememberRelay(ForecastHomeAction.Refresh),
     ) {
@@ -119,14 +108,17 @@ internal fun ForecastHomeScreen(
                     Modifier.verticalScroll(rememberScrollState())
                 }.height(IntrinsicSize.Max),
         ) {
+            val instant = remember(data) { data?.instant ?: Clock.System.now() }
             Header(
-                data = data,
                 period = period,
                 changePeriod = dispatcher.rememberRelayOf(ForecastHomeAction::ChangePeriod),
+                selectedActivity = selectedActivity,
+                activities = activities,
+                changeActivity = dispatcher.rememberRelayOf(ForecastHomeAction::ChangeActivity),
                 location = location?.takeUnless { it.isDefaultName },
                 onLocationClick = dispatcher.rememberRelay(ForecastHomeAction.OpenLocationSheet),
                 instant = instant,
-                modifier = Modifier.padding(top = AppTheme.spacing.standard),
+                modifier = Modifier.fillMaxWidth(),
             )
 
             val crossfadeTarget = remember(data, loading) { loading to data }
@@ -141,18 +133,15 @@ internal fun ForecastHomeScreen(
                         LoadingBox()
                     }
                 } else if (target.second != null) {
-                    val periodData = remember(target.second, period) {
-                        target.second?.forPeriod(period)
-                    }
-
-                    if (periodData == null) {
+                    if (currentBlock == null || currentPeriodScore == null) {
                         NoDataForPeriod()
                     } else {
                         ForecastScoreContent(
                             updatedAt = instant,
                             preferences = preferences,
                             units = units,
-                            periodData = periodData,
+                            block = currentBlock,
+                            score = currentPeriodScore,
                             onScoreClick = dispatcher.rememberRelay(ForecastHomeAction.ToViewDetails),
                             modifier = Modifier.padding(end = 2.dp),
                         )
@@ -161,18 +150,6 @@ internal fun ForecastHomeScreen(
             }
         }
     }
-
-    LocationSearchSheet(
-        isVisible = showLocationSheet,
-        usingCurrentLocation = usingCurrentLocation,
-        query = searchQuery,
-        results = searchResults,
-        searching = searching,
-        onQueryChange = dispatcher.rememberRelayOf(ForecastHomeAction::SearchLocation),
-        onSelectLocation = dispatcher.rememberRelayOf(ForecastHomeAction::SelectLocation),
-        onUseCurrentLocation = dispatcher.rememberRelay(ForecastHomeAction.UseCurrentLocation),
-        onDismiss = dispatcher.rememberRelay(ForecastHomeAction.CloseLocationSheet),
-    )
 }
 
 @Preview
@@ -191,11 +168,14 @@ private fun LoadingPreview() {
 }
 
 @Composable
-private fun ScreenPreview(data: ForecastData) {
+private fun ScreenPreview(forecast: Forecast) {
+    val forecastScore = remember { PreviewData.Forecast.score(forecast) }
     AppPreview {
         ForecastHomeScreen(
             location = null,
-            data = data,
+            data = forecast,
+            currentBlock = forecast.blockForPeriod(ForecastPeriod.Today),
+            currentPeriodScore = forecastScore.scoreForPeriod(ForecastPeriod.Today),
             preferences = Preferences.default,
             units = Units.Metric,
             dispatcher = rememberDispatcher { },
@@ -206,39 +186,41 @@ private fun ScreenPreview(data: ForecastData) {
 @Preview
 @Composable
 public fun SunnyPreview() {
-    ScreenPreview(PreviewData.Forecast.forecastData(PreviewData.Forecast.createSunnyForecast()))
+    ScreenPreview(PreviewData.Forecast.createSunnyForecast())
 }
 
 @Preview
 @Composable
 private fun RainyPreview() {
-    ScreenPreview(PreviewData.Forecast.forecastData(PreviewData.Forecast.createRainyForecast()))
+    ScreenPreview(PreviewData.Forecast.createRainyForecast())
 }
 
 @Preview
 @Composable
 private fun ColdPreview() {
-    ScreenPreview(PreviewData.Forecast.forecastData(PreviewData.Forecast.createColdForecast()))
+    ScreenPreview(PreviewData.Forecast.createColdForecast())
 }
 
 @Preview
 @Composable
 private fun WindyPreview() {
-    ScreenPreview(PreviewData.Forecast.forecastData(PreviewData.Forecast.createWindyForecast()))
+    ScreenPreview(PreviewData.Forecast.createWindyForecast())
 }
 
 @Preview
 @Composable
 private fun SevereWeatherLowPreview() {
-    val forecast = PreviewData.Forecast.createForecastFrom(
-        PreviewData.Forecast.severeWeather(SevereWeatherRisk.Low),
+    ScreenPreview(
+        PreviewData.Forecast.createForecastFrom(
+            PreviewData.Forecast.severeWeather(SevereWeatherRisk.Low),
+        ),
     )
-    ScreenPreview(PreviewData.Forecast.forecastData(forecast))
 }
 
 @Preview
 @Composable
 private fun SevereWeatherHighPreview() {
-    val forecast = PreviewData.Forecast.createForecastFrom(PreviewData.Forecast.severeWeather())
-    ScreenPreview(PreviewData.Forecast.forecastData(forecast))
+    ScreenPreview(
+        PreviewData.Forecast.createForecastFrom(PreviewData.Forecast.severeWeather()),
+    )
 }

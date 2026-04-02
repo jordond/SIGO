@@ -1,5 +1,6 @@
 package now.shouldigooutside.ui
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
 import dev.stateholder.extensions.viewmodel.StateViewModel
@@ -15,7 +16,7 @@ import now.shouldigooutside.ui.navigation.AppStartDestination
 internal class AppHostModel(
     private val initializer: Initializer,
     settingsRepo: SettingsRepo,
-) : StateViewModel<AppHostModel.State>(State(settingsRepo.settings.value)) {
+) : StateViewModel<AppHostModel.State>(State(settings = settingsRepo.settings.value)) {
     init {
         viewModelScope.launch(Dispatchers.Default) { initializer.initialize() }
 
@@ -37,6 +38,7 @@ internal class AppHostModel(
         }
     }
 
+    @Immutable
     data class State(
         val settings: Settings,
         val uiState: UiState = UiState.Loading,

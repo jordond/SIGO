@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.buildKonfig)
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.poko)
     alias(libs.plugins.convention.multiplatform)
 }
 

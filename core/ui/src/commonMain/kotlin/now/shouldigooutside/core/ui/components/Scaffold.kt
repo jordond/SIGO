@@ -24,13 +24,24 @@ import kotlin.jvm.JvmInline
 
 public object ScaffoldScope {
     @Composable
-    public fun Modifier.paddingWithoutNav(paddingValues: PaddingValues): Modifier {
+    public fun Modifier.innerPadding(
+        paddingValues: PaddingValues,
+        top: Boolean = true,
+        horizontal: Boolean = true,
+        bottom: Boolean = true,
+    ): Modifier {
+        val topPadding = if (top) paddingValues.calculateTopPadding() else 0.dp
+        val bottomPadding = if (bottom) paddingValues.calculateBottomPadding() else 0.dp
+
         val direction = LocalLayoutDirection.current
+        val startPadding = if (horizontal) paddingValues.calculateStartPadding(direction) else 0.dp
+        val endPadding = if (horizontal) paddingValues.calculateEndPadding(direction) else 0.dp
         return this.then(
             Modifier.padding(
-                start = paddingValues.calculateStartPadding(direction),
-                top = paddingValues.calculateTopPadding(),
-                end = paddingValues.calculateEndPadding(direction),
+                top = topPadding,
+                start = startPadding,
+                end = endPadding,
+                bottom = bottomPadding,
             ),
         )
     }

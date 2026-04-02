@@ -1,46 +1,68 @@
 package now.shouldigooutside.forecast.ui.forecast.details
 
 import androidx.compose.runtime.Stable
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.toRoute
 import dev.stateholder.extensions.viewmodel.StateViewModel
 import dev.stateholder.provider.composedStateProvider
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import now.shouldigooutside.core.domain.AppStateHolder
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
-import now.shouldigooutside.core.model.ForecastData
+import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
+import now.shouldigooutside.core.domain.settings.SettingsRepo
+import now.shouldigooutside.core.foundation.ktx.mapDistinct
+import now.shouldigooutside.core.model.AsyncResult
+import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
+import now.shouldigooutside.core.model.forecast.blockForPeriod
+import now.shouldigooutside.core.model.forecast.scoreForBlock
 import now.shouldigooutside.core.model.getOrNull
+import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.score.ActivityForecastScore
+import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.Score
-import now.shouldigooutside.forecast.ui.navigation.ForecastDetailsRoute
 
 @Stable
 internal class ForecastDetailsModel(
-    savedStateHandle: SavedStateHandle,
     forecastStateHolder: ForecastStateHolder,
+    settingsRepo: SettingsRepo,
+    getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
+    appStateHolder: AppStateHolder,
 ) : StateViewModel<ForecastDetailsModel.State>(
         composedStateProvider(
             State(
-                initialPeriod = savedStateHandle.toRoute<ForecastDetailsRoute>().period,
-                data = forecastStateHolder.state.value.getOrNull(),
+                initialPeriod = appStateHolder.state.value.period,
+                forecast = forecastStateHolder.state.value.getOrNull(),
+                selectedActivity = settingsRepo.settings.value.selectedActivity,
+                activityScores = getActivitiesScoreUseCase.scores(),
+                loadingForecast = forecastStateHolder.state.value is AsyncResult.Loading,
             ),
         ) {
             forecastStateHolder.state.into { result ->
-                val data = result.getOrNull()
+                val forecast = result.getOrNull()
                 val newSelected =
-                    if (!hasLoaded && data != null) {
-                        when (initialPeriod) {
-                            ForecastPeriod.Today -> data.forecast.today.block
-                            ForecastPeriod.Now -> data.forecast.current
-                            ForecastPeriod.NextHour -> data.forecast.hour(0)
-                            ForecastPeriod.NextHour2 -> data.forecast.hour(1)
-                            ForecastPeriod.NextHour3 -> data.forecast.hour(2)
-                            ForecastPeriod.Tomorrow -> data.forecast.tomorrow?.block
-                        }
+                    if (!hasLoaded && forecast != null) {
+                        forecast.blockForPeriod(initialPeriod)
                     } else {
                         selected
                     }
-                copy(data = data, selected = newSelected, hasLoaded = data != null)
+                copy(
+                    forecast = forecast,
+                    selected = newSelected,
+                    hasLoaded = forecast != null,
+                    loadingForecast = result is AsyncResult.Loading,
+                )
             }
+
+            combine(
+                settingsRepo.settings.mapDistinct { it.selectedActivity },
+                getActivitiesScoreUseCase.scoresFlow(),
+            ) { activity, scores ->
+                activity to scores
+            }.distinctUntilChanged()
+                .into { (activity, scores) ->
+                    copy(selectedActivity = activity, activityScores = scores)
+                }
         },
     ) {
     fun select(block: ForecastBlock?) {
@@ -52,10 +74,17 @@ internal class ForecastDetailsModel(
 
     data class State(
         val initialPeriod: ForecastPeriod,
-        val data: ForecastData?,
+        val forecast: Forecast?,
+        val selectedActivity: Activity = Activity.General,
+        val activityScores: List<ActivityForecastScore> = emptyList(),
         val selected: ForecastBlock? = null,
         val hasLoaded: Boolean = false,
+        val loadingForecast: Boolean = false,
     ) {
-        val selectedScore: Score? = selected?.let { data?.forBlock(it) }
+        val currentScore: ForecastScore? =
+            activityScores.firstOrNull { it.activity == selectedActivity }?.score
+        val selectedScore: Score? = selected?.let { block ->
+            currentScore?.let { score -> forecast?.scoreForBlock(block, score) }
+        }
     }
 }

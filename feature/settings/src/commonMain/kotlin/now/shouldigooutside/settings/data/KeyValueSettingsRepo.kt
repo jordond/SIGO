@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import now.shouldigooutside.core.domain.settings.SettingsRepo
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.platform.isDebug
 import now.shouldigooutside.core.platform.store.Store
@@ -20,8 +21,12 @@ internal class KeyValueSettingsRepo(
     private val scope: CoroutineScope,
 ) : SettingsRepo {
     override val settings: StateFlow<Settings> = store.data
-        .mapNotNull { it.toModel() }
-        .stateIn(
+        .mapNotNull { entity ->
+            val model = entity.toModel()
+            model.copy(
+                selectedActivity = if (model.rememberActivity) model.selectedActivity else Activity.General,
+            )
+        }.stateIn(
             scope = scope,
             started = SharingStarted.Eagerly,
             initialValue = Settings(),

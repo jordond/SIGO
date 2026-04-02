@@ -3,17 +3,17 @@ package now.shouldigooutside.forecast.ui.forecast.details
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.forecast_details_air_quality
 import now.shouldigooutside.core.resources.forecast_details_cloud_cover
 import now.shouldigooutside.core.resources.forecast_details_humidity
 import now.shouldigooutside.core.resources.forecast_details_precipitation
@@ -34,6 +34,7 @@ import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.mappers.units.rememberUnit
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.ForecastPreviewData.ForecastBlockPreviewParameterProvider
+import now.shouldigooutside.forecast.ui.components.AirQualityResultCard
 import now.shouldigooutside.forecast.ui.components.PreferenceResultCard
 import kotlin.math.roundToInt
 
@@ -99,13 +100,9 @@ internal fun WeatherDetailsGrid(
                 modifier = Modifier.weight(1f),
             )
 
-            PreferenceResultCard(
-                title = Res.string.forecast_details_pressure.get(),
-                text = formatValueWithUnit(block.pressure.roundToInt(), pressureUnit),
-                colors = AppTheme.colors.brutal.green,
-                value = { "" },
-                icon = AppIcons.Lucide.Waves,
-                height = null,
+            AirQualityResultCard(
+                airQuality = block.airQuality,
+                title = Res.string.forecast_details_air_quality.get(),
                 modifier = Modifier.weight(1f),
             )
 
@@ -129,13 +126,20 @@ internal fun WeatherDetailsGrid(
                 modifier = Modifier.weight(1f),
             )
 
-            // Odd number of tiles
-            Spacer(Modifier.weight(1f))
+            PreferenceResultCard(
+                title = Res.string.forecast_details_pressure.get(),
+                text = formatValueWithUnit(block.pressure.roundToInt(), pressureUnit),
+                colors = AppTheme.colors.brutal.green,
+                value = { "" },
+                icon = AppIcons.Lucide.Waves,
+                height = null,
+                modifier = Modifier.weight(1f),
+            )
         }
     }
 }
 
-@Preview(name = "Light")
+@PreviewLightDark
 @Composable
 private fun WeatherDetailsGridPreview(
     @PreviewParameter(ForecastBlockPreviewParameterProvider::class) block: ForecastBlock,

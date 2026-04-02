@@ -46,8 +46,10 @@ import now.shouldigooutside.core.resources.delete_activity_message
 import now.shouldigooutside.core.resources.preferences
 import now.shouldigooutside.core.resources.reset
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.TabHeader
 import now.shouldigooutside.core.ui.activities.ActivitySelector
+import now.shouldigooutside.core.ui.brutal
 import now.shouldigooutside.core.ui.components.AlertDialog
 import now.shouldigooutside.core.ui.components.Button
 import now.shouldigooutside.core.ui.components.ButtonVariant
@@ -112,6 +114,7 @@ internal fun PreferencesTab(
             title = Res.string.are_you_sure.get(),
             text = Res.string.delete_activity_message.get(),
             confirmButtonText = Res.string.delete.get(),
+            colors = AppTheme.colors.brutal.red,
         )
     }
 }
@@ -135,18 +138,20 @@ internal fun PreferencesTab(
             toSettings = dispatcher.rememberRelay(PreferencesAction.ToSettings),
         )
 
-        val canAdd = remember(activities) { activities.remainingActivities().isNotEmpty() }
-        val activityList = remember(activities) { activities.keys.toPersistentList() }
-        ActivitySelector(
-            selected = selected,
-            onSelected = dispatcher.rememberRelayOf(PreferencesAction::Select),
-            onAddCustom = dispatcher.rememberRelay(PreferencesAction.ToAddActivity),
-            activities = activityList,
-            canAdd = canAdd,
-            contentPadding = PaddingValues(16.dp),
-        )
+        if (LocalAppExperience.current.enableActivities) {
+            val canAdd = remember(activities) { activities.remainingActivities().isNotEmpty() }
+            val activityList = remember(activities) { activities.keys.toPersistentList() }
+            ActivitySelector(
+                selected = selected,
+                onSelected = dispatcher.rememberRelayOf(PreferencesAction::Select),
+                onAddCustom = dispatcher.rememberRelay(PreferencesAction.ToAddActivity),
+                activities = activityList,
+                canAdd = canAdd,
+                contentPadding = PaddingValues(16.dp),
+            )
 
-        Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
+        }
 
         PreferencesList(
             units = units,
@@ -195,7 +200,7 @@ internal fun PreferencesTab(
             }
         }
 
-        Spacer(Modifier.height(100.dp))
+        Spacer(Modifier.height(200.dp))
     }
 }
 

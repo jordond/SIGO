@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -32,6 +33,7 @@ import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.settings
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.Scaffold
+import now.shouldigooutside.core.ui.components.ScaffoldScope.innerPadding
 import now.shouldigooutside.core.ui.components.snackbar.Snackbar
 import now.shouldigooutside.core.ui.components.snackbar.SnackbarHost
 import now.shouldigooutside.core.ui.components.snackbar.SnackbarHostState
@@ -84,6 +86,9 @@ internal fun SettingsScreen(
                 }
                 is SettingsAction.ToggleActivities -> {
                     model.toggleActivities()
+                }
+                is SettingsAction.ToggleRememberActivity -> {
+                    model.toggleRememberActivity()
                 }
                 is SettingsAction.ToUnitsScreen -> {
                     toUnits()
@@ -148,15 +153,11 @@ internal fun SettingsScreen(
             )
         },
     ) { innerPadding ->
-        val layoutDirection = LocalLayoutDirection.current
         Column(
             verticalArrangement = Arrangement.spacedBy(32.dp),
             modifier = Modifier
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    start = innerPadding.calculateStartPadding(layoutDirection),
-                    end = innerPadding.calculateEndPadding(layoutDirection),
-                ).padding(horizontal = 16.dp)
+                .innerPadding(innerPadding, bottom = false)
+                .padding(horizontal = 16.dp)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .verticalScroll(rememberScrollState()),
         ) {
@@ -175,6 +176,7 @@ internal fun SettingsScreen(
                 toggle24HourFormat = dispatcher.rememberRelay(SettingsAction.Toggle24HourFormat),
                 toggleAirQuality = dispatcher.rememberRelay(SettingsAction.ToggleAirQuality),
                 toggleActivities = dispatcher.rememberRelay(SettingsAction.ToggleActivities),
+                toggleRememberActivity = dispatcher.rememberRelay(SettingsAction.ToggleRememberActivity),
                 unitsClick = dispatcher.rememberRelay(SettingsAction.ToUnitsScreen),
                 primary = AppTheme.colors.secondary,
                 secondary = AppTheme.colors.primary,
