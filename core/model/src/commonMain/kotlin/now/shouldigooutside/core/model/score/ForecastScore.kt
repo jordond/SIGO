@@ -18,5 +18,7 @@ public fun ForecastScore.scoreForPeriod(period: ForecastPeriod): Score? =
         ForecastPeriod.NextHour -> hours.getOrNull(0)
         ForecastPeriod.NextHour2 -> hours.getOrNull(1)
         ForecastPeriod.NextHour3 -> hours.getOrNull(2)
+        ForecastPeriod.NextHour4 -> hours.getOrNull(3)
+        ForecastPeriod.NextHour5 -> hours.getOrNull(4)
         ForecastPeriod.Tomorrow -> days.getOrNull(0)
     }

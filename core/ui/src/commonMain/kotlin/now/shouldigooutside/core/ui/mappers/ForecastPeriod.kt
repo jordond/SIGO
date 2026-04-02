@@ -21,6 +21,8 @@ private val hours = listOf(
     ForecastPeriod.NextHour,
     ForecastPeriod.NextHour2,
     ForecastPeriod.NextHour3,
+    ForecastPeriod.NextHour4,
+    ForecastPeriod.NextHour5,
 )
 
 @Composable
@@ -43,7 +45,7 @@ public fun ForecastPeriod.rememberText(currentTime: Instant): String {
                 ForecastPeriod.Today -> Res.string.forecast_period_today
                 ForecastPeriod.Now -> Res.string.forecast_period_now
                 ForecastPeriod.Tomorrow -> Res.string.forecast_period_tomorrow
-                else -> Res.string.blank // Shouldn't ever get here
+                else -> Res.string.blank
             }
         }
         return resource.get()

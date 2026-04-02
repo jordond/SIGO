@@ -1,6 +1,5 @@
 package now.shouldigooutside.forecast.data.source.visualcrossing
 
-import co.touchlab.kermit.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import now.shouldigooutside.core.foundation.NowProvider
@@ -193,8 +192,6 @@ internal data class VCAlert(
     val description: String,
 )
 
-private val logger = Logger.withTag("VCForecastResponse")
-
 internal fun VCForecastResponse.toModel(
     nowProvider: NowProvider,
     maxDays: Int,
@@ -209,7 +206,7 @@ internal fun VCForecastResponse.toModel(
         val startIndex = hours
             .indexOfFirst { it.datetimeEpoch >= nowEpoch }
             .takeIf { it >= 0 } ?: 0
-        hours.subList(startIndex, minOf(startIndex + 5, hours.size))
+        hours.subList(startIndex, hours.size)
     } ?: emptyList()
 
     val today = ForecastDay(

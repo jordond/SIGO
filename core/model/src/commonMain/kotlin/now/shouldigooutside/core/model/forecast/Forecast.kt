@@ -40,6 +40,8 @@ public fun Forecast.blockForPeriod(period: ForecastPeriod): ForecastBlock? =
         ForecastPeriod.NextHour -> today.hours.getOrNull(0)
         ForecastPeriod.NextHour2 -> today.hours.getOrNull(1)
         ForecastPeriod.NextHour3 -> today.hours.getOrNull(2)
+        ForecastPeriod.NextHour4 -> today.hours.getOrNull(3)
+        ForecastPeriod.NextHour5 -> today.hours.getOrNull(4)
         ForecastPeriod.Tomorrow -> days.getOrNull(0)?.block
     }
 
