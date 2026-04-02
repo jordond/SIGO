@@ -17,6 +17,7 @@ kotlin {
             api(projects.core.domain)
             api(projects.core.config)
             api(projects.core.foundation)
+            api(libs.stateHolder)
             api(libs.kotlinx.coroutines.core)
             api(libs.kotlinx.datetime)
             api(libs.kotest.assertions)

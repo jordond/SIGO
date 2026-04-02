@@ -10,6 +10,8 @@ import now.shouldigooutside.core.model.forecast.Precipitation
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
 import now.shouldigooutside.core.model.forecast.Temperature
 import now.shouldigooutside.core.model.forecast.Wind
+import now.shouldigooutside.core.model.forecast.blockForPeriod
+import now.shouldigooutside.core.model.forecast.scoreForBlock
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.ReasonValue
@@ -56,17 +58,13 @@ private fun makeScore(result: ScoreResult = ScoreResult.Yes): Score =
 
 private fun makeLocation(): Location = Location(latitude = 51.5, longitude = -0.1)
 
-private fun makeData(
+private fun makeForecast(
     currentBlock: ForecastBlock = makeBlock(Instant.fromEpochSeconds(1000)),
     todayBlock: ForecastBlock = makeBlock(Instant.fromEpochSeconds(2000)),
     todayHours: List<ForecastBlock> = emptyList(),
     days: List<ForecastDay> = emptyList(),
-    currentScore: Score = makeScore(ScoreResult.Yes),
-    todayScore: Score = makeScore(ScoreResult.Maybe),
-    hourScores: List<Score> = emptyList(),
-    dayScores: List<Score> = emptyList(),
-): ForecastData {
-    val forecast = Forecast(
+): Forecast =
+    Forecast(
         location = makeLocation(),
         current = currentBlock,
         today = ForecastDay(block = todayBlock, hours = todayHours),
@@ -75,190 +73,156 @@ private fun makeData(
         units = Units.Metric,
         instant = Instant.fromEpochSeconds(1000),
     )
-    val score = ForecastScore(
+
+private fun makeScoreData(
+    currentScore: Score = makeScore(ScoreResult.Yes),
+    todayScore: Score = makeScore(ScoreResult.Maybe),
+    hourScores: List<Score> = emptyList(),
+    dayScores: List<Score> = emptyList(),
+): ForecastScore =
+    ForecastScore(
         current = currentScore,
         hours = hourScores,
         today = todayScore,
         days = dayScores,
     )
-    return ForecastData(forecast = forecast, score = score)
-}
 
-class ForecastDataTest {
+class ForecastBlockForPeriodTest {
     @Test
-    fun forPeriodNow_returnsCurrentBlockAndScore() {
+    fun nowReturnsCurrentBlock() {
         val currentBlock = makeBlock(Instant.fromEpochSeconds(1000))
-        val currentScore = makeScore(ScoreResult.Yes)
-        val data = makeData(currentBlock = currentBlock, currentScore = currentScore)
+        val forecast = makeForecast(currentBlock = currentBlock)
 
-        val result = data.forPeriod(ForecastPeriod.Now)
-
-        result?.period shouldBe ForecastPeriod.Now
-        result?.forecast shouldBe currentBlock
-        result?.score shouldBe currentScore
+        forecast.blockForPeriod(ForecastPeriod.Now) shouldBe currentBlock
     }
 
     @Test
-    fun forPeriodToday_returnsTodayBlockAndScore() {
+    fun todayReturnsTodayBlock() {
         val todayBlock = makeBlock(Instant.fromEpochSeconds(2000))
-        val todayScore = makeScore(ScoreResult.Maybe)
-        val data = makeData(todayBlock = todayBlock, todayScore = todayScore)
+        val forecast = makeForecast(todayBlock = todayBlock)
 
-        val result = data.forPeriod(ForecastPeriod.Today)
-
-        result?.period shouldBe ForecastPeriod.Today
-        result?.forecast shouldBe todayBlock
-        result?.score shouldBe todayScore
+        forecast.blockForPeriod(ForecastPeriod.Today) shouldBe todayBlock
     }
 
     @Test
-    fun forPeriodNextHour_whenHoursPresent_returnsFirstHour() {
+    fun nextHourReturnsFirstHour() {
         val hour0 = makeBlock(Instant.fromEpochSeconds(3600))
-        val hourScore0 = makeScore(ScoreResult.Yes)
-        val data = makeData(
-            todayHours = listOf(hour0),
-            hourScores = listOf(hourScore0),
-        )
+        val forecast = makeForecast(todayHours = listOf(hour0))
 
-        val result = data.forPeriod(ForecastPeriod.NextHour)
-
-        result?.forecast shouldBe hour0
-        result?.score shouldBe hourScore0
+        forecast.blockForPeriod(ForecastPeriod.NextHour) shouldBe hour0
     }
 
     @Test
-    fun forPeriodNextHour_whenNoHours_returnsNull() {
-        val data = makeData(todayHours = emptyList(), hourScores = emptyList())
-        data.forPeriod(ForecastPeriod.NextHour) shouldBe null
+    fun nextHourReturnsNullWhenNoHours() {
+        val forecast = makeForecast(todayHours = emptyList())
+
+        forecast.blockForPeriod(ForecastPeriod.NextHour) shouldBe null
     }
 
     @Test
-    fun forPeriodNextHour2_whenTwoHoursPresent_returnsSecondHour() {
+    fun nextHour2ReturnsSecondHour() {
         val hour0 = makeBlock(Instant.fromEpochSeconds(3600))
         val hour1 = makeBlock(Instant.fromEpochSeconds(7200))
-        val score0 = makeScore(ScoreResult.Yes)
-        val score1 = makeScore(ScoreResult.No)
-        val data = makeData(
-            todayHours = listOf(hour0, hour1),
-            hourScores = listOf(score0, score1),
-        )
+        val forecast = makeForecast(todayHours = listOf(hour0, hour1))
 
-        val result = data.forPeriod(ForecastPeriod.NextHour2)
-
-        result?.forecast shouldBe hour1
-        result?.score shouldBe score1
+        forecast.blockForPeriod(ForecastPeriod.NextHour2) shouldBe hour1
     }
 
     @Test
-    fun forPeriodNextHour2_whenOnlyOneHour_returnsNull() {
+    fun nextHour2ReturnsNullWhenOnlyOneHour() {
         val hour0 = makeBlock(Instant.fromEpochSeconds(3600))
-        val data = makeData(
-            todayHours = listOf(hour0),
-            hourScores = listOf(makeScore()),
-        )
-        data.forPeriod(ForecastPeriod.NextHour2) shouldBe null
+        val forecast = makeForecast(todayHours = listOf(hour0))
+
+        forecast.blockForPeriod(ForecastPeriod.NextHour2) shouldBe null
     }
 
     @Test
-    fun forPeriodNextHour3_whenThreeHoursPresent_returnsThirdHour() {
+    fun nextHour3ReturnsThirdHour() {
         val hour0 = makeBlock(Instant.fromEpochSeconds(3600))
         val hour1 = makeBlock(Instant.fromEpochSeconds(7200))
         val hour2 = makeBlock(Instant.fromEpochSeconds(10800))
-        val score2 = makeScore(ScoreResult.Maybe)
-        val data = makeData(
-            todayHours = listOf(hour0, hour1, hour2),
-            hourScores = listOf(makeScore(), makeScore(), score2),
-        )
+        val forecast = makeForecast(todayHours = listOf(hour0, hour1, hour2))
 
-        val result = data.forPeriod(ForecastPeriod.NextHour3)
-
-        result?.forecast shouldBe hour2
-        result?.score shouldBe score2
+        forecast.blockForPeriod(ForecastPeriod.NextHour3) shouldBe hour2
     }
 
     @Test
-    fun forPeriodTomorrow_whenDayPresent_returnsTomorrowBlockAndScore() {
+    fun tomorrowReturnsTomorrowBlock() {
         val tomorrowBlock = makeBlock(Instant.fromEpochSeconds(86400))
         val tomorrowDay = ForecastDay(block = tomorrowBlock, hours = emptyList())
-        val tomorrowScore = makeScore(ScoreResult.No)
-        val data = makeData(
-            days = listOf(tomorrowDay),
-            dayScores = listOf(tomorrowScore),
-        )
+        val forecast = makeForecast(days = listOf(tomorrowDay))
 
-        val result = data.forPeriod(ForecastPeriod.Tomorrow)
-
-        result?.period shouldBe ForecastPeriod.Tomorrow
-        result?.forecast shouldBe tomorrowBlock
-        result?.score shouldBe tomorrowScore
+        forecast.blockForPeriod(ForecastPeriod.Tomorrow) shouldBe tomorrowBlock
     }
 
     @Test
-    fun forPeriodTomorrow_whenNoDays_returnsNull() {
-        val data = makeData(days = emptyList(), dayScores = emptyList())
-        data.forPeriod(ForecastPeriod.Tomorrow) shouldBe null
-    }
+    fun tomorrowReturnsNullWhenNoDays() {
+        val forecast = makeForecast(days = emptyList())
 
+        forecast.blockForPeriod(ForecastPeriod.Tomorrow) shouldBe null
+    }
+}
+
+class ForecastScoreForBlockTest {
     @Test
-    fun forBlock_currentBlock_returnsCurrentScore() {
+    fun currentBlockReturnsCurrentScore() {
         val currentBlock = makeBlock(Instant.fromEpochSeconds(1000))
         val currentScore = makeScore(ScoreResult.Yes)
-        val data = makeData(currentBlock = currentBlock, currentScore = currentScore)
+        val forecast = makeForecast(currentBlock = currentBlock)
+        val score = makeScoreData(currentScore = currentScore)
 
-        data.forBlock(currentBlock) shouldBe currentScore
+        forecast.scoreForBlock(currentBlock, score) shouldBe currentScore
     }
 
     @Test
-    fun forBlock_todayBlock_returnsTodayScore() {
+    fun todayBlockReturnsTodayScore() {
         val todayBlock = makeBlock(Instant.fromEpochSeconds(2000))
         val todayScore = makeScore(ScoreResult.Maybe)
-        val data = makeData(todayBlock = todayBlock, todayScore = todayScore)
+        val forecast = makeForecast(todayBlock = todayBlock)
+        val score = makeScoreData(todayScore = todayScore)
 
-        data.forBlock(todayBlock) shouldBe todayScore
+        forecast.scoreForBlock(todayBlock, score) shouldBe todayScore
     }
 
     @Test
-    fun forBlock_hourBlock_returnsMatchingHourScore() {
+    fun hourBlockReturnsMatchingHourScore() {
         val hour0 = makeBlock(Instant.fromEpochSeconds(3600))
         val hour1 = makeBlock(Instant.fromEpochSeconds(7200))
         val score0 = makeScore(ScoreResult.Yes)
         val score1 = makeScore(ScoreResult.No)
-        val data = makeData(
-            todayHours = listOf(hour0, hour1),
-            hourScores = listOf(score0, score1),
-        )
+        val forecast = makeForecast(todayHours = listOf(hour0, hour1))
+        val score = makeScoreData(hourScores = listOf(score0, score1))
 
-        data.forBlock(hour1) shouldBe score1
+        forecast.scoreForBlock(hour1, score) shouldBe score1
     }
 
     @Test
-    fun forBlock_tomorrowBlock_returnsTomorrowScore() {
+    fun tomorrowBlockReturnsTomorrowScore() {
         val tomorrowBlock = makeBlock(Instant.fromEpochSeconds(86400))
         val tomorrowScore = makeScore(ScoreResult.No)
-        val data = makeData(
+        val forecast = makeForecast(
             days = listOf(ForecastDay(block = tomorrowBlock, hours = emptyList())),
-            dayScores = listOf(tomorrowScore),
         )
+        val score = makeScoreData(dayScores = listOf(tomorrowScore))
 
-        data.forBlock(tomorrowBlock) shouldBe tomorrowScore
+        forecast.scoreForBlock(tomorrowBlock, score) shouldBe tomorrowScore
     }
 
     @Test
-    fun forBlock_hourBlockWithoutMatchingScore_returnsNull() {
+    fun hourBlockWithoutMatchingScoreReturnsNull() {
         val hour0 = makeBlock(Instant.fromEpochSeconds(3600))
-        val data = makeData(
-            todayHours = listOf(hour0),
-            hourScores = emptyList(),
-        )
+        val forecast = makeForecast(todayHours = listOf(hour0))
+        val score = makeScoreData(hourScores = emptyList())
 
-        data.forBlock(hour0) shouldBe null
+        forecast.scoreForBlock(hour0, score) shouldBe null
     }
 
     @Test
-    fun forBlock_unknownBlock_returnsNull() {
+    fun unknownBlockReturnsNull() {
         val unknownBlock = makeBlock(Instant.fromEpochSeconds(99999))
-        val data = makeData()
+        val forecast = makeForecast()
+        val score = makeScoreData()
 
-        data.forBlock(unknownBlock) shouldBe null
+        forecast.scoreForBlock(unknownBlock, score) shouldBe null
     }
 }

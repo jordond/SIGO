@@ -1,5 +1,6 @@
 package now.shouldigooutside.test
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,12 +12,14 @@ import kotlinx.datetime.toLocalDateTime
 import now.shouldigooutside.core.config.AppConfigRepo
 import now.shouldigooutside.core.config.model.AppConfig
 import now.shouldigooutside.core.domain.forecast.ForecastRepo
+import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetForecastUseCase
 import now.shouldigooutside.core.domain.forecast.ScoreCalculator
 import now.shouldigooutside.core.domain.location.LocationRepo
 import now.shouldigooutside.core.domain.settings.IsSimulateFailureUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.foundation.NowProvider
+import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.location.LocationPermissionStatus
@@ -160,4 +163,21 @@ public class FakeIsSimulateFailureUseCase(
     public var shouldFail: Boolean = false,
 ) : IsSimulateFailureUseCase {
     override fun invoke(): Boolean = shouldFail
+}
+
+public class FakeForecastStateHolder(
+    initial: AsyncResult<Forecast> = AsyncResult.Loading,
+) : ForecastStateHolder {
+    private val _state = MutableStateFlow(initial)
+    override val state: StateFlow<AsyncResult<Forecast>> = _state.asStateFlow()
+
+    public fun emit(value: AsyncResult<Forecast>) {
+        _state.value = value
+    }
+
+    override fun fetch() {}
+
+    override fun start(scope: CoroutineScope?) {}
+
+    override fun stop() {}
 }

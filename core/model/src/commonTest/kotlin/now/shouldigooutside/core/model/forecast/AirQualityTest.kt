@@ -27,8 +27,13 @@ class AirQualityTest {
     }
 
     @Test
-    fun constructor_above10_throwsIllegalArgumentException() {
-        shouldThrow<IllegalArgumentException> { AirQuality(11) }
+    fun constructor_value11_constructsSuccessfully() {
+        shouldNotThrow<IllegalArgumentException> { AirQuality(11) }
+    }
+
+    @Test
+    fun constructor_above11_throwsIllegalArgumentException() {
+        shouldThrow<IllegalArgumentException> { AirQuality(12) }
     }
 
     @Test
@@ -52,9 +57,9 @@ class AirQualityTest {
     }
 
     @Test
-    fun from_valueAbove10_coercesTo10() {
+    fun from_valueAbove11_coercesTo11() {
         val result = AirQuality.from(15)
-        result?.value shouldBe 10
+        result?.value shouldBe 11
     }
 
     @Test

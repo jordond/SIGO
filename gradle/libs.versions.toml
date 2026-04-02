@@ -60,7 +60,7 @@ compass = "3.0.2"
 connectivity = "2.4.1"
 lumo = "1.2.5"
 mordant = "3.0.2"
-turbine = "1.2.0"
+turbine = "1.2.1"
 poko = "0.22.0"
 
 [libraries]

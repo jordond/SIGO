@@ -138,12 +138,12 @@ class VCForecastResponseTest {
     }
 
     @Test
-    fun aqi_301_mapsTo10() {
+    fun aqi_301_mapsTo11() {
         val response = buildResponse(aqiUs = 301.0)
 
         val model = response.toModel(FakeNowProvider(), maxDays = 3)
 
-        model.today.block.airQuality.value shouldBe 10
+        model.today.block.airQuality.value shouldBe 11
     }
 
     @Test
