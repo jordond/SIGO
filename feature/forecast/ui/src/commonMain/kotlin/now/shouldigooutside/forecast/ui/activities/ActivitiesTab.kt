@@ -33,6 +33,7 @@ import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.score.ActivityForecastScore
+import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.home_tab_activities
 import now.shouldigooutside.core.ui.AppTheme
@@ -44,6 +45,7 @@ import now.shouldigooutside.forecast.ui.activities.ActivitiesModel.Event
 import now.shouldigooutside.forecast.ui.activities.components.ActivityFilterRow
 import now.shouldigooutside.forecast.ui.activities.components.ActivityScoreCard
 import now.shouldigooutside.forecast.ui.activities.components.AddActivityCard
+import now.shouldigooutside.forecast.ui.activities.components.CurrentConditionsRow
 import now.shouldigooutside.forecast.ui.activities.components.NoActivitiesCard
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -67,6 +69,7 @@ internal fun ActivitiesTab(
         period = state.period,
         activities = state.scores,
         forecast = state.forecast,
+        units = state.units,
         canAdd = state.canAddMore,
         location = state.location?.takeUnless { it.isDefaultName },
         dispatcher = rememberDebounceDispatcher { action ->
@@ -86,6 +89,7 @@ internal fun ActivitiesTab(
     period: ForecastPeriod,
     activities: PersistentList<ActivityForecastScore>,
     modifier: Modifier = Modifier,
+    units: Units = Units.Metric,
     canAdd: Boolean = true,
     forecast: Forecast? = null,
     location: Location? = null,
@@ -118,6 +122,18 @@ internal fun ActivitiesTab(
                     onLocationClick = dispatcher.rememberRelay(ActivitiesTabAction.ToLocationPicker),
                     modifier = Modifier.animateItem(),
                 )
+            }
+
+            if (block != null) {
+                item(key = "current_conditions") {
+                    CurrentConditionsRow(
+                        block = block,
+                        units = units,
+                        modifier = Modifier
+                            .widthIn(max = 500.dp)
+                            .animateItem(),
+                    )
+                }
             }
         }
 
