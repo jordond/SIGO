@@ -2,7 +2,9 @@ package now.shouldigooutside.onboarding.ui.preferences
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -52,42 +54,41 @@ internal fun OnboardingPreferencesScreen(
     maxWindSpeed: Float = 40f,
 ) {
     Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
             .padding(horizontal = 16.dp)
             .fillMaxSize()
             .verticalScroll(state = rememberScrollState()),
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Column {
-                Text(
-                    text = Res.string.onboarding_preferences,
-                    style = AppTheme.typography.header,
-                    autoSize = AppTheme.typography.header.autoSize(),
-                    maxLines = 1,
-                )
-
-                Text(
-                    text = Res.string.onboarding_preferences_subtext,
-                    modifier = Modifier.padding(start = 8.dp),
-                    style = AppTheme.typography.body1,
-                )
-            }
-
-            UnitPresetCard(
-                units = units,
-                onSelect = { preset -> updateUnits(preset.units) },
+        Column {
+            Text(
+                text = Res.string.onboarding_preferences,
+                style = AppTheme.typography.header,
+                autoSize = AppTheme.typography.header.autoSize(),
+                maxLines = 1,
             )
 
-            PreferencesList(
-                units = units,
-                preferences = preferences,
-                updatePreferences = updatePreferences,
-                temperatureRange = temperatureRange,
-                maxWindSpeed = maxWindSpeed,
+            Text(
+                text = Res.string.onboarding_preferences_subtext,
+                modifier = Modifier.padding(start = 8.dp),
+                style = AppTheme.typography.body1,
             )
         }
+
+        UnitPresetCard(
+            units = units,
+            onSelect = { preset -> updateUnits(preset.units) },
+        )
+
+        PreferencesList(
+            units = units,
+            preferences = preferences,
+            updatePreferences = updatePreferences,
+            temperatureRange = temperatureRange,
+            maxWindSpeed = maxWindSpeed,
+        )
+
+        Spacer(modifier = Modifier.height(100.dp))
     }
 }
 

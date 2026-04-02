@@ -14,6 +14,7 @@ private val destinations = listOfNotNull(
     OnboardingDestination.Welcome,
     OnboardingDestination.Location,
     OnboardingDestination.Preferences,
+    OnboardingDestination.Activities,
     OnboardingDestination.Summary,
 )
 
