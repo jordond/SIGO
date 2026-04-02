@@ -41,6 +41,8 @@ import now.shouldigooutside.core.resources.settings_internal_clear_forecast_cach
 import now.shouldigooutside.core.resources.settings_internal_launch_onboarding
 import now.shouldigooutside.core.resources.settings_internal_launch_onboarding_desc
 import now.shouldigooutside.core.resources.settings_internal_reset
+import now.shouldigooutside.core.resources.settings_internal_show_whats_new
+import now.shouldigooutside.core.resources.settings_internal_show_whats_new_desc
 import now.shouldigooutside.core.resources.settings_internal_title
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.Button
@@ -55,6 +57,7 @@ import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.components.textfield.TextField
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.Check
+import now.shouldigooutside.core.ui.icons.lucide.Info
 import now.shouldigooutside.core.ui.icons.lucide.Link
 import now.shouldigooutside.core.ui.icons.lucide.Server
 import now.shouldigooutside.core.ui.icons.lucide.Smartphone
@@ -80,6 +83,7 @@ internal fun InternalSettingsScreen(
         onBack = onBack,
         onClearCache = model::clearCache,
         onLaunchOnboarding = onLaunchOnboarding,
+        onShowWhatsNew = model::showWhatsNew,
     )
 }
 
@@ -91,6 +95,7 @@ internal fun InternalSettingsScreen(
     onBack: () -> Unit = {},
     onClearCache: () -> Unit = {},
     onLaunchOnboarding: () -> Unit = {},
+    onShowWhatsNew: () -> Unit = {},
 ) {
     var backendApiUrl by remember(settings.backendApiUrl) { mutableStateOf(settings.backendApiUrl) }
     val backendApiUrlChanged = remember(backendApiUrl, settings.backendApiUrl) {
@@ -160,6 +165,15 @@ internal fun InternalSettingsScreen(
                         description = Res.string.settings_internal_launch_onboarding_desc,
                         icon = AppIcons.Lucide.Smartphone,
                         onClick = onLaunchOnboarding,
+                    )
+                }
+
+                Item {
+                    SettingsTextRow(
+                        text = Res.string.settings_internal_show_whats_new,
+                        description = Res.string.settings_internal_show_whats_new_desc,
+                        icon = AppIcons.Lucide.Info,
+                        onClick = onShowWhatsNew,
                     )
                 }
 

@@ -29,6 +29,7 @@ kotlin {
             implementation(projects.core.resources)
             implementation(projects.core.ui)
             implementation(projects.core.uiIcons)
+            implementation(projects.feature.whatsnew)
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
