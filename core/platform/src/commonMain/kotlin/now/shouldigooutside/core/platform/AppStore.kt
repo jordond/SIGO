@@ -5,3 +5,5 @@ public expect val appIdentifier: String
 public expect fun launchAppStore()
 
 public expect fun shareApp()
+
+public expect fun requestInAppReview()

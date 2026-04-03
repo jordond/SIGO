@@ -1,6 +1,7 @@
 package now.shouldigooutside.core.platform
 
 import platform.Foundation.NSURL
+import platform.StoreKit.SKStoreReviewController
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
 
@@ -20,4 +21,8 @@ public actual fun shareApp() {
     )
     val rootVC = UIApplication.sharedApplication.keyWindow?.rootViewController
     rootVC?.presentViewController(activityVC, animated = true, completion = null)
+}
+
+public actual fun requestInAppReview() {
+    SKStoreReviewController.requestReview()
 }
