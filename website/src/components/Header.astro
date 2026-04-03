@@ -1,11 +1,20 @@
 ---
-
+import { Image } from "astro:assets"
+import appIcon from "../assets/icon.png"
 ---
 
 <header class="site-header">
   <div class="header__inner">
     <a href="/" class="header__brand" aria-label="Should I Go Outside? — Home">
-      <span class="header__name">SIGO</span>
+      <Image
+        src={appIcon}
+        alt=""
+        class="header__icon"
+        width={32}
+        height={32}
+        loading="eager"
+      />
+      <span class="header__name">Should I Go Outside?</span>
     </a>
 
     <nav class="header__nav" aria-label="Main navigation">
@@ -35,22 +44,32 @@
   }
 
   .header__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
     text-decoration: none;
     color: var(--color-text);
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .header__brand:hover {
+    transform: rotate(-1.5deg) scale(1.03);
+  }
+
+  .header__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 2px solid var(--color-outline);
+    box-shadow: 2px 2px 0 0 var(--color-shadow);
+    flex-shrink: 0;
   }
 
   .header__name {
     font-family: "Lexend Mega", sans-serif;
-    font-size: var(--text-md);
+    font-size: var(--text-sm);
     font-weight: 700;
     letter-spacing: var(--display-tracking);
-    text-transform: uppercase;
-    display: inline-block;
-    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .header__brand:hover .header__name {
-    transform: rotate(-3deg) scale(1.05);
   }
 
   .header__nav {
@@ -114,10 +133,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     .header__cta,
-    .header__name {
+    .header__brand {
       transition: none;
     }
-    .header__brand:hover .header__name {
+    .header__brand:hover {
       transform: none;
     }
   }

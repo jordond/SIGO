@@ -104,14 +104,14 @@ import screenshotDetails from "../assets/ios_forecast_details.png"
     margin-inline: auto;
     display: flex;
     flex-direction: column;
-    gap: 6rem;
+    gap: var(--space-section);
   }
 
   .feature-block {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 3rem;
+    gap: var(--space-xl);
   }
 
   .feature-block--reverse {
@@ -124,20 +124,20 @@ import screenshotDetails from "../assets/ios_forecast_details.png"
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2rem 1rem;
+    padding: var(--space-lg) var(--space-sm);
   }
 
   .feature-copy {
     flex: 1 1 0%;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: var(--space-sm);
   }
 
   .phones-row {
     display: flex;
     flex-direction: row;
-    gap: 1.5rem;
+    gap: var(--space-md);
     align-items: center;
     position: relative;
     z-index: 1;
@@ -215,7 +215,7 @@ import screenshotDetails from "../assets/ios_forecast_details.png"
 
   @media (max-width: 900px) {
     .container {
-      gap: 4rem;
+      gap: var(--space-xl);
     }
 
     .feature-block,
@@ -225,7 +225,7 @@ import screenshotDetails from "../assets/ios_forecast_details.png"
 
     .feature-media {
       width: 100%;
-      padding: 1.5rem 1rem;
+      padding: var(--space-md) var(--space-sm);
     }
 
     .feature-copy {
@@ -254,7 +254,7 @@ import screenshotDetails from "../assets/ios_forecast_details.png"
     }
 
     .phones-row {
-      gap: 1rem;
+      gap: var(--space-sm);
     }
 
     .blob {

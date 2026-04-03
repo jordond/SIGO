@@ -94,7 +94,7 @@ const metrics = [
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-xl);
   }
 
   .section-title {
@@ -122,14 +122,14 @@ const metrics = [
   .content-area {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: var(--space-xl);
     align-items: center;
   }
 
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: var(--space-md);
     flex: 1;
     width: 100%;
   }
@@ -138,13 +138,13 @@ const metrics = [
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    gap: 1rem;
+    gap: var(--space-sm);
     background-color: var(--color-surface);
     border: var(--border-width) solid var(--color-outline);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0
       var(--color-shadow);
-    padding: 1.5rem;
+    padding: var(--space-md);
     transform: rotate(var(--card-rotate, 0deg));
     transition:
       transform 0.18s ease,
