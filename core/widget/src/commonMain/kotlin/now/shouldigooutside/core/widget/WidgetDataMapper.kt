@@ -1,25 +1,41 @@
 package now.shouldigooutside.core.widget
 
-import now.shouldigooutside.core.model.ForecastData
+import now.shouldigooutside.core.model.forecast.Forecast
+import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.units.Units
 import kotlin.time.Clock
 
+public fun Activity.widgetDisplayName(): String =
+    when (this) {
+        is Activity.General -> WidgetData.DEFAULT_ACTIVITY_NAME
+        is Activity.Walking -> "Walking"
+        is Activity.Running -> "Running"
+        is Activity.Cycling -> "Cycling"
+        is Activity.Hiking -> "Hiking"
+        is Activity.Swimming -> "Swimming"
+        is Activity.Custom -> name
+    }
+
 public object WidgetDataMapper {
     public fun map(
-        data: ForecastData,
+        forecast: Forecast,
+        score: ForecastScore,
         units: Units,
+        activityName: String,
     ): WidgetData =
         WidgetData(
-            scoreResult = data.score.current.result.name,
-            locationName = data.forecast.location.name,
-            currentTemp = data.forecast.current.temperature.value,
+            scoreResult = score.current.result.name,
+            locationName = forecast.location.name,
+            currentTemp = forecast.current.temperature.value,
             tempUnit = units.temperature.name,
-            feelsLikeTemp = data.forecast.current.temperature.feelsLike,
-            windSpeed = data.forecast.current.wind.speed,
+            feelsLikeTemp = forecast.current.temperature.feelsLike,
+            windSpeed = forecast.current.wind.speed,
             windSpeedUnit = units.windSpeed.name,
-            precipChance = data.forecast.current.precipitation.probability,
-            todayScoreResult = data.score.today.result.name,
-            alertCount = data.forecast.alerts.size,
+            precipChance = forecast.current.precipitation.probability,
+            todayScoreResult = score.today.result.name,
+            alertCount = forecast.alerts.size,
             updatedAtMillis = Clock.System.now().toEpochMilliseconds(),
+            activityName = activityName,
         )
 }

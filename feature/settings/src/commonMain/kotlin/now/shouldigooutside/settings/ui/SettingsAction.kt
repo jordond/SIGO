@@ -1,5 +1,6 @@
 package now.shouldigooutside.settings.ui
 
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.ui.ThemeMode
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.url_title_privacy
@@ -23,6 +24,10 @@ internal sealed interface SettingsAction {
     data object ToggleActivities : SettingsAction
 
     data object ToggleRememberActivity : SettingsAction
+
+    data class UpdateWidgetActivity(
+        val activity: Activity,
+    ) : SettingsAction
 
     data object ToUnitsScreen : SettingsAction
 

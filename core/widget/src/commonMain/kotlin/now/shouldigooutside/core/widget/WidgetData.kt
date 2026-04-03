@@ -16,4 +16,9 @@ public data class WidgetData(
     @SerialName("todayScoreResult") val todayScoreResult: String,
     @SerialName("alertCount") val alertCount: Int,
     @SerialName("updatedAtMillis") val updatedAtMillis: Long,
-)
+    @SerialName("activityName") val activityName: String = DEFAULT_ACTIVITY_NAME,
+) {
+    public companion object {
+        public const val DEFAULT_ACTIVITY_NAME: String = "General"
+    }
+}

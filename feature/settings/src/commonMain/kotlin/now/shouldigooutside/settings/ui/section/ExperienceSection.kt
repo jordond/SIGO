@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.disable
@@ -30,15 +31,22 @@ import now.shouldigooutside.core.resources.settings_experience_remember_activity
 import now.shouldigooutside.core.resources.settings_experience_title
 import now.shouldigooutside.core.resources.settings_experience_units
 import now.shouldigooutside.core.resources.settings_experience_units_desc
+import now.shouldigooutside.core.resources.settings_experience_widget_activity
+import now.shouldigooutside.core.resources.settings_experience_widget_activity_desc
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.activities.rememberDisplayName
+import now.shouldigooutside.core.ui.activities.rememberIcon
+import now.shouldigooutside.core.ui.activities.rememberStringResource
 import now.shouldigooutside.core.ui.components.AlertDialog
 import now.shouldigooutside.core.ui.components.Switch
 import now.shouldigooutside.core.ui.components.SwitchDefaults
+import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.ArrowRight
 import now.shouldigooutside.core.ui.icons.lucide.Hourglass
 import now.shouldigooutside.core.ui.icons.lucide.Ruler
+import now.shouldigooutside.core.ui.icons.lucide.Smartphone
 import now.shouldigooutside.core.ui.icons.lucide.Vibrate
 import now.shouldigooutside.core.ui.icons.lucide.VibrateOff
 import now.shouldigooutside.core.ui.icons.lucide.Waves
@@ -65,12 +73,14 @@ internal fun ExperienceSection(
     toggleAirQuality: () -> Unit,
     toggleActivities: () -> Unit,
     toggleRememberActivity: () -> Unit,
+    updateWidgetActivity: (Activity) -> Unit,
     unitsClick: () -> Unit,
     modifier: Modifier = Modifier,
     primary: Color = AppTheme.colors.primary,
     secondary: Color = AppTheme.colors.secondary,
 ) {
     var showDisableActivitiesDialog by remember { mutableStateOf(false) }
+    var showWidgetActivityDialog by remember { mutableStateOf(false) }
 
     SettingsCard(
         text = Res.string.settings_experience_title,
@@ -165,6 +175,25 @@ internal fun ExperienceSection(
             )
         }
 
+        if (settings.enableActivities) {
+            Item {
+                val widgetActivityName = settings.widgetActivity.rememberDisplayName()
+                SettingsTextRow(
+                    text = Res.string.settings_experience_widget_activity,
+                    description = Res.string.settings_experience_widget_activity_desc,
+                    icon = AppIcons.Lucide.Smartphone,
+                    onClick = { showWidgetActivityDialog = true },
+                    trailingContent = {
+                        Text(
+                            text = widgetActivityName,
+                            style = AppTheme.typography.body2,
+                            color = AppTheme.colors.primary,
+                        )
+                    },
+                )
+            }
+        }
+
         Item(isLast = true) {
             SettingsTextRow(
                 text = Res.string.settings_experience_units,
@@ -188,6 +217,40 @@ internal fun ExperienceSection(
             },
         )
     }
+
+    if (showWidgetActivityDialog) {
+        AlertDialog(
+            title = Res.string.settings_experience_widget_activity.get(),
+            onDismissRequest = { showWidgetActivityDialog = false },
+            onConfirmClick = { showWidgetActivityDialog = false },
+            dismissButtonText = null,
+        ) {
+            Column {
+                settings.activities.keys.forEach { activity ->
+                    val isSelected = activity == settings.widgetActivity
+                    SettingsTextRow(
+                        text = activity.rememberStringResource(),
+                        icon = activity.rememberIcon(),
+                        onClick = {
+                            updateWidgetActivity(activity)
+                            showWidgetActivityDialog = false
+                        },
+                        trailingContent = if (isSelected) {
+                            {
+                                Switch(
+                                    checked = true,
+                                    onCheckedChange = {},
+                                    colors = SwitchDefaults.colors(checkedTrackColor = secondary),
+                                )
+                            }
+                        } else {
+                            null
+                        },
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Preview
@@ -208,6 +271,7 @@ private fun ExperienceSectionPreview() {
                 toggleActivities = {},
                 toggleAirQuality = {},
                 toggleRememberActivity = {},
+                updateWidgetActivity = { settings = settings.copy(widgetActivity = it) },
             )
         }
     }

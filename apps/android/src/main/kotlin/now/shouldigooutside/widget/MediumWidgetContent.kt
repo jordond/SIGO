@@ -53,6 +53,18 @@ internal fun MediumWidgetContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            if (data.activityName != WidgetData.DEFAULT_ACTIVITY_NAME) {
+                Text(
+                    text = data.activityName,
+                    style = TextStyle(
+                        color = ColorProvider(textOnScore.copy(alpha = 0.7f)),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center,
+                    ),
+                )
+            }
+
             Text(
                 text = data.scoreResult.uppercase(),
                 style = TextStyle(

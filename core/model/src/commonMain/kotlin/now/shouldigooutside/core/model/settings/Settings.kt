@@ -29,6 +29,7 @@ public class Settings(
     public val rememberActivity: Boolean = true,
     public val units: Units = Units.Metric,
     public val selectedActivity: Activity = Activity.General,
+    public val widgetActivity: Activity = Activity.General,
     public val activities: PersistentMap<Activity, Preferences> =
         persistentMapOf(Activity.General to Preferences.default),
     public val enableHaptics: Boolean = true,
@@ -68,8 +69,15 @@ public class Settings(
             selectedActivity
         }
 
+        val newWidget = if (widgetActivity == activity) {
+            Activity.General
+        } else {
+            widgetActivity
+        }
+
         return fullCopy(
             selectedActivity = newSelected,
+            widgetActivity = newWidget,
             activities = activities.toPersistentMap().remove(activity),
         )
     }
@@ -88,6 +96,7 @@ public class Settings(
         rememberActivity: Boolean = this.rememberActivity,
         units: Units = this.units,
         selectedActivity: Activity = this.selectedActivity,
+        widgetActivity: Activity = this.widgetActivity,
         enableHaptics: Boolean = this.enableHaptics,
         internalSettings: InternalSettings = this.internalSettings,
         loaded: Boolean = this.loaded,
@@ -106,6 +115,7 @@ public class Settings(
             rememberActivity = rememberActivity,
             units = units,
             selectedActivity = selectedActivity,
+            widgetActivity = widgetActivity,
             enableHaptics = enableHaptics,
             internalSettings = internalSettings,
             loaded = loaded,
@@ -125,6 +135,7 @@ public class Settings(
         rememberActivity: Boolean = this.rememberActivity,
         units: Units = this.units,
         selectedActivity: Activity = this.selectedActivity,
+        widgetActivity: Activity = this.widgetActivity,
         activities: PersistentMap<Activity, Preferences> = this.activities,
         enableHaptics: Boolean = this.enableHaptics,
         internalSettings: InternalSettings = this.internalSettings,
@@ -143,6 +154,7 @@ public class Settings(
             enableActivities = enableActivities,
             units = units,
             selectedActivity = selectedActivity,
+            widgetActivity = widgetActivity,
             rememberActivity = rememberActivity,
             activities = activities,
             enableHaptics = enableHaptics,

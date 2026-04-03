@@ -1,6 +1,8 @@
 import Foundation
 
 struct WidgetData: Codable {
+    static let defaultActivityName = "General"
+
     let scoreResult: String
     let locationName: String
     let currentTemp: Double
@@ -12,6 +14,7 @@ struct WidgetData: Codable {
     let todayScoreResult: String
     let alertCount: Int
     let updatedAtMillis: Int64
+    let activityName: String?
 
     var isStale: Bool {
         let twoHoursMs: Int64 = 2 * 60 * 60 * 1000

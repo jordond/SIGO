@@ -9,10 +9,11 @@ import now.shouldigooutside.core.domain.forecast.GetForecastUseCase
 import now.shouldigooutside.core.domain.forecast.ScoreCalculator
 import now.shouldigooutside.core.domain.location.LocationRepo
 import now.shouldigooutside.core.domain.settings.SettingsRepo
-import now.shouldigooutside.core.model.ForecastData
 import now.shouldigooutside.core.model.location.LocationResult
+import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.widget.AndroidWidgetDataStore
 import now.shouldigooutside.core.widget.WidgetDataMapper
+import now.shouldigooutside.core.widget.widgetDisplayName
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -38,8 +39,10 @@ class WidgetRefreshWorker(
             }
 
             val successLocation = (location as LocationResult.Success).location
-            val preferences = settingsRepo.settings.value.preferences
-            val units = preferences.units
+            val settings = settingsRepo.settings.value
+            val widgetActivity = settings.widgetActivity
+            val preferences = settings.activities[widgetActivity] ?: Preferences.default
+            val units = settings.units
 
             val forecastResult = getForecastUseCase.forecastFor(successLocation, units)
             val forecast = forecastResult.getOrNull()
@@ -48,9 +51,13 @@ class WidgetRefreshWorker(
                 return Result.retry()
             }
 
-            val score = scoreCalculator.calculate(forecast, preferences)
-            val forecastData = ForecastData(forecast = forecast, score = score)
-            val widgetData = WidgetDataMapper.map(forecastData, units)
+            val score = scoreCalculator.calculate(forecast, preferences, settings.includeAirQuality)
+            val widgetData = WidgetDataMapper.map(
+                forecast = forecast,
+                score = score,
+                units = units,
+                activityName = widgetActivity.widgetDisplayName(),
+            )
 
             val dataStore = AndroidWidgetDataStore(applicationContext)
             dataStore.save(widgetData)

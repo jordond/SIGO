@@ -10,6 +10,12 @@ struct MediumWidgetView: View {
             HStack(spacing: 0) {
                 // Left side: score badge
                 VStack(spacing: 4) {
+                    if let activityName = data.activityName, activityName != WidgetData.defaultActivityName {
+                        Text(activityName)
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundColor(WidgetColors.scoreTextColor.opacity(0.7))
+                    }
+
                     Text(data.scoreResult.uppercased())
                         .font(.system(size: 24, weight: .bold))
                         .foregroundColor(WidgetColors.scoreTextColor)
