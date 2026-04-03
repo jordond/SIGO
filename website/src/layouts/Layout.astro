@@ -83,6 +83,12 @@ const {
       })
 
       getAnalytics(app)
+
+      console.log(
+        "%c Should I Go Outside? %c Yes. But first, check the app. ",
+        "background: #ffdb02; color: #111; font-weight: bold; padding: 4px 8px; border: 2px solid #111;",
+        "background: #feecde; color: #333; padding: 4px 8px; border: 2px solid #111;",
+      )
     </script>
   </body>
 </html>
@@ -189,6 +195,14 @@ const {
     padding: 5px;
     box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0
       var(--color-shadow);
+    transition:
+      transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .phone-frame:hover {
+    transform: translateY(-4px) rotate(-1deg);
+    box-shadow: 10px 12px 0 0 var(--color-shadow);
   }
 
   .phone-frame--sm {
@@ -205,6 +219,15 @@ const {
 
   .phone-frame--sm img {
     border-radius: 27px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .phone-frame {
+      transition: none;
+    }
+    .phone-frame:hover {
+      transform: none;
+    }
   }
 
   .eyebrow-pill {

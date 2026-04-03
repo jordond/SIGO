@@ -35,7 +35,12 @@ import Header from "../components/Header.astro"
     padding: 3rem 2.5rem;
     max-width: 420px;
     width: 100%;
-    transform: rotate(-1.5deg);
+    animation: wobble 3s ease-in-out infinite;
+  }
+
+  @keyframes wobble {
+    0%, 100% { transform: rotate(-1.5deg); }
+    50% { transform: rotate(1deg); }
   }
 
   .emoji {
@@ -102,6 +107,11 @@ import Header from "../components/Header.astro"
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .card {
+      animation: none;
+      transform: rotate(-1.5deg);
+    }
+
     .btn {
       transition: none;
     }

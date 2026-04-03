@@ -10,14 +10,7 @@
 
     <nav class="header__nav" aria-label="Main navigation">
       <a href="/help" class="header__link">Help</a>
-      <a
-        href="https://apps.apple.com/us/app/should-i-go-outside-weather/id6760564555"
-        class="header__cta"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Download
-      </a>
+      <a href="#download" class="header__cta">Download</a>
     </nav>
   </div>
 </header>
@@ -52,6 +45,12 @@
     font-weight: 700;
     letter-spacing: -0.12em;
     text-transform: uppercase;
+    display: inline-block;
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .header__brand:hover .header__name {
+    transform: rotate(-3deg) scale(1.05);
   }
 
   .header__nav {
@@ -114,8 +113,12 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .header__cta {
+    .header__cta,
+    .header__name {
       transition: none;
+    }
+    .header__brand:hover .header__name {
+      transform: none;
     }
   }
 </style>

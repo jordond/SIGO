@@ -40,18 +40,18 @@ import DownloadButtons from "./DownloadButtons.astro"
     <!-- Text column -->
     <div class="hero__text">
       <!-- Tilted headline card -->
-      <div class="hero__title-card">
+      <div class="hero__title-card hero-enter hero-enter--1">
         <h1 class="hero__title">Should I<br />Go Outside?</h1>
       </div>
 
       <!-- Tagline -->
-      <p class="hero__tagline">
+      <p class="hero__tagline hero-enter hero-enter--2">
         The weather app that answers<br class="tagline-break" /> the only question
         that matters.
       </p>
 
       <!-- Description -->
-      <p class="hero__description">
+      <p class="hero__description hero-enter hero-enter--3">
         No radar maps. No pollen counts. No 10-day forecasts you'll never read.<br
           class="desc-break"
         />
@@ -59,11 +59,13 @@ import DownloadButtons from "./DownloadButtons.astro"
       </p>
 
       <!-- CTA buttons -->
-      <DownloadButtons />
+      <div class="hero-enter hero-enter--4">
+        <DownloadButtons />
+      </div>
     </div>
 
     <!-- Phone screenshot -->
-    <div class="hero__phone-wrap">
+    <div class="hero__phone-wrap hero-enter hero-enter--2">
       <div class="hero__phone">
         <Image
           src={screenshotYes}
@@ -343,6 +345,33 @@ import DownloadButtons from "./DownloadButtons.astro"
     max-width: 520px;
   }
 
+  /* ── Staggered hero entrance ── */
+  .hero-enter {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: hero-slap 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .hero-enter--1 { animation-delay: 0.1s; }
+  .hero-enter--2 { animation-delay: 0.25s; }
+  .hero-enter--3 { animation-delay: 0.4s; }
+  .hero-enter--4 { animation-delay: 0.55s; }
+
+  @keyframes hero-slap {
+    0% {
+      opacity: 0;
+      transform: translateY(24px) scale(0.97);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(-3px) scale(1.005);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
   /* Hide inline breaks on wide screens — they only serve mobile */
   @media (min-width: 640px) {
     .tagline-break,
@@ -427,6 +456,12 @@ import DownloadButtons from "./DownloadButtons.astro"
   @media (prefers-reduced-motion: reduce) {
     .shape,
     .hero__phone-wrap {
+      animation: none;
+    }
+
+    .hero-enter {
+      opacity: 1;
+      transform: none;
       animation: none;
     }
 
