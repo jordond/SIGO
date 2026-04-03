@@ -9,15 +9,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowInsetsControllerCompat
-import now.shouldigooutside.App
+import now.shouldigooutside.core.platform.ActivityProvider
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        ActivityProvider.set(this)
         setContent {
             App(onThemeChanged = { ThemeChanged(it) })
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        ActivityProvider.set(this)
+    }
+
+    override fun onStop() {
+        ActivityProvider.clear()
+        super.onStop()
     }
 }
 

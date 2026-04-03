@@ -11,3 +11,7 @@ public actual fun launchAppStore() {
 public actual fun shareApp() {
     Logger.i { "Not supported on this platform" }
 }
+
+public actual fun requestInAppReview() {
+    Logger.i { "In-app review not supported on this platform" }
+}

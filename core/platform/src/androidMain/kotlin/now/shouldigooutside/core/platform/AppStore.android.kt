@@ -4,6 +4,8 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
+import co.touchlab.kermit.Logger
+import com.google.android.play.core.review.ReviewManagerFactory
 import now.shouldigooutside.core.platform.di.getKoinInstance
 
 public actual val appIdentifier: String
@@ -43,4 +45,17 @@ public actual fun shareApp() {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         },
     )
+}
+
+public actual fun requestInAppReview() {
+    val activity = ActivityProvider.get() ?: return
+    val manager = ReviewManagerFactory.create(getKoinInstance())
+    Logger.d { "Requesting in-app review" }
+    manager
+        .requestReviewFlow()
+        .addOnSuccessListener { info ->
+            manager.launchReviewFlow(activity, info)
+        }.addOnFailureListener { cause ->
+            Logger.e(cause) { "Unable to request in-app review" }
+        }
 }

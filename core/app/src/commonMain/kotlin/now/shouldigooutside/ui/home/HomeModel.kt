@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
@@ -20,6 +21,7 @@ import now.shouldigooutside.core.model.location.LocationPermissionStatus.Denied
 import now.shouldigooutside.core.model.location.LocationPermissionStatus.Granted
 import now.shouldigooutside.core.model.location.LocationPermissionStatus.Unknown
 import now.shouldigooutside.core.model.location.LocationResult
+import now.shouldigooutside.core.platform.requestInAppReview
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.forecast_error_generic
 import now.shouldigooutside.core.resources.location_geolocation_error
@@ -55,10 +57,15 @@ internal class HomeModel(
         }
 
         viewModelScope.launch {
-            state
-                .map { it.status.errorOrNull() }
+            forecastStateHolder.state
+                .map { it.errorOrNull() }
                 .distinctUntilChanged()
                 .collect { error -> error.handleForecastError() }
+        }
+
+        viewModelScope.launch {
+            forecastStateHolder.state.first { it is AsyncResult.Success }
+            requestInAppReview()
         }
     }
 

@@ -37,6 +37,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.androidx.core)
+            implementation(libs.google.play.review)
             implementation(libs.koin.android)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.okhttp)

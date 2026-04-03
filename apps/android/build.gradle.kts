@@ -100,6 +100,7 @@ android {
 
 dependencies {
     implementation(projects.core.app)
+    implementation(projects.core.platform)
 
     coreLibraryDesugaring(libs.desugar)
 

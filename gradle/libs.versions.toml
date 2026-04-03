@@ -61,6 +61,7 @@ connectivity = "2.4.1"
 lumo = "1.2.5"
 mordant = "3.0.2"
 turbine = "1.2.1"
+play-review = "2.0.2"
 poko = "0.22.0"
 
 [libraries]
@@ -115,6 +116,7 @@ firebase-common = { module = "com.google.firebase:firebase-common" }
 firebase-config = { module = "com.google.firebase:firebase-config" }
 firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
 firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debug" }
+google-play-review = { module = "com.google.android.play:review", version.ref = "play-review" }
 firebase-kmp-analytics = { module = "dev.gitlive:firebase-analytics", version.ref = "firebase-kmp" }
 firebase-kmp-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebase-kmp" }
 firebase-kmp-config = { module = "dev.gitlive:firebase-config", version.ref = "firebase-kmp" }
