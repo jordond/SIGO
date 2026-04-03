@@ -4,6 +4,8 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
+import co.touchlab.kermit.Logger
+import com.google.android.play.core.review.ReviewManagerFactory
 import now.shouldigooutside.core.platform.di.getKoinInstance
 
 public actual val appIdentifier: String
@@ -12,7 +14,7 @@ public actual val appIdentifier: String
 public actual fun launchAppStore() {
     val context = getKoinInstance<Context>()
 
-    val uri = "market://details?id=$appIdentifier".toUri()
+    val uri = "market://details?id=now.shouldigooutside".toUri()
     val flags =
         Intent.FLAG_ACTIVITY_NO_HISTORY or
             Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
@@ -28,4 +30,32 @@ public actual fun launchAppStore() {
             "http://play.google.com/store/apps/details?id=$appIdentifier".toUri()
         context.startActivity(Intent(Intent.ACTION_VIEW, backup))
     }
+}
+
+public actual fun shareApp() {
+    val context = getKoinInstance<Context>()
+    val shareUrl = "https://play.google.com/store/apps/details?id=now.shouldigooutside"
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, shareUrl)
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+    context.startActivity(
+        Intent.createChooser(intent, null).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        },
+    )
+}
+
+public actual fun requestInAppReview() {
+    val activity = ActivityProvider.get() ?: return
+    val manager = ReviewManagerFactory.create(getKoinInstance())
+    Logger.d { "Requesting in-app review" }
+    manager
+        .requestReviewFlow()
+        .addOnSuccessListener { info ->
+            manager.launchReviewFlow(activity, info)
+        }.addOnFailureListener { cause ->
+            Logger.e(cause) { "Unable to request in-app review" }
+        }
 }

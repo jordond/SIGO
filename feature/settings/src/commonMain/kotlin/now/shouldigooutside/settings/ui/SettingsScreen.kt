@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,14 +28,17 @@ import dev.stateholder.extensions.collectAsState
 import now.shouldigooutside.core.Version
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.platform.launchAppStore
+import now.shouldigooutside.core.platform.shareApp
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.settings
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.Scaffold
+import now.shouldigooutside.core.ui.components.ScaffoldScope.innerPadding
 import now.shouldigooutside.core.ui.components.snackbar.Snackbar
 import now.shouldigooutside.core.ui.components.snackbar.SnackbarHost
 import now.shouldigooutside.core.ui.components.snackbar.SnackbarHostState
 import now.shouldigooutside.core.ui.components.snackbar.rememberSnackbarProvider
+import now.shouldigooutside.core.ui.components.topbar.TopBarDefaults
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.settings.ui.components.SettingsTopBar
 import now.shouldigooutside.settings.ui.section.AboutSection
@@ -48,7 +53,6 @@ internal fun SettingsScreen(
     toInternalSettings: () -> Unit,
     toWebView: (title: String, url: String) -> Unit,
     toUnits: () -> Unit,
-    toPreferences: () -> Unit,
     model: SettingsModel = koinViewModel(),
 ) {
     HandleEvents(model) { event ->
@@ -77,11 +81,17 @@ internal fun SettingsScreen(
                 is SettingsAction.Toggle24HourFormat -> {
                     model.toggle24HourFormat()
                 }
+                is SettingsAction.ToggleAirQuality -> {
+                    model.toggleAirQuality()
+                }
+                is SettingsAction.ToggleActivities -> {
+                    model.toggleActivities()
+                }
+                is SettingsAction.ToggleRememberActivity -> {
+                    model.toggleRememberActivity()
+                }
                 is SettingsAction.ToUnitsScreen -> {
                     toUnits()
-                }
-                is SettingsAction.ToPreferencesScreen -> {
-                    toPreferences()
                 }
                 is SettingsAction.RateApp -> {
                     if (state.canEnableInternalSettings) {
@@ -91,7 +101,7 @@ internal fun SettingsScreen(
                     }
                 }
                 is SettingsAction.ShareApp -> {
-                    // TODO: Share app
+                    shareApp()
                 }
                 is SettingsAction.TapAbout -> {
                     model.clickAbout()
@@ -119,6 +129,8 @@ internal fun SettingsScreen(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     version: Version = Version,
 ) {
+    val scrollBehavior = TopBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
         modifier = modifier,
         containerColor = AppTheme.colors.surface,
@@ -135,20 +147,18 @@ internal fun SettingsScreen(
         },
         topBar = {
             SettingsTopBar(
+                scrollBehavior = scrollBehavior,
                 text = Res.string.settings,
                 onBack = dispatcher.rememberRelay(SettingsAction.Close),
             )
         },
     ) { innerPadding ->
-        val layoutDirection = LocalLayoutDirection.current
         Column(
             verticalArrangement = Arrangement.spacedBy(32.dp),
             modifier = Modifier
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    start = innerPadding.calculateStartPadding(layoutDirection),
-                    end = innerPadding.calculateEndPadding(layoutDirection),
-                ).padding(horizontal = 16.dp)
+                .innerPadding(innerPadding, bottom = false)
+                .padding(horizontal = 16.dp)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .verticalScroll(rememberScrollState()),
         ) {
             Spacer(Modifier.height(8.dp))
@@ -164,8 +174,10 @@ internal fun SettingsScreen(
                 settings = settings,
                 toggleHaptics = dispatcher.rememberRelay(SettingsAction.ToggleHaptics),
                 toggle24HourFormat = dispatcher.rememberRelay(SettingsAction.Toggle24HourFormat),
+                toggleAirQuality = dispatcher.rememberRelay(SettingsAction.ToggleAirQuality),
+                toggleActivities = dispatcher.rememberRelay(SettingsAction.ToggleActivities),
+                toggleRememberActivity = dispatcher.rememberRelay(SettingsAction.ToggleRememberActivity),
                 unitsClick = dispatcher.rememberRelay(SettingsAction.ToUnitsScreen),
-                preferencesClick = dispatcher.rememberRelay(SettingsAction.ToPreferencesScreen),
                 primary = AppTheme.colors.secondary,
                 secondary = AppTheme.colors.primary,
             )

@@ -17,6 +17,9 @@ import now.shouldigooutside.settings.ui.units.UnitsScreen
 public data object SettingsRoute : Route
 
 @Serializable
+public data object PreferencesTabRoute : Route
+
+@Serializable
 internal data object InternalSettingsRoute : Route
 
 @Serializable
@@ -38,7 +41,6 @@ public fun NavGraphBuilder.settingsNavigation(
             onBack = navController::popBackStack,
             toInternalSettings = { navController.navigate(InternalSettingsRoute) },
             toUnits = { navController.navigate(UnitsRoute) },
-            toPreferences = { navController.navigate(PreferencesRoute) },
             toWebView = toWebView,
         )
     }
@@ -50,15 +52,15 @@ public fun NavGraphBuilder.settingsNavigation(
         )
     }
 
-    slideHorizontally<UnitsRoute> { entry ->
+    slideHorizontally<UnitsRoute> {
         UnitsScreen(onBack = navController::popBackStack)
     }
 
-    slideHorizontally<PreferencesRoute> { entry ->
+    slideHorizontally<PreferencesRoute> {
         PreferencesScreen(onBack = navController::popBackStack)
     }
 
-    bottomSheet<PreferencesBottomSheet> { entry ->
+    bottomSheet<PreferencesBottomSheet> {
         PreferencesBottomSheet(onBack = navController::popBackStack)
     }
 }

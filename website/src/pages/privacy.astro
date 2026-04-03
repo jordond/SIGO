@@ -1,14 +1,16 @@
 ---
 import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
 ---
 
 <Layout
-  title="Privacy Policy — Should I Go Outside?"
+  title="Privacy Policy | Should I Go Outside?"
   description="Privacy policy for the Should I Go Outside? app and website. We keep it simple: your location is never stored, and we collect only anonymous data to keep the app running well."
 >
+  <Header />
   <main class="page">
     <div class="card">
-      <a href="/" class="back-btn">← Back to home</a>
+      <a href="/" class="brutal-btn brutal-btn--sm back-btn">← Back to home</a>
 
       <h1 class="heading">Privacy Policy</h1>
       <p class="meta">
@@ -22,8 +24,8 @@ import Layout from "../layouts/Layout.astro"
 
       <p class="intro">
         Should I Go Outside? is built to be simple and respectful of your
-        privacy. No accounts, no personal data stored. Here's what happens
-        when you use the app or visit this website.
+        privacy. No accounts, no personal data stored. Here's what happens when
+        you use the app or visit this website.
       </p>
 
       <section>
@@ -49,11 +51,11 @@ import Layout from "../layouts/Layout.astro"
 
         <h3 class="subsection-heading">Your location</h3>
         <p>
-          When you use the app, it sends your current location to a
-          third-party weather API to fetch conditions for your area. Your
-          location is <strong>never stored on our servers</strong>, never
-          logged, and never shared with anyone beyond that single weather
-          request.
+          When you use the app, it sends your current location to a third-party
+          weather API to fetch conditions for your area. Your location is <strong
+            >never stored on our servers</strong
+          >, never logged, and never shared with anyone beyond that single
+          weather request.
         </p>
 
         <h3 class="subsection-heading">Crash reports (Firebase Crashlytics)</h3>
@@ -75,9 +77,9 @@ import Layout from "../layouts/Layout.astro"
         <h3 class="subsection-heading">Usage analytics (Google Analytics)</h3>
         <p>
           We use Google Analytics to understand how people use the app, like
-          which screens are visited and how often the app is opened. All of
-          this data is anonymous and aggregated. We cannot identify individual
-          users from it.
+          which screens are visited and how often the app is opened. All of this
+          data is anonymous and aggregated. We cannot identify individual users
+          from it.
         </p>
         <p>
           Google Analytics is operated by Google. You can learn more at <a
@@ -130,10 +132,10 @@ import Layout from "../layouts/Layout.astro"
       <section>
         <h2 class="section-heading">Who we share data with</h2>
         <p>
-          We do not sell, rent, or trade your data with anyone. The only
-          sharing that happens is your location being sent to a weather API to
-          fetch current conditions. The only third parties involved are our
-          analytics and crash reporting tools described above.
+          We do not sell, rent, or trade your data with anyone. The only sharing
+          that happens is your location being sent to a weather API to fetch
+          current conditions. The only third parties involved are our analytics
+          and crash reporting tools described above.
         </p>
       </section>
 
@@ -152,8 +154,8 @@ import Layout from "../layouts/Layout.astro"
         <h2 class="section-heading">Your rights</h2>
         <p>
           Depending on where you live, you may have rights regarding your
-          personal data. Since we don't store any personal data, there's
-          very little to act on. Here's how it breaks down:
+          personal data. Since we don't store any personal data, there's very
+          little to act on. Here's how it breaks down:
         </p>
         <ul>
           <li>
@@ -169,8 +171,8 @@ import Layout from "../layouts/Layout.astro"
             can opt out through Google's privacy settings.
           </li>
           <li>
-            <strong>Everyone else:</strong> The above applies to all users
-            regardless of jurisdiction.
+            <strong>Everyone else:</strong> The above applies to all users regardless
+            of jurisdiction.
           </li>
         </ul>
         <p>
@@ -209,7 +211,8 @@ import Layout from "../layouts/Layout.astro"
       </section>
 
       <div class="footer-note">
-        <a href="/" class="back-btn">← Back to home</a>
+        <a href="/" class="brutal-btn brutal-btn--sm back-btn">← Back to home</a
+        >
       </div>
     </div>
   </main>
@@ -221,7 +224,7 @@ import Layout from "../layouts/Layout.astro"
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding: 3rem 1.5rem 4rem;
+    padding: var(--space-xl) var(--space-md) var(--space-section);
     background-color: var(--color-bg);
   }
 
@@ -231,116 +234,88 @@ import Layout from "../layouts/Layout.astro"
     box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0
       var(--color-shadow);
     border-radius: var(--radius-md);
-    padding: 2.5rem 3rem;
+    padding: var(--space-xl) var(--space-xl);
     max-width: 720px;
     width: 100%;
     transform: rotate(-0.5deg);
   }
 
   .back-btn {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    font-family: inherit;
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--color-text);
-    text-decoration: none;
+    font-size: var(--text-sm);
     background-color: var(--color-primary);
-    border: var(--border-width) solid var(--color-outline);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0
-      var(--color-shadow);
-    transition:
-      transform 0.15s ease,
-      box-shadow 0.15s ease;
-    margin-bottom: 2rem;
-  }
-
-  .back-btn:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 var(--color-shadow);
-  }
-
-  .back-btn:active {
-    transform: translate(1px, 1px);
-    box-shadow: 2px 2px 0 0 var(--color-shadow);
-  }
-
-  .back-btn:focus-visible {
-    outline: 3px solid var(--color-accent);
-    outline-offset: 2px;
+    padding: 0.5rem 1rem;
+    margin-bottom: var(--space-lg);
   }
 
   .heading {
     font-family: "Lexend Mega", sans-serif;
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 700;
-    letter-spacing: -0.05em;
+    letter-spacing: var(--display-tracking);
+    line-height: var(--display-leading);
     color: var(--color-text);
-    margin-bottom: 1rem;
-    line-height: 1.1;
+    margin-bottom: var(--space-sm);
   }
 
   .meta {
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
     color: var(--color-text-secondary);
     line-height: 1.8;
-    margin-bottom: 1.75rem;
-    padding-bottom: 1.75rem;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-lg);
     border-bottom: var(--border-width) solid var(--color-outline);
   }
 
   .intro {
-    font-size: 1.05rem;
+    font-size: var(--text-base);
     line-height: 1.7;
     color: var(--color-text);
-    margin-bottom: 2.5rem;
     font-weight: 500;
+    margin-bottom: var(--space-xl);
   }
 
   section {
-    margin-bottom: 2.25rem;
+    margin-bottom: var(--space-lg);
   }
 
   .section-heading {
     font-family: "Lexend Mega", sans-serif;
-    font-size: 1.1rem;
+    font-size: var(--text-md);
     font-weight: 700;
     letter-spacing: -0.03em;
     color: var(--color-text);
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-sm);
     padding-left: 0.75rem;
-    border-left: 3px solid var(--color-primary);
+    border-left: var(--border-width) solid var(--color-primary);
   }
 
   .subsection-heading {
-    font-size: 1rem;
+    font-size: var(--text-base);
     font-weight: 700;
     color: var(--color-text);
-    margin-top: 1.25rem;
-    margin-bottom: 0.5rem;
+    margin-top: var(--space-sm);
+    margin-bottom: var(--space-xs);
   }
 
   p {
-    font-size: 0.975rem;
+    font-size: var(--text-base);
     line-height: 1.75;
     color: var(--color-text-secondary);
-    margin-bottom: 0.875rem;
+    margin-bottom: var(--space-sm);
   }
 
   ul {
     list-style: none;
     padding: 0;
-    margin-bottom: 0.875rem;
+    margin-bottom: var(--space-sm);
   }
 
   ul li {
-    font-size: 0.975rem;
+    font-size: var(--text-base);
     line-height: 1.75;
     color: var(--color-text-secondary);
     padding-left: 1.25rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-xs);
     position: relative;
   }
 
@@ -372,8 +347,8 @@ import Layout from "../layouts/Layout.astro"
   }
 
   .footer-note {
-    margin-top: 3rem;
-    padding-top: 1.75rem;
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
     border-top: var(--border-width) solid var(--color-outline);
   }
 
@@ -381,19 +356,18 @@ import Layout from "../layouts/Layout.astro"
     margin-bottom: 0;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 640px) {
     .page {
-      padding: 1.5rem 1rem 3rem;
+      padding: var(--space-md) var(--space-sm) var(--space-xl);
     }
 
     .card {
-      padding: 1.75rem 1.25rem;
+      padding: var(--space-lg) var(--space-md);
       transform: none;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .back-btn,
     .link {
       transition: none;
     }

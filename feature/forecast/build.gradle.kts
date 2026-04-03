@@ -8,10 +8,14 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "forecast")
+configureMultiplatform(Platforms.All, name = "forecast", tests = true)
 
 kotlin {
     sourceSets {
+        commonTest.dependencies {
+            implementation(projects.test)
+        }
+
         commonMain.dependencies {
             implementation(projects.core.config)
             implementation(projects.core.model)

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "packageRules": [
+    {
+      "matchFileNames": ["website/**"],
+      "groupName": "website dependencies"
+    },
+    {
+      "matchFileNames": ["apps/api/worker/**"],
+      "groupName": "api/worker dependencies"
+    }
+  ]
+}

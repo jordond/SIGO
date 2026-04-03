@@ -15,8 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import dev.stateholder.extensions.collectAsState
 import now.shouldigooutside.core.model.ui.ThemeMode
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.LocalHaptics
-import now.shouldigooutside.core.ui.LocalUse24HourTime
 import now.shouldigooutside.core.ui.LocalWindowSizeClass
 import now.shouldigooutside.core.ui.calculateWindowSizeClass
 import now.shouldigooutside.core.ui.navigation.bottomsheet.BottomSheetNavigator
@@ -29,6 +29,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun AppHost(
+    onThemeChanged: @Composable (isDark: Boolean) -> Unit,
     model: AppHostModel = koinViewModel(),
     windowSizeClass: WindowSizeClass = calculateWindowSizeClass(),
     bottomSheetNavigator: BottomSheetNavigator = rememberBottomSheetNavigator(skipPartiallyExpanded = true),
@@ -45,7 +46,7 @@ internal fun AppHost(
         }
     }
 
-    AppTheme(isDarkTheme = isDarkTheme) {
+    AppTheme(onThemeChanged = onThemeChanged, isDarkTheme = isDarkTheme) {
         when (val uiState = state.uiState) {
             is UiState.Loading -> {
                 Box(
@@ -60,12 +61,12 @@ internal fun AppHost(
                 }
             }
             is UiState.Loaded -> {
-                val haptics = rememberHaptics(state.enableHaptics)
+                val haptics = rememberHaptics(state.appExperience.enableHaptics)
 
                 CompositionLocalProvider(
                     LocalWindowSizeClass provides windowSizeClass,
                     LocalHaptics provides haptics,
-                    LocalUse24HourTime provides state.settings.use24HourFormat,
+                    LocalAppExperience provides state.appExperience,
                 ) {
                     ModalBottomSheetLayout(
                         bottomSheetNavigator = bottomSheetNavigator,

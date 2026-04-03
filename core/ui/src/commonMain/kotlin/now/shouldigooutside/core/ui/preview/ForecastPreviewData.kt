@@ -1,8 +1,9 @@
 package now.shouldigooutside.core.ui.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import kotlinx.datetime.LocalDate
 import now.shouldigooutside.core.domain.forecast.DefaultScoreCalculator
-import now.shouldigooutside.core.model.ForecastData
+import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
@@ -11,7 +12,9 @@ import now.shouldigooutside.core.model.forecast.Precipitation
 import now.shouldigooutside.core.model.forecast.PrecipitationType
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
 import now.shouldigooutside.core.model.forecast.Temperature
+import now.shouldigooutside.core.model.forecast.WeatherWindow
 import now.shouldigooutside.core.model.forecast.Wind
+import now.shouldigooutside.core.model.forecast.goodWeatherWindows
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.score.ForecastScore
@@ -49,6 +52,7 @@ public object ForecastPreviewData {
             pressure = 1012.0, // hPa, typical sea level pressure
             uvIndex = 5,
             visibility = 20.0, // km
+            airQuality = AirQuality(3),
             severeWeatherRisk = SevereWeatherRisk.None,
         )
 
@@ -304,21 +308,30 @@ public object ForecastPreviewData {
             instant = instant,
         )
 
+    public fun createGoodWindowForecast(instant: Instant = Clock.System.now()): Forecast =
+        createForecast(
+            instant = instant,
+            hours = listOf(
+                rainy(instant.plus(1.hours)),
+                sunny(instant.plus(2.hours)),
+                sunny(instant.plus(3.hours)),
+                sunny(instant.plus(4.hours)),
+                rainy(instant.plus(5.hours)),
+            ),
+        )
+
     private val calculator = DefaultScoreCalculator()
 
     public fun score(
         forecast: Forecast,
         preferences: Preferences = Preferences.default,
-    ): ForecastScore = calculator.calculate(forecast, preferences)
+        includeAirQuality: Boolean = true,
+    ): ForecastScore = calculator.calculate(forecast, preferences, includeAirQuality)
 
-    public fun forecastData(
+    public fun goodWindow(
         forecast: Forecast,
         preferences: Preferences = Preferences.default,
-    ): ForecastData =
-        ForecastData(
-            forecast = forecast,
-            score = score(forecast, preferences),
-        )
+    ): WeatherWindow? = forecast.goodWeatherWindows(score(forecast, preferences)).firstOrNull()
 
     public class ForecastBlockPreviewParameterProvider : PreviewParameterProvider<ForecastBlock> {
         override val values: Sequence<ForecastBlock> = sequenceOf(sunny(), rainy(), snowy(), hot(), cold())

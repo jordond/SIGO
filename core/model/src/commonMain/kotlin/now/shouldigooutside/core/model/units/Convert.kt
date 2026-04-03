@@ -6,6 +6,11 @@ private const val MPS_TO_KPH = 3.6
 private const val MPS_TO_MPH = 2.23694
 private const val KPH_TO_MPH = 0.621371
 private const val MPH_TO_KPH = 1.60934
+private const val MPS_TO_KNOTS = 1.94384
+private const val KPH_TO_KNOTS = 0.539957
+private const val MPH_TO_KNOTS = 0.868976
+private const val KNOTS_TO_KPH = 1.852
+private const val KNOTS_TO_MPH = 1.15078
 private const val HPA_TO_INCH_MERCURY = 0.02953
 
 public val Double.kelvin: Double
@@ -63,16 +68,25 @@ public fun convertWindSpeed(
             WindSpeedUnit.MeterPerSecond -> value
             WindSpeedUnit.KilometerPerHour -> value * MPS_TO_KPH
             WindSpeedUnit.MilePerHour -> value * MPS_TO_MPH
+            WindSpeedUnit.Knot -> value * MPS_TO_KNOTS
         }
         WindSpeedUnit.KilometerPerHour -> when (target) {
             WindSpeedUnit.MeterPerSecond -> value / MPS_TO_KPH
             WindSpeedUnit.KilometerPerHour -> value
             WindSpeedUnit.MilePerHour -> value * KPH_TO_MPH
+            WindSpeedUnit.Knot -> value * KPH_TO_KNOTS
         }
         WindSpeedUnit.MilePerHour -> when (target) {
             WindSpeedUnit.MeterPerSecond -> value / MPS_TO_MPH
             WindSpeedUnit.KilometerPerHour -> value * MPH_TO_KPH
             WindSpeedUnit.MilePerHour -> value
+            WindSpeedUnit.Knot -> value * MPH_TO_KNOTS
+        }
+        WindSpeedUnit.Knot -> when (target) {
+            WindSpeedUnit.MeterPerSecond -> value / MPS_TO_KNOTS
+            WindSpeedUnit.KilometerPerHour -> value * KNOTS_TO_KPH
+            WindSpeedUnit.MilePerHour -> value * KNOTS_TO_MPH
+            WindSpeedUnit.Knot -> value
         }
     }
 

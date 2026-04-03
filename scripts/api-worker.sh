@@ -7,9 +7,11 @@ ROOT="$(cd "$CWD"/.. >/dev/null 2>&1 && pwd)"
 
 APP_ENV_PROPERTIES="$ROOT/app-env.properties"
 SECRET_FORECAST_API_KEY="FORECAST_API_KEY"
-WRANGLER_VARS="$ROOT/.dev.vars"
-WRANGLER_VARS_SAMPLE="$ROOT/.dev.vars.sample"
+WORKER_DIR="$ROOT/apps/api/worker"
+WRANGLER_VARS="$WORKER_DIR/.dev.vars"
+WRANGLER_VARS_SAMPLE="$WORKER_DIR/.dev.vars.sample"
 WRANGLER_COMMAND="$ROOT/apps/api/worker/node_modules/.bin/wrangler"
+WRANGLER_CONFIG="$WORKER_DIR/wrangler.json"
 API_SCRIPT="$ROOT/scripts/api.sh"
 KJS_OUTPUT_FILE="$ROOT/apps/api/worker/build/compileSync/js/main/productionExecutable/kotlin/index.mjs"
 
@@ -25,6 +27,7 @@ print_usage() {
     echo "  deploy [options]        Deploy the worker to Cloudflare (default=prod)"
     echo "    --env <env>               Environment to deploy to (prod, staging, dev)"
     echo "    --no-clean                Skip cleaning before building"
+    echo "    --skip-build              Skip building (use existing build output)"
     echo "    --all                     Deploy to all environments (prod, staging, dev)"
     echo "  update-wrangler         Update Wrangler to the latest version"
     echo "  wrangler [command]      Wrapper around Cloudflare's Wrangler"
@@ -40,6 +43,19 @@ fi
 check_prerequisites() {
     if ! command -v node &>/dev/null || ! command -v npm &>/dev/null; then
         echo "❌ npm not found. Please install Node.js and npm first."
+        exit 1
+    fi
+
+    if ! command -v pnpm &>/dev/null; then
+        echo "❌ pnpm not found. Please install pnpm first."
+        exit 1
+    fi
+
+    if ! (
+        cd "$WORKER_DIR"
+        pnpm install >/dev/null
+    ); then
+        echo "❌ pnpm install failed"
         exit 1
     fi
 
@@ -121,7 +137,6 @@ initialize() {
 
     echo "✅ npm found: $(npm --version)"
 
-    WORKER_DIR="$ROOT/apps/api/worker"
     cd "$WORKER_DIR"
     echo "📦 Installing npm dependencies..."
     if ! npm install >/dev/null; then
@@ -147,9 +162,9 @@ check_secrets_for_env() {
 
     local secret_output
     if [[ "$env" != "prod" ]]; then
-        secret_output=$("$WRANGLER_COMMAND" secret list --env "$env" 2>/dev/null || echo "[]")
+        secret_output=$("$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG" secret list --env "$env" 2>/dev/null || echo "[]")
     else
-        secret_output=$("$WRANGLER_COMMAND" secret list 2>/dev/null || echo "[]")
+        secret_output=$("$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG" secret list 2>/dev/null || echo "[]")
     fi
 
     # Check if FORECAST_API_KEY exists in the output
@@ -171,9 +186,9 @@ deploy_to_env() {
     local env="$1"
 
     if [[ "$env" != "prod" ]]; then
-        "$WRANGLER_COMMAND" deploy --env "$env"
+        "$WRANGLER_COMMAND" deploy --config "$WRANGLER_CONFIG" --env "$env"
     else
-        "$WRANGLER_COMMAND" deploy
+        "$WRANGLER_COMMAND" deploy --config "$WRANGLER_CONFIG"
     fi
 }
 
@@ -232,7 +247,7 @@ dev() {
     echo
 
     # 3. When wrangler exits (for any reason), cleanup will be called
-    "$WRANGLER_COMMAND" dev
+    "$WRANGLER_COMMAND" dev --config "$WRANGLER_CONFIG"
     cleanup
 }
 
@@ -240,6 +255,7 @@ deploy() {
     local no_clean_flag="$1"
     local env="$2"
     local all_flag="$3"
+    local skip_build_flag="$4"
 
     if [[ "$all_flag" == "true" ]]; then
         local environments=("prod" "staging" "dev")
@@ -250,16 +266,14 @@ deploy() {
 
             check_secrets_for_env "$target_env"
 
-            # Build: clean only on first deploy if --no-clean is not specified
-            if [[ "$first_deploy" == "true" ]]; then
+            # Build: skip if already built, clean only on first deploy if --no-clean is not specified
+            if [[ "$skip_build_flag" != "true" && "$first_deploy" == "true" ]]; then
                 if [[ "$no_clean_flag" == "true" ]]; then
                     "$API_SCRIPT" build
                 else
                     "$API_SCRIPT" build --clean
                 fi
                 first_deploy=false
-            else
-                "$API_SCRIPT" build
             fi
 
             deploy_to_env "$target_env"
@@ -274,10 +288,12 @@ deploy() {
         # Single environment deployment
         check_secrets_for_env "$env"
 
-        if [[ "$no_clean_flag" == "true" ]]; then
-            "$API_SCRIPT" build
-        else
-            "$API_SCRIPT" build --clean
+        if [[ "$skip_build_flag" != "true" ]]; then
+            if [[ "$no_clean_flag" == "true" ]]; then
+                "$API_SCRIPT" build
+            else
+                "$API_SCRIPT" build --clean
+            fi
         fi
 
         deploy_to_env "$env"
@@ -299,6 +315,7 @@ COMMAND=""
 ENV="prod"
 NO_CLEAN_FLAG="false"
 ALL_FLAG="false"
+SKIP_BUILD_FLAG="false"
 WRANGLER_ARGS=()
 
 while [[ $# -gt 0 ]]; do
@@ -336,6 +353,10 @@ while [[ $# -gt 0 ]]; do
             case "$1" in
             --no-clean)
                 NO_CLEAN_FLAG="true"
+                shift
+                ;;
+            --skip-build)
+                SKIP_BUILD_FLAG="true"
                 shift
                 ;;
             --all)
@@ -401,7 +422,7 @@ secret)
     case "$subcommand" in
     check)
         echo "🔍 Checking for $SECRET_FORECAST_API_KEY secret..."
-        secret_output=$("$WRANGLER_COMMAND" secret list 2>/dev/null || echo "[]")
+        secret_output=$("$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG" secret list 2>/dev/null || echo "[]")
 
         if echo "$secret_output" | grep -q "$SECRET_FORECAST_API_KEY"; then
             echo "✅ $SECRET_FORECAST_API_KEY secret found in Cloudflare"
@@ -413,7 +434,7 @@ secret)
         ;;
     set)
         echo "🔐 Setting $SECRET_FORECAST_API_KEY secret..."
-        "$WRANGLER_COMMAND" secret put "$SECRET_FORECAST_API_KEY"
+        "$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG" secret put "$SECRET_FORECAST_API_KEY"
         ;;
     *)
         echo "❌ Error: Unknown secret subcommand '$subcommand'"
@@ -436,10 +457,9 @@ deploy)
         echo "🌍 Deploying to '$ENV' environment"
     fi
 
-    deploy "$NO_CLEAN_FLAG" "$ENV" "$ALL_FLAG"
+    deploy "$NO_CLEAN_FLAG" "$ENV" "$ALL_FLAG" "$SKIP_BUILD_FLAG"
     ;;
 update-wrangler)
-    WORKER_DIR="$ROOT/apps/api/worker"
     echo "📦 Updating Wrangler..."
     cd "$WORKER_DIR"
     npm i -D wrangler@latest
@@ -449,10 +469,10 @@ update-wrangler)
 wrangler)
     if [[ ${#WRANGLER_ARGS[@]} -eq 0 ]]; then
         echo "🔧 Running Wrangler..."
-        "$WRANGLER_COMMAND"
+        "$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG"
     else
         echo "🔧 Running Wrangler with arguments: ${WRANGLER_ARGS[*]}"
-        "$WRANGLER_COMMAND" "${WRANGLER_ARGS[@]}"
+        "$WRANGLER_COMMAND" --config "$WRANGLER_CONFIG" "${WRANGLER_ARGS[@]}"
     fi
     ;;
 esac

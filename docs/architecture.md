@@ -97,6 +97,12 @@ graph TD
         onboarding --> resources
         onboarding --> ui
         onboarding --> ui-icons
+        whatsnew --> model
+        whatsnew --> domain
+        whatsnew --> foundation
+        whatsnew --> platform
+        whatsnew --> resources
+        whatsnew --> ui
         webview --> foundation
         webview --> platform
         webview --> model
@@ -111,6 +117,7 @@ graph TD
     app --> location
     app --> onboarding
     app --> settings
+    app --> whatsnew
     app --> webview
 
     subgraph apps
@@ -221,6 +228,9 @@ KStore. Uses the `AppVersion` toolchain plugin to inject the version string at c
 
 **feature/onboarding** - First-launch onboarding flow.
 
+**feature/whatsnew** - What's New bottom sheet for returning users after app updates. Uses its own
+KStore-backed persistence, separate from settings. See [docs/whats-new.md](whats-new.md).
+
 **feature/webview** - In-app webview for displaying external content (e.g., privacy policy, terms).
 
 ## App Layer
@@ -272,6 +282,13 @@ constants.
 
 For server deployments, configuration is read from environment variables at runtime.
 See [docs/api/server.md](api/server.md) and [docs/api/cloudflare.md](api/cloudflare.md).
+
+## Website
+
+The marketing landing page at [shouldigooutside.now](https://shouldigooutside.now) lives in
+`website/`. It is an Astro static site deployed to Cloudflare Workers. It is independent of the
+Kotlin Multiplatform build — it has its own `package.json` and is deployed separately via
+`./sigo release:website`. See [docs/website.md](website.md) for details.
 
 For project setup, see the [root README](../README.MD). For the `./sigo` CLI wrapper,
 see [docs/scripts.md](scripts.md).

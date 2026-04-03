@@ -15,10 +15,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.stateholder.extensions.collectAsState
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.onboarding_units
 import now.shouldigooutside.core.resources.preferences
@@ -38,6 +41,7 @@ internal fun PreferencesScreen(
     val state by model.collectAsState()
 
     PreferencesScreen(
+        units = state.units,
         preferences = state.preferences,
         update = model::update,
         onBack = onBack,
@@ -54,6 +58,7 @@ internal fun PreferencesBottomSheet(
     val state by model.collectAsState()
 
     PreferencesBottomSheet(
+        units = state.units,
         preferences = state.preferences,
         update = model::update,
         onBack = onBack,
@@ -64,6 +69,7 @@ internal fun PreferencesBottomSheet(
 
 @Composable
 internal fun PreferencesBottomSheet(
+    units: Units,
     preferences: Preferences,
     update: (Preferences) -> Unit,
     modifier: Modifier = Modifier,
@@ -85,6 +91,7 @@ internal fun PreferencesBottomSheet(
         )
 
         PreferencesList(
+            units = units,
             preferences = preferences,
             updatePreferences = update,
             temperatureRange = temperatureRange,
@@ -96,6 +103,7 @@ internal fun PreferencesBottomSheet(
 
 @Composable
 internal fun PreferencesScreen(
+    units: Units,
     preferences: Preferences,
     update: (Preferences) -> Unit,
     modifier: Modifier = Modifier,
@@ -126,6 +134,7 @@ internal fun PreferencesScreen(
                 .verticalScroll(rememberScrollState()),
         ) {
             PreferencesList(
+                units = units,
                 preferences = preferences,
                 updatePreferences = update,
                 temperatureRange = temperatureRange,
@@ -138,28 +147,17 @@ internal fun PreferencesScreen(
     }
 }
 
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
 private fun ScreenPreview() {
     var preferences by remember { mutableStateOf(Preferences.default) }
-    PreferencesScreen(
-        preferences = preferences,
-        update = { preferences = it },
-        onBack = {},
-    )
-}
-
-@Preview
-@Composable
-private fun UnitsScreenPreview() {
     AppPreview {
-        ScreenPreview()
-    }
-}
-
-@Preview
-@Composable
-private fun UnitsScreenDarkPreview() {
-    AppPreview(isDarkTheme = true) {
-        ScreenPreview()
+        PreferencesScreen(
+            units = Units.Metric,
+            preferences = preferences,
+            update = { preferences = it },
+            onBack = {},
+        )
     }
 }

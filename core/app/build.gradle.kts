@@ -34,6 +34,7 @@ kotlin {
             implementation(projects.feature.location)
             implementation(projects.feature.onboarding)
             implementation(projects.feature.settings)
+            implementation(projects.feature.whatsnew)
             implementation(projects.feature.webview)
 
             implementation(libs.compose.windowSizeClass)
@@ -49,6 +50,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.room.runtime)
             implementation(libs.materialKolor)
+            implementation(libs.kotlinx.collections)
             api(libs.bundles.koin.compose)
             implementation(libs.bundles.stateHolder)
         }

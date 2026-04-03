@@ -12,10 +12,14 @@ plugins {
     alias(libs.plugins.toolchain.version)
 }
 
-configureMultiplatform(Platforms.Compose, name = "settings")
+configureMultiplatform(Platforms.Compose, name = "settings", tests = true)
 
 kotlin {
     sourceSets {
+        commonTest.dependencies {
+            implementation(projects.test)
+        }
+
         commonMain.dependencies {
             implementation(projects.core.config)
             implementation(projects.core.domain)
@@ -25,6 +29,7 @@ kotlin {
             implementation(projects.core.resources)
             implementation(projects.core.ui)
             implementation(projects.core.uiIcons)
+            implementation(projects.feature.whatsnew)
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)

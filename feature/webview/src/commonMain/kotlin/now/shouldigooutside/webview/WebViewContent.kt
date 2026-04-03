@@ -7,47 +7,48 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.close
+import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.components.Scaffold
+import now.shouldigooutside.core.ui.components.progressindicators.LinearProgressIndicator
+import now.shouldigooutside.core.ui.components.topbar.TopBar
+import now.shouldigooutside.core.ui.components.topbar.TopBarDefaults
 import now.shouldigooutside.core.ui.ktx.get
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun WebViewContent(
-    title: String,
+    title: String?,
     state: WebViewState,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navigator = rememberWebViewNavigator()
-
+    val topBarScrollBehavior = TopBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
+        containerColor = AppTheme.colors.surface,
         topBar = {
-            CenterAlignedTopAppBar(
+            TopBar(
+                scrollBehavior = topBarScrollBehavior,
                 title = {
-                    Text(title)
+                    if (!title.isNullOrBlank()) {
+                        Title(text = title)
+                    }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onClose) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = Res.string.close.get(),
-                        )
-                    }
+                    NavIcon(
+                        icon = Icons.Default.Close,
+                        contentDescription = Res.string.close.get(),
+                        onClick = onClose,
+                    )
                 },
             )
         },
@@ -69,7 +70,9 @@ internal fun WebViewContent(
             WebView(
                 state = state,
                 navigator = navigator,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .nestedScroll(topBarScrollBehavior.nestedScrollConnection),
             )
         }
     }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -12,6 +13,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
@@ -19,6 +21,31 @@ import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.contentColorFor
 import now.shouldigooutside.core.ui.foundation.systemBarsForVisualComponents
 import kotlin.jvm.JvmInline
+
+public object ScaffoldScope {
+    @Composable
+    public fun Modifier.innerPadding(
+        paddingValues: PaddingValues,
+        top: Boolean = true,
+        horizontal: Boolean = true,
+        bottom: Boolean = true,
+    ): Modifier {
+        val topPadding = if (top) paddingValues.calculateTopPadding() else 0.dp
+        val bottomPadding = if (bottom) paddingValues.calculateBottomPadding() else 0.dp
+
+        val direction = LocalLayoutDirection.current
+        val startPadding = if (horizontal) paddingValues.calculateStartPadding(direction) else 0.dp
+        val endPadding = if (horizontal) paddingValues.calculateEndPadding(direction) else 0.dp
+        return this.then(
+            Modifier.padding(
+                top = topPadding,
+                start = startPadding,
+                end = endPadding,
+                bottom = bottomPadding,
+            ),
+        )
+    }
+}
 
 @Composable
 public fun Scaffold(
@@ -31,14 +58,14 @@ public fun Scaffold(
     containerColor: Color = AppTheme.colors.background,
     contentColor: Color = contentColorFor(containerColor),
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
-    content: @Composable (PaddingValues) -> Unit,
+    content: @Composable ScaffoldScope.(PaddingValues) -> Unit,
 ) {
     Surface(modifier = modifier, color = containerColor, contentColor = contentColor) {
         ScaffoldLayout(
             fabPosition = floatingActionButtonPosition,
             topBar = topBar,
             bottomBar = bottomBar,
-            content = content,
+            content = { content(ScaffoldScope, it) },
             snackbar = snackbarHost,
             contentWindowInsets = contentWindowInsets,
             fab = floatingActionButton,

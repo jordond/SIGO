@@ -1,5 +1,7 @@
 package now.shouldigooutside.core.model.forecast
 
+import androidx.compose.runtime.Immutable
+
 /**
  * Represents a precipitation details.
  *
@@ -7,6 +9,7 @@ package now.shouldigooutside.core.model.forecast
  * @property probability The probability of precipitation occurrence, percent of 0=100.
  * @property types The types of precipitation.
  */
+@Immutable
 public data class Precipitation(
     val amount: Double,
     val probability: Int,

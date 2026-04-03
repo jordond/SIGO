@@ -8,17 +8,17 @@ import now.shouldigooutside.core.model.units.Units
 
 internal class UnitsModel(
     private val settingsRepo: SettingsRepo,
-) : StateViewModel<UnitsModel.State>(State(settingsRepo.settings.value.preferences.units)) {
+) : StateViewModel<UnitsModel.State>(State(settingsRepo.settings.value.units)) {
     init {
         settingsRepo.settings
-            .map { it.preferences.units }
+            .map { it.units }
             .distinctUntilChanged()
             .mergeState { state, units -> state.copy(units = units) }
     }
 
     fun update(units: Units) {
         settingsRepo.update { settings ->
-            settings.updatePreferences(settings.preferences.copy(units = units))
+            settings.copy(units = units)
         }
     }
 

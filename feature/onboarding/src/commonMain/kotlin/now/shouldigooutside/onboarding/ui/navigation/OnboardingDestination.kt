@@ -11,13 +11,13 @@ internal sealed interface OnboardingDestination : Route {
     data object Welcome : OnboardingDestination
 
     @Serializable
-    data object Units : OnboardingDestination
-
-    @Serializable
     data object Preferences : OnboardingDestination
 
     @Serializable
     data object Location : OnboardingDestination
+
+    @Serializable
+    data object Activities : OnboardingDestination
 
     @Serializable
     data object Summary : OnboardingDestination

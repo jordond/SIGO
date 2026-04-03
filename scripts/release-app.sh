@@ -183,13 +183,11 @@ if [[ "$NO_COMMIT" == false ]]; then
         tags=("android/build/${android_code}" "release/android/${android_version}" "ios/build/${ios_build}" "release/ios/${ios_version}")
         for tag in "${tags[@]}"; do
             if git -C "$ROOT" tag -l "$tag" | grep -q .; then
-                echo "Error: Tag '$tag' already exists"
-                exit 1
+                echo "   $tag (overwriting)"
+            else
+                echo "   $tag"
             fi
-            echo "   $tag"
-        done
-        for tag in "${tags[@]}"; do
-            git -C "$ROOT" tag "$tag"
+            git -C "$ROOT" tag -f "$tag"
         done
         echo "✅ Tags created"
     fi
@@ -199,7 +197,7 @@ if [[ "$NO_COMMIT" == false ]]; then
         git -C "$ROOT" push
         if [[ "$NO_TAG" == false ]]; then
             echo "🚀 Pushing tags to remote..."
-            git -C "$ROOT" push origin "${tags[@]}"
+            git -C "$ROOT" push --force origin "${tags[@]}"
         fi
         echo "✅ Pushed to remote"
     fi

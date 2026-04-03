@@ -29,6 +29,11 @@ print_usage() {
     echo "    release:app [options]          Release both Android and iOS"
     echo "    release:app:android [options]  Build and release Android AAB"
     echo "    release:app:ios [options]      Bump iOS version and prepare for Xcode release"
+    echo "    release:api [options]          Release and deploy the API worker"
+    echo "    website dev                     Start the website dev server"
+    echo "    release:website [options]       Deploy the website to Cloudflare"
+    echo "          --env <env>              Target environment: prod (default) or staging"
+    echo "          --dry-run                Run wrangler deploy in dry-run mode"
 }
 
 check_directory() {
@@ -175,6 +180,27 @@ release:app:ios)
 release:app)
     shift
     "$ROOT"/scripts/release-app.sh "$@"
+    ;;
+release:api)
+    shift
+    "$ROOT"/scripts/release-api.sh "$@"
+    ;;
+release:website)
+    shift
+    "$ROOT"/scripts/release-website.sh "$@"
+    ;;
+website)
+    shift
+    case "${1:-}" in
+    dev)
+        (cd "$ROOT/website" && pnpm run dev)
+        ;;
+    *)
+        echo "Unknown website command: ${1:-}"
+        echo "Usage: $0 website dev"
+        exit 1
+        ;;
+    esac
     ;;
 *)
     echo "Unknown command: $1"

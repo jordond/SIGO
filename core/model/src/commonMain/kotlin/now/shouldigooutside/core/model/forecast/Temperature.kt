@@ -1,5 +1,7 @@
 package now.shouldigooutside.core.model.forecast
 
+import androidx.compose.runtime.Immutable
+
 /**
  * Represents a temperature value for the forecast.
  *
@@ -8,6 +10,7 @@ package now.shouldigooutside.core.model.forecast
  * @property max Max value for the forecast block, if null, the [value] is used.
  * @property min Min value for the forecast block, if null, the [value] is used.
  */
+@Immutable
 public data class Temperature(
     val value: Double,
     val feelsLike: Double,

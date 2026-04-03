@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 import now.shouldigooutside.forecast.ui.navigation.ForecastHomeRoute
 import now.shouldigooutside.onboarding.ui.navigation.OnboardingRoute
+import now.shouldigooutside.ui.home.navigation.HomeRoute
 import kotlin.reflect.KClass
 
 @Immutable
@@ -18,6 +19,6 @@ internal sealed interface AppStartDestination {
     fun toRoute(): KClass<*> =
         when (this) {
             Onboarding -> OnboardingRoute::class
-            Home -> ForecastHomeRoute::class
+            Home -> HomeRoute::class
         }
 }

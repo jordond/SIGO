@@ -1,0 +1,287 @@
+---
+import { Image } from "astro:assets"
+import screenshotNo from "../assets/ios_forecast_no.png"
+import screenshotMaybe from "../assets/ios_forecast_maybe.png"
+import screenshotActivities from "../assets/ios_activities.png"
+import screenshotDetails from "../assets/ios_forecast_details.png"
+---
+
+<section class="showcase-section" aria-label="Features">
+  <div class="container">
+    <div class="feature-block reveal">
+      <div class="feature-media">
+        <div class="blob blob--yellow" aria-hidden="true"></div>
+        <div class="phones-row">
+          <div class="phone-frame phone-frame--sm">
+            <Image
+              src={screenshotNo}
+              alt="Should I Go Outside app showing a NO answer because conditions are too harsh to head out"
+              width={600}
+              loading="lazy"
+            />
+          </div>
+          <div class="phone-frame phone-frame--sm">
+            <Image
+              src={screenshotMaybe}
+              alt="Should I Go Outside app showing a MAYBE answer for borderline conditions"
+              width={600}
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-copy">
+        <span class="eyebrow-pill eyebrow--yellow">One answer. Three ways.</span
+        >
+        <h3 class="feature-title">Yes, No, or Maybe</h3>
+        <p class="feature-body">
+          Open the app. Get a clear answer based on your personal comfort zone,
+          plus a quick snapshot of temperature, wind, rain, and air quality.
+        </p>
+      </div>
+    </div>
+
+    <div class="feature-block feature-block--reverse reveal reveal-delay-1">
+      <div class="feature-media">
+        <div class="blob blob--coral" aria-hidden="true"></div>
+        <div class="phone-frame">
+          <Image
+            src={screenshotActivities}
+            alt="Should I Go Outside app activities screen showing walking, cycling, and running with individual go or no-go answers"
+            width={600}
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <div class="feature-copy">
+        <span class="eyebrow-pill eyebrow--coral">Activities</span>
+        <h3 class="feature-title">Built for How You Live</h3>
+        <p class="feature-body">
+          Walking, cycling, running. Each activity gets its own answer. See
+          exactly why conditions are a go or no-go with clear reason tags.
+        </p>
+      </div>
+    </div>
+
+    <div class="feature-block reveal reveal-delay-2">
+      <div class="feature-media">
+        <div class="blob blob--purple" aria-hidden="true"></div>
+        <div class="phone-frame">
+          <Image
+            src={screenshotDetails}
+            alt="Should I Go Outside app hourly forecast detail view showing wind gusts, precipitation, UV index, and more"
+            width={600}
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <div class="feature-copy">
+        <span class="eyebrow-pill eyebrow--purple">Forecast</span>
+        <h3 class="feature-title">Details When You Want Them</h3>
+        <p class="feature-body">
+          Hourly breakdown, wind gusts, precipitation, UV index. Everything in
+          one scroll. For when "Yes" isn't enough and you want to know why.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .showcase-section {
+    padding: var(--space-section-lg) var(--space-md) var(--space-section-lg);
+    background-color: var(--color-surface);
+    border-top: var(--border-width) solid var(--color-outline);
+    border-bottom: var(--border-width) solid var(--color-outline);
+    overflow: hidden;
+  }
+
+  .container {
+    max-width: 1040px;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-section);
+  }
+
+  .feature-block {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-xl);
+  }
+
+  .feature-block--reverse {
+    flex-direction: row-reverse;
+  }
+
+  .feature-media {
+    position: relative;
+    flex: 1 1 0%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-lg) var(--space-sm);
+  }
+
+  .feature-copy {
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .phones-row {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-md);
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    border: var(--border-width) solid var(--color-outline);
+  }
+
+  .blob--yellow {
+    width: 200px;
+    height: 200px;
+    background-color: var(--color-primary);
+    opacity: 0.45;
+    top: 0;
+    left: 50%;
+    transform: translateX(-65%);
+    z-index: 0;
+  }
+
+  .blob--coral {
+    width: 200px;
+    height: 200px;
+    background-color: var(--color-coral);
+    opacity: 0.4;
+    bottom: 0;
+    right: 10%;
+    z-index: 0;
+  }
+
+  .blob--purple {
+    width: 200px;
+    height: 200px;
+    background-color: var(--color-accent);
+    opacity: 0.4;
+    top: 10%;
+    left: 5%;
+    z-index: 0;
+  }
+
+  .eyebrow--yellow,
+  .eyebrow--coral,
+  .eyebrow--purple {
+    align-self: flex-start;
+  }
+
+  .eyebrow--yellow {
+    background-color: var(--color-primary);
+  }
+
+  .eyebrow--coral {
+    background-color: var(--color-coral);
+  }
+
+  .eyebrow--purple {
+    background-color: var(--color-accent);
+  }
+
+  .feature-title {
+    font-family: "Lexend Mega", sans-serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+    font-weight: 700;
+    line-height: var(--display-leading);
+    letter-spacing: var(--display-tracking);
+    color: var(--color-text);
+  }
+
+  .feature-body {
+    font-size: clamp(var(--text-base), 2vw, var(--text-md));
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 900px) {
+    .container {
+      gap: var(--space-xl);
+    }
+
+    .feature-block,
+    .feature-block--reverse {
+      flex-direction: column;
+    }
+
+    .feature-media {
+      width: 100%;
+      padding: var(--space-md) var(--space-sm);
+    }
+
+    .feature-copy {
+      width: 100%;
+      align-items: flex-start;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .feature-media :global(.phone-frame) {
+      width: 200px;
+      border-radius: 28px;
+    }
+
+    .feature-media :global(.phone-frame--sm) {
+      width: 160px;
+      border-radius: 24px;
+    }
+
+    .feature-media :global(.phone-frame img) {
+      border-radius: 23px;
+    }
+
+    .feature-media :global(.phone-frame--sm img) {
+      border-radius: 19px;
+    }
+
+    .phones-row {
+      gap: var(--space-sm);
+    }
+
+    .blob {
+      width: 140px;
+      height: 140px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .feature-media :global(.phone-frame--sm) {
+      width: 130px;
+      border-radius: 20px;
+    }
+
+    .feature-media :global(.phone-frame--sm img) {
+      border-radius: 16px;
+    }
+
+    .phones-row {
+      gap: var(--space-xs);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blob {
+      transition: none;
+      animation: none;
+    }
+  }
+</style>

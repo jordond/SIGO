@@ -1,5 +1,8 @@
 package now.shouldigooutside.core.model.location
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 public sealed interface LocationPermissionStatus {
     public data object Unknown : LocationPermissionStatus
 

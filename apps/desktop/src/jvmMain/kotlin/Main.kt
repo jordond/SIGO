@@ -11,7 +11,7 @@ import io.github.vinceglb.filekit.FileKit
 import now.shouldigooutside.App
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.app_name
-import now.shouldigooutside.core.resources.ic_cyclone
+import now.shouldigooutside.core.resources.icon
 import now.shouldigooutside.di.initKoin
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -63,7 +63,7 @@ fun main(args: Array<String>) {
     application {
         Window(
             title = stringResource(Res.string.app_name),
-            icon = painterResource(Res.drawable.ic_cyclone),
+            icon = painterResource(Res.drawable.icon),
             state = rememberWindowState(
                 width = width,
                 height = height,

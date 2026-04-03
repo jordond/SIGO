@@ -7,25 +7,20 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import now.shouldigooutside.core.config.AppConfigRepo
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetForecastUseCase
-import now.shouldigooutside.core.domain.forecast.ScoreCalculator
 import now.shouldigooutside.core.domain.location.LocationRepo
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.foundation.ktx.ensureExecutionTime
 import now.shouldigooutside.core.model.AsyncResult
-import now.shouldigooutside.core.model.ForecastData
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.location.LocationResult
-import now.shouldigooutside.core.model.mapSuccess
 import now.shouldigooutside.core.model.toAsyncResult
 import now.shouldigooutside.core.widget.WidgetDataMapper
 import now.shouldigooutside.core.widget.WidgetDataStore
@@ -36,7 +31,6 @@ internal class DefaultForecastStateHolder(
     private val getForecastUseCase: GetForecastUseCase,
     private val settingsRepo: SettingsRepo,
     private val appConfigRepo: AppConfigRepo,
-    private val scoreCalculator: ScoreCalculator,
     private val coroutineScope: CoroutineScope,
     private val widgetDataStore: WidgetDataStore,
     private val widgetNotifier: WidgetNotifier,
@@ -45,19 +39,11 @@ internal class DefaultForecastStateHolder(
     private val delayDuration = appConfigRepo.value.maxCacheAge
 
     private val container = stateContainer<AsyncResult<Forecast>?>(null)
-    override val state: StateFlow<AsyncResult<ForecastData>> =
-        combine(
-            container.state.filterNotNull().distinctUntilChanged(),
-            settingsRepo.settings.map { it.preferences }.distinctUntilChanged(),
-            transform = { forecastResult, preferences -> forecastResult to preferences },
-        ).map { (forecastResult, preferences) ->
-            forecastResult.mapSuccess { forecast ->
-                ForecastData(
-                    forecast = forecast,
-                    score = scoreCalculator.calculate(forecast, preferences),
-                )
-            }
-        }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), AsyncResult.Loading)
+    override val state: StateFlow<AsyncResult<Forecast>> =
+        container.state
+            .filterNotNull()
+            .distinctUntilChanged()
+            .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), AsyncResult.Loading)
 
     init {
         coroutineScope.launch {
@@ -107,7 +93,7 @@ internal class DefaultForecastStateHolder(
         container.update { AsyncResult.Loading }
 
         val location = locationRepo.location()
-        val units = settingsRepo.settings.value.preferences.units
+        val units = settingsRepo.settings.value.units
         when (location) {
             is LocationResult.Failed -> {
                 container.update { AsyncResult.Error(location) }

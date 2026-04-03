@@ -167,9 +167,9 @@ internal fun SettingsTextRow(
             Text(
                 text = description,
                 style = descriptionStyle,
-                maxLines = 2,
+                maxLines = 3,
                 autoSize = TextAutoSize.StepBased(
-                    minFontSize = 10.sp,
+                    minFontSize = 8.sp,
                     maxFontSize = descriptionStyle.fontSize,
                 ),
             )

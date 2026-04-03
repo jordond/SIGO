@@ -5,10 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import now.shouldigooutside.core.ui.navigation.slideHorizontally
+import now.shouldigooutside.onboarding.ui.activities.OnboardingActivitiesScreen
 import now.shouldigooutside.onboarding.ui.location.LocationScreen
 import now.shouldigooutside.onboarding.ui.preferences.OnboardingPreferencesScreen
 import now.shouldigooutside.onboarding.ui.summary.SummaryScreen
-import now.shouldigooutside.onboarding.ui.units.OnboardingUnitsScreen
 import now.shouldigooutside.onboarding.ui.welcome.WelcomeScreen
 
 @Composable
@@ -26,16 +26,16 @@ internal fun OnboardingNavHost(
             WelcomeScreen()
         }
 
-        slideHorizontally<OnboardingDestination.Units> {
-            OnboardingUnitsScreen()
-        }
-
         slideHorizontally<OnboardingDestination.Preferences> {
             OnboardingPreferencesScreen()
         }
 
         slideHorizontally<OnboardingDestination.Location> {
             LocationScreen()
+        }
+
+        slideHorizontally<OnboardingDestination.Activities> {
+            OnboardingActivitiesScreen()
         }
 
         slideHorizontally<OnboardingDestination.Summary> {

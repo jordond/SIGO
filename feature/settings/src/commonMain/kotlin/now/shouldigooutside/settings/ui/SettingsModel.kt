@@ -1,5 +1,6 @@
 package now.shouldigooutside.settings.ui
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import dev.stateholder.extensions.viewmodel.UiStateViewModel
@@ -8,10 +9,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import now.shouldigooutside.core.config.AppConfigRepo
 import now.shouldigooutside.core.domain.settings.SettingsRepo
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.model.ui.ThemeMode
 import org.jetbrains.compose.resources.getString
 
+@Stable
 internal class SettingsModel(
     private val settingsRepo: SettingsRepo,
     private val appConfigRepo: AppConfigRepo,
@@ -32,6 +35,28 @@ internal class SettingsModel(
 
     fun toggle24HourFormat() {
         settingsRepo.update { settings -> settings.copy(use24HourFormat = !settings.use24HourFormat) }
+    }
+
+    fun toggleAirQuality() {
+        settingsRepo.update { settings -> settings.copy(includeAirQuality = !settings.includeAirQuality) }
+    }
+
+    fun toggleActivities() {
+        settingsRepo.update { settings ->
+            val newSelected = if (settings.enableActivities) {
+                Activity.General
+            } else {
+                settings.selectedActivity
+            }
+            settings.copy(
+                enableActivities = !settings.enableActivities,
+                selectedActivity = newSelected,
+            )
+        }
+    }
+
+    fun toggleRememberActivity() {
+        settingsRepo.update { it.copy(rememberActivity = !it.rememberActivity) }
     }
 
     fun clickAbout() {
@@ -65,7 +90,7 @@ internal class SettingsModel(
 
         viewModelScope.launch {
             val title = withContext(Dispatchers.Default) { getString(link.title) }
-            emit(Event.OpenWebView(url, title))
+            emit(Event.OpenWebView(title = title, url = url))
         }
     }
 

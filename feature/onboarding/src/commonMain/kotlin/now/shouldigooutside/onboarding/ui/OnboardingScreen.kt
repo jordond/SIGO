@@ -27,6 +27,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.stateholder.extensions.HandleEvents
 import dev.stateholder.extensions.collectAsState
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toPersistentList
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
@@ -38,6 +41,7 @@ import now.shouldigooutside.core.resources.next
 import now.shouldigooutside.core.resources.warning
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.asContent
+import now.shouldigooutside.core.ui.brutal
 import now.shouldigooutside.core.ui.components.AlertDialog
 import now.shouldigooutside.core.ui.components.Button
 import now.shouldigooutside.core.ui.components.ButtonVariant
@@ -59,12 +63,12 @@ import now.shouldigooutside.core.ui.icons.lucide.ArrowLeft
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.onboarding.ui.OnboardingModel.Event
+import now.shouldigooutside.onboarding.ui.activities.OnboardingActivitiesScreen
 import now.shouldigooutside.onboarding.ui.location.LocationScreen
 import now.shouldigooutside.onboarding.ui.navigation.OnboardingDestination
 import now.shouldigooutside.onboarding.ui.navigation.OnboardingNavHost
 import now.shouldigooutside.onboarding.ui.preferences.OnboardingPreferencesScreen
 import now.shouldigooutside.onboarding.ui.summary.SummaryScreen
-import now.shouldigooutside.onboarding.ui.units.OnboardingUnitsScreen
 import now.shouldigooutside.onboarding.ui.welcome.WelcomeScreen
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -108,6 +112,7 @@ internal fun OnboardingScreen(
             AlertDialog(
                 title = Res.string.warning.get(),
                 text = Res.string.location_warning_dialog_text.get(),
+                colors = AppTheme.colors.brutal.yellow,
                 onDismissRequest = { model.confirmLocationDialog(false) },
                 onConfirmClick = { model.confirmLocationDialog(true) },
             )
@@ -221,20 +226,23 @@ internal fun OnboardingScreenPreview(
                 OnboardingDestination.Welcome -> {
                     WelcomeScreen()
                 }
-                OnboardingDestination.Units -> {
-                    OnboardingUnitsScreen(
-                        units = Units.Metric,
-                        update = {},
-                    )
-                }
                 OnboardingDestination.Preferences -> {
                     OnboardingPreferencesScreen(
+                        units = Units.Metric,
                         preferences = Preferences.default,
                         updatePreferences = {},
+                        updateUnits = {},
                     )
                 }
                 OnboardingDestination.Location -> {
                     LocationScreen(location = null)
+                }
+                OnboardingDestination.Activities -> {
+                    OnboardingActivitiesScreen(
+                        selectedActivities = persistentSetOf(Activity.Running),
+                        activities = Activity.all.toPersistentList(),
+                        onToggleActivity = {},
+                    )
                 }
                 OnboardingDestination.Summary -> {
                     SummaryScreen()
@@ -248,12 +256,6 @@ internal fun OnboardingScreenPreview(
 @Composable
 private fun WelcomePreview() {
     OnboardingScreenPreview(OnboardingDestination.Welcome)
-}
-
-@Preview
-@Composable
-private fun UnitsPreview() {
-    OnboardingScreenPreview(OnboardingDestination.Units)
 }
 
 @Preview
@@ -272,4 +274,10 @@ private fun LocationPreview() {
 @Composable
 private fun SummaryPreview() {
     OnboardingScreenPreview(OnboardingDestination.Summary)
+}
+
+@Preview
+@Composable
+private fun ActivitiesPreview() {
+    OnboardingScreenPreview(OnboardingDestination.Activities)
 }

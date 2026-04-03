@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -11,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,12 +26,20 @@ import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.location.LocationPermissionStatus
 import now.shouldigooutside.core.model.location.LocationResult
 import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.info
 import now.shouldigooutside.core.resources.onboarding_location
+import now.shouldigooutside.core.resources.onboarding_location_disclaimer
 import now.shouldigooutside.core.resources.onboarding_location_subtext
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.autoSize
+import now.shouldigooutside.core.ui.components.card.Card
+import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.components.snackbar.LocalSnackbarProvider
+import now.shouldigooutside.core.ui.icons.AppIcons
+import now.shouldigooutside.core.ui.icons.lucide.Info
+import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.onboarding.ui.OnboardingScreen
@@ -129,6 +139,27 @@ internal fun LocationScreen(
                     status = locationResult,
                     getLocation = dispatcher.rememberRelay(StartTracking),
                 )
+            }
+
+            Card(
+                colors = CardDefaults.disclaimerColors,
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(AppTheme.spacing.small),
+                    modifier = Modifier.padding(12.dp),
+                ) {
+                    Icon(
+                        icon = AppIcons.Lucide.Info,
+                        contentDescription = Res.string.info.get(),
+                    )
+
+                    Text(
+                        text = Res.string.onboarding_location_disclaimer,
+                        style = AppTheme.typography.body3,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
             }
         }
     }

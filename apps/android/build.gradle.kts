@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 import kotlin.io.encoding.Base64
 
@@ -7,12 +6,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_21)
-    }
 }
 
 android {
@@ -109,6 +102,7 @@ dependencies {
     implementation(projects.core.app)
     implementation(projects.core.domain)
     implementation(projects.core.model)
+    implementation(projects.core.platform)
     implementation(projects.core.widget)
 
     coreLibraryDesugaring(libs.desugar)

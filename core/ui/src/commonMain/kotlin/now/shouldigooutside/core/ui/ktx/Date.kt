@@ -13,6 +13,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.blank
@@ -53,7 +54,7 @@ import now.shouldigooutside.core.resources.time_ago_moments
 import now.shouldigooutside.core.resources.time_am
 import now.shouldigooutside.core.resources.time_pm
 import now.shouldigooutside.core.ui.AppTheme
-import now.shouldigooutside.core.ui.LocalUse24HourTime
+import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.asDisplay
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.preview.AppPreview
@@ -180,14 +181,18 @@ public fun DayOfWeek.textShort(): String {
 }
 
 @Composable
-public fun LocalTime.text(use24Hours: Boolean = LocalUse24HourTime.current): String {
+public fun LocalTime.text(use24Hours: Boolean = LocalAppExperience.current.use24HourFormat): String {
     if (use24Hours) {
         return remember(this) {
             "${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}"
         }
     } else {
         val (hour, minute, suffix) = remember(this) {
-            val hourValue = if (hour > 12) hour - 12 else hour
+            val hourValue = when {
+                hour == 0 -> "12"
+                hour > 12 -> hour - 12
+                else -> hour
+            }
             val minuteValue = minute.toString().padStart(2, '0')
             val suffix = if (hour > 11) Res.string.time_pm else Res.string.time_am
             Triple(hourValue, minuteValue, suffix)
@@ -203,7 +208,7 @@ public fun LocalTime.text(use24Hours: Boolean = LocalUse24HourTime.current): Str
 @Composable
 public fun Instant.rememberTimeAgo(
     now: Instant = Clock.System.now(),
-    use24Hours: Boolean = LocalUse24HourTime.current,
+    use24Hours: Boolean = LocalAppExperience.current.use24HourFormat,
 ): String {
     val seconds = remember(this, now) {
         val duration = now - this
@@ -294,6 +299,15 @@ private fun TimeAgoPreview() {
                     Clock.System
                         .now()
                         .minus(1.hours)
+                        .rememberTimeAgo(),
+                )
+            }
+
+            Column {
+                Text("Midnight", style = AppTheme.typography.h4.asDisplay)
+                Text(
+                    LocalDate(2026, 1, 1)
+                        .atStartOfDayIn(TimeZone.currentSystemDefault())
                         .rememberTimeAgo(),
                 )
             }

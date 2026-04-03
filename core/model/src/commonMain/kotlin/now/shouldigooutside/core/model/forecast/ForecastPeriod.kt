@@ -6,5 +6,7 @@ public enum class ForecastPeriod {
     NextHour,
     NextHour2,
     NextHour3,
+    NextHour4,
+    NextHour5,
     Tomorrow,
 }

@@ -17,7 +17,7 @@ This will:
 
 Before deploying to your Cloudflare account:
 
-1. Update [`wrangler.json`](../../wrangler.json) with your domain routes
+1. Update [`wrangler.json`](../../apps/api/worker/wrangler.json) with your domain routes
     - **Note:** If your domain's DNS nameservers are **not** Cloudflare, you'll need to set up the
       worker with your domain separately
 2. Log in to Wrangler: `wrangler login` (or `./sigo api:worker wrangler login` if you don't have it
@@ -70,6 +70,16 @@ Deploy to staging or dev with `--env`:
 
 The worker will be available at `https://api.shouldigooutside.now` (or `dev`/
 `staging.api.shouldigooutside.now`).
+
+### Releasing
+
+For versioned releases (bump, tag, build, deploy), use the release command instead:
+
+```shell
+./sigo release:api --semver patch
+```
+
+See [API Release Guide](release.md) for the full workflow.
 
 ### Misc
 

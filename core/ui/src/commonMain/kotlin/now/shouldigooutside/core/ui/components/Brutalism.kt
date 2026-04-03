@@ -101,7 +101,7 @@ public fun BrutalContainer(
 @Composable
 public fun Modifier.brutalBorder(
     color: Color = BrutalDefaults.Color,
-    width: Dp = BrutalDefaults.BorderWidth * 2,
+    width: Dp = BrutalDefaults.BorderWidth * 3,
     shape: Shape = RectangleShape,
 ): Modifier =
     border(

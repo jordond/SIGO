@@ -1,6 +1,5 @@
 import now.shouldigooutside.convention.Platforms
 import now.shouldigooutside.convention.configureMultiplatform
-import now.shouldigooutside.convention.testDependencies
 
 plugins {
     alias(libs.plugins.android.library)
@@ -9,15 +8,19 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "core.domain")
+configureMultiplatform(Platforms.All, name = "core.domain", tests = true)
 
 kotlin {
     sourceSets {
-        testDependencies()
+        commonTest.dependencies {
+            implementation(projects.test)
+        }
 
         commonMain.dependencies {
             implementation(projects.core.model)
 
+            implementation(libs.koin.core)
+            implementation(libs.compose.runtime.annotation)
             implementation(libs.compass.geolocation)
             implementation(libs.kotlinx.collections)
             implementation(libs.kotlinx.coroutines.core)

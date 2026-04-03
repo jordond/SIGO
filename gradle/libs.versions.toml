@@ -2,14 +2,15 @@
 ###### App Variables #######
 app-name = "now.shouldigooutside"
 app-desktop-version = "1.0.0"
-app-ios-version = "1.0.3"
-app-android-version = "1.0.2"
-app-android-code = "14"
-api-server-version = "1.0.0"
+app-ios-version = "1.1.0"
+app-android-version = "1.1.0"
+app-android-code = "17"
+api-server-version = "1.1.0"
 sdk-target = "36"
 sdk-compile = "36"
 sdk-min = "30"
 jvmTarget = "21"
+jvmTargetServer = "25"
 ############################
 
 glance = "1.1.1"
@@ -17,15 +18,16 @@ work = "2.10.1"
 kotlin = "2.3.20"
 agp = "9.1.0"
 androidx-activity = "1.13.0"
-androidx-compose-ui-tooling = "1.10.5"
+androidx-compose-ui-tooling = "1.10.6"
 androidx-core = "1.18.0"
-androidx-lifecycle = "2.9.6"
+androidx-lifecycle = "2.10.0"
 androidx-navigation = "2.9.2"
-androidx-ui-test = "1.10.5"
+androidx-ui-test = "1.10.6"
 buildKonfig = "0.17.1"
 clikt = "5.1.0"
-compose = "1.10.2"
+compose = "1.10.3"
 compose-material3 = "1.9.0"
+compose-runtime-annotation = "1.10.6"
 compose-windowSizeClass = "1.9.0"
 composables = "1.1.1"
 composeWebviewMultiplatform = "2.0.3"
@@ -33,13 +35,13 @@ desugar = "2.1.5"
 composeHotReload = "1.0.0"
 kotlinx-collections = "0.4.0"
 kotlinx-coroutines = "1.10.2"
-kotlinx-atomicfu = "0.31.0"
-koin = "4.2.0-RC2"
-kotest = "6.1.7"
+kotlinx-atomicfu = "0.32.1"
+koin = "4.2.0"
+kotest = "6.1.10"
 kstore = "1.0.0"
-ktor = "3.4.1"
+ktor = "3.4.2"
 filekit = "0.13.0"
-firebase-bom = "34.10.0"
+firebase-bom = "34.11.0"
 firebase-kmp = "2.4.0"
 firebase-crashlytics = "3.0.6"
 google-services = "4.4.4"
@@ -52,7 +54,7 @@ room = "2.8.4"
 ksp = "2.3.6"
 materialKolor = "4.1.1"
 kermit = "2.1.0"
-crashkios = "0.8.6"
+crashkios = "0.9.0"
 slf4jNop = "2.0.17"
 logback = "1.5.32"
 stateHolder = "3.1.0"
@@ -60,6 +62,9 @@ compass = "3.0.2"
 connectivity = "2.4.1"
 lumo = "1.2.5"
 mordant = "3.0.2"
+turbine = "1.2.1"
+play-review = "2.0.2"
+poko = "0.22.0"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
@@ -89,6 +94,7 @@ compose-materialIconsExtended = { module = "org.jetbrains.compose.material:mater
 compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
+compose-runtime-annotation = { module = "androidx.compose.runtime:runtime-annotation", version.ref = "compose-runtime-annotation" }
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
 compose-ui-test = { module = "org.jetbrains.compose.ui:ui-test", version.ref = "compose" }
 compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose" }
@@ -115,6 +121,7 @@ firebase-common = { module = "com.google.firebase:firebase-common" }
 firebase-config = { module = "com.google.firebase:firebase-config" }
 firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
 firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debug" }
+google-play-review = { module = "com.google.android.play:review", version.ref = "play-review" }
 firebase-kmp-analytics = { module = "dev.gitlive:firebase-analytics", version.ref = "firebase-kmp" }
 firebase-kmp-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebase-kmp" }
 firebase-kmp-config = { module = "dev.gitlive:firebase-config", version.ref = "firebase-kmp" }
@@ -147,6 +154,7 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
@@ -158,6 +166,7 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4jNop" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 stateHolder = { module = "dev.jordond.stateholder:core", version.ref = "stateHolder" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 stateHolder-dispatcher = { module = "dev.jordond.stateholder:dispatcher-compose", version.ref = "stateHolder" }
 stateHolder-compose = { module = "dev.jordond.stateholder:extensions-compose", version.ref = "stateHolder" }
 stateHolder-viewmodel = { module = "dev.jordond.stateholder:extensions-viewmodel", version.ref = "stateHolder" }
@@ -204,5 +213,6 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 lumo = { id = "com.nomanr.plugin.lumo", version.ref = "lumo" }
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
+poko = { id = "dev.drewhamilton.poko", version.ref = "poko" }
 convention-multiplatform = { id = "convention.multiplatform", version = "0" }
 toolchain-version = { id = "toolchain.version", version = "0" }

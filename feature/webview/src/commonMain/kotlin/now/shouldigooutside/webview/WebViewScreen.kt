@@ -1,13 +1,12 @@
-package app.toebean.feature.webview
+package now.shouldigooutside.webview
 
 import androidx.compose.runtime.Composable
 import com.multiplatform.webview.web.rememberWebViewState
-import now.shouldigooutside.webview.WebViewContent
 
 @Composable
 internal fun WebViewScreen(
     onBack: () -> Unit,
-    title: String,
+    title: String?,
     url: String,
 ) {
     val state = rememberWebViewState(url = url)

@@ -9,7 +9,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import dev.jordond.compass.Coordinates
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toPersistentMap
 import now.shouldigooutside.core.model.location.Location
+import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.score.ActivityForecastScore
+import now.shouldigooutside.core.model.score.ForecastScore
 import kotlin.time.Clock
 import dev.jordond.compass.Location as CompassLocation
 
@@ -36,6 +45,46 @@ public object PreviewData {
     public val Score: ScorePreviewData = ScorePreviewData
 
     public val Forecast: ForecastPreviewData = ForecastPreviewData
+
+    public val Activities: PersistentMap<Activity, Preferences> = persistentMapOf(
+        Activity.General to Preferences.default,
+        Activity.Running to Preferences.default,
+        Activity.Cycling to Preferences.default,
+        Activity.Hiking to Preferences.default,
+    )
+
+    public fun activities(count: Int = Activities.size): PersistentMap<Activity, Preferences> =
+        Activities
+            .toList()
+            .take(count)
+            .toMap()
+            .toPersistentMap()
+
+    public fun activityScore(
+        activity: Activity = Activity.Running,
+        score: ForecastScore = Score.yes,
+    ): ActivityForecastScore =
+        ActivityForecastScore(
+            activity = activity,
+            score = score,
+            preferences = Preferences.defaultFor(activity),
+        )
+
+    public fun activityScores(
+        count: Int = Activity.all.size,
+        activities: List<Activity> = Activity.all,
+        score: ForecastScore = Score.yes,
+        block: (Int, Activity) -> ForecastScore = { _, _ -> score },
+    ): PersistentList<ActivityForecastScore> =
+        activities
+            .take(count)
+            .mapIndexed { index, activity ->
+                ActivityForecastScore(
+                    activity = activity,
+                    score = block(index, activity),
+                    preferences = Preferences.defaultFor(activity),
+                )
+            }.toPersistentList()
 }
 
 internal val PreviewIcon: ImageVector

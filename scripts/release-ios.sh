@@ -210,13 +210,13 @@ if [[ "$NO_COMMIT" == false ]]; then
         echo "🏷️  Creating tags..."
         for tag in "ios/build/${new_build}" "release/ios/${new_version}"; do
             if git -C "$ROOT" tag -l "$tag" | grep -q .; then
-                echo "Error: Tag '$tag' already exists"
-                exit 1
+                echo "   $tag (overwriting)"
+            else
+                echo "   $tag"
             fi
-            echo "   $tag"
         done
-        git -C "$ROOT" tag "ios/build/${new_build}"
-        git -C "$ROOT" tag "release/ios/${new_version}"
+        git -C "$ROOT" tag -f "ios/build/${new_build}"
+        git -C "$ROOT" tag -f "release/ios/${new_version}"
         echo "✅ Tags created"
     fi
 
@@ -225,7 +225,7 @@ if [[ "$NO_COMMIT" == false ]]; then
         git -C "$ROOT" push
         if [[ "$NO_TAG" == false ]]; then
             echo "🚀 Pushing tags to remote..."
-            git -C "$ROOT" push origin "ios/build/${new_build}" "release/ios/${new_version}"
+            git -C "$ROOT" push --force origin "ios/build/${new_build}" "release/ios/${new_version}"
         fi
         echo "✅ Pushed to remote"
     fi

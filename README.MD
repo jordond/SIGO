@@ -19,11 +19,16 @@
 </p>
 
 <p align="center">
-  <img src="screenshots/01.png" width="150" alt="Yes - go outside" />
-  <img src="screenshots/02.png" width="150" alt="No - stay inside" />
-  <img src="screenshots/03.png" width="150" alt="Maybe - you decide" />
-  <img src="screenshots/04.png" width="150" alt="Forecast details" />
-  <img src="screenshots/05.png" width="150" alt="Preferences" />
+  <a href="https://www.producthunt.com/products/should-i-go-outside?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-should-i-go-outside" target="_blank" rel="noopener noreferrer"><img alt="Should I Go Outside? - Weather app that tells you when to go outside. | Product Hunt" width="150" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1114533&amp;theme=neutral&amp;t=1775160375187"></a>
+</p>
+
+<p align="center">
+  <img src="screenshots/01.png" width="100" alt="Yes - go outside" />
+  <img src="screenshots/02.png" width="100" alt="No - stay inside" />
+  <img src="screenshots/03.png" width="100" alt="Maybe - you decide" />
+  <img src="screenshots/04.png" width="100" alt="Forecast details" />
+  <img src="screenshots/06.png" width="100" alt="Preferences" />
+  <img src="screenshots/05.png" width="100" alt="Activities" />
 </p>
 
 ## About

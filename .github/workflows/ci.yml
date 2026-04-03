@@ -27,13 +27,13 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
-          java-version: 21
+          java-version: 25
           distribution: adopt
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Init ktlint
         run: ./sigo init ktlint --ci --version 1.8.0
@@ -41,9 +41,8 @@ jobs:
       - name: Lint
         run: ./sigo lint --all
 
-  build:
-    name: Build
-    needs: [lint]
+  test:
+    name: Test
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     steps:
@@ -51,13 +50,37 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
-          java-version: 21
+          java-version: 25
           distribution: adopt
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Copy sample app-env
+        run: cp ./.github/ci-app-env.properties ./app-env.properties
+
+      - name: Test
+        run: ./gradlew jvmTest
+
+  build:
+    name: Build
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: 25
+          distribution: adopt
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Copy sample app-env
         run: cp ./.github/ci-app-env.properties ./app-env.properties
@@ -67,3 +90,55 @@ jobs:
 
       - name: Build
         run: ./sigo gradle compileDebugKotlin
+
+  build-docker:
+    name: Build Docker (API Server)
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Copy sample app-env
+        run: cp ./.github/ci-app-env.properties ./app-env.properties
+
+      - name: Build Docker image
+        run: docker build -f apps/api/server/Dockerfile -t sigo-api .
+
+  build-worker:
+    name: Build Cloudflare Worker
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: 25
+          distribution: adopt
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Copy sample app-env
+        run: cp ./.github/ci-app-env.properties ./app-env.properties
+
+      - name: Compile Kotlin to JS
+        run: ./sigo gradle :apps:api:worker:compileProductionExecutableKotlinJs
+
+      - name: Install worker dependencies
+        working-directory: apps/api/worker
+        run: npm install
+
+      - name: Validate worker bundle
+        working-directory: apps/api/worker
+        run: npx wrangler deploy --dry-run --outdir dist

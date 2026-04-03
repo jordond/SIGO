@@ -9,10 +9,11 @@ plugins {
     alias(libs.plugins.buildKonfig)
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.poko)
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.All, name = "core.model")
+configureMultiplatform(Platforms.All, name = "core.model", tests = true)
 
 buildkonfig {
     packageName = "now.shouldigooutside.build"
@@ -63,6 +64,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kermit)
+            implementation(libs.compose.runtime.annotation)
         }
     }
 }

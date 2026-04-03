@@ -1,5 +1,6 @@
 package now.shouldigooutside.forecast.data.entity
 
+import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
@@ -90,6 +91,7 @@ private fun ForecastBlockEntity.toModel(): ForecastBlock =
         visibility = visibility,
         severeWeatherRisk = runCatching { SevereWeatherRisk.valueOf(severeWeatherRisk) }
             .getOrDefault(SevereWeatherRisk.Low),
+        airQuality = AirQuality(airQuality),
     )
 
 private fun ForecastBlock.toEntity(): ForecastBlockEntity =
@@ -119,5 +121,6 @@ private fun ForecastBlock.toEntity(): ForecastBlockEntity =
         pressure = pressure,
         uvIndex = uvIndex,
         visibility = visibility,
+        airQuality = airQuality.value,
         severeWeatherRisk = severeWeatherRisk.name,
     )
