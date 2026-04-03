@@ -6,7 +6,7 @@ import screenshotActivities from "../assets/ios_activities.png"
 import screenshotDetails from "../assets/ios_forecast_details.png"
 ---
 
-<section class="showcase-section">
+<section class="showcase-section" aria-label="Features">
   <div class="container">
     <div class="feature-block reveal">
       <div class="feature-media">
@@ -260,6 +260,21 @@ import screenshotDetails from "../assets/ios_forecast_details.png"
     .blob {
       width: 140px;
       height: 140px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .feature-media :global(.phone-frame--sm) {
+      width: 130px;
+      border-radius: 20px;
+    }
+
+    .feature-media :global(.phone-frame--sm img) {
+      border-radius: 16px;
+    }
+
+    .phones-row {
+      gap: var(--space-xs);
     }
   }
 

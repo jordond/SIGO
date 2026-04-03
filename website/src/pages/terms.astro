@@ -10,9 +10,9 @@ import Header from "../components/Header.astro"
   <Header />
   <main class="page">
     <div class="card">
-      <a href="/" class="brutal-btn brutal-btn--sm btn-back">← Back to home</a>
+      <a href="/" class="brutal-btn brutal-btn--sm back-btn">← Back to home</a>
 
-      <h1 class="title">Terms of Service</h1>
+      <h1 class="heading">Terms of Service</h1>
       <p class="meta">
         Effective date: March 12, 2026 &nbsp;·&nbsp; shouldigooutside.now
       </p>
@@ -178,15 +178,17 @@ import Header from "../components/Header.astro"
         <div class="contact-card">
           <p><strong>Jordon de Hoog</strong></p>
           <p>
-            <a href="mailto:contact@toebeans.life" class="contact-link"
-              >contact@toebeans.life</a
+            <a href="mailto:contact@toebeans.life" class="link"
+              >contact@toebeans.life</
             >
           </p>
         </div>
         <p>We'll do our best to respond promptly.</p>
       </section>
 
-      <a href="/" class="brutal-btn brutal-btn--sm btn-back">← Back to home</a>
+      <div class="footer-note">
+        <a href="/" class="brutal-btn brutal-btn--sm back-btn">← Back to home</a>
+      </div>
     </div>
   </main>
 </Layout>
@@ -194,11 +196,11 @@ import Header from "../components/Header.astro"
 <style>
   .page {
     min-height: 100vh;
-    background-color: var(--color-bg);
-    padding: 3rem 1.5rem 4rem;
     display: flex;
-    justify-content: center;
     align-items: flex-start;
+    justify-content: center;
+    padding: var(--space-xl) var(--space-md) var(--space-section);
+    background-color: var(--color-bg);
   }
 
   .card {
@@ -207,65 +209,66 @@ import Header from "../components/Header.astro"
     box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0
       var(--color-shadow);
     border-radius: var(--radius-md);
-    padding: 3rem 3.5rem;
+    padding: var(--space-xl) var(--space-xl);
     max-width: 720px;
     width: 100%;
     transform: rotate(-0.5deg);
   }
 
-  .btn-back {
+  .back-btn {
     font-size: var(--text-sm);
     background-color: var(--color-primary);
     padding: 0.5rem 1rem;
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-lg);
   }
 
-  .title {
+  .heading {
     font-family: "Lexend Mega", sans-serif;
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 700;
-    letter-spacing: -0.05em;
+    letter-spacing: var(--display-tracking);
+    line-height: var(--display-leading);
     color: var(--color-text);
-    line-height: 1.1;
-    margin-bottom: 0.75rem;
+    margin-bottom: var(--space-sm);
   }
 
   .meta {
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     font-weight: 500;
     color: var(--color-text-secondary);
-    margin-bottom: 1.75rem;
+    margin-bottom: var(--space-lg);
   }
 
   .intro {
-    font-size: 1.05rem;
+    font-size: var(--text-base);
     line-height: 1.7;
-    color: var(--color-text-secondary);
-    border-left: 4px solid var(--color-primary);
-    padding-left: 1rem;
-    margin-bottom: 2.5rem;
+    color: var(--color-text);
+    font-weight: 500;
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: var(--border-width) solid var(--color-outline);
   }
 
   .section {
-    margin-bottom: 2.25rem;
+    margin-bottom: var(--space-lg);
   }
 
   .section-heading {
     font-family: "Lexend Mega", sans-serif;
-    font-size: 1.1rem;
+    font-size: var(--text-md);
     font-weight: 700;
     letter-spacing: -0.03em;
     color: var(--color-text);
-    border-left: 4px solid var(--color-primary);
+    margin-bottom: var(--space-sm);
     padding-left: 0.75rem;
-    margin-bottom: 0.875rem;
+    border-left: var(--border-width) solid var(--color-primary);
   }
 
   .section p {
-    font-size: 1rem;
-    line-height: 1.7;
-    color: var(--color-text);
-    margin-bottom: 0.75rem;
+    font-size: var(--text-base);
+    line-height: 1.75;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-sm);
   }
 
   .section p:last-child {
@@ -275,25 +278,25 @@ import Header from "../components/Header.astro"
   .section ul {
     list-style: none;
     padding: 0;
-    margin: 0.5rem 0 0.75rem;
+    margin: var(--space-xs) 0 var(--space-sm);
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-xs);
   }
 
   .section ul li {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--color-text);
+    font-size: var(--text-base);
+    line-height: 1.75;
+    color: var(--color-text-secondary);
     padding-left: 1.25rem;
     position: relative;
   }
 
   .section ul li::before {
-    content: "—";
+    content: "→";
     position: absolute;
     left: 0;
-    color: var(--color-text-secondary);
+    color: var(--color-coral);
     font-weight: 700;
   }
 
@@ -303,8 +306,8 @@ import Header from "../components/Header.astro"
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0
       var(--color-shadow);
-    padding: 1rem 1.25rem;
-    margin: 1rem 0;
+    padding: var(--space-sm) var(--space-md);
+    margin: var(--space-sm) 0;
     display: inline-block;
   }
 
@@ -316,38 +319,48 @@ import Header from "../components/Header.astro"
     margin-bottom: 0 !important;
   }
 
-  .contact-link {
+  .link {
     color: var(--color-text);
-    font-weight: 700;
+    font-weight: 600;
     text-decoration: underline;
+    text-decoration-color: var(--color-primary);
     text-underline-offset: 3px;
-    transition: color 0.15s ease;
+    transition: text-decoration-color 0.15s ease;
   }
 
-  .contact-link:hover {
-    color: var(--color-coral);
+  .link:hover {
+    text-decoration-color: var(--color-coral);
   }
 
-  .contact-link:focus-visible {
+  .link:focus-visible {
     outline: 3px solid var(--color-accent);
     outline-offset: 2px;
-    border-radius: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  .footer-note {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: var(--border-width) solid var(--color-outline);
+  }
+
+  .footer-note .back-btn {
+    margin-bottom: 0;
   }
 
   @media (max-width: 640px) {
     .page {
-      padding: 1.5rem 1rem 3rem;
+      padding: var(--space-md) var(--space-sm) var(--space-xl);
     }
 
     .card {
-      padding: 2rem 1.5rem;
+      padding: var(--space-lg) var(--space-md);
       transform: none;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .btn-back,
-    .contact-link {
+    .link {
       transition: none;
     }
   }

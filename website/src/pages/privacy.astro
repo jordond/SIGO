@@ -224,7 +224,7 @@ import Header from "../components/Header.astro"
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding: 3rem 1.5rem 4rem;
+    padding: var(--space-xl) var(--space-md) var(--space-section);
     background-color: var(--color-bg);
   }
 
@@ -234,7 +234,7 @@ import Header from "../components/Header.astro"
     box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0
       var(--color-shadow);
     border-radius: var(--radius-md);
-    padding: 2.5rem 3rem;
+    padding: var(--space-xl) var(--space-xl);
     max-width: 720px;
     width: 100%;
     transform: rotate(-0.5deg);
@@ -251,71 +251,71 @@ import Header from "../components/Header.astro"
     font-family: "Lexend Mega", sans-serif;
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 700;
-    letter-spacing: -0.05em;
+    letter-spacing: var(--display-tracking);
+    line-height: var(--display-leading);
     color: var(--color-text);
-    margin-bottom: 1rem;
-    line-height: 1.1;
+    margin-bottom: var(--space-sm);
   }
 
   .meta {
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
     color: var(--color-text-secondary);
     line-height: 1.8;
-    margin-bottom: 1.75rem;
-    padding-bottom: 1.75rem;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-lg);
     border-bottom: var(--border-width) solid var(--color-outline);
   }
 
   .intro {
-    font-size: 1.05rem;
+    font-size: var(--text-base);
     line-height: 1.7;
     color: var(--color-text);
-    margin-bottom: 2.5rem;
     font-weight: 500;
+    margin-bottom: var(--space-xl);
   }
 
   section {
-    margin-bottom: 2.25rem;
+    margin-bottom: var(--space-lg);
   }
 
   .section-heading {
     font-family: "Lexend Mega", sans-serif;
-    font-size: 1.1rem;
+    font-size: var(--text-md);
     font-weight: 700;
     letter-spacing: -0.03em;
     color: var(--color-text);
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-sm);
     padding-left: 0.75rem;
-    border-left: 3px solid var(--color-primary);
+    border-left: var(--border-width) solid var(--color-primary);
   }
 
   .subsection-heading {
-    font-size: 1rem;
+    font-size: var(--text-base);
     font-weight: 700;
     color: var(--color-text);
-    margin-top: 1.25rem;
-    margin-bottom: 0.5rem;
+    margin-top: var(--space-sm);
+    margin-bottom: var(--space-xs);
   }
 
   p {
-    font-size: 0.975rem;
+    font-size: var(--text-base);
     line-height: 1.75;
     color: var(--color-text-secondary);
-    margin-bottom: 0.875rem;
+    margin-bottom: var(--space-sm);
   }
 
   ul {
     list-style: none;
     padding: 0;
-    margin-bottom: 0.875rem;
+    margin-bottom: var(--space-sm);
   }
 
   ul li {
-    font-size: 0.975rem;
+    font-size: var(--text-base);
     line-height: 1.75;
     color: var(--color-text-secondary);
     padding-left: 1.25rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-xs);
     position: relative;
   }
 
@@ -347,8 +347,8 @@ import Header from "../components/Header.astro"
   }
 
   .footer-note {
-    margin-top: 3rem;
-    padding-top: 1.75rem;
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
     border-top: var(--border-width) solid var(--color-outline);
   }
 
@@ -356,19 +356,18 @@ import Header from "../components/Header.astro"
     margin-bottom: 0;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 640px) {
     .page {
-      padding: 1.5rem 1rem 3rem;
+      padding: var(--space-md) var(--space-sm) var(--space-xl);
     }
 
     .card {
-      padding: 1.75rem 1.25rem;
+      padding: var(--space-lg) var(--space-md);
       transform: none;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .back-btn,
     .link {
       transition: none;
     }

@@ -105,6 +105,18 @@ import appIcon from "../assets/icon.png"
     padding: 0.45rem 1rem;
   }
 
+  @media (max-width: 480px) {
+    .header__name {
+      display: none;
+    }
+
+    .header__icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .header__brand {
       transition: none;
