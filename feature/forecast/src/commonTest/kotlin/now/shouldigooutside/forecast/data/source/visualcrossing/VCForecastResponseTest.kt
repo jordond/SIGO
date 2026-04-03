@@ -176,7 +176,7 @@ class VCForecastResponseTest {
 
         val model = response.toModel(nowProvider, maxDays = 3)
 
-        // All hours are in the past: falls back to startIndex=0, takes up to 5
+        // All hours are in the past: falls back to startIndex=0, returns all
         model.today.hours.size shouldBe 3
     }
 
@@ -190,14 +190,14 @@ class VCForecastResponseTest {
     }
 
     @Test
-    fun hourFiltering_capsAtFiveHours() {
+    fun hourFiltering_returnsAllFutureHours() {
         val nowProvider = FakeNowProvider(instant = Instant.fromEpochSeconds(0))
         val hours = (1..10).map { buildBlock(datetimeEpoch = it.toLong() * 3600) }
         val response = buildResponse(todayHours = hours)
 
         val model = response.toModel(nowProvider, maxDays = 3)
 
-        model.today.hours.size shouldBe 5
+        model.today.hours.size shouldBe 10
     }
 
     @Test

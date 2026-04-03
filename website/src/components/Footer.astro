@@ -129,18 +129,20 @@ const links = [
       content: "";
       position: absolute;
       left: 50%;
-      width: var(--border-width);
-      background-color: var(--color-black);
-      opacity: 0.18;
+      width: 4px;
+      border-radius: 2px;
+      opacity: 0.5;
     }
     .cta__tick::before {
       top: 0;
       height: 40%;
+      background-color: var(--color-coral);
       transform: translateX(-50%) rotate(-10deg);
     }
     .cta__tick::after {
       bottom: 0;
       height: 40%;
+      background-color: var(--color-tertiary);
       transform: translateX(-50%) rotate(10deg);
     }
 
