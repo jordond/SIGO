@@ -21,6 +21,7 @@
     "@astrojs/sitemap": "^3.7.2",
     "astro": "^6.1.2",
     "astro-seo": "^1.1.0",
+    "firebase": "^12.11.0",
     "wrangler": "^4.72.0"
   },
   "devDependencies": {

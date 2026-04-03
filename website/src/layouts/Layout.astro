@@ -67,6 +67,23 @@ const {
   </head>
   <body>
     <slot />
+
+    <script>
+      import { initializeApp } from "firebase/app"
+      import { getAnalytics } from "firebase/analytics"
+
+      const app = initializeApp({
+        apiKey: "AIzaSyCLwqxWZzEfp3oOtLoWve6wEXKty7syfc0",
+        authDomain: "sigot-1aa35.firebaseapp.com",
+        projectId: "sigot-1aa35",
+        storageBucket: "sigot-1aa35.firebasestorage.app",
+        messagingSenderId: "783963213373",
+        appId: "1:783963213373:web:c6790fff7d151596046454",
+        measurementId: "G-HKEB98NHDZ",
+      })
+
+      getAnalytics(app)
+    </script>
   </body>
 </html>
 

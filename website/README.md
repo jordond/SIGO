@@ -14,7 +14,7 @@ Visit [shouldigooutside.now](https://shouldigooutside.now)
 ## Pages
 
 | Route      | Description      |
-|:-----------|:-----------------|
+| :--------- | :--------------- |
 | `/`        | Home             |
 | `/help`    | Help             |
 | `/privacy` | Privacy policy   |
@@ -25,7 +25,7 @@ Visit [shouldigooutside.now](https://shouldigooutside.now)
 All commands are run from the `website/` directory:
 
 | Command        | Action                                     |
-|:---------------|:-------------------------------------------|
+| :------------- | :----------------------------------------- |
 | `pnpm install` | Install dependencies                       |
 | `pnpm dev`     | Start local dev server at `localhost:4321` |
 | `pnpm build`   | Build production site to `./dist/`         |
