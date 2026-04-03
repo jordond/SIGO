@@ -75,47 +75,19 @@ import DownloadButtons from "./DownloadButtons.astro"
       </div>
     </div>
 
-    <!-- Scroll nudge -->
-    <div class="hero__scroll-nudge" aria-hidden="true">
-      <span class="scroll-label">scroll to find out more</span>
-      <svg
-        class="scroll-arrow"
-        width="20"
-        height="24"
-        viewBox="0 0 20 28"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <line
-          x1="10"
-          y1="0"
-          x2="10"
-          y2="20"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"></line>
-        <polyline
-          points="3,14 10,22 17,14"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          fill="none"></polyline>
-      </svg>
-    </div>
   </div>
 </section>
 
 <style>
   .hero {
     position: relative;
-    min-height: 100vh;
+    min-height: calc(100vh - 56px);
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: var(--color-bg);
     overflow: hidden;
-    padding: 6rem 1.5rem 5rem;
+    padding: var(--space-xl) var(--space-md) var(--space-lg);
   }
 
   .bg-shapes {
@@ -363,50 +335,12 @@ import DownloadButtons from "./DownloadButtons.astro"
   }
 
   .hero__description {
-    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-size: clamp(1rem, 2vw, 1.15rem);
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.55;
     letter-spacing: 0;
     color: var(--color-text-secondary);
     max-width: 520px;
-    background-color: var(--color-white);
-    border: var(--border-width) solid var(--color-outline);
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0
-      var(--color-outline);
-    border-radius: var(--radius-md);
-    padding: 1.25rem 1.75rem;
-  }
-
-  .hero__scroll-nudge {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4rem;
-    margin-top: 1rem;
-    color: var(--color-text-secondary);
-    opacity: 0.65;
-    animation: bounce-down 2.5s ease-in-out infinite;
-  }
-
-  .scroll-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .scroll-arrow {
-    flex-shrink: 0;
-  }
-
-  @keyframes bounce-down {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(6px);
-    }
   }
 
   /* Hide inline breaks on wide screens — they only serve mobile */
@@ -439,7 +373,7 @@ import DownloadButtons from "./DownloadButtons.astro"
 
   @media (max-width: 640px) {
     .hero {
-      padding: 5rem 1.25rem 4rem;
+      padding: var(--space-lg) 1.25rem var(--space-lg);
     }
 
     .hero__title-card {
@@ -492,7 +426,6 @@ import DownloadButtons from "./DownloadButtons.astro"
   /* Reduce motion for users who prefer it */
   @media (prefers-reduced-motion: reduce) {
     .shape,
-    .hero__scroll-nudge,
     .hero__phone-wrap {
       animation: none;
     }

@@ -37,11 +37,7 @@ const metrics = [
 <section class="tracked-conditions">
   <div class="container">
     <div class="section-header">
-      <span class="eyebrow-pill">What We Track</span>
       <h2 class="section-title reveal">Four Metrics. Your Rules.</h2>
-      <p class="section-subtitle">
-        Set your comfort zone for each. We'll do the math.
-      </p>
     </div>
 
     <div class="content-area">
@@ -84,7 +80,7 @@ const metrics = [
 
 <style>
   .tracked-conditions {
-    padding: 6rem 1.5rem 7rem;
+    padding: var(--space-section-lg) var(--space-md) var(--space-section);
     background-color: var(--color-bg);
   }
 
@@ -97,9 +93,8 @@ const metrics = [
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: var(--space-lg);
   }
 
   .section-title {
@@ -122,14 +117,6 @@ const metrics = [
     background-color: var(--color-text);
     margin-top: 0.3rem;
     border-radius: 2px;
-  }
-
-  .section-subtitle {
-    font-size: 1rem;
-    font-weight: 400;
-    color: var(--color-text-secondary);
-    line-height: 1.5;
-    margin-top: 0.25rem;
   }
 
   .content-area {
