@@ -232,11 +232,11 @@ if [[ "$NO_COMMIT" == false ]]; then
         echo "🏷️  Creating tag..."
         tag="release/api/${new_version}"
         if git -C "$ROOT" tag -l "$tag" | grep -q .; then
-            echo "Error: Tag '$tag' already exists"
-            exit 1
+            echo "   $tag (overwriting)"
+        else
+            echo "   $tag"
         fi
-        echo "   $tag"
-        git -C "$ROOT" tag "$tag"
+        git -C "$ROOT" tag -f "$tag"
         echo "✅ Tag created"
     fi
 
@@ -245,7 +245,7 @@ if [[ "$NO_COMMIT" == false ]]; then
         git -C "$ROOT" push
         if [[ "$NO_TAG" == false ]]; then
             echo "🚀 Pushing tag to remote..."
-            git -C "$ROOT" push origin "release/api/${new_version}"
+            git -C "$ROOT" push --force origin "release/api/${new_version}"
         fi
         echo "✅ Pushed to remote"
     fi
