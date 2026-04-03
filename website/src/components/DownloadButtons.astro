@@ -4,7 +4,13 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
 ---
 
 <div class="download-buttons">
-  <a href="https://apps.apple.com/us/app/should-i-go-outside-weather/id6760564555" class="download-btn download-btn--ios" aria-label="Download for iOS on the App Store">
+  <a
+    href="https://apps.apple.com/us/app/should-i-go-outside-weather/id6760564555"
+    class="brutal-btn download-btn download-btn--ios"
+    aria-label="Download for iOS on the App Store"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
     <span class="download-btn__icon" aria-hidden="true">
       <Fragment set:html={appleLogo} />
     </span>
@@ -16,8 +22,10 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
 
   <a
     href="https://play.google.com/store/apps/details?id=now.shouldigooutside"
-    class="download-btn download-btn--android"
+    class="brutal-btn download-btn download-btn--android"
     aria-label="Download for Android on the Play Store"
+    target="_blank"
+    rel="noopener noreferrer"
   >
     <span class="download-btn__icon" aria-hidden="true">
       <Fragment set:html={googlePlayLogo} />
@@ -27,54 +35,47 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
       <span class="download-btn__platform">Android</span>
     </span>
   </a>
+
+  <a
+    href="https://www.producthunt.com/products/should-i-go-outside?utm_source=website&utm_medium=badge"
+    class="brutal-btn download-btn download-btn--producthunt"
+    aria-label="Featured on Product Hunt"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <span class="download-btn__icon" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          d="M13.6 12h-3.1V8h3.1a2 2 0 1 1 0 4M10.5 2a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19m3.1 12h-3.1v4H8.5V6h5.1a4 4 0 0 1 0 8"
+        ></path></svg
+      >
+    </span>
+    <span class="download-btn__text">
+      <span class="download-btn__label">View on</span>
+      <span class="download-btn__platform">Product Hunt</span>
+    </span>
+  </a>
 </div>
 
 <style>
   .download-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: var(--space-sm);
     justify-content: center;
   }
 
   .download-btn {
-    display: inline-flex;
-    align-items: center;
     gap: 0.6rem;
     padding: 0.85rem 1.75rem;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: var(--text-base);
     line-height: 1;
     letter-spacing: -0.01em;
-    text-decoration: none;
-    color: var(--color-text);
-    border: var(--border-width) solid var(--color-outline);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0
-      var(--color-shadow);
-    transform: translate(0, 0);
-    transition:
-      transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1);
-    cursor: pointer;
     white-space: nowrap;
     user-select: none;
-  }
-
-  .download-btn:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: 12px 12px 0 0 var(--color-shadow);
-  }
-
-  .download-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 3px 3px 0 0 var(--color-shadow);
-  }
-
-  .download-btn:focus-visible {
-    outline: 3px solid var(--color-accent);
-    outline-offset: 2px;
   }
 
   .download-btn--ios {
@@ -83,6 +84,10 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
 
   .download-btn--android {
     background-color: var(--color-secondary);
+  }
+
+  .download-btn--producthunt {
+    background-color: var(--color-surface);
   }
 
   .download-btn__icon {
@@ -104,17 +109,16 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
   }
 
   .download-btn__label {
-    font-size: 0.7rem;
-    font-weight: 500;
+    font-size: var(--text-xs);
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     opacity: 0.75;
   }
 
   .download-btn__platform {
-    font-size: 1.15rem;
+    font-size: var(--text-md);
     font-weight: 700;
-    letter-spacing: 0;
   }
 
   @media (max-width: 480px) {
@@ -127,12 +131,6 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
       width: 100%;
       max-width: 320px;
       justify-content: center;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .download-btn {
-      transition: none;
     }
   }
 </style>

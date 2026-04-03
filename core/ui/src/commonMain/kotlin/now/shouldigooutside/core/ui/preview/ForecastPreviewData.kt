@@ -1,6 +1,7 @@
 package now.shouldigooutside.core.ui.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import kotlinx.datetime.LocalDate
 import now.shouldigooutside.core.domain.forecast.DefaultScoreCalculator
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.Alert

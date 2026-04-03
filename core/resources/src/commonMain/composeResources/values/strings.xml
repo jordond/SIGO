@@ -231,7 +231,8 @@
     <string name="forecast_view_details">View Details</string>
 
     <string name="weather_window_title">Best Window</string>
-    <string name="weather_window_description">Good conditions from %1$s – %2$s</string>
+    <string name="weather_window_description">Looks like you're all clear from</string>
+    <string name="weather_window_ranger">%1$s to %2$s</string>
 
     <string name="score_yes">Yes</string>
     <string name="score_maybe">Maybe</string>
@@ -384,4 +385,6 @@
     <string name="whats_new_activities_desc">Set preferences for specific activities like running, cycling, or hiking to get personalized recommendations. If you like the old experience, Activities can be toggled off in Settings.</string>
     <string name="whats_new_air_quality">Air Quality</string>
     <string name="whats_new_air_quality_desc">Air quality is now included, so you can make better decisions about when to head outside. When the air is clean, it’s a great sign that conditions are better for getting out for a walk, spending time outdoors, or planning part of your day outside. If you’d rather keep things simpler, you can turn air quality off anytime in Settings.</string>
+    <string name="whats_new_weather_window">Best Window</string>
+    <string name="whats_new_weather_window_desc">Now you can see the best window to head outside at a glance. We look at the full forecast and highlight the sweet spot where conditions line up, so you know exactly when and how long you have to make your move.</string>
 </resources>

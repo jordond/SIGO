@@ -13,6 +13,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.blank
@@ -187,7 +188,11 @@ public fun LocalTime.text(use24Hours: Boolean = LocalAppExperience.current.use24
         }
     } else {
         val (hour, minute, suffix) = remember(this) {
-            val hourValue = if (hour > 12) hour - 12 else hour
+            val hourValue = when {
+                hour == 0 -> "12"
+                hour > 12 -> hour - 12
+                else -> hour
+            }
             val minuteValue = minute.toString().padStart(2, '0')
             val suffix = if (hour > 11) Res.string.time_pm else Res.string.time_am
             Triple(hourValue, minuteValue, suffix)
@@ -294,6 +299,15 @@ private fun TimeAgoPreview() {
                     Clock.System
                         .now()
                         .minus(1.hours)
+                        .rememberTimeAgo(),
+                )
+            }
+
+            Column {
+                Text("Midnight", style = AppTheme.typography.h4.asDisplay)
+                Text(
+                    LocalDate(2026, 1, 1)
+                        .atStartOfDayIn(TimeZone.currentSystemDefault())
                         .rememberTimeAgo(),
                 )
             }

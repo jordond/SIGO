@@ -199,10 +199,10 @@ internal fun VCForecastResponse.toModel(
     val todayBlock = days.firstOrNull()
         ?: error("There was no forecast for today!")
 
-    // We want the next five hours from today, filter out all before and after
+    // Filter out past hours, keeping all remaining hours from now onward
     val nowEpoch = nowProvider.now().epochSeconds
     val filteredHours = todayBlock.hours?.takeIf { it.isNotEmpty() }?.let { hours ->
-        // Find the first hour block at or after the current time and take 5
+        // Find the first hour block at or after the current time
         val startIndex = hours
             .indexOfFirst { it.datetimeEpoch >= nowEpoch }
             .takeIf { it >= 0 } ?: 0

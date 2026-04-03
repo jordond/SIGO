@@ -1,16 +1,18 @@
 ---
 import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
 import Hero from "../components/Hero.astro"
-import AppPreview from "../components/AppPreview.astro"
-import HowItWorks from "../components/HowItWorks.astro"
+import FeatureShowcase from "../components/FeatureShowcase.astro"
+import TrackedConditions from "../components/TrackedConditions.astro"
 import Footer from "../components/Footer.astro"
 ---
 
 <Layout>
+  <Header />
   <main>
     <Hero />
-    <AppPreview />
-    <HowItWorks />
+    <FeatureShowcase />
+    <TrackedConditions />
   </main>
   <Footer />
 </Layout>

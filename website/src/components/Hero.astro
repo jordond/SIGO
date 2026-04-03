@@ -1,10 +1,10 @@
 ---
 import { Image } from "astro:assets"
-import screenshotYes from "../assets/screenshot_yes.jpg"
+import screenshotYes from "../assets/ios_forecast_yes.png"
 import DownloadButtons from "./DownloadButtons.astro"
 ---
 
-<section class="hero">
+<section class="hero" aria-label="Introduction">
   <div class="bg-shapes" aria-hidden="true">
     <div class="shape shape--circle-lg"></div>
     <div class="shape shape--square"></div>
@@ -40,18 +40,19 @@ import DownloadButtons from "./DownloadButtons.astro"
     <!-- Text column -->
     <div class="hero__text">
       <!-- Tilted headline card -->
-      <div class="hero__title-card">
+      <div class="hero__title-card hero-enter hero-enter--1">
         <h1 class="hero__title">Should I<br />Go Outside?</h1>
       </div>
 
       <!-- Tagline -->
-      <p class="hero__tagline">
-        The weather app that answers<br class="tagline-break" /> the only question
-        that matters.
+      <p class="hero__tagline hero-enter hero-enter--2">
+        The weather app that answers<br class="tagline-break" /> the <span
+          class="tagline-highlight">only</span
+        > question that matters.
       </p>
 
       <!-- Description -->
-      <p class="hero__description">
+      <p class="hero__description hero-enter hero-enter--3">
         No radar maps. No pollen counts. No 10-day forecasts you'll never read.<br
           class="desc-break"
         />
@@ -59,49 +60,22 @@ import DownloadButtons from "./DownloadButtons.astro"
       </p>
 
       <!-- CTA buttons -->
-      <DownloadButtons />
+      <div class="hero-enter hero-enter--4">
+        <DownloadButtons />
+      </div>
     </div>
 
     <!-- Phone screenshot -->
-    <div class="hero__phone-wrap">
+    <div class="hero__phone-wrap hero-enter hero-enter--2">
       <div class="hero__phone">
         <Image
           src={screenshotYes}
-          alt="Should I Go Outside app showing a YES answer with sunny weather details"
+          alt="Should I Go Outside app showing a Yes answer with temperature, wind, rain, and air quality conditions"
           class="hero__phone-screenshot"
           width={600}
           loading="eager"
         />
       </div>
-    </div>
-
-    <!-- Scroll nudge -->
-    <div class="hero__scroll-nudge" aria-hidden="true">
-      <span class="scroll-label">scroll to find out more</span>
-      <svg
-        class="scroll-arrow"
-        width="20"
-        height="24"
-        viewBox="0 0 20 28"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <line
-          x1="10"
-          y1="0"
-          x2="10"
-          y2="20"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"></line>
-        <polyline
-          points="3,14 10,22 17,14"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          fill="none"></polyline>
-      </svg>
     </div>
   </div>
 </section>
@@ -109,13 +83,13 @@ import DownloadButtons from "./DownloadButtons.astro"
 <style>
   .hero {
     position: relative;
-    min-height: 100vh;
+    min-height: calc(100vh - 56px);
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: var(--color-bg);
     overflow: hidden;
-    padding: 6rem 1.5rem 5rem;
+    padding: var(--space-2xl) var(--space-md) var(--space-xl);
   }
 
   .bg-shapes {
@@ -273,7 +247,7 @@ import DownloadButtons from "./DownloadButtons.astro"
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2rem;
+    gap: var(--space-lg);
     max-width: 1100px;
     width: 100%;
   }
@@ -283,7 +257,7 @@ import DownloadButtons from "./DownloadButtons.astro"
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 2rem;
+    gap: var(--space-lg);
     flex: 1 1 0%;
   }
 
@@ -347,66 +321,77 @@ import DownloadButtons from "./DownloadButtons.astro"
     font-family: "Lexend Mega", sans-serif;
     font-size: clamp(3rem, 8vw, 6.5rem);
     font-weight: 700;
-    line-height: 0.91;
+    line-height: var(--display-leading);
     color: var(--color-black);
-    letter-spacing: -0.156em;
+    letter-spacing: var(--display-tracking);
     text-transform: uppercase;
   }
 
   .hero__tagline {
-    font-size: clamp(1.2rem, 3vw, 1.75rem);
+    font-size: clamp(var(--text-lg), 3vw, 1.75rem);
     font-weight: 600;
-    line-height: 1.33;
+    line-height: 1.3;
     color: var(--color-text);
-    letter-spacing: 0;
     max-width: 600px;
   }
 
+  .tagline-highlight {
+    position: relative;
+    font-style: italic;
+  }
+
+  .tagline-highlight::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: -2px;
+    right: -2px;
+    height: 4px;
+    background-color: var(--color-coral);
+    border-radius: 2px;
+    transform: rotate(-1deg);
+  }
+
   .hero__description {
-    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-size: clamp(var(--text-base), 2vw, var(--text-md));
     font-weight: 400;
-    line-height: 1.5;
-    letter-spacing: 0;
+    line-height: 1.55;
     color: var(--color-text-secondary);
     max-width: 520px;
-    background-color: var(--color-white);
-    border: var(--border-width) solid var(--color-outline);
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0
-      var(--color-outline);
-    border-radius: var(--radius-md);
-    padding: 1.25rem 1.75rem;
   }
 
-
-  .hero__scroll-nudge {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4rem;
-    margin-top: 1rem;
-    color: var(--color-text-secondary);
-    opacity: 0.65;
-    animation: bounce-down 2.5s ease-in-out infinite;
+  /* ── Staggered hero entrance ── */
+  .hero-enter {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: hero-slap 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
-  .scroll-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+  .hero-enter--1 {
+    animation-delay: 0.1s;
+  }
+  .hero-enter--2 {
+    animation-delay: 0.25s;
+  }
+  .hero-enter--3 {
+    animation-delay: 0.4s;
+  }
+  .hero-enter--4 {
+    animation-delay: 0.55s;
   }
 
-  .scroll-arrow {
-    flex-shrink: 0;
-  }
-
-  @keyframes bounce-down {
-    0%,
-    100% {
-      transform: translateY(0);
+  @keyframes hero-slap {
+    0% {
+      opacity: 0;
+      transform: translateY(24px) scale(0.97);
     }
-    50% {
-      transform: translateY(6px);
+    60% {
+      opacity: 1;
+      transform: translateY(-3px) scale(1.005);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
   }
 
@@ -421,7 +406,7 @@ import DownloadButtons from "./DownloadButtons.astro"
   @media (max-width: 900px) {
     .hero__inner {
       flex-direction: column;
-      gap: 2.5rem;
+      gap: var(--space-xl);
     }
 
     .hero__phone-wrap {
@@ -440,7 +425,7 @@ import DownloadButtons from "./DownloadButtons.astro"
 
   @media (max-width: 640px) {
     .hero {
-      padding: 5rem 1.25rem 4rem;
+      padding: var(--space-xl) 1.25rem var(--space-xl);
     }
 
     .hero__title-card {
@@ -493,8 +478,13 @@ import DownloadButtons from "./DownloadButtons.astro"
   /* Reduce motion for users who prefer it */
   @media (prefers-reduced-motion: reduce) {
     .shape,
-    .hero__scroll-nudge,
     .hero__phone-wrap {
+      animation: none;
+    }
+
+    .hero-enter {
+      opacity: 1;
+      transform: none;
       animation: none;
     }
 

@@ -32,6 +32,8 @@ Must be run from the project root.
 | `release:app:android [options]` | Build and release Android AAB               |
 | `release:app:ios [options]`     | Bump iOS version and prepare Xcode release  |
 | `release:api [options]`         | Release and deploy the API worker           |
+| `website dev`                   | Start the website dev server                |
+| `release:website [options]`     | Deploy the website to Cloudflare            |
 | `xcode`                         | Open the Xcode workspace                    |
 | `generate-image-sizes`          | Generate image resource sizes               |
 
@@ -248,6 +250,18 @@ to `.dev.vars` for Wrangler.
 
 ---
 
+## Website
+
+### `./sigo website dev`
+
+Starts the Astro dev server for the marketing website.
+
+```shell
+./sigo website dev
+```
+
+---
+
 ## Releasing
 
 ### `./sigo release:app:android`
@@ -380,6 +394,34 @@ If the build fails, the version bump in `libs.versions.toml` is automatically re
 See [API Release Guide](api/release.md) for the full workflow.
 
 **Script:** `scripts/release-api.sh`
+
+### `./sigo release:website`
+
+Installs dependencies, builds, and deploys the marketing website to Cloudflare.
+
+```
+./sigo release:website [options]
+```
+
+| Option         | Description                                          |
+|----------------|------------------------------------------------------|
+| `--env <env>`  | Target environment: `prod` (default) or `staging`    |
+| `--dry-run`    | Run wrangler deploy in dry-run mode (no actual deploy) |
+
+```shell
+# Deploy to production
+./sigo release:website
+
+# Deploy to staging
+./sigo release:website --env staging
+
+# Preview what would be deployed
+./sigo release:website --dry-run
+```
+
+See [Website](website.md) for more about the marketing site.
+
+**Script:** `scripts/release-website.sh`
 
 ---
 

@@ -1,14 +1,16 @@
 ---
 import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
 ---
 
-<Layout title="404 — Should I Go Outside?">
+<Layout title="404 | Should I Go Outside?">
+  <Header />
   <main class="page">
     <div class="card">
       <span class="emoji">🌧️</span>
       <h1 class="title">Nope.</h1>
       <p class="subtitle">This page doesn't exist.<br />Maybe stay inside.</p>
-      <a href="/" class="btn">Go Home</a>
+      <a href="/" class="brutal-btn btn">Go Home</a>
     </div>
   </main>
 </Layout>
@@ -33,7 +35,17 @@ import Layout from "../layouts/Layout.astro"
     padding: 3rem 2.5rem;
     max-width: 420px;
     width: 100%;
-    transform: rotate(-1.5deg);
+    animation: wobble 3s ease-in-out infinite;
+  }
+
+  @keyframes wobble {
+    0%,
+    100% {
+      transform: rotate(-1.5deg);
+    }
+    50% {
+      transform: rotate(1deg);
+    }
   }
 
   .emoji {
@@ -64,44 +76,15 @@ import Layout from "../layouts/Layout.astro"
   }
 
   .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     padding: 0.85rem 2rem;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--color-text);
-    text-decoration: none;
+    font-size: var(--text-base);
     background-color: var(--color-primary);
-    border: var(--border-width) solid var(--color-outline);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0
-      var(--color-shadow);
-    transition:
-      transform 0.15s ease,
-      box-shadow 0.15s ease;
-    cursor: pointer;
-  }
-
-  .btn:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: 12px 12px 0 0 var(--color-shadow);
-  }
-
-  .btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 3px 3px 0 0 var(--color-shadow);
-  }
-
-  .btn:focus-visible {
-    outline: 3px solid var(--color-accent);
-    outline-offset: 2px;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .btn {
-      transition: none;
+    .card {
+      animation: none;
+      transform: rotate(-1.5deg);
     }
   }
 </style>
