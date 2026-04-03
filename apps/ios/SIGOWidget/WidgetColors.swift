@@ -15,12 +15,12 @@ enum WidgetColors {
     static let backgroundDark = Color(red: 0x14 / 255.0, green: 0x12 / 255.0, blue: 0x28 / 255.0) // NeoDarkBackground
     static let surfaceDark = Color(red: 0x2A / 255.0, green: 0x22 / 255.0, blue: 0x36 / 255.0) // NeoDarkSurface
 
-    static func scoreColor(for result: String, scheme: ColorScheme) -> Color {
+    static func scoreColor(for result: ScoreResult, scheme: ColorScheme) -> Color {
         let isDark = scheme == .dark
         switch result {
-        case "Yes": return isDark ? scoreYesDark : scoreYesLight
-        case "No": return isDark ? scoreNoDark : scoreNoLight
-        default: return isDark ? scoreMaybeDark : scoreMaybeLight
+        case .Yes: return isDark ? scoreYesDark : scoreYesLight
+        case .No: return isDark ? scoreNoDark : scoreNoLight
+        case .Maybe: return isDark ? scoreMaybeDark : scoreMaybeLight
         }
     }
 

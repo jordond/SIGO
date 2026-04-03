@@ -42,7 +42,7 @@ internal fun SmallWidgetContent(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = data.scoreResult.uppercase(),
+            text = data.scoreResult.name.uppercase(),
             style = TextStyle(
                 color = ColorProvider(textOnScore),
                 fontSize = 28.sp,
@@ -54,7 +54,7 @@ internal fun SmallWidgetContent(
         Spacer(modifier = GlanceModifier.height(4.dp))
 
         Text(
-            text = "${data.currentTemp.roundToInt()}°${data.tempUnit.first()}",
+            text = "${data.currentTemp.roundToInt()}°${data.tempUnit.name.first()}",
             style = TextStyle(
                 color = ColorProvider(textOnScore),
                 fontSize = 18.sp,

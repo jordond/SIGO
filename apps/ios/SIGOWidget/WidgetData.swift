@@ -1,17 +1,38 @@
 import Foundation
 
+enum ScoreResult: String, Codable {
+    case Yes, Maybe, No
+}
+
+enum TemperatureUnit: String, Codable {
+    case Kelvin, Celsius, Fahrenheit
+}
+
+enum WindSpeedUnit: String, Codable {
+    case MeterPerSecond, KilometerPerHour, MilePerHour, Knot
+
+    var label: String {
+        switch self {
+        case .MilePerHour: return "mph"
+        case .KilometerPerHour: return "km/h"
+        case .MeterPerSecond: return "m/s"
+        case .Knot: return "kn"
+        }
+    }
+}
+
 struct WidgetData: Codable {
     static let defaultActivityName = "General"
 
-    let scoreResult: String
+    let scoreResult: ScoreResult
     let locationName: String
     let currentTemp: Double
-    let tempUnit: String
+    let tempUnit: TemperatureUnit
     let feelsLikeTemp: Double
     let windSpeed: Double
-    let windSpeedUnit: String
+    let windSpeedUnit: WindSpeedUnit
     let precipChance: Int
-    let todayScoreResult: String
+    let todayScoreResult: ScoreResult
     let alertCount: Int
     let updatedAtMillis: Int64
     let activityName: String?
@@ -35,24 +56,17 @@ struct WidgetData: Codable {
     }
 
     var formattedTemp: String {
-        let unit = String(tempUnit.prefix(1))
+        let unit = String(tempUnit.rawValue.prefix(1))
         return "\(Int(currentTemp.rounded()))°\(unit)"
     }
 
     var formattedFeelsLike: String {
-        let unit = String(tempUnit.prefix(1))
+        let unit = String(tempUnit.rawValue.prefix(1))
         return "\(Int(feelsLikeTemp.rounded()))°\(unit)"
     }
 
     var formattedWind: String {
-        let unitLabel: String
-        switch windSpeedUnit {
-        case "MilePerHour": unitLabel = "mph"
-        case "KilometerPerHour": unitLabel = "km/h"
-        case "MeterPerSecond": unitLabel = "m/s"
-        default: unitLabel = windSpeedUnit
-        }
-        return "\(Int(windSpeed.rounded())) \(unitLabel)"
+        return "\(Int(windSpeed.rounded())) \(windSpeedUnit.label)"
     }
 
     static func load() -> WidgetData? {

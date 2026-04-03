@@ -1,6 +1,7 @@
 package now.shouldigooutside.widget
 
 import androidx.compose.ui.graphics.Color
+import now.shouldigooutside.core.model.score.ScoreResult
 
 internal object WidgetTheme {
     // Light theme colors (from core/ui Color.kt)
@@ -22,16 +23,16 @@ internal object WidgetTheme {
     val textSecondaryDark = Color(0xFFAAAAAA) // MediumGray
 
     fun scoreColor(
-        result: String,
+        result: ScoreResult,
         isDark: Boolean,
     ): Color =
         when (result) {
-            "Yes" -> if (isDark) scoreYesDark else scoreYesLight
-            "No" -> if (isDark) scoreNoDark else scoreNoLight
-            else -> if (isDark) scoreMaybeDark else scoreMaybeLight
+            ScoreResult.Yes -> if (isDark) scoreYesDark else scoreYesLight
+            ScoreResult.No -> if (isDark) scoreNoDark else scoreNoLight
+            ScoreResult.Maybe -> if (isDark) scoreMaybeDark else scoreMaybeLight
         }
 
-    fun scoreTextColor(result: String): Color = Color.Black
+    fun scoreTextColor(result: ScoreResult): Color = Color.Black
 
     fun backgroundColor(isDark: Boolean): Color = if (isDark) backgroundDark else backgroundLight
 

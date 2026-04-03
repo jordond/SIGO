@@ -8,7 +8,7 @@ struct SmallWidgetView: View {
     var body: some View {
         if let data = data {
             VStack(spacing: 4) {
-                Text(data.scoreResult.uppercased())
+                Text(data.scoreResult.rawValue.uppercased())
                     .font(.system(size: 28, weight: .bold))
                     .foregroundColor(WidgetColors.scoreTextColor)
 

@@ -16,7 +16,7 @@ struct MediumWidgetView: View {
                             .foregroundColor(WidgetColors.scoreTextColor.opacity(0.7))
                     }
 
-                    Text(data.scoreResult.uppercased())
+                    Text(data.scoreResult.rawValue.uppercased())
                         .font(.system(size: 24, weight: .bold))
                         .foregroundColor(WidgetColors.scoreTextColor)
 
@@ -38,7 +38,7 @@ struct MediumWidgetView: View {
                     DetailRow(label: "Feels like", value: data.formattedFeelsLike, colorScheme: colorScheme)
                     DetailRow(label: "Wind", value: data.formattedWind, colorScheme: colorScheme)
                     DetailRow(label: "Precip", value: "\(data.precipChance)%", colorScheme: colorScheme)
-                    DetailRow(label: "Today", value: data.todayScoreResult, colorScheme: colorScheme)
+                    DetailRow(label: "Today", value: data.todayScoreResult.rawValue, colorScheme: colorScheme)
 
                     if data.alertCount > 0 {
                         Text("\(data.alertCount) alert\(data.alertCount > 1 ? "s" : "")")

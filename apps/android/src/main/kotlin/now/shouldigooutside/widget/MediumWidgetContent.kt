@@ -19,6 +19,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
+import now.shouldigooutside.core.model.units.WindSpeedUnit
 import now.shouldigooutside.core.widget.WidgetData
 import kotlin.math.roundToInt
 
@@ -66,7 +67,7 @@ internal fun MediumWidgetContent(
             }
 
             Text(
-                text = data.scoreResult.uppercase(),
+                text = data.scoreResult.name.uppercase(),
                 style = TextStyle(
                     color = ColorProvider(textOnScore),
                     fontSize = 24.sp,
@@ -78,7 +79,7 @@ internal fun MediumWidgetContent(
             Spacer(modifier = GlanceModifier.height(2.dp))
 
             Text(
-                text = "${data.currentTemp.roundToInt()}°${data.tempUnit.first()}",
+                text = "${data.currentTemp.roundToInt()}°${data.tempUnit.name.first()}",
                 style = TextStyle(
                     color = ColorProvider(textOnScore),
                     fontSize = 16.sp,
@@ -109,7 +110,7 @@ internal fun MediumWidgetContent(
         ) {
             DetailRow(
                 label = "Feels like",
-                value = "${data.feelsLikeTemp.roundToInt()}°${data.tempUnit.first()}",
+                value = "${data.feelsLikeTemp.roundToInt()}°${data.tempUnit.name.first()}",
                 textColor = textColor,
                 labelColor = textSecondary,
             )
@@ -130,7 +131,7 @@ internal fun MediumWidgetContent(
             Spacer(modifier = GlanceModifier.height(4.dp))
             DetailRow(
                 label = "Today",
-                value = data.todayScoreResult,
+                value = data.todayScoreResult.name,
                 textColor = textColor,
                 labelColor = textSecondary,
             )
@@ -176,10 +177,10 @@ private fun DetailRow(
     }
 }
 
-private fun formatWindUnit(unit: String): String =
+private fun formatWindUnit(unit: WindSpeedUnit): String =
     when (unit) {
-        "MilePerHour" -> "mph"
-        "KilometerPerHour" -> "km/h"
-        "MeterPerSecond" -> "m/s"
-        else -> unit
+        WindSpeedUnit.MilePerHour -> "mph"
+        WindSpeedUnit.KilometerPerHour -> "km/h"
+        WindSpeedUnit.MeterPerSecond -> "m/s"
+        WindSpeedUnit.Knot -> "kn"
     }
