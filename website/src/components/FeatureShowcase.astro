@@ -202,13 +202,13 @@ import screenshotDetails from "../assets/ios_forecast_details.png"
     font-family: "Lexend Mega", sans-serif;
     font-size: clamp(1.5rem, 3.5vw, 2.25rem);
     font-weight: 700;
-    line-height: 0.93;
-    letter-spacing: -0.15em;
+    line-height: var(--display-leading);
+    letter-spacing: var(--display-tracking);
     color: var(--color-text);
   }
 
   .feature-body {
-    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    font-size: clamp(var(--text-base), 2vw, var(--text-md));
     line-height: 1.6;
     color: var(--color-text-secondary);
   }

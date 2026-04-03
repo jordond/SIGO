@@ -101,9 +101,9 @@ const metrics = [
     font-family: "Lexend Mega", sans-serif;
     font-size: clamp(2.25rem, 5vw, 3.5rem);
     font-weight: 700;
-    line-height: 0.93;
+    line-height: var(--display-leading);
     text-align: center;
-    letter-spacing: -0.2em;
+    letter-spacing: var(--display-tracking);
     color: var(--color-text);
     display: block;
     width: fit-content;
@@ -183,17 +183,16 @@ const metrics = [
   }
 
   .card-title {
-    font-size: 1.1rem;
+    font-size: var(--text-md);
     font-weight: 700;
     line-height: 1.2;
     color: var(--color-text);
-    letter-spacing: 0;
   }
 
   .card-desc {
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     font-weight: 400;
-    line-height: 1.45;
+    line-height: 1.5;
     color: var(--color-text-secondary);
   }
 
