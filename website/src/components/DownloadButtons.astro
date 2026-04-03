@@ -4,7 +4,7 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
 ---
 
 <div class="download-buttons">
-  <a href="https://apps.apple.com/us/app/should-i-go-outside-weather/id6760564555" class="download-btn download-btn--ios" aria-label="Download for iOS on the App Store">
+  <a href="https://apps.apple.com/us/app/should-i-go-outside-weather/id6760564555" class="download-btn download-btn--ios" aria-label="Download for iOS on the App Store" target="_blank" rel="noopener noreferrer">
     <span class="download-btn__icon" aria-hidden="true">
       <Fragment set:html={appleLogo} />
     </span>
@@ -18,6 +18,8 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
     href="https://play.google.com/store/apps/details?id=now.shouldigooutside"
     class="download-btn download-btn--android"
     aria-label="Download for Android on the Play Store"
+    target="_blank"
+    rel="noopener noreferrer"
   >
     <span class="download-btn__icon" aria-hidden="true">
       <Fragment set:html={googlePlayLogo} />
@@ -25,6 +27,22 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
     <span class="download-btn__text">
       <span class="download-btn__label">Download for</span>
       <span class="download-btn__platform">Android</span>
+    </span>
+  </a>
+
+  <a
+    href="https://www.producthunt.com/products/should-i-go-outside?utm_source=website&utm_medium=badge"
+    class="download-btn download-btn--producthunt"
+    aria-label="Featured on Product Hunt"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <span class="download-btn__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13.6 12h-3.1V8h3.1a2 2 0 1 1 0 4M10.5 2a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19m3.1 12h-3.1v4H8.5V6h5.1a4 4 0 0 1 0 8"/></svg>
+    </span>
+    <span class="download-btn__text">
+      <span class="download-btn__label">View on</span>
+      <span class="download-btn__platform">Product Hunt</span>
     </span>
   </a>
 </div>
@@ -83,6 +101,10 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
 
   .download-btn--android {
     background-color: var(--color-secondary);
+  }
+
+  .download-btn--producthunt {
+    background-color: var(--color-surface);
   }
 
   .download-btn__icon {

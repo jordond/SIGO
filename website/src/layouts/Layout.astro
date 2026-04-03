@@ -145,4 +145,47 @@ const {
     padding: 1.5rem;
     border-radius: var(--radius-md);
   }
+
+  .phone-frame {
+    position: relative;
+    z-index: 1;
+    background-color: var(--color-outline);
+    overflow: hidden;
+    width: 260px;
+    border-radius: 36px;
+    border: 3px solid var(--color-outline);
+    padding: 5px;
+    box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0
+      var(--color-shadow);
+  }
+
+  .phone-frame--sm {
+    width: 220px;
+    border-radius: 32px;
+  }
+
+  .phone-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 31px;
+  }
+
+  .phone-frame--sm img {
+    border-radius: 27px;
+  }
+
+  .eyebrow-pill {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    background-color: var(--color-primary);
+    border: var(--border-width) solid var(--color-outline);
+    padding: 0.25rem 0.85rem;
+    border-radius: var(--radius-sm);
+    box-shadow: 3px 3px 0 0 var(--color-shadow);
+  }
 </style>

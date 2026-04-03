@@ -21,6 +21,7 @@ import now.shouldigooutside.core.model.forecast.WeatherWindow
 import now.shouldigooutside.core.model.ui.AppExperience
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.weather_window_description
+import now.shouldigooutside.core.resources.weather_window_ranger
 import now.shouldigooutside.core.resources.weather_window_title
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.LocalAppExperience
@@ -48,8 +49,6 @@ internal fun WeatherWindowBanner(
 
     val startText = startTime.text()
     val endText = endTime.text()
-    val title = Res.string.weather_window_title.get()
-    val description = Res.string.weather_window_description.get(startText, endText)
 
     Card(
         modifier = modifier,
@@ -69,19 +68,25 @@ internal fun WeatherWindowBanner(
                     ),
             ) {
                 Icon(
-                    AppIcons.Lucide.Sun,
+                    icon = AppIcons.Lucide.Sun,
                     modifier = Modifier.size(24.dp),
                 )
             }
 
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
-                    text = title,
+                    text = Res.string.weather_window_title,
                     style = AppTheme.typography.h3,
                 )
+
                 Text(
-                    text = description,
-                    style = AppTheme.typography.body2,
+                    text = Res.string.weather_window_description,
+                    style = AppTheme.typography.body1,
+                )
+
+                Text(
+                    text = Res.string.weather_window_ranger.get(startText, endText),
+                    style = AppTheme.typography.body1,
                 )
             }
         }

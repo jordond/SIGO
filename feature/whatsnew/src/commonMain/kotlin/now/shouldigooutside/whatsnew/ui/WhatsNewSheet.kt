@@ -145,7 +145,7 @@ private fun WhatsNewPageContent(
             Image(
                 painter = painterResource(page.image),
                 contentDescription = page.title.get(),
-                contentScale = ContentScale.Crop,
+                contentScale = page.scale,
                 modifier = Modifier
                     .clip(AppTheme.shapes.medium)
                     .height(250.dp)

@@ -1,0 +1,256 @@
+---
+import { Image } from "astro:assets"
+import screenshotPreferences from "../assets/ios_preferences.png"
+
+const metrics = [
+  {
+    title: "Temperature",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15 13V5a3 3 0 0 0-6 0v8a5 5 0 1 0 6 0m-3-9a1 1 0 0 1 1 1v3h-2V5a1 1 0 0 1 1-1"/></svg>`,
+    badgeColor: "var(--color-coral)",
+    desc: "Too hot? Too cold? You decide.",
+    rotate: "-1deg",
+  },
+  {
+    title: "Wind Speed",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 10a1 1 0 0 1 0-2h10.5a2.5 2.5 0 0 0 0-5C13.1 3 12 4.1 12 5.5a1 1 0 0 1-2 0C10 3 11.5 1 14.5 1a4.5 4.5 0 0 1 0 9zm0 6a1 1 0 0 1 0-2h13.5a2.5 2.5 0 0 0 0-5c-1.4 0-2.5 1.1-2.5 2.5a1 1 0 0 1-2 0c0-2.5 1.5-4.5 4.5-4.5a4.5 4.5 0 0 1 0 9zm0 6a1 1 0 0 1 0-2h8.5a2.5 2.5 0 0 0 0-5c-1.4 0-2.5 1.1-2.5 2.5a1 1 0 0 1-2 0c0-2.5 1.5-4.5 4.5-4.5a4.5 4.5 0 0 1 0 9z"/></svg>`,
+    badgeColor: "var(--color-secondary)",
+    desc: "Set your gust limit.",
+    rotate: "1deg",
+  },
+  {
+    title: "Precipitation",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-5.33 4.55-8 8.48-8 11.8C4 18.78 7.8 22 12 22s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8m0 18c-3.35 0-6-2.57-6-6.2 0-2.34 1.95-5.44 6-9.14 4.05 3.7 6 6.8 6 9.14 0 3.63-2.65 6.2-6 6.2"/></svg>`,
+    badgeColor: "var(--color-accent)",
+    desc: "Rain chance threshold, your call.",
+    rotate: "-0.5deg",
+  },
+  {
+    title: "Air Quality",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15c6.667-6 13.333 0 20-6"/><path d="M2 19c6.667-6 13.333 0 20-6"/><path d="M2 11c6.667-6 13.333 0 20-6"/></svg>`,
+    badgeColor: "var(--color-mint)",
+    desc: "Breathe easy or stay in.",
+    rotate: "0.5deg",
+  },
+]
+---
+
+<section class="tracked-conditions">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow-pill">What We Track</span>
+      <h2 class="section-title reveal">Four Metrics. Your Rules.</h2>
+      <p class="section-subtitle">
+        Set your comfort zone for each. We'll do the math.
+      </p>
+    </div>
+
+    <div class="content-area">
+      <div class="metrics-grid">
+        {
+          metrics.map((metric, i) => (
+            <article
+              class={`metric-card reveal reveal-delay-${i + 1}`}
+              style={`--card-rotate: ${metric.rotate};`}
+            >
+              <div
+                class="icon-badge"
+                style={`background-color: ${metric.badgeColor};`}
+                aria-hidden="true"
+              >
+                <Fragment set:html={metric.icon} />
+              </div>
+              <div class="card-body">
+                <h3 class="card-title">{metric.title}</h3>
+                <p class="card-desc">{metric.desc}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="phone-wrap reveal reveal-delay-2">
+        <div class="phone-frame phone--rotated">
+          <Image
+            src={screenshotPreferences}
+            alt="Should I Go Outside app preferences screen showing temperature, wind, precipitation, and air quality thresholds"
+            width={520}
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tracked-conditions {
+    padding: 6rem 1.5rem 7rem;
+    background-color: var(--color-bg);
+  }
+
+  .container {
+    max-width: 1040px;
+    margin-inline: auto;
+  }
+
+  .section-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .section-title {
+    font-family: "Lexend Mega", sans-serif;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 0.93;
+    text-align: center;
+    letter-spacing: -0.2em;
+    color: var(--color-text);
+    display: block;
+    width: fit-content;
+    margin-inline: auto;
+  }
+
+  .section-title::after {
+    content: "";
+    display: block;
+    height: 6px;
+    background-color: var(--color-text);
+    margin-top: 0.3rem;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin-top: 0.25rem;
+  }
+
+  .content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    flex: 1;
+    width: 100%;
+  }
+
+  .metric-card {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+    background-color: var(--color-surface);
+    border: var(--border-width) solid var(--color-outline);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--color-shadow);
+    padding: 1.5rem;
+    transform: rotate(var(--card-rotate, 0deg));
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease;
+    cursor: default;
+  }
+
+  .metric-card:hover {
+    transform: rotate(0deg) translateY(-4px);
+    box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0 var(--color-shadow);
+  }
+
+  .icon-badge {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: var(--border-width) solid var(--color-outline);
+    box-shadow: 3px 3px 0 0 var(--color-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-badge :global(svg) {
+    width: 28px;
+    height: 28px;
+    color: var(--color-text);
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-text);
+    letter-spacing: 0;
+  }
+
+  .card-desc {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--color-text-secondary);
+  }
+
+  .phone-wrap {
+    flex-shrink: 0;
+  }
+
+  .phone--rotated {
+    transform: rotate(2deg);
+  }
+
+  @media (min-width: 900px) {
+    .content-area {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .metrics-grid {
+      width: auto;
+    }
+  }
+
+  @media (max-width: 580px) {
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .phone--rotated {
+      width: 200px;
+      border-radius: 28px;
+    }
+
+    .phone--rotated :global(img) {
+      border-radius: 23px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .metric-card,
+    .metric-card:hover {
+      transition: none;
+      transform: none;
+    }
+
+    .phone--rotated {
+      transform: none;
+    }
+  }
+</style>
