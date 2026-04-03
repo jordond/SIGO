@@ -6,7 +6,7 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
 <div class="download-buttons">
   <a
     href="https://apps.apple.com/us/app/should-i-go-outside-weather/id6760564555"
-    class="download-btn download-btn--ios"
+    class="brutal-btn download-btn download-btn--ios"
     aria-label="Download for iOS on the App Store"
     target="_blank"
     rel="noopener noreferrer"
@@ -22,7 +22,7 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
 
   <a
     href="https://play.google.com/store/apps/details?id=now.shouldigooutside"
-    class="download-btn download-btn--android"
+    class="brutal-btn download-btn download-btn--android"
     aria-label="Download for Android on the Play Store"
     target="_blank"
     rel="noopener noreferrer"
@@ -38,7 +38,7 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
 
   <a
     href="https://www.producthunt.com/products/should-i-go-outside?utm_source=website&utm_medium=badge"
-    class="download-btn download-btn--producthunt"
+    class="brutal-btn download-btn download-btn--producthunt"
     aria-label="Featured on Product Hunt"
     target="_blank"
     rel="noopener noreferrer"
@@ -69,43 +69,13 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
   }
 
   .download-btn {
-    display: inline-flex;
-    align-items: center;
     gap: 0.6rem;
     padding: 0.85rem 1.75rem;
-    font-family: inherit;
     font-size: var(--text-base);
-    font-weight: 700;
     line-height: 1;
     letter-spacing: -0.01em;
-    text-decoration: none;
-    color: var(--color-text);
-    border: var(--border-width) solid var(--color-outline);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-offset-lg) var(--shadow-offset-lg) 0 0
-      var(--color-shadow);
-    transform: translate(0, 0);
-    transition:
-      transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1);
-    cursor: pointer;
     white-space: nowrap;
     user-select: none;
-  }
-
-  .download-btn:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: 12px 12px 0 0 var(--color-shadow);
-  }
-
-  .download-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 3px 3px 0 0 var(--color-shadow);
-  }
-
-  .download-btn:focus-visible {
-    outline: 3px solid var(--color-accent);
-    outline-offset: 2px;
   }
 
   .download-btn--ios {
@@ -161,12 +131,6 @@ import googlePlayLogo from "../assets/google-play-logo.svg?raw"
       width: 100%;
       max-width: 320px;
       justify-content: center;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .download-btn {
-      transition: none;
     }
   }
 </style>

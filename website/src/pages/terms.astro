@@ -10,7 +10,7 @@ import Header from "../components/Header.astro"
   <Header />
   <main class="page">
     <div class="card">
-      <a href="/" class="btn-back">← Back to home</a>
+      <a href="/" class="brutal-btn brutal-btn--sm btn-back">← Back to home</a>
 
       <h1 class="title">Terms of Service</h1>
       <p class="meta">
@@ -186,7 +186,7 @@ import Header from "../components/Header.astro"
         <p>We'll do our best to respond promptly.</p>
       </section>
 
-      <a href="/" class="btn-back">← Back to home</a>
+      <a href="/" class="brutal-btn brutal-btn--sm btn-back">← Back to home</a>
     </div>
   </main>
 </Layout>
@@ -214,39 +214,10 @@ import Header from "../components/Header.astro"
   }
 
   .btn-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.5rem 1rem;
-    font-family: inherit;
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--color-text);
-    text-decoration: none;
+    font-size: var(--text-sm);
     background-color: var(--color-primary);
-    border: var(--border-width) solid var(--color-outline);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0
-      var(--color-shadow);
-    transition:
-      transform 0.15s ease,
-      box-shadow 0.15s ease;
-    margin-bottom: 2.5rem;
-  }
-
-  .btn-back:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 var(--color-shadow);
-  }
-
-  .btn-back:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 0 var(--color-shadow);
-  }
-
-  .btn-back:focus-visible {
-    outline: 3px solid var(--color-accent);
-    outline-offset: 2px;
+    padding: 0.5rem 1rem;
+    margin-bottom: var(--space-xl);
   }
 
   .title {
