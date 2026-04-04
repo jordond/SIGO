@@ -7,29 +7,31 @@ struct SmallWidgetView: View {
 
     var body: some View {
         if let data = data {
+            let colors = widgetColors(scheme: colorScheme)
+
             VStack(spacing: 4) {
                 Text(data.scoreResult.rawValue.uppercased())
                     .font(.system(size: 28, weight: .bold))
-                    .foregroundColor(WidgetColors.scoreTextColor)
+                    .foregroundColor(colors.onSuccess)
 
                 Text(data.formattedTemp)
                     .font(.system(size: 18, weight: .medium))
-                    .foregroundColor(WidgetColors.scoreTextColor)
+                    .foregroundColor(colors.onSuccess)
 
                 Text(data.locationName)
                     .font(.system(size: 12))
-                    .foregroundColor(WidgetColors.scoreTextColor.opacity(0.8))
+                    .foregroundColor(colors.onSuccess.opacity(0.8))
                     .lineLimit(1)
 
                 if data.isStale {
                     Text(data.updatedAgo)
                         .font(.system(size: 9))
-                        .foregroundColor(WidgetColors.scoreTextColor.opacity(0.6))
+                        .foregroundColor(colors.onSuccess.opacity(0.6))
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .containerBackground(
-                WidgetColors.scoreColor(for: data.scoreResult, scheme: colorScheme),
+                colors.scoreColor(for: data.scoreResult),
                 for: .widget
             )
         } else {
@@ -42,16 +44,18 @@ struct EmptyWidgetView: View {
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
+        let colors = widgetColors(scheme: colorScheme)
+
         VStack(spacing: 4) {
             Text("Open SIGO")
                 .font(.system(size: 14, weight: .medium))
             Text("to get started")
                 .font(.system(size: 12))
-                .foregroundColor(WidgetColors.textSecondaryColor(scheme: colorScheme))
+                .foregroundColor(colors.textSecondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .containerBackground(
-            WidgetColors.surfaceColor(scheme: colorScheme),
+            colors.surface,
             for: .widget
         )
     }

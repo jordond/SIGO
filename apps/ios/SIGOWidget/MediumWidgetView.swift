@@ -7,49 +7,51 @@ struct MediumWidgetView: View {
 
     var body: some View {
         if let data = data {
+            let colors = widgetColors(scheme: colorScheme)
+
             HStack(spacing: 0) {
                 // Left side: score badge
                 VStack(spacing: 4) {
                     if let activityName = data.activityName, activityName != WidgetData.defaultActivityName {
                         Text(activityName)
                             .font(.system(size: 10, weight: .medium))
-                            .foregroundColor(WidgetColors.scoreTextColor.opacity(0.7))
+                            .foregroundColor(colors.onSuccess.opacity(0.7))
                     }
 
                     Text(data.scoreResult.rawValue.uppercased())
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(WidgetColors.scoreTextColor)
+                        .foregroundColor(colors.onSuccess)
 
                     Text(data.formattedTemp)
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(WidgetColors.scoreTextColor)
+                        .foregroundColor(colors.onSuccess)
 
                     Text(data.locationName)
                         .font(.system(size: 11))
-                        .foregroundColor(WidgetColors.scoreTextColor.opacity(0.8))
+                        .foregroundColor(colors.onSuccess.opacity(0.8))
                         .lineLimit(1)
                 }
                 .frame(width: 120)
                 .frame(maxHeight: .infinity)
-                .background(WidgetColors.scoreColor(for: data.scoreResult, scheme: colorScheme))
+                .background(colors.scoreColor(for: data.scoreResult))
 
                 // Right side: weather details
                 VStack(alignment: .leading, spacing: 4) {
-                    DetailRow(label: "Feels like", value: data.formattedFeelsLike, colorScheme: colorScheme)
-                    DetailRow(label: "Wind", value: data.formattedWind, colorScheme: colorScheme)
-                    DetailRow(label: "Precip", value: "\(data.precipChance)%", colorScheme: colorScheme)
-                    DetailRow(label: "Today", value: data.todayScoreResult.rawValue, colorScheme: colorScheme)
+                    DetailRow(label: "Feels like", value: data.formattedFeelsLike, colors: colors)
+                    DetailRow(label: "Wind", value: data.formattedWind, colors: colors)
+                    DetailRow(label: "Precip", value: "\(data.precipChance)%", colors: colors)
+                    DetailRow(label: "Today", value: data.todayScoreResult.rawValue, colors: colors)
 
                     if data.alertCount > 0 {
                         Text("\(data.alertCount) alert\(data.alertCount > 1 ? "s" : "")")
                             .font(.system(size: 11, weight: .bold))
-                            .foregroundColor(WidgetColors.scoreNoLight)
+                            .foregroundColor(colors.error)
                     }
 
                     if data.isStale {
                         Text(data.updatedAgo)
                             .font(.system(size: 9))
-                            .foregroundColor(WidgetColors.textSecondaryColor(scheme: colorScheme))
+                            .foregroundColor(colors.textSecondary)
                     }
                 }
                 .padding(.horizontal, 12)
@@ -57,7 +59,7 @@ struct MediumWidgetView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
             .containerBackground(
-                WidgetColors.surfaceColor(scheme: colorScheme),
+                colors.surface,
                 for: .widget
             )
         } else {
@@ -69,16 +71,16 @@ struct MediumWidgetView: View {
 private struct DetailRow: View {
     let label: String
     let value: String
-    let colorScheme: ColorScheme
+    let colors: WidgetThemeColors
 
     var body: some View {
         HStack(spacing: 4) {
             Text("\(label):")
                 .font(.system(size: 12))
-                .foregroundColor(WidgetColors.textSecondaryColor(scheme: colorScheme))
+                .foregroundColor(colors.textSecondary)
             Text(value)
                 .font(.system(size: 12, weight: .medium))
-                .foregroundColor(WidgetColors.textColor(scheme: colorScheme))
+                .foregroundColor(colors.text)
         }
     }
 }

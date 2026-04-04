@@ -1,44 +1,59 @@
 import SwiftUI
 
-enum WidgetColors {
-    // Light theme
-    static let scoreYesLight = Color(red: 0x90 / 255.0, green: 0xEE / 255.0, blue: 0x90 / 255.0) // Mint
-    static let scoreMaybeLight = Color(red: 0xFF / 255.0, green: 0xDB / 255.0, blue: 0x02 / 255.0) // YellowAlt
-    static let scoreNoLight = Color(red: 0xFF / 255.0, green: 0x6B / 255.0, blue: 0x6B / 255.0) // Coral
-    static let backgroundLight = Color(red: 0xFE / 255.0, green: 0xEC / 255.0, blue: 0xDE / 255.0) // WarmBeige
-    static let surfaceLight = Color(red: 0xFF / 255.0, green: 0xF5 / 255.0, blue: 0xEA / 255.0) // LightBeige
+/// Widget colors derived from core/ui Color.kt LightColors/DarkColors.
+/// Keep in sync with core/ui/src/commonMain/.../Color.kt
+struct WidgetThemeColors {
+    let success: Color      // ScoreResult.Yes
+    let primary: Color      // ScoreResult.Maybe
+    let error: Color        // ScoreResult.No
+    let surface: Color
+    let background: Color
+    let text: Color
+    let textSecondary: Color
+    let onSuccess: Color
 
-    // Dark theme
-    static let scoreYesDark = Color(red: 0x7F / 255.0, green: 0xFF / 255.0, blue: 0xD4 / 255.0) // BrightMint
-    static let scoreMaybeDark = Color(red: 0xFC / 255.0, green: 0xCF / 255.0, blue: 0x03 / 255.0) // BrightYellow
-    static let scoreNoDark = Color(red: 0xFF / 255.0, green: 0x8C / 255.0, blue: 0x91 / 255.0) // BrightCoral
-    static let backgroundDark = Color(red: 0x14 / 255.0, green: 0x12 / 255.0, blue: 0x28 / 255.0) // NeoDarkBackground
-    static let surfaceDark = Color(red: 0x2A / 255.0, green: 0x22 / 255.0, blue: 0x36 / 255.0) // NeoDarkSurface
-
-    static func scoreColor(for result: ScoreResult, scheme: ColorScheme) -> Color {
-        let isDark = scheme == .dark
+    func scoreColor(for result: ScoreResult) -> Color {
         switch result {
-        case .Yes: return isDark ? scoreYesDark : scoreYesLight
-        case .No: return isDark ? scoreNoDark : scoreNoLight
-        case .Maybe: return isDark ? scoreMaybeDark : scoreMaybeLight
+        case .Yes: return success
+        case .Maybe: return primary
+        case .No: return error
         }
     }
+}
 
-    static let scoreTextColor = Color.black
+// Matches core/ui LightColors
+private let lightColors = WidgetThemeColors(
+    success: Color(hex: 0xFF90EE90),
+    primary: Color(hex: 0xFFFFDB02),
+    error: Color(hex: 0xFFFF6B6B),
+    surface: Color(hex: 0xFFFFF5EA),
+    background: Color(hex: 0xFFFEECDE),
+    text: .black,
+    textSecondary: Color(hex: 0xFF333333),
+    onSuccess: .black
+)
 
-    static func backgroundColor(scheme: ColorScheme) -> Color {
-        scheme == .dark ? backgroundDark : backgroundLight
-    }
+// Matches core/ui DarkColors
+private let darkColors = WidgetThemeColors(
+    success: Color(hex: 0xFF7FFFD4),
+    primary: Color(hex: 0xFFFCCF03),
+    error: Color(hex: 0xFFFF8C91),
+    surface: Color(hex: 0xFF2A2236),
+    background: Color(hex: 0xFF141228),
+    text: Color(hex: 0xFFF8F8F8),
+    textSecondary: Color(hex: 0xFFAAAAAA),
+    onSuccess: .black
+)
 
-    static func surfaceColor(scheme: ColorScheme) -> Color {
-        scheme == .dark ? surfaceDark : surfaceLight
-    }
+func widgetColors(scheme: ColorScheme) -> WidgetThemeColors {
+    scheme == .dark ? darkColors : lightColors
+}
 
-    static func textColor(scheme: ColorScheme) -> Color {
-        scheme == .dark ? Color(white: 0.97) : Color.black
-    }
-
-    static func textSecondaryColor(scheme: ColorScheme) -> Color {
-        scheme == .dark ? Color(white: 0.67) : Color(red: 0x33 / 255.0, green: 0x33 / 255.0, blue: 0x33 / 255.0)
+private extension Color {
+    init(hex: UInt64) {
+        let r = Double((hex >> 16) & 0xFF) / 255.0
+        let g = Double((hex >> 8) & 0xFF) / 255.0
+        let b = Double(hex & 0xFF) / 255.0
+        self.init(red: r, green: g, blue: b)
     }
 }
