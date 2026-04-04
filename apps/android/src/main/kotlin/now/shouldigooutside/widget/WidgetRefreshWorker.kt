@@ -7,9 +7,7 @@ import androidx.work.WorkerParameters
 import co.touchlab.kermit.Logger
 import now.shouldigooutside.core.domain.forecast.GetForecastUseCase
 import now.shouldigooutside.core.domain.forecast.ScoreCalculator
-import now.shouldigooutside.core.domain.location.LocationRepo
 import now.shouldigooutside.core.domain.settings.SettingsRepo
-import now.shouldigooutside.core.model.location.LocationResult
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.widget.UpdateWidgetDataUseCase
 import org.koin.core.component.KoinComponent
@@ -21,7 +19,6 @@ class WidgetRefreshWorker(
 ) : CoroutineWorker(context, params),
     KoinComponent {
     private val logger = Logger.withTag("WidgetRefreshWorker")
-    private val locationRepo: LocationRepo by inject()
     private val getForecastUseCase: GetForecastUseCase by inject()
     private val settingsRepo: SettingsRepo by inject()
     private val scoreCalculator: ScoreCalculator by inject()
@@ -31,25 +28,23 @@ class WidgetRefreshWorker(
         return try {
             logger.d { "Starting widget refresh..." }
 
-            val location = locationRepo.location()
-            if (location is LocationResult.Failed) {
-                logger.w { "Failed to get location for widget refresh" }
-                return Result.retry()
+            val settings = settingsRepo.settings.value
+            val location = settings.location
+            if (location == null) {
+                logger.w { "No cached location available for widget refresh" }
+                return Result.failure()
             }
 
-            val successLocation = (location as LocationResult.Success).location
-            val settings = settingsRepo.settings.value
-            val widgetActivity = settings.widgetActivity
-            val preferences = settings.activities[widgetActivity] ?: Preferences.default
             val units = settings.units
-
-            val forecastResult = getForecastUseCase.forecastFor(successLocation, units)
+            val forecastResult = getForecastUseCase.forecastFor(location, units)
             val forecast = forecastResult.getOrNull()
             if (forecast == null) {
                 logger.w { "Failed to fetch forecast for widget refresh" }
                 return Result.retry()
             }
 
+            val widgetActivity = settings.widgetActivity
+            val preferences = settings.activities[widgetActivity] ?: Preferences.default
             val score = scoreCalculator.calculate(forecast, preferences, settings.includeAirQuality)
             updateWidgetData.update(
                 forecast = forecast,
