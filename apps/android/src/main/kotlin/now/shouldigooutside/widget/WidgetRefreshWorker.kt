@@ -7,7 +7,10 @@ import androidx.work.WorkerParameters
 import co.touchlab.kermit.Logger
 import now.shouldigooutside.core.domain.forecast.GetForecastUseCase
 import now.shouldigooutside.core.domain.forecast.ScoreCalculator
+import now.shouldigooutside.core.domain.location.LocationRepo
 import now.shouldigooutside.core.domain.settings.SettingsRepo
+import now.shouldigooutside.core.model.location.Location
+import now.shouldigooutside.core.model.location.LocationResult
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.widget.UpdateWidgetDataUseCase
 import org.koin.core.component.KoinComponent
@@ -19,6 +22,7 @@ class WidgetRefreshWorker(
 ) : CoroutineWorker(context, params),
     KoinComponent {
     private val logger = Logger.withTag("WidgetRefreshWorker")
+    private val locationRepo: LocationRepo by inject()
     private val getForecastUseCase: GetForecastUseCase by inject()
     private val settingsRepo: SettingsRepo by inject()
     private val scoreCalculator: ScoreCalculator by inject()
@@ -29,9 +33,9 @@ class WidgetRefreshWorker(
             logger.d { "Starting widget refresh..." }
 
             val settings = settingsRepo.settings.value
-            val location = settings.location
+            val location = resolveLocation()
             if (location == null) {
-                logger.w { "No cached location available for widget refresh" }
+                logger.w { "No location available for widget refresh" }
                 return Result.failure()
             }
 
@@ -62,4 +66,20 @@ class WidgetRefreshWorker(
             Result.retry()
         }
     }
+
+    private suspend fun resolveLocation(): Location? =
+        try {
+            when (val result = locationRepo.location()) {
+                is LocationResult.Success -> {
+                    result.location
+                }
+                is LocationResult.Failed -> {
+                    logger.d { "Live location unavailable ($result), falling back to cached" }
+                    settingsRepo.settings.value.location
+                }
+            }
+        } catch (e: Exception) {
+            logger.d(e) { "Location request failed, falling back to cached" }
+            settingsRepo.settings.value.location
+        }
 }
