@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
+import androidx.glance.LocalContext
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
@@ -33,8 +34,9 @@ internal fun MediumWidgetContent(
         return
     }
 
+    val context = LocalContext.current
     val scoreColor = WidgetTheme.scoreColor(data.scoreResult, isDark)
-    val textOnScore = WidgetTheme.scoreTextColor(data.scoreResult)
+    val textOnScore = WidgetTheme.scoreTextColor
     val surfaceColor = WidgetTheme.surfaceColor(isDark)
     val textColor = WidgetTheme.textColor(isDark)
     val textSecondary = WidgetTheme.textSecondaryColor(isDark)
@@ -109,28 +111,28 @@ internal fun MediumWidgetContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             DetailRow(
-                label = "Feels like",
+                label = context.getString(R.string.widget_feels_like),
                 value = "${data.feelsLikeTemp.roundToInt()}°${data.tempUnit.name.first()}",
                 textColor = textColor,
                 labelColor = textSecondary,
             )
             Spacer(modifier = GlanceModifier.height(4.dp))
             DetailRow(
-                label = "Wind",
+                label = context.getString(R.string.widget_wind),
                 value = "${data.windSpeed.roundToInt()} ${formatWindUnit(data.windSpeedUnit)}",
                 textColor = textColor,
                 labelColor = textSecondary,
             )
             Spacer(modifier = GlanceModifier.height(4.dp))
             DetailRow(
-                label = "Precip",
+                label = context.getString(R.string.widget_precip),
                 value = "${data.precipChance}%",
                 textColor = textColor,
                 labelColor = textSecondary,
             )
             Spacer(modifier = GlanceModifier.height(4.dp))
             DetailRow(
-                label = "Today",
+                label = context.getString(R.string.widget_today),
                 value = data.todayScoreResult.name,
                 textColor = textColor,
                 labelColor = textSecondary,
@@ -139,11 +141,26 @@ internal fun MediumWidgetContent(
             if (data.alertCount > 0) {
                 Spacer(modifier = GlanceModifier.height(4.dp))
                 Text(
-                    text = "${data.alertCount} alert${if (data.alertCount > 1) "s" else ""}",
+                    text = context.resources.getQuantityString(
+                        R.plurals.widget_alerts,
+                        data.alertCount,
+                        data.alertCount,
+                    ),
                     style = TextStyle(
                         color = ColorProvider(WidgetTheme.scoreNoLight),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
+                    ),
+                )
+            }
+
+            if (data.isStale) {
+                Spacer(modifier = GlanceModifier.height(4.dp))
+                Text(
+                    text = data.updatedAgo(context),
+                    style = TextStyle(
+                        color = ColorProvider(textSecondary),
+                        fontSize = 9.sp,
                     ),
                 )
             }

@@ -11,9 +11,7 @@ import now.shouldigooutside.core.domain.location.LocationRepo
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.model.location.LocationResult
 import now.shouldigooutside.core.model.preferences.Preferences
-import now.shouldigooutside.core.widget.AndroidWidgetDataStore
-import now.shouldigooutside.core.widget.WidgetDataMapper
-import now.shouldigooutside.core.widget.widgetDisplayName
+import now.shouldigooutside.core.widget.UpdateWidgetDataUseCase
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -27,6 +25,7 @@ class WidgetRefreshWorker(
     private val getForecastUseCase: GetForecastUseCase by inject()
     private val settingsRepo: SettingsRepo by inject()
     private val scoreCalculator: ScoreCalculator by inject()
+    private val updateWidgetData: UpdateWidgetDataUseCase by inject()
 
     override suspend fun doWork(): Result {
         return try {
@@ -52,15 +51,12 @@ class WidgetRefreshWorker(
             }
 
             val score = scoreCalculator.calculate(forecast, preferences, settings.includeAirQuality)
-            val widgetData = WidgetDataMapper.map(
+            updateWidgetData.update(
                 forecast = forecast,
                 score = score,
                 units = units,
-                activityName = widgetActivity.widgetDisplayName(),
+                widgetActivity = widgetActivity,
             )
-
-            val dataStore = AndroidWidgetDataStore(applicationContext)
-            dataStore.save(widgetData)
 
             SigoWidget().updateAll(applicationContext)
             logger.d { "Widget refresh complete" }

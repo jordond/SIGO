@@ -6,6 +6,7 @@ import org.koin.dsl.module
 
 public actual fun widgetModule(): Module =
     module {
+        includes(commonWidgetModule())
         single { AndroidWidgetDataStore(get()) } bind WidgetDataStore::class
         single { AndroidWidgetNotifier() } bind WidgetNotifier::class
     }

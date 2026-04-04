@@ -32,7 +32,7 @@ internal object WidgetTheme {
             ScoreResult.Maybe -> if (isDark) scoreMaybeDark else scoreMaybeLight
         }
 
-    fun scoreTextColor(result: ScoreResult): Color = Color.Black
+    val scoreTextColor: Color = Color.Black
 
     fun backgroundColor(isDark: Boolean): Color = if (isDark) backgroundDark else backgroundLight
 

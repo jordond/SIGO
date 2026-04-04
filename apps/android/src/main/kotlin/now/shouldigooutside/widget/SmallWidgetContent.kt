@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
-import androidx.glance.GlanceTheme
+import androidx.glance.LocalContext
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
@@ -31,7 +31,7 @@ internal fun SmallWidgetContent(
     }
 
     val scoreColor = WidgetTheme.scoreColor(data.scoreResult, isDark)
-    val textOnScore = WidgetTheme.scoreTextColor(data.scoreResult)
+    val textOnScore = WidgetTheme.scoreTextColor
 
     Column(
         modifier = GlanceModifier
@@ -74,11 +74,26 @@ internal fun SmallWidgetContent(
             ),
             maxLines = 1,
         )
+
+        if (data.isStale) {
+            Spacer(modifier = GlanceModifier.height(2.dp))
+
+            Text(
+                text = data.updatedAgo(LocalContext.current),
+                style = TextStyle(
+                    color = ColorProvider(textOnScore.copy(alpha = 0.6f)),
+                    fontSize = 9.sp,
+                    textAlign = TextAlign.Center,
+                ),
+            )
+        }
     }
 }
 
 @Composable
 internal fun EmptyWidgetContent(isDark: Boolean) {
+    val context = LocalContext.current
+
     Column(
         modifier = GlanceModifier
             .fillMaxSize()
@@ -88,7 +103,7 @@ internal fun EmptyWidgetContent(isDark: Boolean) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = "Open SIGO\nto get started",
+            text = context.getString(R.string.widget_empty),
             style = TextStyle(
                 color = ColorProvider(WidgetTheme.textColor(isDark)),
                 fontSize = 14.sp,

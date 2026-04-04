@@ -25,10 +25,7 @@ import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.location.LocationResult
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.toAsyncResult
-import now.shouldigooutside.core.widget.WidgetDataMapper
-import now.shouldigooutside.core.widget.WidgetDataStore
-import now.shouldigooutside.core.widget.WidgetNotifier
-import now.shouldigooutside.core.widget.widgetDisplayName
+import now.shouldigooutside.core.widget.UpdateWidgetDataUseCase
 
 internal class DefaultForecastStateHolder(
     private val locationRepo: LocationRepo,
@@ -37,8 +34,7 @@ internal class DefaultForecastStateHolder(
     private val appConfigRepo: AppConfigRepo,
     private val scoreCalculator: ScoreCalculator,
     private val coroutineScope: CoroutineScope,
-    private val widgetDataStore: WidgetDataStore,
-    private val widgetNotifier: WidgetNotifier,
+    private val updateWidgetData: UpdateWidgetDataUseCase,
 ) : ForecastStateHolder {
     private val logger = Logger.withTag("ForecastStateHolder")
     private val delayDuration = appConfigRepo.value.maxCacheAge
@@ -54,7 +50,7 @@ internal class DefaultForecastStateHolder(
         coroutineScope.launch {
             state.collect { result ->
                 if (result is AsyncResult.Success) {
-                    updateWidgetData(result.data)
+                    refreshWidgetData(result.data)
                 }
             }
         }
@@ -64,12 +60,12 @@ internal class DefaultForecastStateHolder(
                 .distinctUntilChanged()
                 .collect {
                     val forecast = (state.value as? AsyncResult.Success)?.data ?: return@collect
-                    updateWidgetData(forecast)
+                    refreshWidgetData(forecast)
                 }
         }
     }
 
-    private fun updateWidgetData(forecast: Forecast) {
+    private fun refreshWidgetData(forecast: Forecast) {
         val settings = settingsRepo.settings.value
         val widgetActivity = settings.widgetActivity
         val preferences = settings.activities[widgetActivity] ?: Preferences.default
@@ -78,14 +74,12 @@ internal class DefaultForecastStateHolder(
             preferences,
             settings.includeAirQuality,
         )
-        val widgetData = WidgetDataMapper.map(
+        updateWidgetData.update(
             forecast = forecast,
             score = score,
             units = settings.units,
-            activityName = widgetActivity.widgetDisplayName(),
+            widgetActivity = widgetActivity,
         )
-        widgetDataStore.save(widgetData)
-        widgetNotifier.notifyUpdate()
     }
 
     private var fetchJob: Job? = null

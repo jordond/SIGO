@@ -10,6 +10,7 @@ import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.location.LocationResult
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.model.units.Units
+import now.shouldigooutside.core.widget.UpdateWidgetDataUseCase
 import now.shouldigooutside.core.widget.WidgetData
 import now.shouldigooutside.core.widget.WidgetDataStore
 import now.shouldigooutside.core.widget.WidgetNotifier
@@ -25,15 +26,16 @@ import kotlin.time.Duration.Companion.seconds
 class DefaultForecastStateHolderTest {
     private val zeroDelayConfig = AppConfig(minimumExecutionDelay = 0.seconds)
 
-    private val noOpWidgetDataStore = object : WidgetDataStore {
-        override fun save(data: WidgetData) {}
+    private val noOpUpdateWidgetData = UpdateWidgetDataUseCase(
+        widgetDataStore = object : WidgetDataStore {
+            override fun save(data: WidgetData) {}
 
-        override fun load(): WidgetData? = null
-    }
-
-    private val noOpWidgetNotifier = object : WidgetNotifier {
-        override fun notifyUpdate() {}
-    }
+            override fun load(): WidgetData? = null
+        },
+        widgetNotifier = object : WidgetNotifier {
+            override fun notifyUpdate() {}
+        },
+    )
 
     @Test
     fun stateEmitsLoadingInitially() =
@@ -46,8 +48,7 @@ class DefaultForecastStateHolderTest {
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
                 coroutineScope = backgroundScope,
-                widgetDataStore = noOpWidgetDataStore,
-                widgetNotifier = noOpWidgetNotifier,
+                updateWidgetData = noOpUpdateWidgetData,
             )
 
             holder.state.test {
@@ -69,8 +70,7 @@ class DefaultForecastStateHolderTest {
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
                 coroutineScope = backgroundScope,
-                widgetDataStore = noOpWidgetDataStore,
-                widgetNotifier = noOpWidgetNotifier,
+                updateWidgetData = noOpUpdateWidgetData,
             )
 
             holder.state.test {
@@ -99,8 +99,7 @@ class DefaultForecastStateHolderTest {
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
                 coroutineScope = backgroundScope,
-                widgetDataStore = noOpWidgetDataStore,
-                widgetNotifier = noOpWidgetNotifier,
+                updateWidgetData = noOpUpdateWidgetData,
             )
 
             holder.state.test {
@@ -126,8 +125,7 @@ class DefaultForecastStateHolderTest {
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
                 coroutineScope = backgroundScope,
-                widgetDataStore = noOpWidgetDataStore,
-                widgetNotifier = noOpWidgetNotifier,
+                updateWidgetData = noOpUpdateWidgetData,
             )
 
             holder.state.test {
@@ -155,8 +153,7 @@ class DefaultForecastStateHolderTest {
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
                 coroutineScope = backgroundScope,
-                widgetDataStore = noOpWidgetDataStore,
-                widgetNotifier = noOpWidgetNotifier,
+                updateWidgetData = noOpUpdateWidgetData,
             )
 
             holder.state.test {
@@ -188,8 +185,7 @@ class DefaultForecastStateHolderTest {
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
                 coroutineScope = backgroundScope,
-                widgetDataStore = noOpWidgetDataStore,
-                widgetNotifier = noOpWidgetNotifier,
+                updateWidgetData = noOpUpdateWidgetData,
             )
 
             holder.state.test {
@@ -216,8 +212,7 @@ class DefaultForecastStateHolderTest {
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
                 coroutineScope = backgroundScope,
-                widgetDataStore = noOpWidgetDataStore,
-                widgetNotifier = noOpWidgetNotifier,
+                updateWidgetData = noOpUpdateWidgetData,
             )
 
             holder.state.test {
@@ -242,8 +237,7 @@ class DefaultForecastStateHolderTest {
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
                 coroutineScope = backgroundScope,
-                widgetDataStore = noOpWidgetDataStore,
-                widgetNotifier = noOpWidgetNotifier,
+                updateWidgetData = noOpUpdateWidgetData,
             )
 
             holder.start(backgroundScope)

@@ -6,6 +6,7 @@ import org.koin.dsl.module
 
 public actual fun widgetModule(): Module =
     module {
+        includes(commonWidgetModule())
         single { IosWidgetDataStore() } bind WidgetDataStore::class
         single { IosWidgetNotifier() } bind WidgetNotifier::class
     }

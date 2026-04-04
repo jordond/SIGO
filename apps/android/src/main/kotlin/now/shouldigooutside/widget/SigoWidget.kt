@@ -11,14 +11,18 @@ import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
-import androidx.glance.currentState
 import androidx.glance.layout.Box
 import androidx.glance.layout.fillMaxSize
 import now.shouldigooutside.MainActivity
-import now.shouldigooutside.core.widget.AndroidWidgetDataStore
-import now.shouldigooutside.core.widget.WidgetData
+import now.shouldigooutside.core.widget.WidgetDataStore
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class SigoWidget : GlanceAppWidget() {
+class SigoWidget :
+    GlanceAppWidget(),
+    KoinComponent {
+    private val widgetDataStore: WidgetDataStore by inject()
+
     companion object {
         private val SMALL = DpSize(100.dp, 100.dp)
         private val MEDIUM = DpSize(250.dp, 100.dp)
@@ -30,8 +34,7 @@ class SigoWidget : GlanceAppWidget() {
         context: Context,
         id: GlanceId,
     ) {
-        val dataStore = AndroidWidgetDataStore(context)
-        val widgetData = dataStore.load()
+        val widgetData = widgetDataStore.load()
 
         provideContent {
             val isDark = context.resources.configuration.uiMode and
