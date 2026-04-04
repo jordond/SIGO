@@ -1,4 +1,5 @@
 import WidgetKit
+import iosApp
 
 struct SIGOTimelineProvider: TimelineProvider {
     func placeholder(in context: Context) -> SIGOWidgetEntry {
@@ -6,7 +7,6 @@ struct SIGOTimelineProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SIGOWidgetEntry) -> Void) {
-        // Snapshots should be fast — use cached data
         let entry = SIGOWidgetEntry(
             date: .now,
             data: WidgetData.load()
@@ -15,25 +15,46 @@ struct SIGOTimelineProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SIGOWidgetEntry>) -> Void) {
-        Task {
-            // Try to fetch fresh data from the backend
-            let data = await WidgetDataService.fetch() ?? WidgetData.load()
+        // WidgetRefresher handles everything in KMP: Koin init, settings, forecast fetch, scoring
+        let kotlinData = WidgetRefresher.shared.refresh()
 
-            let entry = SIGOWidgetEntry(
-                date: .now,
-                data: data
-            )
+        // Convert Kotlin WidgetData to Swift WidgetData, or fall back to cached
+        let data = kotlinData?.toSwiftWidgetData() ?? WidgetData.load()
 
-            // If data is stale, refresh sooner (15 min instead of 30)
-            let refreshMinutes = data?.isStale == true ? 15 : 30
-            let nextUpdate = Calendar.current.date(
-                byAdding: .minute,
-                value: refreshMinutes,
-                to: .now
-            ) ?? .now
+        let entry = SIGOWidgetEntry(
+            date: .now,
+            data: data
+        )
 
-            let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
-            completion(timeline)
-        }
+        let refreshMinutes = data?.isStale == true ? 15 : 30
+        let nextUpdate = Calendar.current.date(
+            byAdding: .minute,
+            value: refreshMinutes,
+            to: .now
+        ) ?? .now
+
+        let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
+        completion(timeline)
+    }
+}
+
+// Bridge from Kotlin WidgetData to Swift WidgetData
+// The Kotlin side handles all business logic; this just maps types for SwiftUI views.
+private extension iosApp.WidgetData {
+    func toSwiftWidgetData() -> WidgetData {
+        WidgetData(
+            scoreResult: ScoreResult(rawValue: scoreResult.name) ?? .Maybe,
+            locationName: locationName,
+            currentTemp: currentTemp,
+            tempUnit: TemperatureUnit(rawValue: tempUnit.name) ?? .Celsius,
+            feelsLikeTemp: feelsLikeTemp,
+            windSpeed: windSpeed,
+            windSpeedUnit: WindSpeedUnit(rawValue: windSpeedUnit.name) ?? .KilometerPerHour,
+            precipChance: Int(precipChance),
+            todayScoreResult: ScoreResult(rawValue: todayScoreResult.name) ?? .Maybe,
+            alertCount: Int(alertCount),
+            updatedAtMillis: updatedAtMillis,
+            activityName: activityName
+        )
     }
 }

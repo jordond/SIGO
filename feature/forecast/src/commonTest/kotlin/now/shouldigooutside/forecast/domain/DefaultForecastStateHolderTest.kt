@@ -10,9 +10,7 @@ import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.location.LocationResult
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.model.units.Units
-import now.shouldigooutside.core.platform.ClientIdProvider
 import now.shouldigooutside.core.widget.UpdateWidgetDataUseCase
-import now.shouldigooutside.core.widget.WidgetConfig
 import now.shouldigooutside.core.widget.WidgetData
 import now.shouldigooutside.core.widget.WidgetDataStore
 import now.shouldigooutside.core.widget.WidgetNotifier
@@ -33,19 +31,11 @@ class DefaultForecastStateHolderTest {
             override fun save(data: WidgetData) {}
 
             override fun load(): WidgetData? = null
-
-            override fun saveConfig(config: WidgetConfig) {}
-
-            override fun loadConfig(): WidgetConfig? = null
         },
         widgetNotifier = object : WidgetNotifier {
             override fun notifyUpdate() {}
         },
     )
-
-    private val fakeClientIdProvider = object : ClientIdProvider {
-        override suspend fun clientId(): String = "test-client-id"
-    }
 
     @Test
     fun stateEmitsLoadingInitially() =
@@ -57,7 +47,6 @@ class DefaultForecastStateHolderTest {
                 settingsRepo = FakeSettingsRepo(),
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
-                clientIdProvider = fakeClientIdProvider,
                 coroutineScope = backgroundScope,
                 updateWidgetData = noOpUpdateWidgetData,
             )
@@ -80,7 +69,6 @@ class DefaultForecastStateHolderTest {
                 settingsRepo = FakeSettingsRepo(),
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
-                clientIdProvider = fakeClientIdProvider,
                 coroutineScope = backgroundScope,
                 updateWidgetData = noOpUpdateWidgetData,
             )
@@ -110,7 +98,6 @@ class DefaultForecastStateHolderTest {
                 settingsRepo = FakeSettingsRepo(),
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
-                clientIdProvider = fakeClientIdProvider,
                 coroutineScope = backgroundScope,
                 updateWidgetData = noOpUpdateWidgetData,
             )
@@ -137,7 +124,6 @@ class DefaultForecastStateHolderTest {
                 settingsRepo = FakeSettingsRepo(),
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
-                clientIdProvider = fakeClientIdProvider,
                 coroutineScope = backgroundScope,
                 updateWidgetData = noOpUpdateWidgetData,
             )
@@ -166,7 +152,6 @@ class DefaultForecastStateHolderTest {
                 settingsRepo = FakeSettingsRepo(),
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
-                clientIdProvider = fakeClientIdProvider,
                 coroutineScope = backgroundScope,
                 updateWidgetData = noOpUpdateWidgetData,
             )
@@ -199,7 +184,6 @@ class DefaultForecastStateHolderTest {
                 settingsRepo = settingsRepo,
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
-                clientIdProvider = fakeClientIdProvider,
                 coroutineScope = backgroundScope,
                 updateWidgetData = noOpUpdateWidgetData,
             )
@@ -227,7 +211,6 @@ class DefaultForecastStateHolderTest {
                 settingsRepo = FakeSettingsRepo(),
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
-                clientIdProvider = fakeClientIdProvider,
                 coroutineScope = backgroundScope,
                 updateWidgetData = noOpUpdateWidgetData,
             )
@@ -253,7 +236,6 @@ class DefaultForecastStateHolderTest {
                 settingsRepo = FakeSettingsRepo(),
                 appConfigRepo = appConfigRepo,
                 scoreCalculator = FakeScoreCalculator(),
-                clientIdProvider = fakeClientIdProvider,
                 coroutineScope = backgroundScope,
                 updateWidgetData = noOpUpdateWidgetData,
             )

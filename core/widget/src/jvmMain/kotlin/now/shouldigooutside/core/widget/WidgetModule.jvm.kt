@@ -15,10 +15,6 @@ private class NoOpWidgetDataStore : WidgetDataStore {
     override fun save(data: WidgetData) = Unit
 
     override fun load(): WidgetData? = null
-
-    override fun saveConfig(config: WidgetConfig) = Unit
-
-    override fun loadConfig(): WidgetConfig? = null
 }
 
 private class NoOpWidgetNotifier : WidgetNotifier {
