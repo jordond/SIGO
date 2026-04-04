@@ -25,7 +25,9 @@ import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.location.LocationResult
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.toAsyncResult
+import now.shouldigooutside.core.platform.ClientIdProvider
 import now.shouldigooutside.core.widget.UpdateWidgetDataUseCase
+import now.shouldigooutside.core.widget.widgetDisplayName
 
 internal class DefaultForecastStateHolder(
     private val locationRepo: LocationRepo,
@@ -33,6 +35,7 @@ internal class DefaultForecastStateHolder(
     private val settingsRepo: SettingsRepo,
     private val appConfigRepo: AppConfigRepo,
     private val scoreCalculator: ScoreCalculator,
+    private val clientIdProvider: ClientIdProvider,
     private val coroutineScope: CoroutineScope,
     private val updateWidgetData: UpdateWidgetDataUseCase,
 ) : ForecastStateHolder {
@@ -80,6 +83,18 @@ internal class DefaultForecastStateHolder(
             units = settings.units,
             widgetActivity = widgetActivity,
         )
+
+        val location = settings.location ?: return
+        coroutineScope.launch {
+            updateWidgetData.updateConfig(
+                backendUrl = settings.internalSettings.backendApiUrl,
+                clientId = clientIdProvider.clientId(),
+                location = location,
+                preferences = preferences,
+                includeAirQuality = settings.includeAirQuality,
+                activityName = widgetActivity.widgetDisplayName(),
+            )
+        }
     }
 
     private var fetchJob: Job? = null

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 
 private const val PREFS_NAME = "sigo_widget_data"
 private const val KEY_WIDGET_DATA = "widget_data_json"
+private const val KEY_WIDGET_CONFIG = "widget_config_json"
 
 public class AndroidWidgetDataStore(
     context: Context,
@@ -21,6 +22,20 @@ public class AndroidWidgetDataStore(
         val encoded = prefs.getString(KEY_WIDGET_DATA, null) ?: return null
         return try {
             WidgetDataStore.json.decodeFromString(WidgetData.serializer(), encoded)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    override fun saveConfig(config: WidgetConfig) {
+        val encoded = WidgetDataStore.json.encodeToString(WidgetConfig.serializer(), config)
+        prefs.edit().putString(KEY_WIDGET_CONFIG, encoded).apply()
+    }
+
+    override fun loadConfig(): WidgetConfig? {
+        val encoded = prefs.getString(KEY_WIDGET_CONFIG, null) ?: return null
+        return try {
+            WidgetDataStore.json.decodeFromString(WidgetConfig.serializer(), encoded)
         } catch (_: Exception) {
             null
         }

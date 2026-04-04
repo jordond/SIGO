@@ -69,6 +69,15 @@ struct WidgetData: Codable {
         return "\(Int(windSpeed.rounded())) \(windSpeedUnit.label)"
     }
 
+    func save() {
+        guard let defaults = UserDefaults(suiteName: "group.now.shouldigooutside"),
+              let data = try? JSONEncoder().encode(self),
+              let jsonString = String(data: data, encoding: .utf8) else {
+            return
+        }
+        defaults.set(jsonString, forKey: "widget_data_json")
+    }
+
     static func load() -> WidgetData? {
         guard let defaults = UserDefaults(suiteName: "group.now.shouldigooutside"),
               let jsonString = defaults.string(forKey: "widget_data_json"),
