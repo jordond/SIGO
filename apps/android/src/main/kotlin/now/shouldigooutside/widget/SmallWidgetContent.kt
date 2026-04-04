@@ -30,8 +30,9 @@ internal fun SmallWidgetContent(
         return
     }
 
-    val scoreColor = WidgetTheme.scoreColor(data.scoreResult, isDark)
-    val textOnScore = WidgetTheme.scoreTextColor
+    val colors = widgetColors(isDark)
+    val scoreColor = colors.scoreColor(data.scoreResult)
+    val textOnScore = colors.onSuccess
 
     Column(
         modifier = GlanceModifier
@@ -93,11 +94,12 @@ internal fun SmallWidgetContent(
 @Composable
 internal fun EmptyWidgetContent(isDark: Boolean) {
     val context = LocalContext.current
+    val colors = widgetColors(isDark)
 
     Column(
         modifier = GlanceModifier
             .fillMaxSize()
-            .background(WidgetTheme.surfaceColor(isDark))
+            .background(colors.surface)
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalAlignment = Alignment.CenterVertically,
@@ -105,7 +107,7 @@ internal fun EmptyWidgetContent(isDark: Boolean) {
         Text(
             text = context.getString(R.string.widget_empty),
             style = TextStyle(
-                color = ColorProvider(WidgetTheme.textColor(isDark)),
+                color = ColorProvider(colors.text),
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
             ),

@@ -35,16 +35,14 @@ internal fun MediumWidgetContent(
     }
 
     val context = LocalContext.current
-    val scoreColor = WidgetTheme.scoreColor(data.scoreResult, isDark)
-    val textOnScore = WidgetTheme.scoreTextColor
-    val surfaceColor = WidgetTheme.surfaceColor(isDark)
-    val textColor = WidgetTheme.textColor(isDark)
-    val textSecondary = WidgetTheme.textSecondaryColor(isDark)
+    val colors = widgetColors(isDark)
+    val scoreColor = colors.scoreColor(data.scoreResult)
+    val textOnScore = colors.onSuccess
 
     Row(
         modifier = GlanceModifier
             .fillMaxSize()
-            .background(surfaceColor),
+            .background(colors.surface),
     ) {
         // Left side: score badge
         Column(
@@ -113,29 +111,29 @@ internal fun MediumWidgetContent(
             DetailRow(
                 label = context.getString(R.string.widget_feels_like),
                 value = "${data.feelsLikeTemp.roundToInt()}°${data.tempUnit.name.first()}",
-                textColor = textColor,
-                labelColor = textSecondary,
+                textColor = colors.text,
+                labelColor = colors.textSecondary,
             )
             Spacer(modifier = GlanceModifier.height(4.dp))
             DetailRow(
                 label = context.getString(R.string.widget_wind),
                 value = "${data.windSpeed.roundToInt()} ${formatWindUnit(data.windSpeedUnit)}",
-                textColor = textColor,
-                labelColor = textSecondary,
+                textColor = colors.text,
+                labelColor = colors.textSecondary,
             )
             Spacer(modifier = GlanceModifier.height(4.dp))
             DetailRow(
                 label = context.getString(R.string.widget_precip),
                 value = "${data.precipChance}%",
-                textColor = textColor,
-                labelColor = textSecondary,
+                textColor = colors.text,
+                labelColor = colors.textSecondary,
             )
             Spacer(modifier = GlanceModifier.height(4.dp))
             DetailRow(
                 label = context.getString(R.string.widget_today),
                 value = data.todayScoreResult.name,
-                textColor = textColor,
-                labelColor = textSecondary,
+                textColor = colors.text,
+                labelColor = colors.textSecondary,
             )
 
             if (data.alertCount > 0) {
@@ -147,7 +145,7 @@ internal fun MediumWidgetContent(
                         data.alertCount,
                     ),
                     style = TextStyle(
-                        color = ColorProvider(WidgetTheme.scoreNoLight),
+                        color = ColorProvider(colors.error),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                     ),
@@ -159,7 +157,7 @@ internal fun MediumWidgetContent(
                 Text(
                     text = data.updatedAgo(context),
                     style = TextStyle(
-                        color = ColorProvider(textSecondary),
+                        color = ColorProvider(colors.textSecondary),
                         fontSize = 9.sp,
                     ),
                 )
