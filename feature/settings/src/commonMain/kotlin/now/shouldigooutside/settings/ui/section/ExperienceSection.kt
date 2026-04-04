@@ -38,12 +38,14 @@ import now.shouldigooutside.core.ui.activities.rememberDisplayName
 import now.shouldigooutside.core.ui.activities.rememberIcon
 import now.shouldigooutside.core.ui.activities.rememberStringResource
 import now.shouldigooutside.core.ui.components.AlertDialog
+import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.Switch
 import now.shouldigooutside.core.ui.components.SwitchDefaults
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.ArrowRight
+import now.shouldigooutside.core.ui.icons.lucide.Check
 import now.shouldigooutside.core.ui.icons.lucide.Hourglass
 import now.shouldigooutside.core.ui.icons.lucide.Ruler
 import now.shouldigooutside.core.ui.icons.lucide.Smartphone
@@ -237,10 +239,9 @@ internal fun ExperienceSection(
                         },
                         trailingContent = if (isSelected) {
                             {
-                                Switch(
-                                    checked = true,
-                                    onCheckedChange = {},
-                                    colors = SwitchDefaults.colors(checkedTrackColor = secondary),
+                                Icon(
+                                    icon = AppIcons.Lucide.Check,
+                                    tint = secondary,
                                 )
                             }
                         } else {

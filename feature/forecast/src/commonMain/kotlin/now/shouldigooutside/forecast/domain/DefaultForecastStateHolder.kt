@@ -7,6 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -48,19 +49,15 @@ internal class DefaultForecastStateHolder(
 
     init {
         coroutineScope.launch {
-            state.collect { result ->
-                if (result is AsyncResult.Success) {
-                    refreshWidgetData(result.data)
-                }
-            }
-        }
-        coroutineScope.launch {
-            settingsRepo.settings
+            val widgetSettings = settingsRepo.settings
                 .map { Triple(it.widgetActivity, it.includeAirQuality, it.units) }
                 .distinctUntilChanged()
-                .collect {
-                    val forecast = (state.value as? AsyncResult.Success)?.data ?: return@collect
-                    refreshWidgetData(forecast)
+
+            combine(state, widgetSettings) { result, _ -> result }
+                .collect { result ->
+                    if (result is AsyncResult.Success) {
+                        refreshWidgetData(result.data)
+                    }
                 }
         }
     }

@@ -8,20 +8,21 @@ import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.widget.UpdateWidgetDataUseCase
 import now.shouldigooutside.core.widget.WidgetData
-import now.shouldigooutside.core.widget.WidgetDataMapper
 import now.shouldigooutside.core.widget.WidgetDataStore
-import now.shouldigooutside.core.widget.widgetDisplayName
 import now.shouldigooutside.di.initKoin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.GlobalContext
 
+// Called from Swift WidgetKit timeline provider via runBlocking.
+// WidgetKit invokes getTimeline from a background context, so this is safe.
 public object WidgetRefresher : KoinComponent {
     private val logger = Logger.withTag("WidgetRefresher")
 
     private val settingsRepo: SettingsRepo by inject()
     private val getForecastUseCase: GetForecastUseCase by inject()
     private val scoreCalculator: ScoreCalculator by inject()
+    private val updateWidgetData: UpdateWidgetDataUseCase by inject()
     private val widgetDataStore: WidgetDataStore by inject()
 
     public fun ensureInitialized() {
@@ -54,17 +55,15 @@ public object WidgetRefresher : KoinComponent {
                 val widgetActivity = settings.widgetActivity
                 val preferences = settings.activities[widgetActivity] ?: Preferences.default
                 val score = scoreCalculator.calculate(forecast, preferences, settings.includeAirQuality)
-
-                val widgetData = WidgetDataMapper.map(
+                updateWidgetData.update(
                     forecast = forecast,
                     score = score,
                     units = units,
-                    activityName = widgetActivity.widgetDisplayName(),
+                    widgetActivity = widgetActivity,
                 )
-                widgetDataStore.save(widgetData)
 
                 logger.d { "iOS widget refresh complete" }
-                widgetData
+                widgetDataStore.load()
             } catch (e: Exception) {
                 logger.e(e) { "iOS widget refresh failed" }
                 widgetDataStore.load()

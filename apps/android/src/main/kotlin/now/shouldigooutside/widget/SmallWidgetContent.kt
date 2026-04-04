@@ -18,7 +18,6 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import now.shouldigooutside.core.widget.WidgetData
-import kotlin.math.roundToInt
 
 @Composable
 internal fun SmallWidgetContent(
@@ -55,7 +54,7 @@ internal fun SmallWidgetContent(
         Spacer(modifier = GlanceModifier.height(4.dp))
 
         Text(
-            text = "${data.currentTemp.roundToInt()}°${data.tempUnit.name.first()}",
+            text = data.formattedTemp,
             style = TextStyle(
                 color = ColorProvider(textOnScore),
                 fontSize = 18.sp,

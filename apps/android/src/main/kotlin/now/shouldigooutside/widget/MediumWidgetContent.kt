@@ -20,9 +20,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
-import now.shouldigooutside.core.model.units.WindSpeedUnit
 import now.shouldigooutside.core.widget.WidgetData
-import kotlin.math.roundToInt
 
 @Composable
 internal fun MediumWidgetContent(
@@ -79,7 +77,7 @@ internal fun MediumWidgetContent(
             Spacer(modifier = GlanceModifier.height(2.dp))
 
             Text(
-                text = "${data.currentTemp.roundToInt()}°${data.tempUnit.name.first()}",
+                text = data.formattedTemp,
                 style = TextStyle(
                     color = ColorProvider(textOnScore),
                     fontSize = 16.sp,
@@ -110,14 +108,14 @@ internal fun MediumWidgetContent(
         ) {
             DetailRow(
                 label = context.getString(R.string.widget_feels_like),
-                value = "${data.feelsLikeTemp.roundToInt()}°${data.tempUnit.name.first()}",
+                value = data.formattedFeelsLike,
                 textColor = colors.text,
                 labelColor = colors.textSecondary,
             )
             Spacer(modifier = GlanceModifier.height(4.dp))
             DetailRow(
                 label = context.getString(R.string.widget_wind),
-                value = "${data.windSpeed.roundToInt()} ${formatWindUnit(data.windSpeedUnit)}",
+                value = data.formattedWind,
                 textColor = colors.text,
                 labelColor = colors.textSecondary,
             )
@@ -191,11 +189,3 @@ private fun DetailRow(
         )
     }
 }
-
-private fun formatWindUnit(unit: WindSpeedUnit): String =
-    when (unit) {
-        WindSpeedUnit.MilePerHour -> "mph"
-        WindSpeedUnit.KilometerPerHour -> "km/h"
-        WindSpeedUnit.MeterPerSecond -> "m/s"
-        WindSpeedUnit.Knot -> "kn"
-    }
