@@ -35,8 +35,10 @@ class WidgetRefreshWorker(
             val settings = settingsRepo.settings.value
             val location = resolveLocation()
             if (location == null) {
-                logger.w { "No location available for widget refresh" }
-                return Result.failure()
+                logger.w {
+                    "No location available for widget refresh; leaving existing widget data unchanged"
+                }
+                return Result.success()
             }
 
             val units = settings.units
