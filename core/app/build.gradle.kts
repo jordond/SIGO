@@ -27,6 +27,7 @@ kotlin {
             implementation(projects.core.platform)
             implementation(projects.core.resources)
             implementation(projects.core.ui)
+            implementation(projects.core.widget)
 
             implementation(projects.feature.forecast)
             implementation(projects.feature.forecast.ui)

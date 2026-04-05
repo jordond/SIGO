@@ -7,28 +7,35 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import now.shouldigooutside.core.config.AppConfigRepo
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetForecastUseCase
+import now.shouldigooutside.core.domain.forecast.ScoreCalculator
 import now.shouldigooutside.core.domain.location.LocationRepo
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.foundation.ktx.ensureExecutionTime
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.location.LocationResult
+import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.toAsyncResult
+import now.shouldigooutside.core.widget.UpdateWidgetDataUseCase
 
 internal class DefaultForecastStateHolder(
     private val locationRepo: LocationRepo,
     private val getForecastUseCase: GetForecastUseCase,
     private val settingsRepo: SettingsRepo,
     private val appConfigRepo: AppConfigRepo,
+    private val scoreCalculator: ScoreCalculator,
     private val coroutineScope: CoroutineScope,
+    private val updateWidgetData: UpdateWidgetDataUseCase,
 ) : ForecastStateHolder {
     private val logger = Logger.withTag("ForecastStateHolder")
     private val delayDuration = appConfigRepo.value.maxCacheAge
@@ -39,6 +46,38 @@ internal class DefaultForecastStateHolder(
             .filterNotNull()
             .distinctUntilChanged()
             .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), AsyncResult.Loading)
+
+    init {
+        coroutineScope.launch {
+            val widgetSettings = settingsRepo.settings
+                .map { Triple(it.widgetActivity, it.includeAirQuality, it.units) }
+                .distinctUntilChanged()
+
+            combine(state, widgetSettings) { result, _ -> result }
+                .collect { result ->
+                    if (result is AsyncResult.Success) {
+                        refreshWidgetData(result.data)
+                    }
+                }
+        }
+    }
+
+    private fun refreshWidgetData(forecast: Forecast) {
+        val settings = settingsRepo.settings.value
+        val widgetActivity = settings.widgetActivity
+        val preferences = settings.activities[widgetActivity] ?: Preferences.default
+        val score = scoreCalculator.calculate(
+            forecast,
+            preferences,
+            settings.includeAirQuality,
+        )
+        updateWidgetData.update(
+            forecast = forecast,
+            score = score,
+            units = settings.units,
+            widgetActivity = widgetActivity,
+        )
+    }
 
     private var fetchJob: Job? = null
     private var refreshJob: Job? = null

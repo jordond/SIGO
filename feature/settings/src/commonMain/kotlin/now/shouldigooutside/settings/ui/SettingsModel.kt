@@ -43,20 +43,31 @@ internal class SettingsModel(
 
     fun toggleActivities() {
         settingsRepo.update { settings ->
-            val newSelected = if (settings.enableActivities) {
+            val resettingToGeneral = settings.enableActivities
+            val newSelected = if (resettingToGeneral) {
                 Activity.General
             } else {
                 settings.selectedActivity
             }
+            val newWidget = if (resettingToGeneral) {
+                Activity.General
+            } else {
+                settings.widgetActivity
+            }
             settings.copy(
                 enableActivities = !settings.enableActivities,
                 selectedActivity = newSelected,
+                widgetActivity = newWidget,
             )
         }
     }
 
     fun toggleRememberActivity() {
         settingsRepo.update { it.copy(rememberActivity = !it.rememberActivity) }
+    }
+
+    fun updateWidgetActivity(activity: Activity) {
+        settingsRepo.update { it.copy(widgetActivity = activity) }
     }
 
     fun clickAbout() {

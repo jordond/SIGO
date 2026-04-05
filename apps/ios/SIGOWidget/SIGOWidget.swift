@@ -1,0 +1,53 @@
+//
+//  SIGOWidget.swift
+//  SIGOWidget
+//
+//  Created by Jordon de hoog on 2026-03-21.
+//
+
+import WidgetKit
+import SwiftUI
+
+struct SIGOWidget: Widget {
+    let kind: String = "SIGOWidget"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: SIGOTimelineProvider()) { entry in
+            SIGOWidgetEntryView(entry: entry)
+        }
+        .configurationDisplayName("SIGO Score")
+        .description("See your Should I Go Outside score at a glance.")
+        .supportedFamilies([.systemSmall, .systemMedium])
+    }
+}
+
+struct SIGOWidgetEntryView: View {
+    var entry: SIGOWidgetEntry
+    @Environment(\.widgetFamily) var family
+
+    var body: some View {
+        Group {
+            switch family {
+            case .systemSmall:
+                SmallWidgetView(data: entry.data)
+            case .systemMedium:
+                MediumWidgetView(data: entry.data)
+            default:
+                SmallWidgetView(data: entry.data)
+            }
+        }
+        .widgetURL(URL(string: "sigo://forecast"))
+    }
+}
+
+#Preview(as: .systemSmall) {
+    SIGOWidget()
+} timeline: {
+    SIGOWidgetEntry.placeholder
+}
+
+#Preview(as: .systemMedium) {
+    SIGOWidget()
+} timeline: {
+    SIGOWidgetEntry.placeholder
+}

@@ -37,6 +37,8 @@ internal data class SettingsEntity(
     val units: UnitsEntity? = null,
     @SerialName("selected_activity")
     val selectedActivity: String = ActivityEntity.General,
+    @SerialName("widget_activity")
+    val widgetActivity: String = ActivityEntity.General,
     @SerialName("activities")
     val activities: Map<String, PreferencesEntity> = emptyMap(),
     @Deprecated("Use activities with preferences instead")
@@ -70,6 +72,8 @@ internal fun SettingsEntity.toModel(): Settings {
 
     val selected = mapActivityEntityToModel(selectedActivity)
     val selectedActivity = if (activities.containsKey(selected)) selected else Activity.General
+    val widget = mapActivityEntityToModel(widgetActivity)
+    val widgetActivity = if (activities.containsKey(widget)) widget else Activity.General
 
     return Settings(
         firstLaunch = Instant.fromEpochMilliseconds(firstLaunch),
@@ -77,6 +81,7 @@ internal fun SettingsEntity.toModel(): Settings {
         hasCompletedOnboarding = hasCompletedOnboarding,
         units = units,
         selectedActivity = selectedActivity,
+        widgetActivity = widgetActivity,
         activities = activities,
         use24HourFormat = use24HourFormat,
         lastLocation = lastLocation?.toModel(),
@@ -98,6 +103,7 @@ internal fun Settings.toEntity() =
         hasCompletedOnboarding = hasCompletedOnboarding,
         units = units.toEntity(),
         selectedActivity = selectedActivity.toEntity(),
+        widgetActivity = widgetActivity.toEntity(),
         activities = activities.toEntity(),
         preferences = null, // Clear out old preferences field since we migrated to the new structure
         lastLocation = lastLocation?.toEntity(),
