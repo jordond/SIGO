@@ -269,5 +269,155 @@ class SettingsEntityMapperTest {
         result.enableHaptics shouldBe settings.enableHaptics
     }
 
+    @Test
+    fun settingsRoundTripPreservesNonDefaultUnits() {
+        val settings = Settings(
+            firstLaunch = Instant.fromEpochSeconds(0),
+            units = Units.Imperial,
+            activities = persistentMapOf(Activity.General to Preferences.default),
+        )
+
+        val result = settings.toEntity().toModel()
+
+        result.units shouldBe Units.Imperial
+    }
+
+    @Test
+    fun settingsUnitsRoundTripAfterMultipleSaves() {
+        val initial = Settings(
+            firstLaunch = Instant.fromEpochSeconds(0),
+            units = Units.Imperial,
+            activities = persistentMapOf(Activity.General to Preferences.default),
+        )
+
+        // Simulate save → load → change → save → load
+        val afterFirstRoundTrip = initial.toEntity().toModel()
+        val changed = afterFirstRoundTrip.copy(units = Units.Metric)
+        val afterSecondRoundTrip = changed.toEntity().toModel()
+
+        afterFirstRoundTrip.units shouldBe Units.Imperial
+        afterSecondRoundTrip.units shouldBe Units.Metric
+    }
+
+    @Test
+    fun settingsMigrationFromLegacyPreferencesUnits() {
+        val entity = SettingsEntity(
+            firstLaunch = 0L,
+            theme = "Light",
+            hasCompletedOnboarding = false,
+            units = null, // top-level units not set (legacy data)
+            preferences = PreferencesEntity(
+                units = Units.Imperial.toEntity(),
+                minTemperature = 32,
+                maxTemperature = 104,
+                includeApparentTemperature = false,
+                windSpeed = 0,
+                rain = false,
+                snow = false,
+                maxAqi = 2,
+            ),
+            activities = emptyMap(),
+            internalSettings = baseInternalSettingsEntity,
+        )
+
+        val result = entity.toModel()
+
+        result.units shouldBe Units.Imperial
+    }
+
+    @Test
+    fun settingsMigrationFromActivitiesUnits() {
+        val entity = SettingsEntity(
+            firstLaunch = 0L,
+            theme = "Light",
+            hasCompletedOnboarding = false,
+            units = null, // top-level units not set (legacy data)
+            activities = mapOf(
+                ActivityEntity.General to PreferencesEntity(
+                    units = Units.Imperial.toEntity(),
+                    minTemperature = 32,
+                    maxTemperature = 104,
+                    includeApparentTemperature = false,
+                    windSpeed = 0,
+                    rain = false,
+                    snow = false,
+                    maxAqi = 2,
+                ),
+            ),
+            internalSettings = baseInternalSettingsEntity,
+        )
+
+        val result = entity.toModel()
+
+        result.units shouldBe Units.Imperial
+    }
+
+    @Test
+    fun settingsTopLevelUnitsTakesPriorityOverLegacy() {
+        val entity = SettingsEntity(
+            firstLaunch = 0L,
+            theme = "Light",
+            hasCompletedOnboarding = false,
+            units = Units.Imperial.toEntity(),
+            activities = mapOf(
+                ActivityEntity.General to PreferencesEntity(
+                    units = Units.Metric.toEntity(), // stale legacy value
+                    minTemperature = 5,
+                    maxTemperature = 35,
+                    includeApparentTemperature = false,
+                    windSpeed = 30,
+                    rain = false,
+                    snow = false,
+                    maxAqi = 3,
+                ),
+            ),
+            internalSettings = baseInternalSettingsEntity,
+        )
+
+        val result = entity.toModel()
+
+        result.units shouldBe Units.Imperial
+    }
+
+    @Test
+    fun settingsNoUnitsAnywhereFallsBackToMetric() {
+        val entity = SettingsEntity(
+            firstLaunch = 0L,
+            theme = "Light",
+            hasCompletedOnboarding = false,
+            units = null,
+            activities = mapOf(
+                ActivityEntity.General to PreferencesEntity(
+                    units = null,
+                    minTemperature = 5,
+                    maxTemperature = 35,
+                    includeApparentTemperature = false,
+                    windSpeed = 30,
+                    rain = false,
+                    snow = false,
+                    maxAqi = 3,
+                ),
+            ),
+            internalSettings = baseInternalSettingsEntity,
+        )
+
+        val result = entity.toModel()
+
+        result.units shouldBe Units.Metric
+    }
+
+    @Test
+    fun toEntityWritesUnitsToTopLevel() {
+        val settings = Settings(
+            firstLaunch = Instant.fromEpochSeconds(0),
+            units = Units.Imperial,
+        )
+
+        val entity = settings.toEntity()
+
+        entity.units shouldBe Units.Imperial.toEntity()
+        entity.preferences shouldBe null
+    }
+
     private fun String.toModel(): Activity = mapActivityEntityToModel(this)
 }
