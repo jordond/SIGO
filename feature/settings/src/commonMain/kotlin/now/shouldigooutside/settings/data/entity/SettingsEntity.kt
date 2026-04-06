@@ -58,7 +58,7 @@ internal data class SettingsEntity(
 @Suppress("DEPRECATION")
 internal fun SettingsEntity.toModel(): Settings {
     val oldUnits = (preferences?.units ?: activities[ActivityEntity.General]?.units)?.toModel()
-    val units = oldUnits ?: Units.Metric
+    val units = this.units?.toModel() ?: oldUnits ?: Units.Metric
 
     // If the old preferences field is present and activities are empty,
     // we need to migrate it to the new structure.
