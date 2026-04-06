@@ -19,7 +19,7 @@ public class UpdateWidgetDataUseCase(
             forecast = forecast,
             score = score,
             units = units,
-            activityName = widgetActivity.widgetDisplayName(),
+            activity = widgetActivity,
         )
         widgetDataStore.save(widgetData)
         widgetNotifier.notifyUpdate()

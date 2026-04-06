@@ -25,10 +25,10 @@ public data class WidgetData(
     val activityName: String = DEFAULT_ACTIVITY_NAME,
 ) {
     public val formattedTemp: String
-        get() = "${currentTemp.roundToInt()}°${tempUnit.name.first()}"
+        get() = "${currentTemp.roundToInt()}${tempUnit.label}"
 
     public val formattedFeelsLike: String
-        get() = "${feelsLikeTemp.roundToInt()}°${tempUnit.name.first()}"
+        get() = "${feelsLikeTemp.roundToInt()}${tempUnit.label}"
 
     public val formattedWind: String
         get() = "${windSpeed.roundToInt()} ${windSpeedUnit.label}"
@@ -50,11 +50,3 @@ public data class WidgetData(
         private const val STALE_THRESHOLD_MS: Long = 2 * 60 * 60 * 1000
     }
 }
-
-public val WindSpeedUnit.label: String
-    get() = when (this) {
-        WindSpeedUnit.MilePerHour -> "mph"
-        WindSpeedUnit.KilometerPerHour -> "km/h"
-        WindSpeedUnit.MeterPerSecond -> "m/s"
-        WindSpeedUnit.Knot -> "kn"
-    }

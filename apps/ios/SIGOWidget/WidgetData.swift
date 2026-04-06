@@ -6,11 +6,21 @@ enum ScoreResult: String, Codable {
 
 enum TemperatureUnit: String, Codable {
     case Kelvin, Celsius, Fahrenheit
+
+    /// Matches core/model TemperatureUnit.label
+    var label: String {
+        switch self {
+        case .Kelvin: return "K"
+        case .Celsius: return "°C"
+        case .Fahrenheit: return "°F"
+        }
+    }
 }
 
 enum WindSpeedUnit: String, Codable {
     case MeterPerSecond, KilometerPerHour, MilePerHour, Knot
 
+    /// Matches core/model WindSpeedUnit.label
     var label: String {
         switch self {
         case .MilePerHour: return "mph"
@@ -56,13 +66,11 @@ struct WidgetData: Codable {
     }
 
     var formattedTemp: String {
-        let unit = String(tempUnit.rawValue.prefix(1))
-        return "\(Int(currentTemp.rounded()))°\(unit)"
+        return "\(Int(currentTemp.rounded()))\(tempUnit.label)"
     }
 
     var formattedFeelsLike: String {
-        let unit = String(tempUnit.rawValue.prefix(1))
-        return "\(Int(feelsLikeTemp.rounded()))°\(unit)"
+        return "\(Int(feelsLikeTemp.rounded()))\(tempUnit.label)"
     }
 
     var formattedWind: String {

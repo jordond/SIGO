@@ -18,10 +18,6 @@ struct ComposeApp: App {
         WindowGroup {
             ContentView()
                 .ignoresSafeArea(.all)
-                .onOpenURL { url in
-                    // Handle widget deep link (sigo://forecast)
-                    // The app opens to its default screen which is the forecast
-                }
         }
     }
 }

@@ -2,7 +2,9 @@ package now.shouldigooutside.core.model.units
 
 import androidx.compose.runtime.Immutable
 
-public sealed interface BaseUnit
+public sealed interface BaseUnit {
+    public val label: String
+}
 
 @Immutable
 public data class Units(
