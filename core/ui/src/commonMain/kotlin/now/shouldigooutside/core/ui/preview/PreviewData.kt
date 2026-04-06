@@ -26,7 +26,7 @@ public object PreviewData {
     public val Icon: ImageVector
         get() = PreviewIcon
 
-    public val location: Location = Location(
+    public val fakeLocation: Location = Location(
         latitude = 51.5074,
         longitude = -0.1278,
         name = "London, ON",

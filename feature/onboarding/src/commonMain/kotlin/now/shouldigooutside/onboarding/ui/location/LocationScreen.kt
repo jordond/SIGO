@@ -171,8 +171,8 @@ private fun LocationScreenPreview() {
     AppPreview {
         OnboardingScreen(OnboardingDestination.Location) {
             LocationScreen(
-                location = PreviewData.location,
-                locationResult = LocationResult.Success(PreviewData.location),
+                location = PreviewData.fakeLocation,
+                locationResult = LocationResult.Success(PreviewData.fakeLocation),
                 permissionStatus = LocationPermissionStatus.Granted,
             )
         }

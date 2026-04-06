@@ -35,7 +35,6 @@ import now.shouldigooutside.core.ui.components.LoadingBox
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.ForecastPreviewData
-import now.shouldigooutside.core.ui.preview.PreviewData.location
 import now.shouldigooutside.forecast.ui.components.NoLocation
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -109,7 +108,7 @@ internal fun ForecastDetailsScreen(
             targetValue = if (forecast.location.isDefaultName) 0f else 1f,
         )
         Text(
-            text = location.name,
+            text = forecast.location.name,
             style = AppTheme.typography.body1,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
