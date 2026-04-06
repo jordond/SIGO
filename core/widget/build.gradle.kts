@@ -14,6 +14,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.model)
+            implementation(projects.core.resources)
             implementation(libs.compose.runtime.annotation)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)

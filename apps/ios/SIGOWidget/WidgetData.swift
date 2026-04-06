@@ -4,43 +4,12 @@ enum ScoreResult: String, Codable {
     case Yes, Maybe, No
 }
 
-enum TemperatureUnit: String, Codable {
-    case Kelvin, Celsius, Fahrenheit
-
-    /// Matches core/model TemperatureUnit.label
-    var label: String {
-        switch self {
-        case .Kelvin: return "K"
-        case .Celsius: return "°C"
-        case .Fahrenheit: return "°F"
-        }
-    }
-}
-
-enum WindSpeedUnit: String, Codable {
-    case MeterPerSecond, KilometerPerHour, MilePerHour, Knot
-
-    /// Matches core/model WindSpeedUnit.label
-    var label: String {
-        switch self {
-        case .MilePerHour: return "mph"
-        case .KilometerPerHour: return "km/h"
-        case .MeterPerSecond: return "m/s"
-        case .Knot: return "kn"
-        }
-    }
-}
-
 struct WidgetData: Codable {
-    static let defaultActivityName = "General"
-
     let scoreResult: ScoreResult
     let locationName: String
-    let currentTemp: Double
-    let tempUnit: TemperatureUnit
-    let feelsLikeTemp: Double
-    let windSpeed: Double
-    let windSpeedUnit: WindSpeedUnit
+    let formattedTemp: String
+    let formattedFeelsLike: String
+    let formattedWind: String
     let precipChance: Int
     let todayScoreResult: ScoreResult
     let alertCount: Int
@@ -59,22 +28,10 @@ struct WidgetData: Codable {
         let diffMinutes = diffMs / (60 * 1000)
 
         if diffMinutes < 60 {
-            return "\(diffMinutes)m ago"
+            return String(localized: "\(diffMinutes)m ago")
         }
         let diffHours = diffMinutes / 60
-        return "\(diffHours)h ago"
-    }
-
-    var formattedTemp: String {
-        return "\(Int(currentTemp.rounded()))\(tempUnit.label)"
-    }
-
-    var formattedFeelsLike: String {
-        return "\(Int(feelsLikeTemp.rounded()))\(tempUnit.label)"
-    }
-
-    var formattedWind: String {
-        return "\(Int(windSpeed.rounded())) \(windSpeedUnit.label)"
+        return String(localized: "\(diffHours)h ago")
     }
 
     func save() {
@@ -95,4 +52,17 @@ struct WidgetData: Codable {
 
         return try? JSONDecoder().decode(WidgetData.self, from: data)
     }
+
+    static let sample = WidgetData(
+        scoreResult: .Yes,
+        locationName: "Toronto",
+        formattedTemp: "22°C",
+        formattedFeelsLike: "20°C",
+        formattedWind: "12 km/h",
+        precipChance: 10,
+        todayScoreResult: .Yes,
+        alertCount: 0,
+        updatedAtMillis: Int64(Date().timeIntervalSince1970 * 1000),
+        activityName: nil
+    )
 }

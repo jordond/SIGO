@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
-import androidx.glance.LocalContext
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
@@ -16,16 +15,18 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
-import now.shouldigooutside.R
 import now.shouldigooutside.core.widget.WidgetData
+import now.shouldigooutside.core.widget.WidgetStrings
 
 @Composable
 internal fun SmallWidgetContent(
     data: WidgetData?,
+    strings: WidgetStrings,
+    updatedAgoText: String?,
     isDark: Boolean,
 ) {
     if (data == null) {
-        EmptyWidgetContent(isDark)
+        EmptyWidgetContent(strings = strings, isDark = isDark)
         return
     }
 
@@ -75,11 +76,11 @@ internal fun SmallWidgetContent(
             maxLines = 1,
         )
 
-        if (data.isStale) {
+        if (data.isStale && updatedAgoText != null) {
             Spacer(modifier = GlanceModifier.height(2.dp))
 
             Text(
-                text = data.updatedAgo(LocalContext.current),
+                text = updatedAgoText,
                 style = TextStyle(
                     color = textOnScore.copy(alpha = 0.6f).toProvider(),
                     fontSize = 9.sp,
@@ -91,8 +92,10 @@ internal fun SmallWidgetContent(
 }
 
 @Composable
-internal fun EmptyWidgetContent(isDark: Boolean) {
-    val context = LocalContext.current
+internal fun EmptyWidgetContent(
+    strings: WidgetStrings,
+    isDark: Boolean,
+) {
     val colors = widgetColors(isDark)
 
     Column(
@@ -104,7 +107,7 @@ internal fun EmptyWidgetContent(isDark: Boolean) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = context.getString(R.string.widget_empty),
+            text = strings.empty,
             style = TextStyle(
                 color = colors.text.toProvider(),
                 fontSize = 14.sp,

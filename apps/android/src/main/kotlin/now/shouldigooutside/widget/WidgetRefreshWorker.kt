@@ -63,9 +63,12 @@ class WidgetRefreshWorker(
             logger.d { "Widget refresh complete" }
 
             Result.success()
-        } catch (e: Exception) {
-            logger.e(e) { "Widget refresh failed" }
+        } catch (e: java.io.IOException) {
+            logger.e(e) { "Widget refresh failed (transient), will retry" }
             Result.retry()
+        } catch (e: Exception) {
+            logger.e(e) { "Widget refresh failed (permanent)" }
+            Result.failure()
         }
     }
 

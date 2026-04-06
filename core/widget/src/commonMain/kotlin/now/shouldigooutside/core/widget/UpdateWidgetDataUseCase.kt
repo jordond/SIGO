@@ -9,7 +9,7 @@ public class UpdateWidgetDataUseCase(
     private val widgetDataStore: WidgetDataStore,
     private val widgetNotifier: WidgetNotifier,
 ) {
-    public fun update(
+    public suspend fun update(
         forecast: Forecast,
         score: ForecastScore,
         units: Units,

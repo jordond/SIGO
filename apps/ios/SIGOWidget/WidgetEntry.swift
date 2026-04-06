@@ -5,6 +5,6 @@ struct SIGOWidgetEntry: TimelineEntry {
     let data: WidgetData?
 
     static var placeholder: SIGOWidgetEntry {
-        SIGOWidgetEntry(date: .now, data: nil)
+        SIGOWidgetEntry(date: .now, data: .sample)
     }
 }

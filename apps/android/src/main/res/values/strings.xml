@@ -2,15 +2,4 @@
 <resources>
     <string name="widget_description">See your SIGO score at a glance</string>
     <string name="widget_label">SIGO Score</string>
-    <string name="widget_empty">Open SIGO\nto get started</string>
-    <string name="widget_feels_like">Feels like</string>
-    <string name="widget_wind">Wind</string>
-    <string name="widget_precip">Precip</string>
-    <string name="widget_today">Today</string>
-    <plurals name="widget_alerts">
-        <item quantity="one">%d alert</item>
-        <item quantity="other">%d alerts</item>
-    </plurals>
-    <string name="widget_updated_ago_minutes">%dm ago</string>
-    <string name="widget_updated_ago_hours">%dh ago</string>
 </resources>

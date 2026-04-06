@@ -40,19 +40,19 @@ public fun Activity.key(): String =
         is Activity.Walking -> "walking"
     }
 
-@Composable
-public fun Activity.rememberStringResource(): StringResource =
-    remember(this) {
-        when (this) {
-            is Activity.Custom -> Res.string.activity_title_custom
-            is Activity.Cycling -> Res.string.activity_title_cycling
-            is Activity.General -> Res.string.activity_title_general
-            is Activity.Hiking -> Res.string.activity_title_hiking
-            is Activity.Running -> Res.string.activity_title_running
-            is Activity.Swimming -> Res.string.activity_title_swimming
-            is Activity.Walking -> Res.string.activity_title_walking
-        }
+public fun Activity.titleResource(): StringResource =
+    when (this) {
+        is Activity.Custom -> Res.string.activity_title_custom
+        is Activity.Cycling -> Res.string.activity_title_cycling
+        is Activity.General -> Res.string.activity_title_general
+        is Activity.Hiking -> Res.string.activity_title_hiking
+        is Activity.Running -> Res.string.activity_title_running
+        is Activity.Swimming -> Res.string.activity_title_swimming
+        is Activity.Walking -> Res.string.activity_title_walking
     }
+
+@Composable
+public fun Activity.rememberStringResource(): StringResource = remember(this) { titleResource() }
 
 @Composable
 public fun Activity.rememberDisplayName(): String =

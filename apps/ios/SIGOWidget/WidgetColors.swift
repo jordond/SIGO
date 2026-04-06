@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// Widget colors derived from core/ui Color.kt LightColors/DarkColors.
-/// Keep in sync with core/ui/src/commonMain/.../Color.kt
+/// Source of truth: core/ui/src/commonMain/kotlin/now/shouldigooutside/core/ui/Color.kt
+/// These values must be updated manually when the app theme colors change.
 struct WidgetThemeColors {
     let success: Color      // ScoreResult.Yes
     let primary: Color      // ScoreResult.Maybe

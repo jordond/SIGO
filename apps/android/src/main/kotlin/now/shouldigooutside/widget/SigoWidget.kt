@@ -15,6 +15,9 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.fillMaxSize
 import now.shouldigooutside.MainActivity
 import now.shouldigooutside.core.widget.WidgetDataStore
+import now.shouldigooutside.core.widget.WidgetStrings
+import now.shouldigooutside.core.widget.resolveAlerts
+import now.shouldigooutside.core.widget.resolveUpdatedAgo
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -35,6 +38,9 @@ class SigoWidget :
         id: GlanceId,
     ) {
         val widgetData = widgetDataStore.load()
+        val strings = WidgetStrings.resolve()
+        val alertsText = widgetData?.resolveAlerts()
+        val updatedAgoText = widgetData?.resolveUpdatedAgo()
 
         provideContent {
             val isDark = context.resources.configuration.uiMode and
@@ -49,9 +55,20 @@ class SigoWidget :
                     .clickable(actionStartActivity<MainActivity>()),
             ) {
                 if (isMedium) {
-                    MediumWidgetContent(data = widgetData, isDark = isDark)
+                    MediumWidgetContent(
+                        data = widgetData,
+                        strings = strings,
+                        alertsText = alertsText,
+                        updatedAgoText = updatedAgoText,
+                        isDark = isDark,
+                    )
                 } else {
-                    SmallWidgetContent(data = widgetData, isDark = isDark)
+                    SmallWidgetContent(
+                        data = widgetData,
+                        strings = strings,
+                        updatedAgoText = updatedAgoText,
+                        isDark = isDark,
+                    )
                 }
             }
         }

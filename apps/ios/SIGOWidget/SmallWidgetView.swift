@@ -47,9 +47,9 @@ struct EmptyWidgetView: View {
         let colors = widgetColors(scheme: colorScheme)
 
         VStack(spacing: 4) {
-            Text("Open SIGO")
+            Text(String(localized: "widget_empty_title"))
                 .font(.system(size: 14, weight: .medium))
-            Text("to get started")
+            Text(String(localized: "widget_empty_subtitle"))
                 .font(.system(size: 12))
                 .foregroundColor(colors.textSecondary)
         }

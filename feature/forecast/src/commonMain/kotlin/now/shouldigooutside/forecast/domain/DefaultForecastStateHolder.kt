@@ -62,7 +62,7 @@ internal class DefaultForecastStateHolder(
         }
     }
 
-    private fun refreshWidgetData(forecast: Forecast) {
+    private suspend fun refreshWidgetData(forecast: Forecast) {
         val settings = settingsRepo.settings.value
         val widgetActivity = settings.widgetActivity
         val preferences = settings.activities[widgetActivity] ?: Preferences.default

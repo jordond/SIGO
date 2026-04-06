@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
-import androidx.glance.LocalContext
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
@@ -19,20 +18,22 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
-import now.shouldigooutside.R
 import now.shouldigooutside.core.widget.WidgetData
+import now.shouldigooutside.core.widget.WidgetStrings
 
 @Composable
 internal fun MediumWidgetContent(
     data: WidgetData?,
+    strings: WidgetStrings,
+    alertsText: String?,
+    updatedAgoText: String?,
     isDark: Boolean,
 ) {
     if (data == null) {
-        EmptyWidgetContent(isDark)
+        EmptyWidgetContent(strings = strings, isDark = isDark)
         return
     }
 
-    val context = LocalContext.current
     val colors = widgetColors(isDark)
     val scoreColor = colors.scoreColor(data.scoreResult)
     val textOnScore = colors.onSuccess
@@ -52,9 +53,9 @@ internal fun MediumWidgetContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (data.activityName != WidgetData.DEFAULT_ACTIVITY_NAME) {
+            if (data.showActivityName) {
                 Text(
-                    text = data.activityName,
+                    text = data.activityName.orEmpty(),
                     style = TextStyle(
                         color = textOnScore.copy(alpha = 0.7f).toProvider(),
                         fontSize = 10.sp,
@@ -107,41 +108,37 @@ internal fun MediumWidgetContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             DetailRow(
-                label = context.getString(R.string.widget_feels_like),
+                label = strings.feelsLike,
                 value = data.formattedFeelsLike,
                 textColor = colors.text,
                 labelColor = colors.textSecondary,
             )
             Spacer(modifier = GlanceModifier.height(4.dp))
             DetailRow(
-                label = context.getString(R.string.widget_wind),
+                label = strings.wind,
                 value = data.formattedWind,
                 textColor = colors.text,
                 labelColor = colors.textSecondary,
             )
             Spacer(modifier = GlanceModifier.height(4.dp))
             DetailRow(
-                label = context.getString(R.string.widget_precip),
+                label = strings.precip,
                 value = "${data.precipChance}%",
                 textColor = colors.text,
                 labelColor = colors.textSecondary,
             )
             Spacer(modifier = GlanceModifier.height(4.dp))
             DetailRow(
-                label = context.getString(R.string.widget_today),
+                label = strings.today,
                 value = data.todayScoreResult.name,
                 textColor = colors.text,
                 labelColor = colors.textSecondary,
             )
 
-            if (data.alertCount > 0) {
+            if (alertsText != null) {
                 Spacer(modifier = GlanceModifier.height(4.dp))
                 Text(
-                    text = context.resources.getQuantityString(
-                        R.plurals.widget_alerts,
-                        data.alertCount,
-                        data.alertCount,
-                    ),
+                    text = alertsText,
                     style = TextStyle(
                         color = colors.error.toProvider(),
                         fontSize = 11.sp,
@@ -150,10 +147,10 @@ internal fun MediumWidgetContent(
                 )
             }
 
-            if (data.isStale) {
+            if (data.isStale && updatedAgoText != null) {
                 Spacer(modifier = GlanceModifier.height(4.dp))
                 Text(
-                    text = data.updatedAgo(context),
+                    text = updatedAgoText,
                     style = TextStyle(
                         color = colors.textSecondary.toProvider(),
                         fontSize = 9.sp,

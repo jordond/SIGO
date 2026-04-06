@@ -15,8 +15,8 @@ struct SIGOWidget: Widget {
         StaticConfiguration(kind: kind, provider: SIGOTimelineProvider()) { entry in
             SIGOWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("SIGO Score")
-        .description("See your Should I Go Outside score at a glance.")
+        .configurationDisplayName(String(localized: "widget_display_name"))
+        .description(String(localized: "widget_description"))
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

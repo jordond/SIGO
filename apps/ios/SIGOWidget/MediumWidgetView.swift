@@ -12,7 +12,7 @@ struct MediumWidgetView: View {
             HStack(spacing: 0) {
                 // Left side: score badge
                 VStack(spacing: 4) {
-                    if let activityName = data.activityName, activityName != WidgetData.defaultActivityName {
+                    if let activityName = data.activityName {
                         Text(activityName)
                             .font(.system(size: 10, weight: .medium))
                             .foregroundColor(colors.onSuccess.opacity(0.7))
@@ -37,10 +37,10 @@ struct MediumWidgetView: View {
 
                 // Right side: weather details
                 VStack(alignment: .leading, spacing: 4) {
-                    DetailRow(label: "Feels like", value: data.formattedFeelsLike, colors: colors)
-                    DetailRow(label: "Wind", value: data.formattedWind, colors: colors)
-                    DetailRow(label: "Precip", value: "\(data.precipChance)%", colors: colors)
-                    DetailRow(label: "Today", value: data.todayScoreResult.rawValue, colors: colors)
+                    DetailRow(label: String(localized: "widget_feels_like"), value: data.formattedFeelsLike, colors: colors)
+                    DetailRow(label: String(localized: "widget_wind"), value: data.formattedWind, colors: colors)
+                    DetailRow(label: String(localized: "widget_precip"), value: "\(data.precipChance)%", colors: colors)
+                    DetailRow(label: String(localized: "widget_today"), value: data.todayScoreResult.rawValue, colors: colors)
 
                     if data.alertCount > 0 {
                         Text("\(data.alertCount) alert\(data.alertCount > 1 ? "s" : "")")
