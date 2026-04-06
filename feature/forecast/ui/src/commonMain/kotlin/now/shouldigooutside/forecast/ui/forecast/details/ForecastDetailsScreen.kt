@@ -35,7 +35,6 @@ import now.shouldigooutside.core.ui.components.LoadingBox
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.ForecastPreviewData
-import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.core.ui.preview.PreviewData.location
 import now.shouldigooutside.forecast.ui.components.NoLocation
 import org.koin.compose.viewmodel.koinViewModel
@@ -153,6 +152,8 @@ internal fun ForecastDetailsScreen(
             units = forecast.units,
             modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
         )
+
+        Spacer(Modifier.height(200.dp))
     }
 }
 

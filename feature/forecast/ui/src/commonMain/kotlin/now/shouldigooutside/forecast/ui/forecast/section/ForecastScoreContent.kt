@@ -276,6 +276,8 @@ internal fun ForecastScoreContent(
             Spacer(modifier = Modifier.height(AppTheme.spacing.small))
 
             UpdatedAtText(instant = updatedAt)
+
+            Spacer(modifier = Modifier.height(200.dp))
         }
     }
 }
