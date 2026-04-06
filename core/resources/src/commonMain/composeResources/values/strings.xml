@@ -312,6 +312,8 @@
     <string name="settings_experience_disable_activities_warning">Your score will be based on your general preferences only. Activities will be removed from the home screen, but your saved preferences for each activity will be kept if you re-enable later.</string>
     <string name="settings_experience_remember_activity">Remember Activity</string>
     <string name="settings_experience_remember_activity_desc">When enabled the app will remember the last selected activity and use it as the default when opening the app.</string>
+    <string name="settings_experience_widget_activity">Widget Activity</string>
+    <string name="settings_experience_widget_activity_desc">Choose which activity the widget uses to calculate your score.</string>
     <string name="settings_experience_units">Units</string>
     <string name="settings_experience_units_desc">Update the units used in the app</string>
     <string name="settings_about_title">About</string>
@@ -387,4 +389,18 @@
     <string name="whats_new_air_quality_desc">Air quality is now included, so you can make better decisions about when to head outside. When the air is clean, it’s a great sign that conditions are better for getting out for a walk, spending time outdoors, or planning part of your day outside. If you’d rather keep things simpler, you can turn air quality off anytime in Settings.</string>
     <string name="whats_new_weather_window">Best Window</string>
     <string name="whats_new_weather_window_desc">Now you can see the best window to head outside at a glance. We look at the full forecast and highlight the sweet spot where conditions line up, so you know exactly when and how long you have to make your move.</string>
+
+    <string name="widget_display_name">SIGO Score</string>
+    <string name="widget_description">See your SIGO score at a glance</string>
+    <string name="widget_empty">Open SIGO\nto get started</string>
+    <string name="widget_feels_like">Feels like</string>
+    <string name="widget_wind">Wind</string>
+    <string name="widget_precip">Precip</string>
+    <string name="widget_today">Today</string>
+    <plurals name="widget_alerts">
+        <item quantity="one">%1$d alert</item>
+        <item quantity="other">%1$d alerts</item>
+    </plurals>
+    <string name="widget_updated_ago_minutes">%1$dm ago</string>
+    <string name="widget_updated_ago_hours">%1$dh ago</string>
 </resources>
