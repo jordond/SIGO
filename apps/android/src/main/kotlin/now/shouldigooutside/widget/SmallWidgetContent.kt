@@ -16,7 +16,7 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
+import now.shouldigooutside.R
 import now.shouldigooutside.core.widget.WidgetData
 
 @Composable
@@ -44,7 +44,7 @@ internal fun SmallWidgetContent(
         Text(
             text = data.scoreResult.name.uppercase(),
             style = TextStyle(
-                color = ColorProvider(textOnScore),
+                color = textOnScore.toProvider(),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -56,7 +56,7 @@ internal fun SmallWidgetContent(
         Text(
             text = data.formattedTemp,
             style = TextStyle(
-                color = ColorProvider(textOnScore),
+                color = textOnScore.toProvider(),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
@@ -68,7 +68,7 @@ internal fun SmallWidgetContent(
         Text(
             text = data.locationName,
             style = TextStyle(
-                color = ColorProvider(textOnScore.copy(alpha = 0.8f)),
+                color = textOnScore.copy(alpha = 0.8f).toProvider(),
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center,
             ),
@@ -81,7 +81,7 @@ internal fun SmallWidgetContent(
             Text(
                 text = data.updatedAgo(LocalContext.current),
                 style = TextStyle(
-                    color = ColorProvider(textOnScore.copy(alpha = 0.6f)),
+                    color = textOnScore.copy(alpha = 0.6f).toProvider(),
                     fontSize = 9.sp,
                     textAlign = TextAlign.Center,
                 ),
@@ -106,7 +106,7 @@ internal fun EmptyWidgetContent(isDark: Boolean) {
         Text(
             text = context.getString(R.string.widget_empty),
             style = TextStyle(
-                color = ColorProvider(colors.text),
+                color = colors.text.toProvider(),
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
             ),

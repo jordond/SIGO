@@ -19,7 +19,7 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
+import now.shouldigooutside.R
 import now.shouldigooutside.core.widget.WidgetData
 
 @Composable
@@ -56,7 +56,7 @@ internal fun MediumWidgetContent(
                 Text(
                     text = data.activityName,
                     style = TextStyle(
-                        color = ColorProvider(textOnScore.copy(alpha = 0.7f)),
+                        color = textOnScore.copy(alpha = 0.7f).toProvider(),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center,
@@ -67,7 +67,7 @@ internal fun MediumWidgetContent(
             Text(
                 text = data.scoreResult.name.uppercase(),
                 style = TextStyle(
-                    color = ColorProvider(textOnScore),
+                    color = textOnScore.toProvider(),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -79,7 +79,7 @@ internal fun MediumWidgetContent(
             Text(
                 text = data.formattedTemp,
                 style = TextStyle(
-                    color = ColorProvider(textOnScore),
+                    color = textOnScore.toProvider(),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     textAlign = TextAlign.Center,
@@ -91,7 +91,7 @@ internal fun MediumWidgetContent(
             Text(
                 text = data.locationName,
                 style = TextStyle(
-                    color = ColorProvider(textOnScore.copy(alpha = 0.8f)),
+                    color = textOnScore.copy(alpha = 0.8f).toProvider(),
                     fontSize = 11.sp,
                     textAlign = TextAlign.Center,
                 ),
@@ -143,7 +143,7 @@ internal fun MediumWidgetContent(
                         data.alertCount,
                     ),
                     style = TextStyle(
-                        color = ColorProvider(colors.error),
+                        color = colors.error.toProvider(),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                     ),
@@ -155,7 +155,7 @@ internal fun MediumWidgetContent(
                 Text(
                     text = data.updatedAgo(context),
                     style = TextStyle(
-                        color = ColorProvider(colors.textSecondary),
+                        color = colors.textSecondary.toProvider(),
                         fontSize = 9.sp,
                     ),
                 )
@@ -175,14 +175,14 @@ private fun DetailRow(
         Text(
             text = "$label: ",
             style = TextStyle(
-                color = ColorProvider(labelColor),
+                color = labelColor.toProvider(),
                 fontSize = 12.sp,
             ),
         )
         Text(
             text = value,
             style = TextStyle(
-                color = ColorProvider(textColor),
+                color = textColor.toProvider(),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
             ),

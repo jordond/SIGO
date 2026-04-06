@@ -1,5 +1,6 @@
 package now.shouldigooutside.core.widget
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.TemperatureUnit
@@ -7,6 +8,7 @@ import now.shouldigooutside.core.model.units.WindSpeedUnit
 import kotlin.math.roundToInt
 import kotlin.time.Clock
 
+@Immutable
 @Serializable
 public data class WidgetData(
     val scoreResult: ScoreResult,

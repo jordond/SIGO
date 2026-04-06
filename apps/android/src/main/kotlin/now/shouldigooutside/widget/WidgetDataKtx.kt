@@ -1,6 +1,7 @@
 package now.shouldigooutside.widget
 
 import android.content.Context
+import now.shouldigooutside.R
 import now.shouldigooutside.core.widget.WidgetData
 
 internal fun WidgetData.updatedAgo(context: Context): String {

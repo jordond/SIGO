@@ -12,7 +12,7 @@ import now.shouldigooutside.core.widget.WidgetDataStore
 import now.shouldigooutside.di.initKoin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.context.GlobalContext
+import org.koin.mp.KoinPlatformTools
 
 // Called from Swift WidgetKit timeline provider via runBlocking.
 // WidgetKit invokes getTimeline from a background context, so this is safe.
@@ -26,7 +26,7 @@ public object WidgetRefresher : KoinComponent {
     private val widgetDataStore: WidgetDataStore by inject()
 
     public fun ensureInitialized() {
-        if (GlobalContext.getOrNull() == null) {
+        if (KoinPlatformTools.defaultContext().getOrNull() == null) {
             initKoin()
         }
     }
