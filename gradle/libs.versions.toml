@@ -14,7 +14,7 @@ jvmTargetServer = "25"
 ############################
 
 kotlin = "2.3.20"
-agp = "9.1.0"
+agp = "9.1.1"
 androidx-activity = "1.13.0"
 androidx-compose-ui-tooling = "1.10.6"
 androidx-core = "1.18.0"
