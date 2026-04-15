@@ -267,9 +267,9 @@ private fun LocationCardPreview() {
             )
             Text("Success", style = AppTheme.typography.h3)
             LocationDetailsCard(
-                location = PreviewData.location,
+                location = PreviewData.fakeLocation,
                 isLoading = false,
-                status = LocationResult.Success(PreviewData.location),
+                status = LocationResult.Success(PreviewData.fakeLocation),
             )
         }
     }
@@ -287,15 +287,15 @@ private fun LocationCardWithLocationPreview() {
                     longitude = 67.89,
                 ),
                 isLoading = false,
-                status = LocationResult.Success(PreviewData.location),
+                status = LocationResult.Success(PreviewData.fakeLocation),
                 modifier = Modifier.padding(bottom = 16.dp),
             )
 
             Text("Location", style = AppTheme.typography.h3)
             LocationDetailsCard(
-                location = PreviewData.location,
+                location = PreviewData.fakeLocation,
                 isLoading = false,
-                status = LocationResult.Success(PreviewData.location),
+                status = LocationResult.Success(PreviewData.fakeLocation),
             )
         }
     }
