@@ -1,0 +1,25 @@
+/* iOS widget strings — derived from core/resources/src/commonMain/composeResources/values/strings.xml
+   Update these when the KMP source strings change. */
+
+/* Widget display name */
+"widget_display_name" = "SIGO Score";
+
+/* Widget description */
+"widget_description" = "See your SIGO score at a glance.";
+
+/* Medium widget detail labels */
+"widget_feels_like" = "Feels like";
+"widget_wind" = "Wind";
+"widget_precip" = "Precip";
+"widget_today" = "Today";
+
+/* Alerts count (medium widget), format: %d */
+"widget_alerts_count" = "%d alerts";
+
+/* Updated-ago labels, format: %d */
+"widget_updated_minutes_ago" = "%dm ago";
+"widget_updated_hours_ago" = "%dh ago";
+
+/* Empty widget state */
+"widget_empty_title" = "Open SIGO";
+"widget_empty_subtitle" = "to get started";

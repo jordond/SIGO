@@ -28,6 +28,7 @@ import now.shouldigooutside.core.resources.location_geolocation_error
 import now.shouldigooutside.core.resources.location_geolocation_not_allowed
 import now.shouldigooutside.core.resources.location_geolocation_not_found
 import now.shouldigooutside.core.resources.location_geolocation_not_supported
+import now.shouldigooutside.core.widget.WidgetForecastObserver
 import now.shouldigooutside.ui.home.navigation.HomeTab
 import org.jetbrains.compose.resources.StringResource
 
@@ -35,6 +36,7 @@ import org.jetbrains.compose.resources.StringResource
 internal class HomeModel(
     private val settingsRepo: SettingsRepo,
     private val forecastStateHolder: ForecastStateHolder,
+    private val widgetForecastObserver: WidgetForecastObserver,
     locationRepo: LocationRepo,
 ) : UiStateViewModel<HomeModel.State, HomeModel.Event>(
         State(
@@ -46,6 +48,7 @@ internal class HomeModel(
 
     init {
         forecastStateHolder.start(viewModelScope)
+        widgetForecastObserver.start(viewModelScope)
 
         viewModelScope.launch {
             settingsRepo.settings.mapDistinct { it.enableActivities }.collect { enableActivities ->

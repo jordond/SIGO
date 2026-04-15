@@ -262,6 +262,7 @@ class SettingsEntityMapperTest {
         result.hasCompletedOnboarding shouldBe settings.hasCompletedOnboarding
         result.units shouldBe settings.units
         result.selectedActivity shouldBe settings.selectedActivity
+        result.widgetActivity shouldBe settings.widgetActivity
         result.activities shouldBe settings.activities
         result.use24HourFormat shouldBe settings.use24HourFormat
         result.includeAirQuality shouldBe settings.includeAirQuality

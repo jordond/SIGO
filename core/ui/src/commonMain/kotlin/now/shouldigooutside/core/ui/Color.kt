@@ -78,7 +78,7 @@ private val NeoDarkSurface = Color(0xFF2A2236)
 
 private val DarkScrim = Color(0xCC000000) // Darker scrim for dark theme
 
-internal val LightColors = Colors(
+public val LightColors: Colors = Colors(
     primary = YellowAlt,
     onPrimary = Color.Black,
     secondary = LightBlue,
