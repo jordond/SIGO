@@ -8,8 +8,8 @@ struct ComposeApp: App {
     init() {
         FirebaseApp.configure()
 
-        // Register widget update callback so KMP can trigger timeline reloads
-        IosWidgetNotifier.companion.onUpdate = {
+        // Observe widget update flow and reload timelines on emit.
+        MainKt.widgetUpdateObserver().start {
             WidgetCenter.shared.reloadAllTimelines()
         }
     }

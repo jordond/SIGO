@@ -45,8 +45,14 @@ class WidgetRefreshWorker(
             val forecastResult = getForecastUseCase.forecastFor(location, units)
             val forecast = forecastResult.getOrNull()
             if (forecast == null) {
-                logger.w { "Failed to fetch forecast for widget refresh" }
-                return Result.retry()
+                val cause = forecastResult.exceptionOrNull()
+                return if (cause is java.io.IOException && runAttemptCount < MAX_RETRY_ATTEMPTS) {
+                    logger.w(cause) { "Widget refresh transient IO failure, retrying" }
+                    Result.retry()
+                } else {
+                    logger.e(cause) { "Widget refresh failed (permanent)" }
+                    Result.failure()
+                }
             }
 
             val widgetActivity = settings.widgetActivity
@@ -63,13 +69,14 @@ class WidgetRefreshWorker(
             logger.d { "Widget refresh complete" }
 
             Result.success()
-        } catch (e: java.io.IOException) {
-            logger.e(e) { "Widget refresh failed (transient), will retry" }
-            Result.retry()
         } catch (e: Exception) {
             logger.e(e) { "Widget refresh failed (permanent)" }
             Result.failure()
         }
+    }
+
+    private companion object {
+        const val MAX_RETRY_ATTEMPTS = 5
     }
 
     private suspend fun resolveLocation(): Location? =

@@ -1,7 +1,6 @@
 package now.shouldigooutside.widget
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
 import androidx.glance.background
@@ -22,7 +21,6 @@ import now.shouldigooutside.core.widget.WidgetStrings
 internal fun SmallWidgetContent(
     data: WidgetData?,
     strings: WidgetStrings,
-    updatedAgoText: String?,
     isDark: Boolean,
 ) {
     if (data == null) {
@@ -38,12 +36,12 @@ internal fun SmallWidgetContent(
         modifier = GlanceModifier
             .fillMaxSize()
             .background(scoreColor)
-            .padding(12.dp),
+            .padding(WidgetDimens.ContentPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = data.scoreResult.name.uppercase(),
+            text = data.scoreLabel.uppercase(),
             style = TextStyle(
                 color = textOnScore.toProvider(),
                 fontSize = 28.sp,
@@ -52,7 +50,7 @@ internal fun SmallWidgetContent(
             ),
         )
 
-        Spacer(modifier = GlanceModifier.height(4.dp))
+        Spacer(modifier = GlanceModifier.height(WidgetDimens.RowSpacing))
 
         Text(
             text = data.formattedTemp,
@@ -64,25 +62,25 @@ internal fun SmallWidgetContent(
             ),
         )
 
-        Spacer(modifier = GlanceModifier.height(2.dp))
+        Spacer(modifier = GlanceModifier.height(WidgetDimens.TightSpacing))
 
         Text(
             text = data.locationName,
             style = TextStyle(
-                color = textOnScore.copy(alpha = 0.8f).toProvider(),
+                color = textOnScore.copy(alpha = WidgetDimens.LOCATION_ALPHA).toProvider(),
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center,
             ),
             maxLines = 1,
         )
 
-        if (data.isStale && updatedAgoText != null) {
-            Spacer(modifier = GlanceModifier.height(2.dp))
+        if (data.isStale) {
+            Spacer(modifier = GlanceModifier.height(WidgetDimens.TightSpacing))
 
             Text(
-                text = updatedAgoText,
+                text = data.updatedAgoLabel,
                 style = TextStyle(
-                    color = textOnScore.copy(alpha = 0.6f).toProvider(),
+                    color = textOnScore.copy(alpha = WidgetDimens.STALE_ALPHA).toProvider(),
                     fontSize = 9.sp,
                     textAlign = TextAlign.Center,
                 ),
@@ -102,7 +100,7 @@ internal fun EmptyWidgetContent(
         modifier = GlanceModifier
             .fillMaxSize()
             .background(colors.surface)
-            .padding(12.dp),
+            .padding(WidgetDimens.ContentPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalAlignment = Alignment.CenterVertically,
     ) {

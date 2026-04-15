@@ -13,6 +13,13 @@
 "widget_precip" = "Precip";
 "widget_today" = "Today";
 
+/* Alerts count (medium widget), format: %d */
+"widget_alerts_count" = "%d alerts";
+
+/* Updated-ago labels, format: %d */
+"widget_updated_minutes_ago" = "%dm ago";
+"widget_updated_hours_ago" = "%dh ago";
+
 /* Empty widget state */
 "widget_empty_title" = "Open SIGO";
 "widget_empty_subtitle" = "to get started";

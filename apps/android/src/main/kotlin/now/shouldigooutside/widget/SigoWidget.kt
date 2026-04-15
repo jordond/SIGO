@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.LocalSize
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
@@ -14,10 +15,10 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.layout.Box
 import androidx.glance.layout.fillMaxSize
 import now.shouldigooutside.MainActivity
+import now.shouldigooutside.core.widget.WidgetDataMapper
 import now.shouldigooutside.core.widget.WidgetDataStore
 import now.shouldigooutside.core.widget.WidgetStrings
 import now.shouldigooutside.core.widget.resolveAlerts
-import now.shouldigooutside.core.widget.resolveUpdatedAgo
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -37,17 +38,16 @@ class SigoWidget :
         context: Context,
         id: GlanceId,
     ) {
-        val widgetData = widgetDataStore.load()
+        val stored = widgetDataStore.load()
+        val widgetData = stored?.let { WidgetDataMapper.withFreshness(it) }
         val strings = WidgetStrings.resolve()
         val alertsText = widgetData?.resolveAlerts()
-        val updatedAgoText = widgetData?.resolveUpdatedAgo()
 
         provideContent {
             val isDark = context.resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
-            val size = androidx.glance.LocalSize.current
-            val isMedium = size.width >= MEDIUM.width
+            val isMedium = LocalSize.current.width >= MEDIUM.width
 
             Box(
                 modifier = GlanceModifier
@@ -59,14 +59,12 @@ class SigoWidget :
                         data = widgetData,
                         strings = strings,
                         alertsText = alertsText,
-                        updatedAgoText = updatedAgoText,
                         isDark = isDark,
                     )
                 } else {
                     SmallWidgetContent(
                         data = widgetData,
                         strings = strings,
-                        updatedAgoText = updatedAgoText,
                         isDark = isDark,
                     )
                 }

@@ -9,4 +9,5 @@ public actual fun widgetModule(): Module =
         includes(commonWidgetModule())
         single { IosWidgetDataStore() } bind WidgetDataStore::class
         single { IosWidgetNotifier() } bind WidgetNotifier::class
+        single { IosWidgetUpdateObserver(get()) }
     }

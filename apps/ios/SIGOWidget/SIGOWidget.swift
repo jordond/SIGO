@@ -1,10 +1,3 @@
-//
-//  SIGOWidget.swift
-//  SIGOWidget
-//
-//  Created by Jordon de hoog on 2026-03-21.
-//
-
 import WidgetKit
 import SwiftUI
 
@@ -28,8 +21,6 @@ struct SIGOWidgetEntryView: View {
     var body: some View {
         Group {
             switch family {
-            case .systemSmall:
-                SmallWidgetView(data: entry.data)
             case .systemMedium:
                 MediumWidgetView(data: entry.data)
             default:

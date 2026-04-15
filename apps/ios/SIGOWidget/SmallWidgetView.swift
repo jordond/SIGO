@@ -10,7 +10,7 @@ struct SmallWidgetView: View {
             let colors = widgetColors(scheme: colorScheme)
 
             VStack(spacing: 4) {
-                Text(data.scoreResult.rawValue.uppercased())
+                Text(data.scoreLabel.uppercased())
                     .font(.system(size: 28, weight: .bold))
                     .foregroundColor(colors.onSuccess)
 
@@ -24,7 +24,7 @@ struct SmallWidgetView: View {
                     .lineLimit(1)
 
                 if data.isStale {
-                    Text(data.updatedAgo)
+                    Text(data.updatedAgoLabel)
                         .font(.system(size: 9))
                         .foregroundColor(colors.onSuccess.opacity(0.6))
                 }

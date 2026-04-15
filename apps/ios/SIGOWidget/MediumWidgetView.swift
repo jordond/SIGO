@@ -10,7 +10,6 @@ struct MediumWidgetView: View {
             let colors = widgetColors(scheme: colorScheme)
 
             HStack(spacing: 0) {
-                // Left side: score badge
                 VStack(spacing: 4) {
                     if let activityName = data.activityName {
                         Text(activityName)
@@ -18,7 +17,7 @@ struct MediumWidgetView: View {
                             .foregroundColor(colors.onSuccess.opacity(0.7))
                     }
 
-                    Text(data.scoreResult.rawValue.uppercased())
+                    Text(data.scoreLabel.uppercased())
                         .font(.system(size: 24, weight: .bold))
                         .foregroundColor(colors.onSuccess)
 
@@ -35,21 +34,25 @@ struct MediumWidgetView: View {
                 .frame(maxHeight: .infinity)
                 .background(colors.scoreColor(for: data.scoreResult))
 
-                // Right side: weather details
                 VStack(alignment: .leading, spacing: 4) {
                     DetailRow(label: String(localized: "widget_feels_like"), value: data.formattedFeelsLike, colors: colors)
                     DetailRow(label: String(localized: "widget_wind"), value: data.formattedWind, colors: colors)
                     DetailRow(label: String(localized: "widget_precip"), value: "\(data.precipChance)%", colors: colors)
-                    DetailRow(label: String(localized: "widget_today"), value: data.todayScoreResult.rawValue, colors: colors)
+                    DetailRow(label: String(localized: "widget_today"), value: data.todayScoreLabel, colors: colors)
 
                     if data.alertCount > 0 {
-                        Text("\(data.alertCount) alert\(data.alertCount > 1 ? "s" : "")")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundColor(colors.error)
+                        Text(
+                            String(
+                                format: NSLocalizedString("widget_alerts_count", comment: ""),
+                                data.alertCount
+                            )
+                        )
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(colors.error)
                     }
 
                     if data.isStale {
-                        Text(data.updatedAgo)
+                        Text(data.updatedAgoLabel)
                             .font(.system(size: 9))
                             .foregroundColor(colors.textSecondary)
                     }

@@ -1,10 +1,3 @@
-//
-//  SIGOWidgetBundle.swift
-//  SIGOWidget
-//
-//  Created by Jordon de hoog on 2026-03-21.
-//
-
 import WidgetKit
 import SwiftUI
 

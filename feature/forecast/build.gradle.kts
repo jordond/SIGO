@@ -20,7 +20,6 @@ kotlin {
             implementation(projects.core.config)
             implementation(projects.core.model)
             implementation(projects.core.domain)
-            implementation(projects.core.widget)
             implementation(projects.core.foundation)
             implementation(projects.core.platform)
 
