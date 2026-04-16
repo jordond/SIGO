@@ -3,6 +3,9 @@ package now.shouldigooutside.core.model.forecast
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.score.ForecastScore
+import now.shouldigooutside.core.model.score.Metric
 import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.score.Reasons
 import now.shouldigooutside.core.model.score.Score
@@ -11,6 +14,7 @@ import now.shouldigooutside.core.model.score.dominantReason
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Instant
 
 class WeatherBannerInfoTest {
     private val activity = Activity.General
@@ -18,7 +22,7 @@ class WeatherBannerInfoTest {
     @Test
     fun nullScoreReturnsNull() {
         val forecast = forecast(hourCount = 3)
-        forecast.weatherBannerInfo(
+        forecast.banner(
             score = null,
             currentResult = ScoreResult.Yes,
             activity = activity,
@@ -30,7 +34,7 @@ class WeatherBannerInfoTest {
     fun nullCurrentResultReturnsNull() {
         val forecast = forecast(hourCount = 3)
         val score = forecastScore(listOf(yes, yes, yes))
-        forecast.weatherBannerInfo(
+        forecast.banner(
             score = score,
             currentResult = null,
             activity = activity,
@@ -43,7 +47,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 5)
         val score = forecastScore(listOf(yes, yes, yes, no, no))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.Yes,
             activity = activity,
@@ -60,7 +64,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 3)
         val score = forecastScore(listOf(yes, yes, yes))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.Yes,
             activity = activity,
@@ -77,7 +81,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 3)
         val score = forecastScore(listOf(yes, yes, yes))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.Yes,
             activity = activity,
@@ -93,7 +97,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 5)
         val score = forecastScore(listOf(no, no, yes, yes, no))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.No,
             activity = activity,
@@ -111,7 +115,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 3)
         val score = forecastScore(listOf(no, no, no))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.No,
             activity = activity,
@@ -126,7 +130,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 4)
         val score = forecastScore(listOf(maybe, yes, yes, no))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.Maybe,
             activity = activity,
@@ -144,7 +148,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 5)
         val score = forecastScore(listOf(no, maybe, maybe, maybe, no))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.No,
             activity = activity,
@@ -162,7 +166,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 5)
         val score = forecastScore(listOf(no, maybe, no, yes, no))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.No,
             activity = activity,
@@ -179,7 +183,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 5)
         val score = forecastScore(listOf(maybe, maybe, maybe, no, no))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.No,
             activity = activity,
@@ -196,7 +200,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 5)
         val score = forecastScore(listOf(yes, yes, yes, no, no))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.No,
             activity = activity,
@@ -213,7 +217,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 3)
         val score = forecastScore(listOf(no, no, no))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.Maybe,
             activity = activity,
@@ -228,7 +232,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 5)
         val score = forecastScore(listOf(yes, no, no, yes, yes))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.No,
             activity = activity,
@@ -249,7 +253,7 @@ class WeatherBannerInfoTest {
         val forecast = forecast(hourCount = 4)
         val score = forecastScore(listOf(yes, yes, rainTransition, no))
 
-        val info = forecast.weatherBannerInfo(
+        val info = forecast.banner(
             score = score,
             currentResult = ScoreResult.Yes,
             activity = activity,
@@ -260,6 +264,23 @@ class WeatherBannerInfoTest {
         info.reason shouldBe WeatherReason.Precipitation
     }
 }
+
+private fun Forecast.banner(
+    score: ForecastScore?,
+    currentResult: ScoreResult?,
+    activity: Activity,
+    now: Instant,
+    preferences: Preferences = Preferences.default,
+    includeAirQuality: Boolean = true,
+): WeatherBannerInfo? =
+    weatherBannerInfo(
+        score = score,
+        currentResult = currentResult,
+        activity = activity,
+        now = now,
+        preferences = preferences,
+        includeAirQuality = includeAirQuality,
+    )
 
 class DominantReasonTest {
     @Test
@@ -298,5 +319,31 @@ class DominantReasonTest {
             airQuality = ReasonValue.Inside,
         )
         reasons.dominantReason() shouldBe WeatherReason.Wind
+    }
+
+    @Test
+    fun disabledMetricIsSkipped() {
+        val reasons = EmptyReasons.copy(
+            wind = ReasonValue.Outside,
+            temperature = ReasonValue.Outside,
+        )
+        val enabled = setOf(Metric.Temperature, Metric.SevereWeather)
+        reasons.dominantReason(enabled) shouldBe WeatherReason.Temperature
+    }
+
+    @Test
+    fun emptyEnabledSetReturnsNull() {
+        val reasons = EmptyReasons.copy(
+            severeWeather = ReasonValue.Outside,
+            wind = ReasonValue.Outside,
+        )
+        reasons.dominantReason(emptySet()) shouldBe null
+    }
+
+    @Test
+    fun severeWeatherRequiresEnabled() {
+        val reasons = EmptyReasons.copy(severeWeather = ReasonValue.Outside)
+        reasons.dominantReason(setOf(Metric.Wind)) shouldBe null
+        reasons.dominantReason(setOf(Metric.SevereWeather)) shouldBe WeatherReason.SevereWeather
     }
 }

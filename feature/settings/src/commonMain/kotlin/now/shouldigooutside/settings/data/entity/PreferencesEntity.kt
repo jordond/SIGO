@@ -27,6 +27,14 @@ internal data class PreferencesEntity(
     val snow: Boolean,
     @SerialName("max_aqi")
     val maxAqi: Int = 4,
+    @SerialName("temperature_enabled")
+    val temperatureEnabled: Boolean = true,
+    @SerialName("wind_enabled")
+    val windEnabled: Boolean = true,
+    @SerialName("precipitation_enabled")
+    val precipitationEnabled: Boolean = true,
+    @SerialName("aqi_enabled")
+    val aqiEnabled: Boolean = true,
 )
 
 @Suppress("DEPRECATION")
@@ -40,6 +48,10 @@ internal fun Preferences.toEntity() =
         rain = rain,
         snow = snow,
         maxAqi = maxAqi.value,
+        temperatureEnabled = temperatureEnabled,
+        windEnabled = windEnabled,
+        precipitationEnabled = precipitationEnabled,
+        aqiEnabled = aqiEnabled,
     )
 
 /**
@@ -61,6 +73,10 @@ internal fun PreferencesEntity.toModel(): Preferences {
             rain = rain,
             snow = snow,
             maxAqi = AirQuality(maxAqi),
+            temperatureEnabled = temperatureEnabled,
+            windEnabled = windEnabled,
+            precipitationEnabled = precipitationEnabled,
+            aqiEnabled = aqiEnabled,
         )
     }
 
@@ -86,5 +102,9 @@ internal fun PreferencesEntity.toModel(): Preferences {
         rain = rain,
         snow = snow,
         maxAqi = AirQuality(maxAqi),
+        temperatureEnabled = temperatureEnabled,
+        windEnabled = windEnabled,
+        precipitationEnabled = precipitationEnabled,
+        aqiEnabled = aqiEnabled,
     )
 }

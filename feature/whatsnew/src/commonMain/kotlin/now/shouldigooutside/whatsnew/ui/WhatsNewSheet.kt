@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +39,7 @@ import now.shouldigooutside.core.ui.LocalContentColor
 import now.shouldigooutside.core.ui.components.Button
 import now.shouldigooutside.core.ui.components.ModalBottomSheet
 import now.shouldigooutside.core.ui.components.Text
+import now.shouldigooutside.core.ui.components.bottomsheet.rememberModalBottomSheetState
 import now.shouldigooutside.core.ui.components.card.ElevatedCard
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
@@ -69,6 +69,7 @@ internal fun WhatsNewSheet(
     ModalBottomSheet(
         isVisible = isVisible,
         onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     ) {
         WhatsNewSheetContent(
             pages = pages,

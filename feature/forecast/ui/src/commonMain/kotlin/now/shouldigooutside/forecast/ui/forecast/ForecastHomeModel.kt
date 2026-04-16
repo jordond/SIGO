@@ -20,6 +20,7 @@ import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.forecast.weatherBannerInfo
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.score.ActivityForecastScore
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.scoreForPeriod
@@ -72,6 +73,7 @@ internal class ForecastHomeModel(
         val activities: PersistentList<Activity> = persistentListOf(Activity.General),
         val bannerInfo: WeatherBannerInfo? = null,
         val dismissedBannerInfo: WeatherBannerInfo? = null,
+        val includeAirQuality: Boolean = true,
     ) {
         val hasMultipleActivities: Boolean get() = activities.size > 1
         val loading: Boolean = status is AsyncResult.Loading
@@ -80,7 +82,7 @@ internal class ForecastHomeModel(
             activityScores.firstOrNull { it.activity == selectedActivity }
         val currentBlock: ForecastBlock? = forecast?.blockForPeriod(period)
         val currentPeriodScore: Score? = currentScore?.score?.scoreForPeriod(period)
-        val alerts: List<Alert> = forecast?.alerts.orEmpty()
+        val alerts: PersistentList<Alert> = forecast?.alerts.orEmpty().toPersistentList()
         val showBanner: Boolean get() = bannerInfo != null && bannerInfo != dismissedBannerInfo
     }
 }
@@ -92,6 +94,8 @@ private fun State.withBannerInfo(): State =
             currentResult = currentPeriodScore?.result,
             activity = selectedActivity,
             now = Clock.System.now(),
+            preferences = currentScore?.preferences ?: Preferences.default,
+            includeAirQuality = includeAirQuality,
         ),
     )
 
@@ -108,6 +112,7 @@ private fun state(
         status = forecastStateHolder.state.value,
         activityScores = getActivitiesScoreUseCase.scores().toPersistentList(),
         period = appStateHolder.state.value.period,
+        includeAirQuality = settingsRepo.settings.value.includeAirQuality,
     ),
 ) {
     appStateHolder into { copy(period = it.period) }
@@ -122,6 +127,7 @@ private fun state(
                 selectedActivity = settings.selectedActivity,
                 units = settings.units,
                 activities = activities.toPersistentList(),
+                includeAirQuality = settings.includeAirQuality,
             ).withBannerInfo()
         }
 

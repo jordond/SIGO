@@ -99,7 +99,7 @@ internal fun ForecastHomeScreen(
     data: Forecast?,
     dispatcher: Dispatcher<ForecastHomeAction>,
     modifier: Modifier = Modifier,
-    alerts: List<Alert> = emptyList(),
+    alerts: PersistentList<Alert> = persistentListOf(),
     currentBlock: ForecastBlock? = null,
     currentPeriodScore: Score? = null,
     bannerInfo: WeatherBannerInfo? = null,
@@ -283,6 +283,8 @@ private fun GoodWeatherWindowPreview() {
                     currentResult = periodScore?.result,
                     activity = Activity.General,
                     now = forecast.instant,
+                    preferences = Preferences.default,
+                    includeAirQuality = true,
                 )
             },
             preferences = Preferences.default,

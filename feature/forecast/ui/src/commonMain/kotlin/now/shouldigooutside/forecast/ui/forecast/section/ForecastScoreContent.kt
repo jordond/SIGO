@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import now.shouldigooutside.core.model.forecast.Alert
@@ -36,6 +37,7 @@ import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.forecast.weatherBannerInfo
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.score.Metric
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.ui.AppExperience
@@ -47,7 +49,6 @@ import now.shouldigooutside.core.resources.unit_precipitation_snow
 import now.shouldigooutside.core.resources.unit_temperature_short
 import now.shouldigooutside.core.resources.updated_at
 import now.shouldigooutside.core.ui.AppTheme
-import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.components.card.ElevatedCard
@@ -56,6 +57,7 @@ import now.shouldigooutside.core.ui.ktx.rememberTimeAgo
 import now.shouldigooutside.core.ui.mappers.units.colors
 import now.shouldigooutside.core.ui.mappers.units.rememberTitle
 import now.shouldigooutside.core.ui.mappers.units.rememberUnit
+import now.shouldigooutside.core.ui.preferences.rememberEnabledMetrics
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.AirQualityResultCard
@@ -84,7 +86,7 @@ internal fun ForecastScoreContent(
     block: ForecastBlock,
     score: Score,
     modifier: Modifier = Modifier,
-    alerts: List<Alert> = emptyList(),
+    alerts: PersistentList<Alert> = persistentListOf(),
     bannerInfo: WeatherBannerInfo? = null,
     onScoreClick: () -> Unit = {},
     onSevereWeatherClick: (Severity) -> Unit = {},
@@ -96,8 +98,7 @@ internal fun ForecastScoreContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.standard),
         modifier = modifier
-            .padding(horizontal = elevation.default)
-            .padding(bottom = elevation.default),
+            .padding(horizontal = elevation.default),
     ) {
         val (containerColor, contentColor) = score.result.colors()
         ElevatedCard(
@@ -153,90 +154,37 @@ internal fun ForecastScoreContent(
                 )
             }
 
-            val includeAqi = LocalAppExperience.current.includeAirQuality
-
-            val temperatureCard: @Composable RowScope.() -> Unit = {
-                PreferenceResultCard(
-                    title = Res.string.unit_temperature_short.get(),
-                    text = score.reasons.temperatureStatus(
-                        value = block.temperature.value,
-                        max = preferences.maxTemperature.toDouble(),
-                    ),
-                    colors = units.temperature.colors(),
-                    value = {
-                        val unit = units.temperature.rememberUnit()
-                        "${block.temperature.value.roundToInt()}$unit"
-                    },
-                    modifier = Modifier.weight(1f),
-                )
+            val enabled = rememberEnabledMetrics(preferences)
+            val visibleMetrics = Metric.entries.filter {
+                it != Metric.SevereWeather && it in enabled
             }
 
-            val windCard: @Composable RowScope.() -> Unit = {
-                PreferenceResultCard(
-                    title = units.windSpeed.rememberTitle(),
-                    text = score.reasons.windStatus(),
-                    colors = units.windSpeed.colors(),
-                    value = {
-                        val unit = units.windSpeed.rememberUnit()
-                        "${block.wind.speed.roundToInt()} $unit"
-                    },
-                    modifier = Modifier.weight(1f),
-                )
-            }
-
-            val precipitationCard: @Composable RowScope.() -> Unit = {
-                val precipitationTitle = remember(block.precipitation) {
-                    if (block.precipitation.isRain) {
-                        Res.string.unit_precipitation_rain
-                    } else {
-                        Res.string.unit_precipitation_snow
-                    }
-                }.get()
-
-                PreferenceResultCard(
-                    title = precipitationTitle,
-                    text = score.reasons.precipitationStatus(),
-                    colors = units.precipitation.colors(),
-                    value = {
-                        Res.string.percent.get(block.precipitation.probability)
-                    },
-                    modifier = Modifier.weight(1f),
-                )
-            }
-
-            if (includeAqi) {
+            if (visibleMetrics.isNotEmpty()) {
+                val rowSize = 2
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        temperatureCard()
-                        windCard()
+                    visibleMetrics.chunked(rowSize).forEach { rowMetrics ->
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            rowMetrics.forEach { metric ->
+                                MetricCard(
+                                    metric = metric,
+                                    block = block,
+                                    score = score,
+                                    preferences = preferences,
+                                    units = units,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
+                            repeat(rowSize - rowMetrics.size) {
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
+                        }
                     }
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        precipitationCard()
-
-                        AirQualityResultCard(
-                            airQuality = block.airQuality,
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                }
-            } else {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    temperatureCard()
-                    windCard()
-                    precipitationCard()
                 }
             }
 
@@ -251,6 +199,73 @@ internal fun ForecastScoreContent(
             UpdatedAtText(instant = updatedAt)
 
             Spacer(modifier = Modifier.height(200.dp))
+        }
+    }
+}
+
+@Composable
+private fun MetricCard(
+    metric: Metric,
+    block: ForecastBlock,
+    score: Score,
+    preferences: Preferences,
+    units: Units,
+    modifier: Modifier = Modifier,
+) {
+    when (metric) {
+        Metric.Temperature -> {
+            PreferenceResultCard(
+                title = Res.string.unit_temperature_short.get(),
+                text = score.reasons.temperatureStatus(
+                    value = block.temperature.value,
+                    max = preferences.maxTemperature.toDouble(),
+                ),
+                colors = units.temperature.colors(),
+                value = {
+                    val unit = units.temperature.rememberUnit()
+                    "${block.temperature.value.roundToInt()}$unit"
+                },
+                modifier = modifier,
+            )
+        }
+        Metric.Wind -> {
+            PreferenceResultCard(
+                title = units.windSpeed.rememberTitle(),
+                text = score.reasons.windStatus(),
+                colors = units.windSpeed.colors(),
+                value = {
+                    val unit = units.windSpeed.rememberUnit()
+                    "${block.wind.speed.roundToInt()} $unit"
+                },
+                modifier = modifier,
+            )
+        }
+        Metric.Precipitation -> {
+            val precipitationTitle = remember(block.precipitation) {
+                if (block.precipitation.isRain) {
+                    Res.string.unit_precipitation_rain
+                } else {
+                    Res.string.unit_precipitation_snow
+                }
+            }.get()
+            PreferenceResultCard(
+                title = precipitationTitle,
+                text = score.reasons.precipitationStatus(),
+                colors = units.precipitation.colors(),
+                value = {
+                    Res.string.percent.get(block.precipitation.probability)
+                },
+                modifier = modifier,
+            )
+        }
+        Metric.AirQuality -> {
+            AirQualityResultCard(
+                airQuality = block.airQuality,
+                modifier = modifier,
+            )
+        }
+        Metric.SevereWeather -> {
+            error("SevereWeather has no card representation")
         }
     }
 }
@@ -351,6 +366,8 @@ private fun GoodWeatherWindowPreview() {
                     currentResult = periodScore.result,
                     activity = Activity.General,
                     now = forecast.instant,
+                    preferences = Preferences.default,
+                    includeAirQuality = true,
                 ),
             )
         }

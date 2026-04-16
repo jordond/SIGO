@@ -12,16 +12,18 @@ public data class Reasons(
     val airQuality: ReasonValue,
 )
 
-public fun Reasons.dominantReason(): WeatherReason? {
-    if (severeWeather == ReasonValue.Outside) return WeatherReason.SevereWeather
-    if (precipitation == ReasonValue.Outside) return WeatherReason.Precipitation
-    if (wind == ReasonValue.Outside) return WeatherReason.Wind
-    if (temperature == ReasonValue.Outside) return WeatherReason.Temperature
-    if (airQuality == ReasonValue.Outside) return WeatherReason.AirQuality
-    if (severeWeather == ReasonValue.Near) return WeatherReason.SevereWeather
-    if (precipitation == ReasonValue.Near) return WeatherReason.Precipitation
-    if (wind == ReasonValue.Near) return WeatherReason.Wind
-    if (temperature == ReasonValue.Near) return WeatherReason.Temperature
-    if (airQuality == ReasonValue.Near) return WeatherReason.AirQuality
-    return null
+private val AllMetrics: Set<Metric> = Metric.entries.toSet()
+
+public fun Reasons.dominantReason(): WeatherReason? = dominantReason(AllMetrics)
+
+public fun Reasons.dominantReason(enabled: Set<Metric>): WeatherReason? {
+    val candidates = buildList {
+        if (Metric.SevereWeather in enabled) add(severeWeather to WeatherReason.SevereWeather)
+        if (Metric.Precipitation in enabled) add(precipitation to WeatherReason.Precipitation)
+        if (Metric.Wind in enabled) add(wind to WeatherReason.Wind)
+        if (Metric.Temperature in enabled) add(temperature to WeatherReason.Temperature)
+        if (Metric.AirQuality in enabled) add(airQuality to WeatherReason.AirQuality)
+    }
+    return candidates.firstOrNull { it.first == ReasonValue.Outside }?.second
+        ?: candidates.firstOrNull { it.first == ReasonValue.Near }?.second
 }

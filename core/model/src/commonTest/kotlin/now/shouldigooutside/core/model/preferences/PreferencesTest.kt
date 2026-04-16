@@ -2,6 +2,7 @@ package now.shouldigooutside.core.model.preferences
 
 import io.kotest.matchers.shouldBe
 import now.shouldigooutside.core.model.forecast.AirQuality
+import now.shouldigooutside.core.model.score.Metric
 import kotlin.test.Test
 
 class PreferencesTest {
@@ -110,5 +111,57 @@ class PreferencesTest {
     @Test
     fun defaultForCustom_returnsDefaultPreferences() {
         Preferences.defaultFor(Activity.Custom("My Activity")) shouldBe Preferences.default
+    }
+
+    @Test
+    fun defaultFlags_allEnabled() {
+        Preferences.default.temperatureEnabled shouldBe true
+        Preferences.default.windEnabled shouldBe true
+        Preferences.default.precipitationEnabled shouldBe true
+        Preferences.default.aqiEnabled shouldBe true
+    }
+
+    @Test
+    fun enabledMetrics_allFlagsTrueWithAqi_returnsAllFive() {
+        Preferences.default.enabledMetrics(includeAirQuality = true) shouldBe setOf(
+            Metric.Temperature,
+            Metric.Wind,
+            Metric.Precipitation,
+            Metric.AirQuality,
+            Metric.SevereWeather,
+        )
+    }
+
+    @Test
+    fun enabledMetrics_globalAqiOff_excludesAirQuality() {
+        Preferences.default.enabledMetrics(includeAirQuality = false) shouldBe setOf(
+            Metric.Temperature,
+            Metric.Wind,
+            Metric.Precipitation,
+            Metric.SevereWeather,
+        )
+    }
+
+    @Test
+    fun enabledMetrics_aqiEnabledFalse_excludesAirQualityEvenWithGlobal() {
+        Preferences.default
+            .copy(aqiEnabled = false)
+            .enabledMetrics(includeAirQuality = true) shouldBe setOf(
+            Metric.Temperature,
+            Metric.Wind,
+            Metric.Precipitation,
+            Metric.SevereWeather,
+        )
+    }
+
+    @Test
+    fun enabledMetrics_allFlagsFalse_onlySevereWeather() {
+        Preferences.default
+            .copy(
+                temperatureEnabled = false,
+                windEnabled = false,
+                precipitationEnabled = false,
+                aqiEnabled = false,
+            ).enabledMetrics(includeAirQuality = true) shouldBe setOf(Metric.SevereWeather)
     }
 }
