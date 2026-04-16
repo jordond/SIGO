@@ -185,7 +185,8 @@
     <string name="preferences_temp_max">MAX</string>
     <string name="preferences_wind_description">When is it too windy to go outside?</string>
     <string name="preferences_wind_max">MAXIMUM SPEED</string>
-    <string name="preferences_precipitation_title">Do you want to go outside in the:</string>
+    <string name="preferences_precipitation_title">Precipitation</string>
+    <string name="preferences_precipitation_description">Do you want to go outside in the:</string>
 
     <string name="preferences_location_updates">Enable location updates</string>
 
@@ -415,4 +416,6 @@
     <string name="whats_new_air_quality_desc">Air quality is now included, so you can make better decisions about when to head outside. When the air is clean, it’s a great sign that conditions are better for getting out for a walk, spending time outdoors, or planning part of your day outside. If you’d rather keep things simpler, you can turn air quality off anytime in Settings.</string>
     <string name="whats_new_weather_window">Best Window</string>
     <string name="whats_new_weather_window_desc">Now you can see the best window to head outside at a glance. We look at the full forecast and highlight the sweet spot where conditions line up, so you know exactly when and how long you have to make your move.</string>
+    <string name="whats_new_weather_metrics">Pick What Matters</string>
+    <string name="whats_new_weather_metrics_desc">Toggle individual weather metrics on or off per activity. If wind doesn’t bother you on a hike, switch it off and it won’t count against your score. Temperature, wind, precipitation, and air quality can each be disabled independently. Severe weather always stays on for safety.</string>
 </resources>

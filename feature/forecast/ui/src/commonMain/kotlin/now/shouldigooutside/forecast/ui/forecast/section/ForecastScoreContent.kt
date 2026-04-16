@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import now.shouldigooutside.core.model.forecast.Alert
@@ -36,6 +38,8 @@ import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.forecast.weatherBannerInfo
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.preferences.enabledMetrics
+import now.shouldigooutside.core.model.score.Metric
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.ui.AppExperience
@@ -84,7 +88,7 @@ internal fun ForecastScoreContent(
     block: ForecastBlock,
     score: Score,
     modifier: Modifier = Modifier,
-    alerts: List<Alert> = emptyList(),
+    alerts: PersistentList<Alert> = persistentListOf(),
     bannerInfo: WeatherBannerInfo? = null,
     onScoreClick: () -> Unit = {},
     onSevereWeatherClick: (Severity) -> Unit = {},
@@ -96,8 +100,7 @@ internal fun ForecastScoreContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.standard),
         modifier = modifier
-            .padding(horizontal = elevation.default)
-            .padding(bottom = elevation.default),
+            .padding(horizontal = elevation.default),
     ) {
         val (containerColor, contentColor) = score.result.colors()
         ElevatedCard(
@@ -154,6 +157,9 @@ internal fun ForecastScoreContent(
             }
 
             val includeAqi = LocalAppExperience.current.includeAirQuality
+            val enabled = remember(preferences, includeAqi) {
+                preferences.enabledMetrics(includeAqi)
+            }
 
             val temperatureCard: @Composable RowScope.() -> Unit = {
                 PreferenceResultCard(
@@ -204,39 +210,37 @@ internal fun ForecastScoreContent(
                 )
             }
 
-            if (includeAqi) {
+            val aqiCard: @Composable RowScope.() -> Unit = {
+                AirQualityResultCard(
+                    airQuality = block.airQuality,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            val cards = buildList<@Composable RowScope.() -> Unit> {
+                if (Metric.Temperature in enabled) add(temperatureCard)
+                if (Metric.Wind in enabled) add(windCard)
+                if (Metric.Precipitation in enabled) add(precipitationCard)
+                if (Metric.AirQuality in enabled) add(aqiCard)
+            }
+
+            if (cards.isNotEmpty()) {
+                val rowSize = 2
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        temperatureCard()
-                        windCard()
+                    cards.chunked(rowSize).forEach { rowCards ->
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            rowCards.forEach { it() }
+                            repeat(rowSize - rowCards.size) {
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
+                        }
                     }
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        precipitationCard()
-
-                        AirQualityResultCard(
-                            airQuality = block.airQuality,
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                }
-            } else {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    temperatureCard()
-                    windCard()
-                    precipitationCard()
                 }
             }
 

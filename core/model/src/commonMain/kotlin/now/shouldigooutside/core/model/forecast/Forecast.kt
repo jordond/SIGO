@@ -3,6 +3,8 @@ package now.shouldigooutside.core.model.forecast
 import androidx.compose.runtime.Immutable
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.preferences.enabledMetrics
 import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.ScoreResult
@@ -99,11 +101,13 @@ public fun Forecast.weatherBannerInfo(
     currentResult: ScoreResult?,
     activity: Activity,
     now: Instant,
+    preferences: Preferences = Preferences.default,
+    includeAirQuality: Boolean = true,
 ): WeatherBannerInfo? {
     if (score == null || currentResult == null) return null
 
     return when (currentResult) {
-        ScoreResult.Yes -> goNowBanner(score, activity, now)
+        ScoreResult.Yes -> goNowBanner(score, activity, now, preferences, includeAirQuality)
         ScoreResult.No, ScoreResult.Maybe -> nextWindowBanner(score, now)
     }
 }
@@ -112,6 +116,8 @@ private fun Forecast.goNowBanner(
     score: ForecastScore,
     activity: Activity,
     now: Instant,
+    preferences: Preferences,
+    includeAirQuality: Boolean,
 ): WeatherBannerInfo.GoNow? {
     val paired = today.hours.zip(score.hours)
     if (paired.isEmpty()) return null
@@ -122,7 +128,9 @@ private fun Forecast.goNowBanner(
         .firstOrNull { (_, hourScore) -> hourScore.result != ScoreResult.Yes }
 
     val endsAt = transition?.first?.instant ?: (paired.last().first.instant + 1.hours)
-    val reason = transition?.second?.reasons?.dominantReason()
+    val reason = transition?.second?.reasons?.dominantReason(
+        preferences.enabledMetrics(includeAirQuality),
+    )
 
     return WeatherBannerInfo.GoNow(endsAt = endsAt, reason = reason, activity = activity)
 }

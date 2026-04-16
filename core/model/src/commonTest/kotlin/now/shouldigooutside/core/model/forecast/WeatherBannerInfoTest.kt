@@ -3,6 +3,7 @@ package now.shouldigooutside.core.model.forecast
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.score.Metric
 import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.score.Reasons
 import now.shouldigooutside.core.model.score.Score
@@ -298,5 +299,31 @@ class DominantReasonTest {
             airQuality = ReasonValue.Inside,
         )
         reasons.dominantReason() shouldBe WeatherReason.Wind
+    }
+
+    @Test
+    fun disabledMetricIsSkipped() {
+        val reasons = EmptyReasons.copy(
+            wind = ReasonValue.Outside,
+            temperature = ReasonValue.Outside,
+        )
+        val enabled = setOf(Metric.Temperature, Metric.SevereWeather)
+        reasons.dominantReason(enabled) shouldBe WeatherReason.Temperature
+    }
+
+    @Test
+    fun emptyEnabledSetReturnsNull() {
+        val reasons = EmptyReasons.copy(
+            severeWeather = ReasonValue.Outside,
+            wind = ReasonValue.Outside,
+        )
+        reasons.dominantReason(emptySet()) shouldBe null
+    }
+
+    @Test
+    fun severeWeatherRequiresEnabled() {
+        val reasons = EmptyReasons.copy(severeWeather = ReasonValue.Outside)
+        reasons.dominantReason(setOf(Metric.Wind)) shouldBe null
+        reasons.dominantReason(setOf(Metric.SevereWeather)) shouldBe WeatherReason.SevereWeather
     }
 }

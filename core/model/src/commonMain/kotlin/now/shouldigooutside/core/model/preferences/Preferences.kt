@@ -2,6 +2,7 @@ package now.shouldigooutside.core.model.preferences
 
 import androidx.compose.runtime.Immutable
 import now.shouldigooutside.core.model.forecast.AirQuality
+import now.shouldigooutside.core.model.score.Metric
 
 @Immutable
 public data class Preferences(
@@ -12,6 +13,10 @@ public data class Preferences(
     public val rain: Boolean,
     public val snow: Boolean,
     public val maxAqi: AirQuality,
+    public val temperatureEnabled: Boolean = true,
+    public val windEnabled: Boolean = true,
+    public val precipitationEnabled: Boolean = true,
+    public val aqiEnabled: Boolean = true,
 ) {
     public companion object {
         public val default: Preferences = Preferences(
@@ -71,3 +76,12 @@ public data class Preferences(
             }
     }
 }
+
+public fun Preferences.enabledMetrics(includeAirQuality: Boolean): Set<Metric> =
+    buildSet {
+        if (temperatureEnabled) add(Metric.Temperature)
+        if (windEnabled) add(Metric.Wind)
+        if (precipitationEnabled) add(Metric.Precipitation)
+        if (includeAirQuality && aqiEnabled) add(Metric.AirQuality)
+        add(Metric.SevereWeather)
+    }

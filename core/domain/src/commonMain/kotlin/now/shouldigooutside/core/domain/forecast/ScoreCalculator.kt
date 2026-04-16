@@ -6,7 +6,9 @@ import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.PrecipitationType
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.preferences.enabledMetrics
 import now.shouldigooutside.core.model.score.ForecastScore
+import now.shouldigooutside.core.model.score.Metric
 import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.score.Reasons
 import now.shouldigooutside.core.model.score.Score
@@ -76,7 +78,8 @@ public class DefaultScoreCalculator(
 
         logger.d { "Severe weather risk: $severeWeatherRisk -> ${reasons.severeWeather}" }
 
-        val result = reasons.toScoreResult(includeAirQuality)
+        val enabled = preferences.enabledMetrics(includeAirQuality)
+        val result = reasons.toScoreResult(enabled)
         logger.d { "Final score result: $result with reasons=$reasons" }
         return Score(result = result, reasons = reasons)
     }
@@ -177,7 +180,7 @@ public class DefaultScoreCalculator(
      * Yes, No, or Maybe result based on how many of the reasons are near and how many are outside. Maybe some
      * of the results should be weighted heavier than others, like SevereWeatherRisk
      */
-    private fun Reasons.toScoreResult(includeAirQuality: Boolean): ScoreResult {
+    private fun Reasons.toScoreResult(enabled: Set<Metric>): ScoreResult {
         // Severe weather is a primary safety concern, so check it first
         if (severeWeather == ReasonValue.Outside) {
             logger.d { "Severe weather is outside acceptable range, returning `No`" }
@@ -185,11 +188,11 @@ public class DefaultScoreCalculator(
         }
 
         val all = listOfNotNull(
-            wind,
-            temperature,
-            precipitation,
+            if (Metric.Wind in enabled) wind else null,
+            if (Metric.Temperature in enabled) temperature else null,
+            if (Metric.Precipitation in enabled) precipitation else null,
             severeWeather,
-            if (includeAirQuality) airQuality else null,
+            if (Metric.AirQuality in enabled) airQuality else null,
         )
         val (outside, near) = all.fold(0 to 0) { (outsideCount, nearCount), value ->
             when (value) {
@@ -201,11 +204,11 @@ public class DefaultScoreCalculator(
 
         logger.d {
             listOfNotNull(
-                "wind" to wind,
-                "temperature" to temperature,
-                "precipitation" to precipitation,
+                if (Metric.Wind in enabled) "wind" to wind else null,
+                if (Metric.Temperature in enabled) "temperature" to temperature else null,
+                if (Metric.Precipitation in enabled) "precipitation" to precipitation else null,
                 "severeWeather" to severeWeather,
-                if (includeAirQuality) "airQuality" to airQuality else null,
+                if (Metric.AirQuality in enabled) "airQuality" to airQuality else null,
             ).joinToString { (name, value) -> "$name -> $value" }
         }
 

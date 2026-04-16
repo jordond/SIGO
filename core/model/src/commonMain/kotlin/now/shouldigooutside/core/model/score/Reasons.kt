@@ -12,16 +12,52 @@ public data class Reasons(
     val airQuality: ReasonValue,
 )
 
-public fun Reasons.dominantReason(): WeatherReason? {
-    if (severeWeather == ReasonValue.Outside) return WeatherReason.SevereWeather
-    if (precipitation == ReasonValue.Outside) return WeatherReason.Precipitation
-    if (wind == ReasonValue.Outside) return WeatherReason.Wind
-    if (temperature == ReasonValue.Outside) return WeatherReason.Temperature
-    if (airQuality == ReasonValue.Outside) return WeatherReason.AirQuality
-    if (severeWeather == ReasonValue.Near) return WeatherReason.SevereWeather
-    if (precipitation == ReasonValue.Near) return WeatherReason.Precipitation
-    if (wind == ReasonValue.Near) return WeatherReason.Wind
-    if (temperature == ReasonValue.Near) return WeatherReason.Temperature
-    if (airQuality == ReasonValue.Near) return WeatherReason.AirQuality
+private val AllMetrics: Set<Metric> = Metric.entries.toSet()
+
+public fun Reasons.dominantReason(): WeatherReason? = dominantReason(AllMetrics)
+
+public fun Reasons.dominantReason(enabled: Set<Metric>): WeatherReason? {
+    if (Metric.SevereWeather in enabled &&
+        severeWeather == ReasonValue.Outside
+    ) {
+        return WeatherReason.SevereWeather
+    }
+    if (Metric.Precipitation in enabled &&
+        precipitation == ReasonValue.Outside
+    ) {
+        return WeatherReason.Precipitation
+    }
+    if (Metric.Wind in enabled && wind == ReasonValue.Outside) return WeatherReason.Wind
+    if (Metric.Temperature in enabled &&
+        temperature == ReasonValue.Outside
+    ) {
+        return WeatherReason.Temperature
+    }
+    if (Metric.AirQuality in enabled &&
+        airQuality == ReasonValue.Outside
+    ) {
+        return WeatherReason.AirQuality
+    }
+    if (Metric.SevereWeather in enabled &&
+        severeWeather == ReasonValue.Near
+    ) {
+        return WeatherReason.SevereWeather
+    }
+    if (Metric.Precipitation in enabled &&
+        precipitation == ReasonValue.Near
+    ) {
+        return WeatherReason.Precipitation
+    }
+    if (Metric.Wind in enabled && wind == ReasonValue.Near) return WeatherReason.Wind
+    if (Metric.Temperature in enabled &&
+        temperature == ReasonValue.Near
+    ) {
+        return WeatherReason.Temperature
+    }
+    if (Metric.AirQuality in enabled &&
+        airQuality == ReasonValue.Near
+    ) {
+        return WeatherReason.AirQuality
+    }
     return null
 }

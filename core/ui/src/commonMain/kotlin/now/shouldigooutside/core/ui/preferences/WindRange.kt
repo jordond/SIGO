@@ -1,16 +1,12 @@
 package now.shouldigooutside.core.ui.preferences
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
@@ -25,16 +21,9 @@ import now.shouldigooutside.core.resources.preferences_wind_description
 import now.shouldigooutside.core.resources.preferences_wind_max
 import now.shouldigooutside.core.resources.unit_wind
 import now.shouldigooutside.core.ui.AppTheme
-import now.shouldigooutside.core.ui.LocalTextStyle
-import now.shouldigooutside.core.ui.cardColors
-import now.shouldigooutside.core.ui.components.HorizontalDivider
-import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.Slider
 import now.shouldigooutside.core.ui.components.SliderDefaults
 import now.shouldigooutside.core.ui.components.Text
-import now.shouldigooutside.core.ui.components.autoSize
-import now.shouldigooutside.core.ui.components.card.ElevatedCard
-import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.mappers.units.colors
 import now.shouldigooutside.core.ui.mappers.units.icon
 import now.shouldigooutside.core.ui.mappers.units.maxWindSpeedString
@@ -50,69 +39,42 @@ public fun WindRange(
     modifier: Modifier = Modifier,
 ) {
     val colors = WindSpeedUnit.colors()
-    ElevatedCard(
-        colors = colors.cardColors(),
+    PreferenceCard(
+        title = Res.string.unit_wind,
+        description = Res.string.preferences_wind_description,
+        icon = remember { WindSpeedUnit.icon() },
+        colors = colors,
+        enabled = preferences.windEnabled,
+        onEnabledChange = { update(preferences.copy(windEnabled = it)) },
+        modifier = modifier,
     ) {
-        Column {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .background(colors.bright)
-                    .padding(horizontal = 12.dp, vertical = 6.dp),
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(
-                        text = Res.string.unit_wind,
-                        style = AppTheme.typography.h3,
-                    )
+        Column(
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .padding(horizontal = 32.dp),
+        ) {
+            Text(
+                text = Res.string.preferences_wind_max,
+                style = AppTheme.typography.h4,
+                fontWeight = FontWeight.Light,
+            )
 
-                    Text(
-                        text = Res.string.preferences_wind_description,
-                        autoSize = LocalTextStyle.current.autoSize(),
-                        maxLines = 1,
-                    )
-                }
-
-                Icon(
-                    icon = remember { WindSpeedUnit.icon() },
-                    contentDescription = Res.string.unit_wind.get(),
-                )
-            }
-
-            HorizontalDivider()
-
-            Column(
-                modifier = Modifier
-                    .padding(top = 12.dp)
-                    .padding(horizontal = 32.dp),
-            ) {
-                Text(
-                    text = Res.string.preferences_wind_max,
-                    style = AppTheme.typography.h4,
-                    fontWeight = FontWeight.Light,
-                )
-
-                Text(
-                    text = preferences.maxWindSpeedString(units.windSpeed),
-                    style = AppTheme.typography.h1,
-                )
-            }
-
-            Slider(
-                value = preferences.windSpeed.toFloat(),
-                onValueChange = { update(preferences.copy(windSpeed = it.toInt())) },
-                valueRange = remember(maxWindSpeed) { 0f..maxWindSpeed },
-                colors = colors.sliderColors(),
-                tickLabel = { SliderDefaults.TickLabel(it) },
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .padding(bottom = 16.dp),
+            Text(
+                text = preferences.maxWindSpeedString(units.windSpeed),
+                style = AppTheme.typography.h1,
             )
         }
+
+        Slider(
+            value = preferences.windSpeed.toFloat(),
+            onValueChange = { update(preferences.copy(windSpeed = it.toInt())) },
+            valueRange = remember(maxWindSpeed) { 0f..maxWindSpeed },
+            colors = colors.sliderColors(),
+            tickLabel = { SliderDefaults.TickLabel(it) },
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 16.dp),
+        )
     }
 }
 
