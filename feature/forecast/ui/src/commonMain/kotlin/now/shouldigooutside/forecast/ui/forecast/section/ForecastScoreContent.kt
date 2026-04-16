@@ -31,8 +31,10 @@ import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
-import now.shouldigooutside.core.model.forecast.WeatherWindow
+import now.shouldigooutside.core.model.forecast.WeatherBannerInfo
 import now.shouldigooutside.core.model.forecast.blockForPeriod
+import now.shouldigooutside.core.model.forecast.weatherBannerInfo
+import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.scoreForPeriod
@@ -83,11 +85,11 @@ internal fun ForecastScoreContent(
     score: Score,
     modifier: Modifier = Modifier,
     alerts: List<Alert> = emptyList(),
-    goodWindow: WeatherWindow? = null,
-    now: Instant = Clock.System.now(),
+    bannerInfo: WeatherBannerInfo? = null,
     onScoreClick: () -> Unit = {},
     onSevereWeatherClick: () -> Unit = {},
     onAlertsClick: () -> Unit = {},
+    onDismissBanner: () -> Unit = {},
 ) {
     val elevation = CardDefaults.cardElevation()
     Column(
@@ -139,6 +141,16 @@ internal fun ForecastScoreContent(
             )
 
             Spacer(modifier = Modifier.height(AppTheme.spacing.standard))
+
+            if (bannerInfo != null) {
+                WeatherWindowBanner(
+                    info = bannerInfo,
+                    onDismiss = onDismissBanner,
+                    modifier = Modifier
+                        .padding(bottom = AppTheme.spacing.standard)
+                        .fillMaxWidth(),
+                )
+            }
 
             val includeAqi = LocalAppExperience.current.includeAirQuality
 
@@ -225,15 +237,6 @@ internal fun ForecastScoreContent(
                     windCard()
                     precipitationCard()
                 }
-            }
-
-            if (goodWindow != null) {
-                WeatherWindowBanner(
-                    window = goodWindow,
-                    modifier = Modifier
-                        .padding(top = AppTheme.spacing.small)
-                        .fillMaxWidth(),
-                )
             }
 
             AlertsBanner(
@@ -329,6 +332,7 @@ private fun ForecastScoreContentPreview() {
 private fun GoodWeatherWindowPreview() {
     val forecast = PreviewData.Forecast.createGoodWindowForecast()
     val forecastScore = PreviewData.Forecast.score(forecast)
+    val periodScore = forecastScore.scoreForPeriod(ForecastPeriod.Today)!!
     AppPreview {
         Box(
             modifier = Modifier
@@ -340,8 +344,13 @@ private fun GoodWeatherWindowPreview() {
                 preferences = Preferences.default,
                 units = Units.Metric,
                 block = forecast.blockForPeriod(ForecastPeriod.Today)!!,
-                score = forecastScore.scoreForPeriod(ForecastPeriod.Today)!!,
-                goodWindow = PreviewData.Forecast.goodWindow(forecast),
+                score = periodScore,
+                bannerInfo = forecast.weatherBannerInfo(
+                    score = forecastScore,
+                    currentResult = periodScore.result,
+                    activity = Activity.General,
+                    now = forecast.instant,
+                ),
             )
         }
     }

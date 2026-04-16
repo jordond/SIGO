@@ -3,18 +3,9 @@ package now.shouldigooutside.core.model.forecast
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import now.shouldigooutside.core.model.score.ForecastScore
-import now.shouldigooutside.core.model.score.ReasonValue
-import now.shouldigooutside.core.model.score.Reasons
-import now.shouldigooutside.core.model.score.Score
-import now.shouldigooutside.core.model.score.ScoreResult
 import kotlin.test.Test
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Instant
 
 class GoodWeatherWindowsTest {
-    private val baseInstant = Instant.fromEpochSeconds(1_000_000)
-
     @Test
     fun nullScoreReturnsEmptyList() {
         val forecast = forecast(hourCount = 3)
@@ -212,67 +203,4 @@ class GoodWeatherWindowsTest {
         windows[2].start shouldBe hour(4)
         windows[2].end shouldBe hour(5)
     }
-
-    private fun hour(index: Int): Instant = baseInstant + index.hours
-
-    private val yes = Score(ScoreResult.Yes, EmptyReasons)
-    private val no = Score(ScoreResult.No, EmptyReasons)
-    private val maybe = Score(ScoreResult.Maybe, EmptyReasons)
-
-    private fun forecastScore(hours: List<Score>) =
-        ForecastScore(
-            current = no,
-            hours = hours,
-            today = no,
-            days = emptyList(),
-        )
-
-    private fun forecast(hourCount: Int): Forecast {
-        val hours = List(hourCount) { i -> block(baseInstant + i.hours) }
-        val dayBlock = block(baseInstant)
-        return Forecast(
-            location = TestLocation,
-            current = dayBlock,
-            today = ForecastDay(block = dayBlock, hours = hours),
-            days = emptyList(),
-            alerts = emptyList(),
-            instant = baseInstant,
-        )
-    }
 }
-
-private val TestLocation = now.shouldigooutside.core.model.location.Location(
-    latitude = 42.763,
-    longitude = -81.878,
-    name = "Test",
-)
-
-private val EmptyReasons = Reasons(
-    wind = ReasonValue.Inside,
-    temperature = ReasonValue.Inside,
-    precipitation = ReasonValue.Inside,
-    severeWeather = ReasonValue.Inside,
-    airQuality = ReasonValue.Inside,
-)
-
-private fun block(instant: Instant) =
-    ForecastBlock(
-        instant = instant,
-        humidity = 0.0,
-        cloudCoverPercent = 0,
-        temperature = Temperature(value = 20.0, feelsLike = 20.0, max = 20.0, min = 20.0),
-        precipitation = Precipitation(amount = 0.0, probability = 0, types = emptySet()),
-        wind = Wind(
-            speed = 0.0,
-            gust = 0.0,
-            directionDegree = 0.0,
-            maxSpeed = 0.0,
-            meanSpeed = 0.0,
-            minSpeed = 0.0,
-        ),
-        pressure = 1013.0,
-        uvIndex = 0,
-        visibility = 10.0,
-        severeWeatherRisk = SevereWeatherRisk.None,
-        airQuality = AirQuality(1),
-    )

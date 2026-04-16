@@ -230,9 +230,22 @@
     <string name="forecast_period_no_data">There is no data available for this time period, please select a different period.</string>
     <string name="forecast_view_details">View Details</string>
 
-    <string name="weather_window_title">Best Window</string>
-    <string name="weather_window_description">Looks like you're all clear from</string>
-    <string name="weather_window_ranger">%1$s to %2$s</string>
+    <string name="weather_banner_go_now_title">Go %1$s now!</string>
+    <string name="weather_banner_go_now_until_reason">Good until %1$s before %2$s</string>
+    <string name="weather_banner_go_now_until">Good until %1$s</string>
+    <string name="weather_banner_next_window_title">Next good window</string>
+    <string name="weather_banner_next_window_range">Weather improves from %1$s to %2$s</string>
+    <string name="weather_banner_borderline_window_title">Borderline window</string>
+    <string name="weather_banner_borderline_window_range">Conditions ease from %1$s to %2$s</string>
+    <string name="weather_banner_no_window_title">No ideal weather today</string>
+    <string name="weather_banner_no_window_description">Conditions don't look good for the rest of today.</string>
+    <string name="weather_banner_dismiss">Dismiss banner</string>
+
+    <string name="weather_reason_wind">high winds</string>
+    <string name="weather_reason_temperature">temperature changes</string>
+    <string name="weather_reason_precipitation">rain</string>
+    <string name="weather_reason_severe_weather">severe weather</string>
+    <string name="weather_reason_air_quality">poor air quality</string>
 
     <string name="score_yes">Yes</string>
     <string name="score_maybe">Maybe</string>

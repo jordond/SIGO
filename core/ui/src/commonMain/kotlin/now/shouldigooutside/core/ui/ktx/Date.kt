@@ -205,6 +205,9 @@ public fun LocalTime.text(use24Hours: Boolean = LocalAppExperience.current.use24
     }
 }
 
+public fun Instant.localTime(zone: TimeZone = TimeZone.currentSystemDefault()): LocalTime =
+    toLocalDateTime(zone).time
+
 @Composable
 public fun Instant.rememberTimeOfDay(
     use24Hours: Boolean = LocalAppExperience.current.use24HourFormat,

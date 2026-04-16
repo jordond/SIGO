@@ -26,4 +26,6 @@ public sealed interface ForecastHomeAction {
     ) : ForecastHomeAction
 
     public data object OpenAlerts : ForecastHomeAction
+
+    public data object DismissBanner : ForecastHomeAction
 }

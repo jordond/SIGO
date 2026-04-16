@@ -15,9 +15,9 @@ import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
-import now.shouldigooutside.core.model.forecast.WeatherWindow
+import now.shouldigooutside.core.model.forecast.WeatherBannerInfo
 import now.shouldigooutside.core.model.forecast.blockForPeriod
-import now.shouldigooutside.core.model.forecast.goodWeatherWindows
+import now.shouldigooutside.core.model.forecast.weatherBannerInfo
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.score.ActivityForecastScore
@@ -25,6 +25,7 @@ import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.forecast.ui.forecast.ForecastHomeModel.State
+import kotlin.time.Clock
 
 @Stable
 internal class ForecastHomeModel(
@@ -54,6 +55,12 @@ internal class ForecastHomeModel(
         forecastStateHolder.fetch()
     }
 
+    fun dismissBanner() {
+        updateState { state ->
+            state.copy(dismissedBannerInfo = state.bannerInfo)
+        }
+    }
+
     data class State(
         val location: Location?,
         val selectedActivity: Activity,
@@ -63,7 +70,8 @@ internal class ForecastHomeModel(
         val period: ForecastPeriod,
         val forecast: Forecast? = null,
         val activities: PersistentList<Activity> = persistentListOf(Activity.General),
-        val goodWindow: WeatherWindow? = null,
+        val bannerInfo: WeatherBannerInfo? = null,
+        val dismissedBannerInfo: WeatherBannerInfo? = null,
     ) {
         val hasMultipleActivities: Boolean get() = activities.size > 1
         val loading: Boolean = status is AsyncResult.Loading
@@ -73,11 +81,19 @@ internal class ForecastHomeModel(
         val currentBlock: ForecastBlock? = forecast?.blockForPeriod(period)
         val currentPeriodScore: Score? = currentScore?.score?.scoreForPeriod(period)
         val alerts: List<Alert> = forecast?.alerts.orEmpty()
+        val showBanner: Boolean get() = bannerInfo != null && bannerInfo != dismissedBannerInfo
     }
 }
 
-private fun State.withGoodWindow(): State =
-    copy(goodWindow = forecast?.goodWeatherWindows(currentScore?.score)?.firstOrNull())
+private fun State.withBannerInfo(): State =
+    copy(
+        bannerInfo = forecast?.weatherBannerInfo(
+            score = currentScore?.score,
+            currentResult = currentPeriodScore?.result,
+            activity = selectedActivity,
+            now = Clock.System.now(),
+        ),
+    )
 
 private fun state(
     appStateHolder: AppStateHolder,
@@ -106,17 +122,17 @@ private fun state(
                 selectedActivity = settings.selectedActivity,
                 units = settings.units,
                 activities = activities.toPersistentList(),
-            ).withGoodWindow()
+            ).withBannerInfo()
         }
 
     forecastStateHolder.state.into { status ->
         when (status) {
-            is AsyncResult.Success -> copy(status = status, forecast = status.data).withGoodWindow()
+            is AsyncResult.Success -> copy(status = status, forecast = status.data).withBannerInfo()
             else -> copy(status = status)
         }
     }
 
     getActivitiesScoreUseCase.scoresFlow() into { scores ->
-        copy(activityScores = scores.toPersistentList()).withGoodWindow()
+        copy(activityScores = scores.toPersistentList()).withBannerInfo()
     }
 }
