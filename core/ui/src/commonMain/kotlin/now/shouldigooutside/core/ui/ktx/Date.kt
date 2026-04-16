@@ -206,6 +206,15 @@ public fun LocalTime.text(use24Hours: Boolean = LocalAppExperience.current.use24
 }
 
 @Composable
+public fun Instant.rememberTimeOfDay(
+    use24Hours: Boolean = LocalAppExperience.current.use24HourFormat,
+    timeZone: TimeZone = TimeZone.currentSystemDefault(),
+): String {
+    val time = remember(this, timeZone) { toLocalDateTime(timeZone).time }
+    return time.text(use24Hours)
+}
+
+@Composable
 public fun Instant.rememberTimeAgo(
     now: Instant = Clock.System.now(),
     use24Hours: Boolean = LocalAppExperience.current.use24HourFormat,

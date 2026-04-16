@@ -33,7 +33,7 @@ public fun ForecastEntity.toModel(): Forecast =
                 hours = day.hours.map { it.toModel() },
             )
         },
-        alerts = alerts.map { Alert(it.title, it.description) },
+        alerts = alerts.map { it.toModel() },
         instant = Instant.fromEpochMilliseconds(updatedAt),
     )
 
@@ -55,7 +55,7 @@ public fun Forecast.toEntity(): ForecastEntity =
                 hours = day.hours.map { it.toEntity() },
             )
         },
-        alerts = alerts.map { AlertEntity(it.title, it.description) },
+        alerts = alerts.map { it.toEntity() },
         updatedAt = instant.toEpochMilliseconds(),
     )
 
@@ -123,4 +123,28 @@ private fun ForecastBlock.toEntity(): ForecastBlockEntity =
         visibility = visibility,
         airQuality = airQuality.value,
         severeWeatherRisk = severeWeatherRisk.name,
+    )
+
+private fun AlertEntity.toModel(): Alert =
+    Alert(
+        title = title,
+        description = description,
+        event = event,
+        headline = headline,
+        onset = onsetEpoch?.let(Instant::fromEpochSeconds),
+        ends = endsEpoch?.let(Instant::fromEpochSeconds),
+        link = link,
+        id = id,
+    )
+
+private fun Alert.toEntity(): AlertEntity =
+    AlertEntity(
+        title = title,
+        description = description,
+        event = event,
+        headline = headline,
+        onsetEpoch = onset?.epochSeconds,
+        endsEpoch = ends?.epochSeconds,
+        link = link,
+        id = id,
     )

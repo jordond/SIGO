@@ -105,4 +105,16 @@ public data class AlertEntity(
     public val title: String,
     @SerialName("description")
     public val description: String,
+    @SerialName("event")
+    public val event: String? = null,
+    @SerialName("headline")
+    public val headline: String? = null,
+    @SerialName("onset_epoch")
+    public val onsetEpoch: Long? = null,
+    @SerialName("ends_epoch")
+    public val endsEpoch: Long? = null,
+    @SerialName("link")
+    public val link: String? = null,
+    @SerialName("id")
+    public val id: String? = null,
 )

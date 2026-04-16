@@ -11,6 +11,7 @@ import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.model.AsyncResult
+import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
@@ -71,6 +72,7 @@ internal class ForecastHomeModel(
             activityScores.firstOrNull { it.activity == selectedActivity }
         val currentBlock: ForecastBlock? = forecast?.blockForPeriod(period)
         val currentPeriodScore: Score? = currentScore?.score?.scoreForPeriod(period)
+        val alerts: List<Alert> = forecast?.alerts.orEmpty()
     }
 }
 
