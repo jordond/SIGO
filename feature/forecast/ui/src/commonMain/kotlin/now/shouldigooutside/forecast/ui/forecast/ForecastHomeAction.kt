@@ -3,6 +3,7 @@ package now.shouldigooutside.forecast.ui.forecast
 import androidx.compose.runtime.Immutable
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.forecast.ui.components.Severity
 
 @Immutable
 public sealed interface ForecastHomeAction {
@@ -19,6 +20,12 @@ public sealed interface ForecastHomeAction {
     ) : ForecastHomeAction
 
     public data object OpenLocationSheet : ForecastHomeAction
+
+    public data class OpenSevereWeatherInfo(
+        val severity: Severity,
+    ) : ForecastHomeAction
+
+    public data object OpenAlerts : ForecastHomeAction
 
     public data object DismissBanner : ForecastHomeAction
 }

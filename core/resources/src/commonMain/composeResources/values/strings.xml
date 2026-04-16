@@ -278,6 +278,21 @@
     <string name="score_severe_weather_status_outside">Severe weather</string>
     <string name="score_severe_weather_status_near">Possible</string>
 
+    <string name="severe_weather_sheet_warning_title">Possible severe weather</string>
+    <string name="severe_weather_sheet_warning_body">Conditions suggest a risk of thunderstorms, strong winds, or heavy rain in the area. Severe weather may develop but is not certain. Stay aware of changing conditions and review any official alerts before heading out.</string>
+    <string name="severe_weather_sheet_danger_title">Severe weather active</string>
+    <string name="severe_weather_sheet_danger_body">Severe weather is affecting this location. Expect dangerous conditions such as high winds, heavy rain, or thunderstorms. Avoid outdoor activity if possible and follow guidance from local authorities.</string>
+    <string name="severe_weather_sheet_close">Close</string>
+
+    <string name="alerts_banner_count_one">1 weather alert</string>
+    <string name="alerts_banner_count_other">%1$d weather alerts</string>
+    <string name="alerts_banner_icon_cd">Weather alert</string>
+    <string name="alerts_sheet_title">Weather alerts</string>
+    <string name="alerts_sheet_active_range">From %1$s to %2$s</string>
+    <string name="alerts_sheet_more_info">More info</string>
+    <string name="alerts_sheet_empty_body">No active alerts for this location.</string>
+    <string name="alerts_sheet_close">Close</string>
+
     <string name="score_air_quality_inside">The air quality is great!</string>
     <string name="score_air_quality_outside">The air quality is poor</string>
     <string name="score_air_quality_near">The air quality is okay</string>

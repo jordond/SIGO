@@ -190,6 +190,16 @@ internal data class VCAlert(
     val event: String,
     @SerialName("description")
     val description: String,
+    @SerialName("headline")
+    val headline: String? = null,
+    @SerialName("onsetEpoch")
+    val onsetEpoch: Long? = null,
+    @SerialName("endsEpoch")
+    val endsEpoch: Long? = null,
+    @SerialName("link")
+    val link: String? = null,
+    @SerialName("id")
+    val id: String? = null,
 )
 
 internal fun VCForecastResponse.toModel(
@@ -224,7 +234,18 @@ internal fun VCForecastResponse.toModel(
         current = currentConditions.toModel(),
         today = today,
         days = days,
-        alerts = alerts.map { alert -> Alert(title = alert.event, description = alert.description) },
+        alerts = alerts.map { alert ->
+            Alert(
+                title = alert.headline ?: alert.event,
+                description = alert.description,
+                event = alert.event,
+                headline = alert.headline,
+                onset = alert.onsetEpoch?.let(Instant::fromEpochSeconds),
+                ends = alert.endsEpoch?.let(Instant::fromEpochSeconds),
+                link = alert.link,
+                id = alert.id,
+            )
+        },
         instant = nowProvider.now(),
     )
 }

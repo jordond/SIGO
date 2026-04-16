@@ -1,6 +1,5 @@
 package now.shouldigooutside.forecast.ui.forecast.section
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
@@ -36,29 +36,21 @@ import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.forecast.weatherBannerInfo
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
-import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.ui.AppExperience
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.percent
-import now.shouldigooutside.core.resources.score_severe_weather_near
-import now.shouldigooutside.core.resources.score_severe_weather_outside
 import now.shouldigooutside.core.resources.unit_precipitation_rain
 import now.shouldigooutside.core.resources.unit_precipitation_snow
 import now.shouldigooutside.core.resources.unit_temperature_short
 import now.shouldigooutside.core.resources.updated_at
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.LocalAppExperience
-import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.Text
-import now.shouldigooutside.core.ui.components.card.Card
 import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.components.card.ElevatedCard
-import now.shouldigooutside.core.ui.icons.AppIcons
-import now.shouldigooutside.core.ui.icons.lucide.OctagonAlert
-import now.shouldigooutside.core.ui.icons.lucide.TriangleAlert
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.ktx.rememberTimeAgo
 import now.shouldigooutside.core.ui.mappers.units.colors
@@ -67,7 +59,10 @@ import now.shouldigooutside.core.ui.mappers.units.rememberUnit
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.AirQualityResultCard
+import now.shouldigooutside.forecast.ui.components.AlertsBanner
 import now.shouldigooutside.forecast.ui.components.PreferenceResultCard
+import now.shouldigooutside.forecast.ui.components.SevereWeatherBanner
+import now.shouldigooutside.forecast.ui.components.Severity
 import now.shouldigooutside.forecast.ui.components.WeatherWindowBanner
 import now.shouldigooutside.forecast.ui.components.mappers.colors
 import now.shouldigooutside.forecast.ui.components.mappers.precipitationStatus
@@ -89,8 +84,11 @@ internal fun ForecastScoreContent(
     block: ForecastBlock,
     score: Score,
     modifier: Modifier = Modifier,
+    alerts: List<Alert> = emptyList(),
     bannerInfo: WeatherBannerInfo? = null,
     onScoreClick: () -> Unit = {},
+    onSevereWeatherClick: (Severity) -> Unit = {},
+    onAlertsClick: () -> Unit = {},
     onDismissBanner: () -> Unit = {},
 ) {
     val elevation = CardDefaults.cardElevation()
@@ -134,48 +132,14 @@ internal fun ForecastScoreContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.weight(1f),
         ) {
-            val text = remember(score.reasons.severeWeather) {
-                when (score.reasons.severeWeather) {
-                    ReasonValue.Inside -> null
-                    ReasonValue.Near -> Res.string.score_severe_weather_near
-                    ReasonValue.Outside -> Res.string.score_severe_weather_outside
-                }
-            }
-            AnimatedVisibility(
-                visible = text != null,
-                modifier = Modifier.padding(top = AppTheme.spacing.small),
-            ) {
-                val colors = when (score.reasons.severeWeather) {
-                    ReasonValue.Inside -> CardDefaults.cardColors()
-                    ReasonValue.Near -> CardDefaults.primaryColors
-                    ReasonValue.Outside -> CardDefaults.errorColors
-                }
-
-                Card(
-                    colors = colors,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .padding(
-                                vertical = AppTheme.spacing.small,
-                                horizontal = AppTheme.spacing.standard,
-                            ),
-                    ) {
-                        val icon = remember(score.reasons.severeWeather) {
-                            if (score.reasons.severeWeather == ReasonValue.Outside) {
-                                AppIcons.Lucide.OctagonAlert
-                            } else {
-                                AppIcons.Lucide.TriangleAlert
-                            }
-                        }
-                        Icon(icon)
-                        Text(text = text?.get() ?: "")
-                    }
-                }
-            }
+            val severity = Severity.fromReason(score.reasons.severeWeather)
+            SevereWeatherBanner(
+                severity = severity,
+                onClick = { severity?.let(onSevereWeatherClick) },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = AppTheme.spacing.small),
+            )
 
             Spacer(modifier = Modifier.height(AppTheme.spacing.standard))
 
@@ -275,6 +239,12 @@ internal fun ForecastScoreContent(
                     precipitationCard()
                 }
             }
+
+            AlertsBanner(
+                alerts = alerts,
+                onClick = onAlertsClick,
+                modifier = Modifier.padding(top = AppTheme.spacing.small),
+            )
 
             Spacer(modifier = Modifier.height(AppTheme.spacing.small))
 

@@ -186,18 +186,44 @@ public object ForecastPreviewData {
             visibility = 3.0, // Reduced visibility
         )
 
-    public val floodRiskAlert: Alert = Alert(
-        title = "Flood risk",
-        description = "* WHAT...Minor coastal flooding expected.\n\n" +
-            "* WHERE...Bayshore locations along the San Francisco Bay and San\n" +
-            "Pablo Bay.\n\n" +
-            "* WHEN...From 10 PM this evening to 2 AM PDT Wednesday.\n\n" +
-            "* IMPACTS...Flooding of lots, parks, and roads with only\n" +
-            "isolated road closures expected.\n\n" +
-            "* ADDITIONAL DETAILS...Low lying areas within the San Francisco\n" +
-            "Bay Area may see minor coastal flooding as a result during high\n" +
-            "tide. San Francisco high tide is 6.88 ft at 12:02 AM Wednesday.\n",
-    )
+    public fun floodRiskAlert(instant: Instant = Clock.System.now()): Alert =
+        Alert(
+            title = "Flood risk",
+            description = "* WHAT...Minor coastal flooding expected.\n\n" +
+                "* WHERE...Bayshore locations along the San Francisco Bay and San\n" +
+                "Pablo Bay.\n\n" +
+                "* WHEN...From 10 PM this evening to 2 AM PDT Wednesday.\n\n" +
+                "* IMPACTS...Flooding of lots, parks, and roads with only\n" +
+                "isolated road closures expected.\n\n" +
+                "* ADDITIONAL DETAILS...Low lying areas within the San Francisco\n" +
+                "Bay Area may see minor coastal flooding as a result during high\n" +
+                "tide. San Francisco high tide is 6.88 ft at 12:02 AM Wednesday.\n",
+            event = "Coastal Flood",
+            headline = "yellow warning - coastal flood - in effect",
+            onset = instant,
+            ends = instant.plus(4.hours),
+            link = "https://example.com/alerts/flood",
+            id = "flood-001",
+        )
+
+    public fun sampleAlerts(
+        count: Int = 1,
+        instant: Instant = Clock.System.now(),
+    ): List<Alert> {
+        val base = floodRiskAlert(instant)
+        return List(count) { index ->
+            base.copy(
+                id = "alert-$index",
+                title = "${base.title} #${index + 1}",
+                headline = "${base.headline} #${index + 1}",
+            )
+        }
+    }
+
+    public fun withAlerts(
+        forecast: Forecast,
+        count: Int = 1,
+    ): Forecast = forecast.copy(alerts = sampleAlerts(count, forecast.instant))
 
     public fun createSunnyForecast(
         instant: Instant = Clock.System.now(),

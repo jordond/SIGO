@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import dev.stateholder.extensions.collectAsState
 import kotlinx.collections.immutable.toPersistentList
+import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.score.ScoreResult
@@ -35,7 +36,10 @@ import now.shouldigooutside.core.ui.components.LoadingBox
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.ForecastPreviewData
+import now.shouldigooutside.forecast.ui.components.AlertsBanner
 import now.shouldigooutside.forecast.ui.components.NoLocation
+import now.shouldigooutside.forecast.ui.components.SevereWeatherBanner
+import now.shouldigooutside.forecast.ui.components.Severity
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -43,6 +47,8 @@ internal fun ForecastDetailsScreen(
     onBack: () -> Unit,
     toSettings: () -> Unit,
     toLocationPicker: () -> Unit,
+    toSevereWeatherInfo: (Severity) -> Unit,
+    toAlerts: () -> Unit,
     model: ForecastDetailsModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
@@ -72,12 +78,21 @@ internal fun ForecastDetailsScreen(
                 LoadingBox()
             }
         } else {
+            val severity = state
+                .selectedScore
+                ?.reasons
+                ?.severeWeather
+                ?.let(Severity::fromReason)
             ForecastDetailsScreen(
                 forecast = forecast,
                 selected = state.selected,
                 selectedScore = state.selectedScore?.result,
+                alerts = forecast.alerts,
+                severity = severity,
                 onSelected = model::select,
                 onBack = onBack,
+                onSevereWeatherClick = toSevereWeatherInfo,
+                onAlertsClick = toAlerts,
                 toSettings = toSettings,
             )
         }
@@ -92,6 +107,10 @@ internal fun ForecastDetailsScreen(
     onSelected: (ForecastBlock?) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    alerts: List<Alert> = emptyList(),
+    severity: Severity? = null,
+    onSevereWeatherClick: (Severity) -> Unit = {},
+    onAlertsClick: () -> Unit = {},
     toSettings: () -> Unit = {},
 ) {
     Column(
@@ -127,6 +146,22 @@ internal fun ForecastDetailsScreen(
             scoreResult = selectedScore,
             units = forecast.units,
             modifier = Modifier.padding(horizontal = AppTheme.spacing.standard),
+        )
+
+        SevereWeatherBanner(
+            severity = severity,
+            onClick = { severity?.let(onSevereWeatherClick) },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = AppTheme.spacing.small),
+        )
+
+        AlertsBanner(
+            alerts = alerts,
+            onClick = onAlertsClick,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = AppTheme.spacing.small),
         )
 
         Spacer(modifier = Modifier.height(20.dp))
