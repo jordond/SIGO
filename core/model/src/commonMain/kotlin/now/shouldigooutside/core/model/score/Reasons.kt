@@ -17,47 +17,13 @@ private val AllMetrics: Set<Metric> = Metric.entries.toSet()
 public fun Reasons.dominantReason(): WeatherReason? = dominantReason(AllMetrics)
 
 public fun Reasons.dominantReason(enabled: Set<Metric>): WeatherReason? {
-    if (Metric.SevereWeather in enabled &&
-        severeWeather == ReasonValue.Outside
-    ) {
-        return WeatherReason.SevereWeather
+    val candidates = buildList {
+        if (Metric.SevereWeather in enabled) add(severeWeather to WeatherReason.SevereWeather)
+        if (Metric.Precipitation in enabled) add(precipitation to WeatherReason.Precipitation)
+        if (Metric.Wind in enabled) add(wind to WeatherReason.Wind)
+        if (Metric.Temperature in enabled) add(temperature to WeatherReason.Temperature)
+        if (Metric.AirQuality in enabled) add(airQuality to WeatherReason.AirQuality)
     }
-    if (Metric.Precipitation in enabled &&
-        precipitation == ReasonValue.Outside
-    ) {
-        return WeatherReason.Precipitation
-    }
-    if (Metric.Wind in enabled && wind == ReasonValue.Outside) return WeatherReason.Wind
-    if (Metric.Temperature in enabled &&
-        temperature == ReasonValue.Outside
-    ) {
-        return WeatherReason.Temperature
-    }
-    if (Metric.AirQuality in enabled &&
-        airQuality == ReasonValue.Outside
-    ) {
-        return WeatherReason.AirQuality
-    }
-    if (Metric.SevereWeather in enabled &&
-        severeWeather == ReasonValue.Near
-    ) {
-        return WeatherReason.SevereWeather
-    }
-    if (Metric.Precipitation in enabled &&
-        precipitation == ReasonValue.Near
-    ) {
-        return WeatherReason.Precipitation
-    }
-    if (Metric.Wind in enabled && wind == ReasonValue.Near) return WeatherReason.Wind
-    if (Metric.Temperature in enabled &&
-        temperature == ReasonValue.Near
-    ) {
-        return WeatherReason.Temperature
-    }
-    if (Metric.AirQuality in enabled &&
-        airQuality == ReasonValue.Near
-    ) {
-        return WeatherReason.AirQuality
-    }
-    return null
+    return candidates.firstOrNull { it.first == ReasonValue.Outside }?.second
+        ?: candidates.firstOrNull { it.first == ReasonValue.Near }?.second
 }
