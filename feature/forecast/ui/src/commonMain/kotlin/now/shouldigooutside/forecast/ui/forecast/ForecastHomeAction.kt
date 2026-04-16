@@ -19,4 +19,6 @@ public sealed interface ForecastHomeAction {
     ) : ForecastHomeAction
 
     public data object OpenLocationSheet : ForecastHomeAction
+
+    public data object DismissBanner : ForecastHomeAction
 }
