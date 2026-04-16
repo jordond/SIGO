@@ -150,9 +150,6 @@ internal fun ForecastHomeScreen(
                     if (currentBlock == null || currentPeriodScore == null) {
                         NoDataForPeriod()
                     } else {
-                        val severeWeatherRelay = dispatcher
-                            .rememberRelayOf(ForecastHomeAction::OpenSevereWeatherInfo)
-                        val severity = Severity.fromReason(currentPeriodScore.reasons.severeWeather)
                         ForecastScoreContent(
                             updatedAt = instant,
                             preferences = preferences,
@@ -162,7 +159,8 @@ internal fun ForecastHomeScreen(
                             alerts = alerts,
                             bannerInfo = bannerInfo,
                             onScoreClick = dispatcher.rememberRelay(ForecastHomeAction.ToViewDetails),
-                            onSevereWeatherClick = { severity?.let(severeWeatherRelay) },
+                            onSevereWeatherClick = dispatcher
+                                .rememberRelayOf(ForecastHomeAction::OpenSevereWeatherInfo),
                             onAlertsClick = dispatcher.rememberRelay(ForecastHomeAction.OpenAlerts),
                             onDismissBanner = dispatcher.rememberRelay(ForecastHomeAction.DismissBanner),
                             modifier = Modifier.padding(end = 2.dp),

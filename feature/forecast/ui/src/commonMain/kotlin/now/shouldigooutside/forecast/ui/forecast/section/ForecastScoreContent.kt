@@ -87,7 +87,7 @@ internal fun ForecastScoreContent(
     alerts: List<Alert> = emptyList(),
     bannerInfo: WeatherBannerInfo? = null,
     onScoreClick: () -> Unit = {},
-    onSevereWeatherClick: () -> Unit = {},
+    onSevereWeatherClick: (Severity) -> Unit = {},
     onAlertsClick: () -> Unit = {},
     onDismissBanner: () -> Unit = {},
 ) {
@@ -132,9 +132,10 @@ internal fun ForecastScoreContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.weight(1f),
         ) {
+            val severity = Severity.fromReason(score.reasons.severeWeather)
             SevereWeatherBanner(
-                severity = Severity.fromReason(score.reasons.severeWeather),
-                onClick = onSevereWeatherClick,
+                severity = severity,
+                onClick = { severity?.let(onSevereWeatherClick) },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(top = AppTheme.spacing.small),

@@ -36,7 +36,8 @@ import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.TriangleAlert
 import now.shouldigooutside.core.ui.ktx.get
-import now.shouldigooutside.core.ui.ktx.rememberTimeOfDay
+import now.shouldigooutside.core.ui.ktx.localTime
+import now.shouldigooutside.core.ui.ktx.text
 import now.shouldigooutside.core.ui.preview.AppPreview
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Instant
@@ -99,8 +100,8 @@ private fun AlertCard(
     val ends = alert.ends
     val rangeText = if (onset != null && ends != null) {
         Res.string.alerts_sheet_active_range.get(
-            onset.rememberTimeOfDay(),
-            ends.rememberTimeOfDay(),
+            onset.localTime().text(),
+            ends.localTime().text(),
         )
     } else {
         null

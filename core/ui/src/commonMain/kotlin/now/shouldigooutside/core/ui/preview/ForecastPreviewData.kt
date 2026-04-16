@@ -186,9 +186,6 @@ public object ForecastPreviewData {
             visibility = 3.0, // Reduced visibility
         )
 
-    public val floodRiskAlert: Alert
-        get() = floodRiskAlert(Clock.System.now())
-
     public fun floodRiskAlert(instant: Instant = Clock.System.now()): Alert =
         Alert(
             title = "Flood risk",
