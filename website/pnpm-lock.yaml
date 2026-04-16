@@ -29,7 +29,7 @@ importers:
     devDependencies:
       '@coreui/icons':
         specifier: ^3.0.1
-        version: 3.0.1
+        version: 3.1.0
       prettier:
         specifier: ^3.8.1
         version: 3.8.3
@@ -171,8 +171,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@coreui/icons@3.0.1':
-    resolution: {integrity: sha512-u9UKEcRMyY9pa4jUoLij8pAR03g5g6TLWV33/Mx2ix8sffyi0eO4fLV8DSTQljDCw938zt7KYog5cVKEAJUxxg==}
+  '@coreui/icons@3.1.0':
+    resolution: {integrity: sha512-250Wt7oDd9lHjC1YSJz/Eobx3joXHVVae+kXVnsDBfTtKXRnUghHWQWr6FFNcUXnPTpZ+6vWt48eDUKLCuS6qA==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -2603,7 +2603,7 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20260415.1':
     optional: true
 
-  '@coreui/icons@3.0.1': {}
+  '@coreui/icons@3.1.0': {}
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
