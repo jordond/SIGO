@@ -179,6 +179,16 @@ internal fun ForecastScoreContent(
 
             Spacer(modifier = Modifier.height(AppTheme.spacing.standard))
 
+            if (bannerInfo != null) {
+                WeatherWindowBanner(
+                    info = bannerInfo,
+                    onDismiss = onDismissBanner,
+                    modifier = Modifier
+                        .padding(bottom = AppTheme.spacing.standard)
+                        .fillMaxWidth(),
+                )
+            }
+
             val includeAqi = LocalAppExperience.current.includeAirQuality
 
             val temperatureCard: @Composable RowScope.() -> Unit = {
@@ -264,16 +274,6 @@ internal fun ForecastScoreContent(
                     windCard()
                     precipitationCard()
                 }
-            }
-
-            if (bannerInfo != null) {
-                WeatherWindowBanner(
-                    info = bannerInfo,
-                    onDismiss = onDismissBanner,
-                    modifier = Modifier
-                        .padding(top = AppTheme.spacing.small)
-                        .fillMaxWidth(),
-                )
             }
 
             Spacer(modifier = Modifier.height(AppTheme.spacing.small))
