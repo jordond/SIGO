@@ -181,8 +181,9 @@ public class DefaultScoreCalculator(
      * of the results should be weighted heavier than others, like SevereWeatherRisk
      */
     private fun Reasons.toScoreResult(enabled: Set<Metric>): ScoreResult {
+        val severeEnabled = Metric.SevereWeather in enabled
         // Severe weather is a primary safety concern, so check it first
-        if (severeWeather == ReasonValue.Outside) {
+        if (severeEnabled && severeWeather == ReasonValue.Outside) {
             logger.d { "Severe weather is outside acceptable range, returning `No`" }
             return ScoreResult.No
         }
@@ -191,7 +192,7 @@ public class DefaultScoreCalculator(
             if (Metric.Wind in enabled) wind else null,
             if (Metric.Temperature in enabled) temperature else null,
             if (Metric.Precipitation in enabled) precipitation else null,
-            severeWeather,
+            if (severeEnabled) severeWeather else null,
             if (Metric.AirQuality in enabled) airQuality else null,
         )
         val (outside, near) = all.fold(0 to 0) { (outsideCount, nearCount), value ->
@@ -207,7 +208,7 @@ public class DefaultScoreCalculator(
                 if (Metric.Wind in enabled) "wind" to wind else null,
                 if (Metric.Temperature in enabled) "temperature" to temperature else null,
                 if (Metric.Precipitation in enabled) "precipitation" to precipitation else null,
-                "severeWeather" to severeWeather,
+                if (severeEnabled) "severeWeather" to severeWeather else null,
                 if (Metric.AirQuality in enabled) "airQuality" to airQuality else null,
             ).joinToString { (name, value) -> "$name -> $value" }
         }
@@ -218,7 +219,7 @@ public class DefaultScoreCalculator(
             // Any condition being outside limits means No
             outside > 0 -> ScoreResult.No
             // If severe weather is Near or any x+ conditions are Near, be cautious
-            severeWeather == ReasonValue.Near || near > maxNearReasons -> ScoreResult.Maybe
+            (severeEnabled && severeWeather == ReasonValue.Near) || near > maxNearReasons -> ScoreResult.Maybe
             // Everything is good
             else -> ScoreResult.Yes
         }

@@ -283,6 +283,8 @@ private fun GoodWeatherWindowPreview() {
                     currentResult = periodScore?.result,
                     activity = Activity.General,
                     now = forecast.instant,
+                    preferences = Preferences.default,
+                    includeAirQuality = true,
                 )
             },
             preferences = Preferences.default,

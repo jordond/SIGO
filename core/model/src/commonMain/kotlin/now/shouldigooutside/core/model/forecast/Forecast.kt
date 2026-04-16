@@ -101,8 +101,8 @@ public fun Forecast.weatherBannerInfo(
     currentResult: ScoreResult?,
     activity: Activity,
     now: Instant,
-    preferences: Preferences = Preferences.default,
-    includeAirQuality: Boolean = true,
+    preferences: Preferences,
+    includeAirQuality: Boolean,
 ): WeatherBannerInfo? {
     if (score == null || currentResult == null) return null
 

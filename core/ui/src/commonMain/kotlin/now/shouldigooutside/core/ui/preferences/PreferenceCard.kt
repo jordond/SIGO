@@ -19,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.BrutalColors
@@ -87,10 +89,12 @@ public fun PreferenceCard(
                     trailing()
                 }
 
+                val switchLabel = title.get()
                 Switch(
                     checked = enabled,
                     onCheckedChange = onEnabledChange,
                     colors = colors.switchColors(),
+                    modifier = Modifier.semantics { contentDescription = switchLabel },
                 )
             }
 

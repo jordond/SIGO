@@ -29,7 +29,6 @@ import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.preferences.Activity
-import now.shouldigooutside.core.model.preferences.enabledMetrics
 import now.shouldigooutside.core.model.score.ActivityForecastScore
 import now.shouldigooutside.core.model.score.Metric
 import now.shouldigooutside.core.model.score.ReasonValue
@@ -39,7 +38,6 @@ import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.AqiLevels
 import now.shouldigooutside.core.ui.BrutalColors
-import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.activities.colors
 import now.shouldigooutside.core.ui.activities.rememberDisplayName
 import now.shouldigooutside.core.ui.activities.rememberIcon
@@ -58,6 +56,7 @@ import now.shouldigooutside.core.ui.icons.lucide.TriangleAlert
 import now.shouldigooutside.core.ui.icons.lucide.Waves
 import now.shouldigooutside.core.ui.icons.lucide.Wind
 import now.shouldigooutside.core.ui.ktx.get
+import now.shouldigooutside.core.ui.preferences.rememberEnabledMetrics
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.mappers.color
@@ -126,10 +125,7 @@ internal fun ActivityScoreCard(
             }
 
             if (score != null && block != null && score.result != ScoreResult.Yes) {
-                val includeAqi = LocalAppExperience.current.includeAirQuality
-                val enabled = remember(data.preferences, includeAqi) {
-                    data.preferences.enabledMetrics(includeAqi)
-                }
+                val enabled = rememberEnabledMetrics(data.preferences)
                 HorizontalDivider()
                 LimitingFactors(
                     reasons = score.reasons,
