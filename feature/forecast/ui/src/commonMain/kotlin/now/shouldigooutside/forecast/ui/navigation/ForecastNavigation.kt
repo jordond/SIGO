@@ -34,8 +34,12 @@ public data object LocationSearchRoute : Route
 
 @Serializable
 public data class SevereWeatherInfoRoute(
-    val severity: Severity,
-) : Route
+    private val severityValue: String,
+) : Route {
+    public constructor(severity: Severity) : this(severity.name)
+
+    public val severity: Severity get() = Severity.valueOf(severityValue)
+}
 
 @Serializable
 public data object AlertsRoute : Route
