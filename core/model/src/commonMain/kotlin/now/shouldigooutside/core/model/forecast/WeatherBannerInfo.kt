@@ -7,6 +7,7 @@ import kotlin.time.Instant
 @Immutable
 public sealed interface WeatherBannerInfo {
     /** Current score is Yes — user should go now, weather ends at [endsAt] because of [reason]. */
+    @Immutable
     public data class GoNow(
         val endsAt: Instant,
         val reason: WeatherReason?,
@@ -14,12 +15,14 @@ public sealed interface WeatherBannerInfo {
     ) : WeatherBannerInfo
 
     /** Current score is not Yes — show the next [window] of [quality]. */
+    @Immutable
     public data class NextWindow(
         val window: WeatherWindow,
         val quality: WindowQuality,
     ) : WeatherBannerInfo
 
     /** Current score is not Yes and no Yes or Maybe window exists in today's remaining hours. */
+    @Immutable
     public data object NoWindowToday : WeatherBannerInfo
 }
 

@@ -90,6 +90,9 @@ internal fun SettingsScreen(
                 is SettingsAction.ToggleRememberActivity -> {
                     model.toggleRememberActivity()
                 }
+                is SettingsAction.UpdateWidgetActivity -> {
+                    model.updateWidgetActivity(action.activity)
+                }
                 is SettingsAction.ToUnitsScreen -> {
                     toUnits()
                 }
@@ -177,9 +180,8 @@ internal fun SettingsScreen(
                 toggleAirQuality = dispatcher.rememberRelay(SettingsAction.ToggleAirQuality),
                 toggleActivities = dispatcher.rememberRelay(SettingsAction.ToggleActivities),
                 toggleRememberActivity = dispatcher.rememberRelay(SettingsAction.ToggleRememberActivity),
+                updateWidgetActivity = dispatcher.rememberRelayOf(SettingsAction::UpdateWidgetActivity),
                 unitsClick = dispatcher.rememberRelay(SettingsAction.ToUnitsScreen),
-                primary = AppTheme.colors.secondary,
-                secondary = AppTheme.colors.primary,
             )
 
             AboutSection(

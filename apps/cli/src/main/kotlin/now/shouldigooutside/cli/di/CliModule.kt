@@ -17,5 +17,5 @@ internal fun cliModule() =
             DefaultCliConfigRepo(store)
         } bind CliConfigRepo::class
 
-        singleOf(::ApiTokenProvider) bind CliApiTokenProvider::class
+        singleOf(::CliApiTokenProvider) bind ApiTokenProvider::class
     }

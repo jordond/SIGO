@@ -100,7 +100,11 @@ android {
 
 dependencies {
     implementation(projects.core.app)
+    implementation(projects.core.domain)
+    implementation(projects.core.model)
     implementation(projects.core.platform)
+    implementation(projects.core.ui)
+    implementation(projects.core.widget)
 
     coreLibraryDesugaring(libs.desugar)
 
@@ -119,4 +123,9 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.config)
     implementation(libs.firebase.crashlytics)
+    implementation(libs.glance.appwidget)
+    implementation(libs.glance.material3)
+    implementation(libs.glance.preview)
+    implementation(libs.kotlinx.collections)
+    implementation(libs.work.runtime)
 }

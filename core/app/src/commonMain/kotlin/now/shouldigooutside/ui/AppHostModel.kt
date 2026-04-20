@@ -10,15 +10,18 @@ import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.foundation.initalize.Initializer
 import now.shouldigooutside.core.model.settings.Settings
 import now.shouldigooutside.core.model.ui.AppExperience
+import now.shouldigooutside.core.widget.WidgetForecastObserver
 import now.shouldigooutside.ui.navigation.AppStartDestination
 
 @Stable
 internal class AppHostModel(
     private val initializer: Initializer,
+    private val widgetForecastObserver: WidgetForecastObserver,
     settingsRepo: SettingsRepo,
 ) : StateViewModel<AppHostModel.State>(State(settings = settingsRepo.settings.value)) {
     init {
         viewModelScope.launch(Dispatchers.Default) { initializer.initialize() }
+        widgetForecastObserver.start(viewModelScope)
 
         settingsRepo.settings.mergeState { state, value ->
             if (!value.loaded) {

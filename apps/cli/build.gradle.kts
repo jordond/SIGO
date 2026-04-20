@@ -9,6 +9,18 @@ application {
     mainClass.set("now.shouldigooutside.cli.MainKt")
 }
 
+kotlin {
+    jvmToolchain(
+        libs.versions.jvmTarget
+            .get()
+            .toInt(),
+    )
+}
+
+tasks.withType<Sync>().configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.foundation)
