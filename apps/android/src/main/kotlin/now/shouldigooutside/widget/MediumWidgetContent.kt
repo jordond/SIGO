@@ -10,6 +10,7 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
@@ -26,7 +27,6 @@ import now.shouldigooutside.core.widget.WidgetStrings
 internal fun MediumWidgetContent(
     data: WidgetData?,
     strings: WidgetStrings,
-    alertsText: String?,
     isDark: Boolean,
 ) {
     if (data == null) {
@@ -46,16 +46,16 @@ internal fun MediumWidgetContent(
             data = data,
             color = scoreColor,
             modifier = GlanceModifier
-                .fillMaxSize()
+                .fillMaxHeight()
                 .defaultWeight(),
         )
 
         Column(
             verticalAlignment = Alignment.CenterVertically,
             modifier = GlanceModifier
-                .padding(horizontal = 16.dp)
-                .fillMaxSize()
-                .defaultWeight(),
+                .fillMaxHeight()
+                .defaultWeight()
+                .padding(horizontal = 16.dp),
         ) {
             val activityName = data.activityName
             if (activityName != null) {
