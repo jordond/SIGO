@@ -21,6 +21,7 @@ import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.score.ActivityForecastScore
 import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.Score
+import now.shouldigooutside.forecast.ui.components.Severity
 
 @Stable
 internal class ForecastDetailsModel(
@@ -83,8 +84,14 @@ internal class ForecastDetailsModel(
     ) {
         val currentScore: ForecastScore? =
             activityScores.firstOrNull { it.activity == selectedActivity }?.score
+
         val selectedScore: Score? = selected?.let { block ->
             currentScore?.let { score -> forecast?.scoreForBlock(block, score) }
         }
+
+        val severity = selectedScore
+            ?.reasons
+            ?.severeWeather
+            ?.let(Severity::fromReason)
     }
 }
