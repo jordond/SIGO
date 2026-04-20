@@ -14,7 +14,7 @@ jvmTargetServer = "25"
 ############################
 
 glance = "1.1.1"
-work = "2.10.1"
+work = "2.11.2"
 kotlin = "2.3.20"
 agp = "9.1.1"
 androidx-activity = "1.13.0"
