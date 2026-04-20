@@ -112,6 +112,7 @@ filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "file
 filekit-coil = { module = "io.github.vinceglb:filekit-coil", version.ref = "filekit" }
 glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glance" }
+glance-preview = { module = "androidx.glance:glance-preview", version.ref = "glance" }
 work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }

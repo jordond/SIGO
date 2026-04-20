@@ -1,6 +1,7 @@
 package now.shouldigooutside.widget
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
 import androidx.glance.background
@@ -10,6 +11,7 @@ import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
+import androidx.glance.text.FontStyle
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
@@ -30,36 +32,51 @@ internal fun SmallWidgetContent(
 
     val colors = widgetColors(isDark)
     val scoreColor = colors.scoreColor(data.scoreResult)
-    val textOnScore = colors.onSuccess
 
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = GlanceModifier
             .fillMaxSize()
             .background(scoreColor)
             .padding(WidgetDimens.ContentPadding),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalAlignment = Alignment.CenterVertically,
     ) {
+        Text(
+            text = strings.title,
+            style = TextStyle(
+                color = BlackActivityProvider,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+            ),
+            maxLines = 1,
+        )
+
+        Spacer(modifier = GlanceModifier.height(WidgetDimens.TightSpacing))
+
         Text(
             text = data.scoreLabel.uppercase(),
             style = TextStyle(
-                color = textOnScore.toProvider(),
-                fontSize = 28.sp,
+                color = BlackProvider,
+                fontSize = 64.sp,
                 fontWeight = FontWeight.Bold,
+                fontStyle = FontStyle.Italic,
                 textAlign = TextAlign.Center,
             ),
+            maxLines = 1,
         )
 
-        Spacer(modifier = GlanceModifier.height(WidgetDimens.RowSpacing))
+        Spacer(modifier = GlanceModifier.height(WidgetDimens.TightSpacing))
 
         Text(
             text = data.formattedTemp,
             style = TextStyle(
-                color = textOnScore.toProvider(),
+                color = BlackProvider,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
             ),
+            maxLines = 1,
         )
 
         Spacer(modifier = GlanceModifier.height(WidgetDimens.TightSpacing))
@@ -67,8 +84,9 @@ internal fun SmallWidgetContent(
         Text(
             text = data.locationName,
             style = TextStyle(
-                color = textOnScore.copy(alpha = WidgetDimens.LOCATION_ALPHA).toProvider(),
-                fontSize = 12.sp,
+                color = BlackLocationProvider,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
             ),
             maxLines = 1,
@@ -76,14 +94,14 @@ internal fun SmallWidgetContent(
 
         if (data.isStale) {
             Spacer(modifier = GlanceModifier.height(WidgetDimens.TightSpacing))
-
             Text(
                 text = data.updatedAgoLabel,
                 style = TextStyle(
-                    color = textOnScore.copy(alpha = WidgetDimens.STALE_ALPHA).toProvider(),
+                    color = BlackStaleProvider,
                     fontSize = 9.sp,
                     textAlign = TextAlign.Center,
                 ),
+                maxLines = 1,
             )
         }
     }
@@ -93,24 +111,17 @@ internal fun SmallWidgetContent(
 internal fun EmptyWidgetContent(
     strings: WidgetStrings,
     isDark: Boolean,
+    fontSize: TextUnit = 14.sp,
 ) {
     val colors = widgetColors(isDark)
 
-    Column(
-        modifier = GlanceModifier
-            .fillMaxSize()
-            .background(colors.surface)
-            .padding(WidgetDimens.ContentPadding),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = strings.empty,
-            style = TextStyle(
-                color = colors.text.toProvider(),
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-            ),
-        )
-    }
+    Text(
+        text = strings.empty,
+        style = TextStyle(
+            color = colors.text.toProvider(),
+            fontSize = fontSize,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+        ),
+    )
 }

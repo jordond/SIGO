@@ -28,11 +28,15 @@ class SigoWidget :
     private val widgetDataStore: WidgetDataStore by inject()
 
     companion object {
+        private val ROW_SHORT = DpSize(170.dp, 50.dp)
+        private val ROW_WIDE = DpSize(300.dp, 50.dp)
         private val SMALL = DpSize(100.dp, 100.dp)
         private val MEDIUM = DpSize(250.dp, 100.dp)
     }
 
-    override val sizeMode: SizeMode = SizeMode.Responsive(setOf(SMALL, MEDIUM))
+    override val sizeMode: SizeMode = SizeMode.Responsive(
+        setOf(ROW_SHORT, ROW_WIDE, SMALL, MEDIUM),
+    )
 
     override suspend fun provideGlance(
         context: Context,
@@ -47,22 +51,29 @@ class SigoWidget :
             val isDark = context.resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
-            val isMedium = LocalSize.current.width >= MEDIUM.width
+            val size = LocalSize.current
+            val isRow = size.height < SMALL.height
+            val isWide = size.width >= MEDIUM.width
 
             Box(
                 modifier = GlanceModifier
                     .fillMaxSize()
                     .clickable(actionStartActivity<MainActivity>()),
             ) {
-                if (isMedium) {
-                    MediumWidgetContent(
+                when {
+                    isRow -> RowWidgetContent(
+                        data = widgetData,
+                        strings = strings,
+                        isDark = isDark,
+                        wide = isWide,
+                    )
+                    isWide -> MediumWidgetContent(
                         data = widgetData,
                         strings = strings,
                         alertsText = alertsText,
                         isDark = isDark,
                     )
-                } else {
-                    SmallWidgetContent(
+                    else -> SmallWidgetContent(
                         data = widgetData,
                         strings = strings,
                         isDark = isDark,

@@ -422,10 +422,12 @@
     <string name="whats_new_weather_metrics_desc">Toggle individual weather metrics on or off per activity. If wind doesn’t bother you on a hike, switch it off and it won’t count against your score. Temperature, wind, precipitation, and air quality can each be disabled independently. Severe weather always stays on for safety.</string>
 
     <string name="widget_empty">Open SIGO\nto get started</string>
+    <string name="widget_title">Should I go outside?</string>
     <string name="widget_feels_like">Feels like</string>
     <string name="widget_wind">Wind</string>
     <string name="widget_precip">Precip</string>
     <string name="widget_today">Today</string>
+    <string name="widget_activity">Activity</string>
     <plurals name="widget_alerts">
         <item quantity="one">%1$d alert</item>
         <item quantity="other">%1$d alerts</item>
