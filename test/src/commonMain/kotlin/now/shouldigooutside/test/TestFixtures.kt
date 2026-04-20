@@ -1,5 +1,7 @@
 package now.shouldigooutside.test
 
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
@@ -116,7 +118,7 @@ public fun testForecast(
     current: ForecastBlock = testForecastBlock(),
     today: ForecastDay = testForecastDay(),
     days: List<ForecastDay> = emptyList(),
-    alerts: List<Alert> = emptyList(),
+    alerts: PersistentList<Alert> = persistentListOf(),
     units: Units = Units.SI,
     instant: Instant = Instant.fromEpochSeconds(0),
 ): Forecast =
