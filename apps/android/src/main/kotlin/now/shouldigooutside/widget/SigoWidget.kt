@@ -70,7 +70,6 @@ class SigoWidget :
                     isWide -> MediumWidgetContent(
                         data = widgetData,
                         strings = strings,
-                        alertsText = alertsText,
                         isDark = isDark,
                     )
                     else -> SmallWidgetContent(

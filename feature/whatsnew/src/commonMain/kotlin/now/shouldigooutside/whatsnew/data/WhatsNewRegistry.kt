@@ -1,6 +1,7 @@
 package now.shouldigooutside.whatsnew.data
 
 import androidx.compose.ui.layout.ContentScale
+import now.shouldigooutside.core.platform.isAndroid
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.whats_new_activities
 import now.shouldigooutside.core.resources.whats_new_activities_desc
@@ -12,6 +13,10 @@ import now.shouldigooutside.core.resources.whats_new_weather_metrics
 import now.shouldigooutside.core.resources.whats_new_weather_metrics_desc
 import now.shouldigooutside.core.resources.whats_new_weather_window
 import now.shouldigooutside.core.resources.whats_new_weather_window_desc
+import now.shouldigooutside.core.resources.whats_new_widget
+import now.shouldigooutside.core.resources.whats_new_widget_android
+import now.shouldigooutside.core.resources.whats_new_widget_desc
+import now.shouldigooutside.core.resources.whats_new_widget_ios
 import now.shouldigooutside.core.resources.whats_new_window
 
 /**
@@ -20,6 +25,18 @@ import now.shouldigooutside.core.resources.whats_new_window
  */
 public object WhatsNewRegistry {
     public val pages: List<WhatsNewPage> = listOf(
+        WhatsNewPage(
+            version = 17,
+            title = Res.string.whats_new_widget,
+            description = Res.string.whats_new_widget_desc,
+            image =
+                if (isAndroid) {
+                    Res.drawable.whats_new_widget_android
+                } else {
+                    Res.drawable.whats_new_widget_ios
+                },
+            scale = ContentScale.Fit,
+        ),
         WhatsNewPage(
             version = 15,
             title = Res.string.whats_new_weather_metrics,

@@ -420,6 +420,8 @@
     <string name="whats_new_weather_window_desc">Now you can see the best window to head outside at a glance. We look at the full forecast and highlight the sweet spot where conditions line up, so you know exactly when and how long you have to make your move.</string>
     <string name="whats_new_weather_metrics">Pick What Matters</string>
     <string name="whats_new_weather_metrics_desc">Toggle individual weather metrics on or off per activity. If wind doesn’t bother you on a hike, switch it off and it won’t count against your score. Temperature, wind, precipitation, and air quality can each be disabled independently. Severe weather always stays on for safety.</string>
+    <string name="whats_new_widget">Home Screen Widget</string>
+    <string name="whats_new_widget_desc">Check the weather at a glance with the new widget! See if it's a good time to go outside without even opening the app.</string>
 
     <string name="widget_empty">Open SIGO\nto get started</string>
     <string name="widget_title">Should I go outside?</string>
