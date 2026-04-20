@@ -1,5 +1,6 @@
 package now.shouldigooutside.forecast.data.entity
 
+import kotlinx.collections.immutable.toPersistentList
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
@@ -33,7 +34,7 @@ public fun ForecastEntity.toModel(): Forecast =
                 hours = day.hours.map { it.toModel() },
             )
         },
-        alerts = alerts.map { it.toModel() },
+        alerts = alerts.map { it.toModel() }.toPersistentList(),
         instant = Instant.fromEpochMilliseconds(updatedAt),
     )
 

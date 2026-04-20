@@ -2,7 +2,6 @@ package now.shouldigooutside.forecast.ui.forecast.details
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +22,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import dev.stateholder.extensions.collectAsState
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
@@ -53,48 +54,47 @@ internal fun ForecastDetailsScreen(
 ) {
     val state by model.collectAsState()
     Crossfade(state.forecast to state.loadingForecast) { (forecast, loading) ->
-        if (forecast == null && !loading) {
-            Column(
-                modifier = Modifier
-                    .systemBarsPadding()
-                    .fillMaxSize(),
-            ) {
-                TabHeader(
-                    title = Res.string.forecast_details_title,
+        when (forecast) {
+            null -> {
+                Column(
+                    modifier = Modifier
+                        .systemBarsPadding()
+                        .fillMaxSize(),
+                ) {
+                    TabHeader(
+                        title = Res.string.forecast_details_title,
+                        toSettings = toSettings,
+                    )
+
+                    if (loading) {
+                        LoadingBox()
+                    } else {
+                        NoLocation(
+                            onSetLocation = toLocationPicker,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                }
+            }
+            else -> {
+                val severity = state
+                    .selectedScore
+                    ?.reasons
+                    ?.severeWeather
+                    ?.let(Severity::fromReason)
+                ForecastDetailsScreen(
+                    forecast = forecast,
+                    selected = state.selected,
+                    selectedScore = state.selectedScore?.result,
+                    alerts = forecast.alerts,
+                    severity = severity,
+                    onSelected = model::select,
+                    onBack = onBack,
+                    onSevereWeatherClick = toSevereWeatherInfo,
+                    onAlertsClick = toAlerts,
                     toSettings = toSettings,
                 )
-                NoLocation(
-                    onSetLocation = toLocationPicker,
-                    modifier = Modifier.fillMaxSize(),
-                )
             }
-        } else if (forecast == null) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .systemBarsPadding()
-                    .fillMaxSize(),
-            ) {
-                LoadingBox()
-            }
-        } else {
-            val severity = state
-                .selectedScore
-                ?.reasons
-                ?.severeWeather
-                ?.let(Severity::fromReason)
-            ForecastDetailsScreen(
-                forecast = forecast,
-                selected = state.selected,
-                selectedScore = state.selectedScore?.result,
-                alerts = forecast.alerts,
-                severity = severity,
-                onSelected = model::select,
-                onBack = onBack,
-                onSevereWeatherClick = toSevereWeatherInfo,
-                onAlertsClick = toAlerts,
-                toSettings = toSettings,
-            )
         }
     }
 }
@@ -107,7 +107,7 @@ internal fun ForecastDetailsScreen(
     onSelected: (ForecastBlock?) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    alerts: List<Alert> = emptyList(),
+    alerts: PersistentList<Alert> = persistentListOf(),
     severity: Severity? = null,
     onSevereWeatherClick: (Severity) -> Unit = {},
     onAlertsClick: () -> Unit = {},
