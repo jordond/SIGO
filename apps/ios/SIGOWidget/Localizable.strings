@@ -7,19 +7,19 @@
 /* Widget description */
 "widget_description" = "See your SIGO score at a glance.";
 
+/* Small widget title */
+"widget_title" = "Should I go outside?";
+
 /* Medium widget detail labels */
+"widget_activity" = "Activity";
 "widget_feels_like" = "Feels like";
 "widget_wind" = "Wind";
 "widget_precip" = "Precip";
 "widget_today" = "Today";
-
-/* Alerts count (medium widget), format: %d */
-"widget_alerts_count" = "%d alerts";
 
 /* Updated-ago labels, format: %d */
 "widget_updated_minutes_ago" = "%dm ago";
 "widget_updated_hours_ago" = "%dh ago";
 
 /* Empty widget state */
-"widget_empty_title" = "Open SIGO";
-"widget_empty_subtitle" = "to get started";
+"widget_empty" = "Open SIGO\nto get started";

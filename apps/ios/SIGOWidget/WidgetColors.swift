@@ -44,6 +44,15 @@ func widgetColors(scheme: ColorScheme) -> WidgetThemeColors {
     scheme == .dark ? darkColors : lightColors
 }
 
+extension Color {
+    /// Text laid over a score color background. Black at varying alphas mirrors
+    /// the Android widget's Black* color providers.
+    static let widgetOnScore = Color.black
+    static let widgetOnScoreLocation = Color.black.opacity(0.8)
+    static let widgetOnScoreTitle = Color.black.opacity(0.7)
+    static let widgetOnScoreStale = Color.black.opacity(0.6)
+}
+
 private extension Color {
     init(hex: UInt64) {
         let a = Double((hex >> 24) & 0xFF) / 255.0

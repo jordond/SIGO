@@ -182,8 +182,6 @@ internal fun SettingsScreen(
                 toggleRememberActivity = dispatcher.rememberRelay(SettingsAction.ToggleRememberActivity),
                 updateWidgetActivity = dispatcher.rememberRelayOf(SettingsAction::UpdateWidgetActivity),
                 unitsClick = dispatcher.rememberRelay(SettingsAction.ToUnitsScreen),
-                primary = AppTheme.colors.secondary,
-                secondary = AppTheme.colors.primary,
             )
 
             AboutSection(

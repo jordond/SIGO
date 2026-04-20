@@ -9,24 +9,39 @@ struct SmallWidgetView: View {
         if let data = data {
             let colors = widgetColors(scheme: colorScheme)
 
-            VStack(spacing: 4) {
+            VStack(spacing: 2) {
+                Text(String(localized: "widget_title"))
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.widgetOnScoreTitle)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+
+                Spacer(minLength: 0)
+
                 Text(data.scoreLabel.uppercased())
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundColor(colors.onSuccess)
+                    .font(.system(size: 64, weight: .bold).italic())
+                    .foregroundColor(.widgetOnScore)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+
+                Spacer(minLength: 0)
 
                 Text(data.formattedTemp)
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundColor(colors.onSuccess)
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(.widgetOnScore)
+                    .lineLimit(1)
 
                 Text(data.locationName)
-                    .font(.system(size: 12))
-                    .foregroundColor(colors.onSuccess.opacity(0.8))
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(.widgetOnScoreLocation)
                     .lineLimit(1)
 
                 if data.isStale {
                     Text(data.updatedAgoLabel)
                         .font(.system(size: 9))
-                        .foregroundColor(colors.onSuccess.opacity(0.6))
+                        .foregroundColor(.widgetOnScoreStale)
+                        .lineLimit(1)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -46,17 +61,14 @@ struct EmptyWidgetView: View {
     var body: some View {
         let colors = widgetColors(scheme: colorScheme)
 
-        VStack(spacing: 4) {
-            Text(String(localized: "widget_empty_title"))
-                .font(.system(size: 14, weight: .medium))
-            Text(String(localized: "widget_empty_subtitle"))
-                .font(.system(size: 12))
-                .foregroundColor(colors.textSecondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .containerBackground(
-            colors.surface,
-            for: .widget
-        )
+        Text(String(localized: "widget_empty"))
+            .font(.system(size: 14, weight: .bold))
+            .foregroundColor(colors.text)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .containerBackground(
+                colors.surface,
+                for: .widget
+            )
     }
 }

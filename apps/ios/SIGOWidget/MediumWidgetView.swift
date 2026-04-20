@@ -10,46 +10,32 @@ struct MediumWidgetView: View {
             let colors = widgetColors(scheme: colorScheme)
 
             HStack(spacing: 0) {
-                VStack(spacing: 4) {
-                    if let activityName = data.activityName {
-                        Text(activityName)
-                            .font(.system(size: 10, weight: .medium))
-                            .foregroundColor(colors.onSuccess.opacity(0.7))
-                    }
-
-                    Text(data.scoreLabel.uppercased())
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(colors.onSuccess)
-
-                    Text(data.formattedTemp)
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(colors.onSuccess)
-
-                    Text(data.locationName)
-                        .font(.system(size: 11))
-                        .foregroundColor(colors.onSuccess.opacity(0.8))
-                        .lineLimit(1)
-                }
-                .frame(width: 120)
-                .frame(maxHeight: .infinity)
-                .background(colors.scoreColor(for: data.scoreResult))
+                ScoreBadge(data: data, color: colors.scoreColor(for: data.scoreResult))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    DetailRow(label: String(localized: "widget_feels_like"), value: data.formattedFeelsLike, colors: colors)
-                    DetailRow(label: String(localized: "widget_wind"), value: data.formattedWind, colors: colors)
-                    DetailRow(label: String(localized: "widget_precip"), value: "\(data.precipChance)%", colors: colors)
-                    DetailRow(label: String(localized: "widget_today"), value: data.todayScoreLabel, colors: colors)
-
-                    if data.alertCount > 0 {
-                        Text(
-                            String(
-                                format: NSLocalizedString("widget_alerts_count", comment: ""),
-                                data.alertCount
-                            )
+                    if let activityName = data.activityName {
+                        BrutalDetailRow(
+                            label: String(localized: "widget_activity"),
+                            value: activityName
                         )
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundColor(colors.error)
                     }
+                    BrutalDetailRow(
+                        label: String(localized: "widget_feels_like"),
+                        value: data.formattedFeelsLike
+                    )
+                    BrutalDetailRow(
+                        label: String(localized: "widget_wind"),
+                        value: data.formattedWind
+                    )
+                    BrutalDetailRow(
+                        label: String(localized: "widget_precip"),
+                        value: "\(data.precipChance)%"
+                    )
+                    BrutalDetailRow(
+                        label: String(localized: "widget_today"),
+                        value: data.todayScoreLabel
+                    )
 
                     if data.isStale {
                         Text(data.updatedAgoLabel)
@@ -57,33 +43,60 @@ struct MediumWidgetView: View {
                             .foregroundColor(colors.textSecondary)
                     }
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
+                .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
-            .containerBackground(
-                colors.surface,
-                for: .widget
-            )
+            .containerBackground(colors.surface, for: .widget)
         } else {
             EmptyWidgetView()
         }
     }
 }
 
-private struct DetailRow: View {
-    let label: String
-    let value: String
-    let colors: WidgetThemeColors
+private struct ScoreBadge: View {
+    let data: WidgetData
+    let color: Color
 
     var body: some View {
-        HStack(spacing: 4) {
-            Text("\(label):")
-                .font(.system(size: 12))
-                .foregroundColor(colors.textSecondary)
+        VStack(spacing: 2) {
+            Text(data.scoreLabel.uppercased())
+                .font(.system(size: 36, weight: .bold).italic())
+                .foregroundColor(.widgetOnScore)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+
+            Text(data.formattedTemp)
+                .font(.system(size: 16, weight: .bold))
+                .foregroundColor(.widgetOnScore)
+                .lineLimit(1)
+
+            Text(data.locationName)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundColor(.widgetOnScoreLocation)
+                .lineLimit(1)
+                .padding(.top, 2)
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(color)
+    }
+}
+
+private struct BrutalDetailRow: View {
+    let label: String
+    let value: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text(label.uppercased())
+                .font(.system(size: 11, weight: .bold))
+                .foregroundColor(.widgetOnScore)
+            Spacer(minLength: 0)
             Text(value)
-                .font(.system(size: 12, weight: .medium))
-                .foregroundColor(colors.text)
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(.widgetOnScore)
+                .lineLimit(1)
         }
     }
 }

@@ -1,5 +1,7 @@
 package now.shouldigooutside.settings.ui.section
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -9,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.preferences.Activity
@@ -38,14 +41,14 @@ import now.shouldigooutside.core.ui.activities.rememberDisplayName
 import now.shouldigooutside.core.ui.activities.rememberIcon
 import now.shouldigooutside.core.ui.activities.rememberStringResource
 import now.shouldigooutside.core.ui.components.AlertDialog
-import now.shouldigooutside.core.ui.components.Icon
+import now.shouldigooutside.core.ui.components.Button
+import now.shouldigooutside.core.ui.components.ButtonVariant
 import now.shouldigooutside.core.ui.components.Switch
-import now.shouldigooutside.core.ui.components.SwitchDefaults
 import now.shouldigooutside.core.ui.components.Text
+import now.shouldigooutside.core.ui.components.brutalBorder
 import now.shouldigooutside.core.ui.components.card.CardDefaults
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.ArrowRight
-import now.shouldigooutside.core.ui.icons.lucide.Check
 import now.shouldigooutside.core.ui.icons.lucide.Hourglass
 import now.shouldigooutside.core.ui.icons.lucide.Ruler
 import now.shouldigooutside.core.ui.icons.lucide.Smartphone
@@ -53,8 +56,10 @@ import now.shouldigooutside.core.ui.icons.lucide.Vibrate
 import now.shouldigooutside.core.ui.icons.lucide.VibrateOff
 import now.shouldigooutside.core.ui.icons.lucide.Waves
 import now.shouldigooutside.core.ui.icons.phosphor.Hike
+import now.shouldigooutside.core.ui.ktx.conditional
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
+import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.settings.ui.components.SettingsCard
 import now.shouldigooutside.settings.ui.components.SettingsTextRow
 import now.shouldigooutside.settings.ui.components.TrailingBorderedIcon
@@ -78,15 +83,13 @@ internal fun ExperienceSection(
     updateWidgetActivity: (Activity) -> Unit,
     unitsClick: () -> Unit,
     modifier: Modifier = Modifier,
-    primary: Color = AppTheme.colors.primary,
-    secondary: Color = AppTheme.colors.secondary,
 ) {
     var showDisableActivitiesDialog by remember { mutableStateOf(false) }
     var showWidgetActivityDialog by remember { mutableStateOf(false) }
 
     SettingsCard(
         text = Res.string.settings_experience_title,
-        colors = CardDefaults.fromColor(primary),
+        colors = CardDefaults.fromColor(AppTheme.colors.secondary),
     ) {
         Item {
             val icon = remember(settings.enableHaptics) {
@@ -101,7 +104,6 @@ internal fun ExperienceSection(
                     Switch(
                         checked = settings.enableHaptics,
                         onCheckedChange = { toggleHaptics() },
-                        colors = SwitchDefaults.colors(checkedTrackColor = secondary),
                     )
                 },
             )
@@ -117,7 +119,6 @@ internal fun ExperienceSection(
                     Switch(
                         checked = settings.use24HourFormat,
                         onCheckedChange = { toggle24HourFormat() },
-                        colors = SwitchDefaults.colors(checkedTrackColor = secondary),
                     )
                 },
             )
@@ -133,7 +134,6 @@ internal fun ExperienceSection(
                     Switch(
                         checked = settings.includeAirQuality,
                         onCheckedChange = { toggleAirQuality() },
-                        colors = SwitchDefaults.colors(checkedTrackColor = secondary),
                     )
                 },
             )
@@ -155,7 +155,6 @@ internal fun ExperienceSection(
                                 toggleActivities()
                             }
                         },
-                        colors = SwitchDefaults.colors(checkedTrackColor = secondary),
                     )
                 },
             )
@@ -171,7 +170,6 @@ internal fun ExperienceSection(
                     Switch(
                         checked = settings.rememberActivity,
                         onCheckedChange = { toggleRememberActivity() },
-                        colors = SwitchDefaults.colors(checkedTrackColor = secondary),
                     )
                 },
             )
@@ -186,11 +184,15 @@ internal fun ExperienceSection(
                     icon = AppIcons.Lucide.Smartphone,
                     onClick = { showWidgetActivityDialog = true },
                     trailingContent = {
-                        Text(
-                            text = widgetActivityName,
-                            style = AppTheme.typography.body2,
-                            color = AppTheme.colors.primary,
-                        )
+                        Button(
+                            onClick = { showWidgetActivityDialog = true },
+                            variant = ButtonVariant.PrimaryElevated,
+                        ) {
+                            Text(
+                                text = widgetActivityName,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     },
                 )
             }
@@ -227,28 +229,36 @@ internal fun ExperienceSection(
             onConfirmClick = { showWidgetActivityDialog = false },
             dismissButtonText = null,
         ) {
-            Column {
-                settings.activities.keys.forEach { activity ->
-                    val isSelected = activity == settings.widgetActivity
-                    SettingsTextRow(
-                        text = activity.rememberStringResource(),
-                        icon = activity.rememberIcon(),
-                        onClick = {
-                            updateWidgetActivity(activity)
-                            showWidgetActivityDialog = false
-                        },
-                        trailingContent = if (isSelected) {
-                            {
-                                Icon(
-                                    icon = AppIcons.Lucide.Check,
-                                    tint = secondary,
-                                )
-                            }
-                        } else {
-                            null
-                        },
-                    )
-                }
+            ActivitySelectorDialogContent(
+                settings = settings,
+                updateWidgetActivity = updateWidgetActivity,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ActivitySelectorDialogContent(
+    settings: Settings,
+    updateWidgetActivity: (Activity) -> Unit,
+) {
+    Column {
+        settings.activities.keys.forEach { activity ->
+            val isSelected = activity == settings.widgetActivity
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = if (isSelected) AppTheme.colors.primary else Color.Transparent,
+                        shape = AppTheme.shapes.medium,
+                    ).conditional(isSelected) {
+                        Modifier.brutalBorder()
+                    },
+            ) {
+                SettingsTextRow(
+                    text = activity.rememberStringResource(),
+                    icon = activity.rememberIcon(),
+                    onClick = { updateWidgetActivity(activity) },
+                )
             }
         }
     }
@@ -275,5 +285,19 @@ private fun ExperienceSectionPreview() {
                 updateWidgetActivity = { settings = settings.copy(widgetActivity = it) },
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ActivitySelectorDialogContentPreview() {
+    AppPreview {
+        ActivitySelectorDialogContent(
+            settings = Settings(
+                activities = PreviewData.Activities,
+                widgetActivity = PreviewData.Activities.keys.first(),
+            ),
+            updateWidgetActivity = {},
+        )
     }
 }
