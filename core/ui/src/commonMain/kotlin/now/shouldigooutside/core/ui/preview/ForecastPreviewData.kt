@@ -1,7 +1,8 @@
 package now.shouldigooutside.core.ui.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import kotlinx.datetime.LocalDate
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
 import now.shouldigooutside.core.domain.forecast.DefaultScoreCalculator
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.Alert
@@ -209,7 +210,7 @@ public object ForecastPreviewData {
     public fun sampleAlerts(
         count: Int = 1,
         instant: Instant = Clock.System.now(),
-    ): List<Alert> {
+    ): PersistentList<Alert> {
         val base = floodRiskAlert(instant)
         return List(count) { index ->
             base.copy(
@@ -217,7 +218,7 @@ public object ForecastPreviewData {
                 title = "${base.title} #${index + 1}",
                 headline = "${base.headline} #${index + 1}",
             )
-        }
+        }.toPersistentList()
     }
 
     public fun withAlerts(
@@ -300,7 +301,7 @@ public object ForecastPreviewData {
             current = block,
             today = ForecastDay(block, hours),
             days = listOf(ForecastDay(block, hours)),
-            alerts = alerts,
+            alerts = alerts.toPersistentList(),
             units = units,
             instant = instant,
         )
@@ -329,7 +330,7 @@ public object ForecastPreviewData {
             current = current,
             today = ForecastDay(today, hours),
             days = days,
-            alerts = alerts,
+            alerts = alerts.toPersistentList(),
             units = units,
             instant = instant,
         )

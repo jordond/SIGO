@@ -1,6 +1,7 @@
 package now.shouldigooutside.core.model
 
 import io.kotest.matchers.shouldBe
+import kotlinx.collections.immutable.persistentListOf
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
@@ -69,7 +70,7 @@ private fun makeForecast(
         current = currentBlock,
         today = ForecastDay(block = todayBlock, hours = todayHours),
         days = days,
-        alerts = emptyList(),
+        alerts = persistentListOf(),
         units = Units.Metric,
         instant = Instant.fromEpochSeconds(1000),
     )

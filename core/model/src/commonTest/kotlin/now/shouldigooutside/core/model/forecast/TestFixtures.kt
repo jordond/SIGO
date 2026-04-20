@@ -1,5 +1,6 @@
 package now.shouldigooutside.core.model.forecast
 
+import kotlinx.collections.immutable.persistentListOf
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.ReasonValue
@@ -61,7 +62,7 @@ internal fun forecast(hourCount: Int): Forecast {
         current = dayBlock,
         today = ForecastDay(block = dayBlock, hours = hours),
         days = emptyList(),
-        alerts = emptyList(),
+        alerts = persistentListOf(),
         instant = testBaseInstant,
     )
 }

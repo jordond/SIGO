@@ -2,8 +2,8 @@ package now.shouldigooutside.forecast.ui.forecast.details
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -23,15 +23,23 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import dev.stateholder.extensions.collectAsState
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
+import now.shouldigooutside.core.model.forecast.scoreForBlock
+import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.forecast_details_title
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.TabHeader
+import now.shouldigooutside.core.ui.activities.rememberDisplayName
+import now.shouldigooutside.core.ui.activities.rememberIcon
+import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.LoadingBox
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.preview.AppPreview
@@ -53,66 +61,70 @@ internal fun ForecastDetailsScreen(
 ) {
     val state by model.collectAsState()
     Crossfade(state.forecast to state.loadingForecast) { (forecast, loading) ->
-        if (forecast == null && !loading) {
-            Column(
-                modifier = Modifier
-                    .systemBarsPadding()
-                    .fillMaxSize(),
-            ) {
-                TabHeader(
-                    title = Res.string.forecast_details_title,
+        when (forecast) {
+            null -> {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .systemBarsPadding()
+                        .fillMaxSize(),
+                ) {
+                    TabHeader(
+                        title = Res.string.forecast_details_title,
+                        toSettings = toSettings,
+                    )
+
+                    if (loading) {
+                        LoadingBox()
+                    } else {
+                        NoLocation(
+                            onSetLocation = toLocationPicker,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                }
+            }
+            else -> {
+                ForecastDetailsScreen(
+                    activity = state.selectedActivity,
+                    forecast = forecast,
+                    selected = state.selected,
+                    selectedScore = state.selectedScore?.result,
+                    currentScore = state.currentScore,
+                    alerts = forecast.alerts,
+                    severity = state.severity,
+                    onSelected = model::select,
+                    onBack = onBack,
+                    onSevereWeatherClick = toSevereWeatherInfo,
+                    onAlertsClick = toAlerts,
                     toSettings = toSettings,
                 )
-                NoLocation(
-                    onSetLocation = toLocationPicker,
-                    modifier = Modifier.fillMaxSize(),
-                )
             }
-        } else if (forecast == null) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .systemBarsPadding()
-                    .fillMaxSize(),
-            ) {
-                LoadingBox()
-            }
-        } else {
-            val severity = state
-                .selectedScore
-                ?.reasons
-                ?.severeWeather
-                ?.let(Severity::fromReason)
-            ForecastDetailsScreen(
-                forecast = forecast,
-                selected = state.selected,
-                selectedScore = state.selectedScore?.result,
-                alerts = forecast.alerts,
-                severity = severity,
-                onSelected = model::select,
-                onBack = onBack,
-                onSevereWeatherClick = toSevereWeatherInfo,
-                onAlertsClick = toAlerts,
-                toSettings = toSettings,
-            )
         }
     }
 }
 
 @Composable
 internal fun ForecastDetailsScreen(
+    activity: Activity,
     forecast: Forecast,
     selected: ForecastBlock?,
     selectedScore: ScoreResult?,
     onSelected: (ForecastBlock?) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    alerts: List<Alert> = emptyList(),
+    currentScore: ForecastScore? = null,
+    alerts: PersistentList<Alert> = persistentListOf(),
     severity: Severity? = null,
     onSevereWeatherClick: (Severity) -> Unit = {},
     onAlertsClick: () -> Unit = {},
     toSettings: () -> Unit = {},
 ) {
+    val scoreFor: (ForecastBlock) -> ScoreResult? = remember(forecast, currentScore) {
+        { block ->
+            currentScore?.let { forecast.scoreForBlock(block, it)?.result }
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -123,20 +135,41 @@ internal fun ForecastDetailsScreen(
             toSettings = toSettings,
         )
 
-        val locationAlpha by animateFloatAsState(
-            targetValue = if (forecast.location.isDefaultName) 0f else 1f,
-        )
-        Text(
-            text = forecast.location.name,
-            style = AppTheme.typography.body1,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .padding(horizontal = AppTheme.spacing.standard)
-                .graphicsLayer {
-                    alpha = locationAlpha
-                },
-        )
+        val padding = if (activity != Activity.General) AppTheme.spacing.small else AppTheme.spacing.standard
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = padding),
+        ) {
+            if (activity != Activity.General) {
+                Icon(
+                    icon = activity.rememberIcon(),
+                    contentDescription = null,
+                )
+
+                Text(
+                    text = activity.rememberDisplayName(),
+                )
+
+                Text(
+                    text = " | ",
+                    modifier = Modifier.padding(horizontal = AppTheme.spacing.small),
+                )
+            }
+
+            val locationAlpha by animateFloatAsState(
+                targetValue = if (forecast.location.isDefaultName) 0f else 1f,
+            )
+            Text(
+                text = forecast.location.name,
+                style = AppTheme.typography.body1,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .graphicsLayer {
+                        alpha = locationAlpha
+                    },
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -177,6 +210,7 @@ internal fun ForecastDetailsScreen(
             selected = selected,
             units = forecast.units,
             onSelected = onSelected,
+            scoreFor = scoreFor,
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -208,11 +242,13 @@ private fun ForecastDetailsScreenPreview(
     val score = ForecastPreviewData.score(forecast)
     AppPreview {
         ForecastDetailsScreen(
+            activity = Activity.Walking,
             forecast = forecast,
             selected = forecast.hour(1),
             selectedScore = score.hours
                 .getOrNull(1)
                 ?.result,
+            currentScore = score,
             onSelected = {},
             onBack = {},
         )

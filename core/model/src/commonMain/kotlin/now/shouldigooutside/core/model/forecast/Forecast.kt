@@ -1,6 +1,7 @@
 package now.shouldigooutside.core.model.forecast
 
 import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.PersistentList
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
@@ -28,7 +29,7 @@ public data class Forecast(
     val current: ForecastBlock,
     val today: ForecastDay,
     val days: List<ForecastDay>,
-    val alerts: List<Alert>,
+    val alerts: PersistentList<Alert>,
     val units: Units = Units.SI,
     val instant: Instant,
 ) {

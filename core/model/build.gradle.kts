@@ -59,7 +59,7 @@ buildkonfig {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.kotlinx.collections)
+            api(libs.kotlinx.collections)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)

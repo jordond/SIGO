@@ -1,6 +1,7 @@
 package now.shouldigooutside.forecast.data.entity
 
 import io.kotest.matchers.shouldBe
+import kotlinx.collections.immutable.persistentListOf
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.PrecipitationType
@@ -25,7 +26,7 @@ class MapperTest {
             days = listOf(
                 testForecastDay(block = testForecastBlock(instant = Instant.fromEpochSeconds(4000))),
             ),
-            alerts = listOf(Alert("Storm Warning", "Heavy rain expected")),
+            alerts = persistentListOf(Alert("Storm Warning", "Heavy rain expected")),
             instant = Instant.fromEpochMilliseconds(5000),
         )
 
@@ -151,7 +152,7 @@ class MapperTest {
             id = "abc-123",
         )
 
-        val forecast = testForecast(alerts = listOf(alert))
+        val forecast = testForecast(alerts = persistentListOf(alert))
 
         forecast.toEntity().toModel() shouldBe forecast
     }

@@ -1,5 +1,7 @@
 package now.shouldigooutside.forecast.ui.forecast.details
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +32,7 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import now.shouldigooutside.core.model.forecast.ForecastBlock
+import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.forecast_period_now
@@ -37,7 +41,9 @@ import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.components.autoSize
-import now.shouldigooutside.core.ui.components.card.SelectionCard
+import now.shouldigooutside.core.ui.components.card.CardDefaults
+import now.shouldigooutside.core.ui.components.card.ElevatedCard
+import now.shouldigooutside.core.ui.contentColorFor
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.Droplet
 import now.shouldigooutside.core.ui.ktx.get
@@ -47,6 +53,7 @@ import now.shouldigooutside.core.ui.ktx.text
 import now.shouldigooutside.core.ui.mappers.units.rememberUnit
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.ForecastPreviewData
+import now.shouldigooutside.forecast.ui.components.mappers.color
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -60,6 +67,7 @@ internal fun HourlyForecastStrip(
     units: Units,
     onSelected: (ForecastBlock?) -> Unit,
     modifier: Modifier = Modifier,
+    scoreFor: (ForecastBlock) -> ScoreResult? = { null },
 ) {
     val tempUnit = units.temperature.rememberUnit()
 
@@ -96,6 +104,7 @@ internal fun HourlyForecastStrip(
                 block = now,
                 tempUnit = tempUnit,
                 isSelected = now == selected,
+                score = scoreFor(now),
                 onClick = { onSelected(now) },
             )
         }
@@ -112,6 +121,7 @@ internal fun HourlyForecastStrip(
                 block = hour,
                 tempUnit = tempUnit,
                 isSelected = isSelected,
+                score = scoreFor(hour),
                 onClick = { onSelected(hour) },
             )
         }
@@ -123,6 +133,7 @@ internal fun HourlyForecastStrip(
                     block = tomorrow,
                     tempUnit = tempUnit,
                     isSelected = tomorrow == selected,
+                    score = scoreFor(tomorrow),
                     onClick = { onSelected(tomorrow) },
                     modifier = Modifier.animateItem(),
                 )
@@ -139,10 +150,40 @@ internal fun HourCard(
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    score: ScoreResult? = null,
 ) {
-    SelectionCard(
-        isSelected = isSelected,
+    val scoreColor = score?.color()?.container
+    val containerColor by animateColorAsState(
+        targetValue = when {
+            scoreColor != null -> scoreColor
+            else -> AppTheme.colors.surface
+        },
+        label = "HourCardContainer",
+    )
+    val contentColor by animateColorAsState(
+        targetValue = AppTheme.colors.contentColorFor(containerColor),
+        label = "HourCardContent",
+    )
+
+    val elevation by animateDpAsState(
+        targetValue = if (isSelected) 4.dp else 2.dp,
+        label = "HourCardElevation",
+    )
+
+    val borderWidth by animateDpAsState(
+        targetValue = if (isSelected) CardDefaults.ElevatedBorderWidth else 0.dp,
+        label = "HourCardBorder",
+    )
+    val border = CardDefaults.cardBorder(width = borderWidth)
+
+    ElevatedCard(
         onClick = onClick,
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = containerColor,
+            contentColor = contentColor,
+        ),
+        border = border,
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation, pressedElevation = elevation),
         modifier = modifier.width(100.dp),
     ) {
         Column(
