@@ -28,6 +28,8 @@ import kotlinx.collections.immutable.toPersistentList
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
+import now.shouldigooutside.core.model.forecast.scoreForBlock
+import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.forecast_details_title
@@ -86,6 +88,7 @@ internal fun ForecastDetailsScreen(
                     forecast = forecast,
                     selected = state.selected,
                     selectedScore = state.selectedScore?.result,
+                    currentScore = state.currentScore,
                     alerts = forecast.alerts,
                     severity = severity,
                     onSelected = model::select,
@@ -107,12 +110,18 @@ internal fun ForecastDetailsScreen(
     onSelected: (ForecastBlock?) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    currentScore: ForecastScore? = null,
     alerts: PersistentList<Alert> = persistentListOf(),
     severity: Severity? = null,
     onSevereWeatherClick: (Severity) -> Unit = {},
     onAlertsClick: () -> Unit = {},
     toSettings: () -> Unit = {},
 ) {
+    val scoreFor: (ForecastBlock) -> ScoreResult? = remember(forecast, currentScore) {
+        { block ->
+            currentScore?.let { forecast.scoreForBlock(block, it)?.result }
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -177,6 +186,7 @@ internal fun ForecastDetailsScreen(
             selected = selected,
             units = forecast.units,
             onSelected = onSelected,
+            scoreFor = scoreFor,
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -213,6 +223,7 @@ private fun ForecastDetailsScreenPreview(
             selectedScore = score.hours
                 .getOrNull(1)
                 ?.result,
+            currentScore = score,
             onSelected = {},
             onBack = {},
         )

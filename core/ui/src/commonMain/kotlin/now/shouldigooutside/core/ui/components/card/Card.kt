@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.LocalContainerColor
-import now.shouldigooutside.core.ui.LocalThemeIsDark
 import now.shouldigooutside.core.ui.LocalTypography
 import now.shouldigooutside.core.ui.components.BrutalContainer
 import now.shouldigooutside.core.ui.components.BrutalDefaults
@@ -152,8 +151,8 @@ public object CardDefaults {
     public val Shape: CornerBasedShape @Composable get() = AppTheme.shapes.medium
     public val ElevatedShape: CornerBasedShape @Composable get() = Shape
     public val BorderColor: Color @Composable get() = BrutalDefaults.Color
-    private val BorderWidth = BrutalDefaults.BorderWidth + 1.dp
-    private val ElevatedBorderWidth = BrutalDefaults.BorderWidth
+    public val BorderWidth: Dp = BrutalDefaults.BorderWidth + 1.dp
+    public val ElevatedBorderWidth: Dp = BrutalDefaults.BorderWidth
 
     public val primaryColors: CardColors
         @Composable get() = cardColors(
@@ -248,12 +247,16 @@ public object CardDefaults {
         )
 
     @Composable
-    public fun cardBorder(color: Color = BorderColor): BorderStroke =
-        remember(color) { BorderStroke(BorderWidth, color) }
+    public fun cardBorder(
+        color: Color = BorderColor,
+        width: Dp = BorderWidth,
+    ): BorderStroke = remember(color, width) { BorderStroke(width, color) }
 
     @Composable
-    public fun elevatedCardBorder(color: Color = BorderColor): BorderStroke =
-        cardBorder(color).copy(width = ElevatedBorderWidth)
+    public fun elevatedCardBorder(
+        color: Color = BorderColor,
+        width: Dp = ElevatedBorderWidth,
+    ): BorderStroke = cardBorder(color, width)
 }
 
 @ConsistentCopyVisibility

@@ -1,5 +1,6 @@
 package now.shouldigooutside.forecast.data.source.visualcrossing
 
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import now.shouldigooutside.core.foundation.NowProvider
@@ -234,18 +235,19 @@ internal fun VCForecastResponse.toModel(
         current = currentConditions.toModel(),
         today = today,
         days = days,
-        alerts = alerts.map { alert ->
-            Alert(
-                title = alert.headline ?: alert.event,
-                description = alert.description,
-                event = alert.event,
-                headline = alert.headline,
-                onset = alert.onsetEpoch?.let(Instant::fromEpochSeconds),
-                ends = alert.endsEpoch?.let(Instant::fromEpochSeconds),
-                link = alert.link,
-                id = alert.id,
-            )
-        },
+        alerts = alerts
+            .map { alert ->
+                Alert(
+                    title = alert.headline ?: alert.event,
+                    description = alert.description,
+                    event = alert.event,
+                    headline = alert.headline,
+                    onset = alert.onsetEpoch?.let(Instant::fromEpochSeconds),
+                    ends = alert.endsEpoch?.let(Instant::fromEpochSeconds),
+                    link = alert.link,
+                    id = alert.id,
+                )
+            }.toPersistentList(),
         instant = nowProvider.now(),
     )
 }
