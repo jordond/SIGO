@@ -3,12 +3,16 @@ package now.shouldigooutside.forecast.ui.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import now.shouldigooutside.core.ui.navigation.Route
 import now.shouldigooutside.core.ui.navigation.bottomsheet.bottomSheet
 import now.shouldigooutside.core.ui.navigation.popUpScreen
 import now.shouldigooutside.forecast.ui.activities.ActivitiesTab
 import now.shouldigooutside.forecast.ui.activities.add.AddActivityScreen
+import now.shouldigooutside.forecast.ui.components.AlertsBottomSheet
+import now.shouldigooutside.forecast.ui.components.SevereWeatherInfoBottomSheet
+import now.shouldigooutside.forecast.ui.components.Severity
 import now.shouldigooutside.forecast.ui.forecast.ForecastHomeScreen
 import now.shouldigooutside.forecast.ui.forecast.details.ForecastDetailsScreen
 import now.shouldigooutside.forecast.ui.location.LocationSearchBottomSheet
@@ -28,6 +32,18 @@ public data object AddActivityRoute : Route
 @Serializable
 public data object LocationSearchRoute : Route
 
+@Serializable
+public data class SevereWeatherInfoRoute(
+    private val severityValue: String,
+) : Route {
+    public constructor(severity: Severity) : this(severity.name)
+
+    public val severity: Severity get() = Severity.valueOf(severityValue)
+}
+
+@Serializable
+public data object AlertsRoute : Route
+
 public fun NavGraphBuilder.forecastTab(
     navController: NavHostController,
     tabNavController: NavHostController,
@@ -38,6 +54,10 @@ public fun NavGraphBuilder.forecastTab(
         ForecastHomeScreen(
             toViewDetails = { tabNavController.navigate(ForecastDetailsRoute) },
             toLocationPicker = { navController.navigate(LocationSearchRoute) },
+            toSevereWeatherInfo = { severity ->
+                navController.navigate(SevereWeatherInfoRoute(severity))
+            },
+            toAlerts = { navController.navigate(AlertsRoute) },
         )
     }
 
@@ -46,6 +66,10 @@ public fun NavGraphBuilder.forecastTab(
             onBack = navController::popBackStack,
             toSettings = toSettings,
             toLocationPicker = { navController.navigate(LocationSearchRoute) },
+            toSevereWeatherInfo = { severity ->
+                navController.navigate(SevereWeatherInfoRoute(severity))
+            },
+            toAlerts = { navController.navigate(AlertsRoute) },
         )
     }
 
@@ -69,5 +93,14 @@ public fun NavGraphBuilder.forecastNavigation(navController: NavHostController) 
 
     bottomSheet<LocationSearchRoute> {
         LocationSearchBottomSheet(onBack = navController::popBackStack)
+    }
+
+    bottomSheet<SevereWeatherInfoRoute> { entry ->
+        val route = entry.toRoute<SevereWeatherInfoRoute>()
+        SevereWeatherInfoBottomSheet(severity = route.severity)
+    }
+
+    bottomSheet<AlertsRoute> {
+        AlertsBottomSheet()
     }
 }

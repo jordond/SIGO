@@ -401,4 +401,117 @@ class DefaultScoreCalculatorTest {
         val score = scoreBlock(block, prefs, includeAirQuality = false)
         score.result shouldBe ScoreResult.Yes
     }
+
+    @Test
+    fun windDisabledAtOutsideValueReturnsYes() {
+        val block = testForecastBlock(
+            temperature = testTemperature(value = 20.0),
+            wind = testWind(speed = 100.0),
+            precipitation = testPrecipitation(amount = 0.0, probability = 0),
+            severeWeatherRisk = SevereWeatherRisk.None,
+            airQuality = AirQuality(0),
+        )
+        val prefs = defaultPreferences.copy(windEnabled = false)
+        val score = scoreBlock(block, prefs, includeAirQuality = false)
+        score.result shouldBe ScoreResult.Yes
+    }
+
+    @Test
+    fun temperatureDisabledAtOutsideValueReturnsYes() {
+        val block = testForecastBlock(
+            temperature = testTemperature(value = 50.0),
+            wind = testWind(speed = 5.0),
+            precipitation = testPrecipitation(amount = 0.0, probability = 0),
+            severeWeatherRisk = SevereWeatherRisk.None,
+            airQuality = AirQuality(0),
+        )
+        val prefs = defaultPreferences.copy(temperatureEnabled = false)
+        val score = scoreBlock(block, prefs, includeAirQuality = false)
+        score.result shouldBe ScoreResult.Yes
+    }
+
+    @Test
+    fun precipitationDisabledWithHeavyRainReturnsYes() {
+        val block = testForecastBlock(
+            temperature = testTemperature(value = 20.0),
+            wind = testWind(speed = 5.0),
+            precipitation = testPrecipitation(
+                amount = 10.0,
+                probability = 90,
+                types = setOf(PrecipitationType.Rain),
+            ),
+            severeWeatherRisk = SevereWeatherRisk.None,
+            airQuality = AirQuality(0),
+        )
+        val prefs = defaultPreferences.copy(precipitationEnabled = false, rain = false)
+        val score = scoreBlock(block, prefs, includeAirQuality = false)
+        score.result shouldBe ScoreResult.Yes
+    }
+
+    @Test
+    fun aqiDisabledPerActivityAtOutsideValueReturnsYes() {
+        val block = testForecastBlock(
+            temperature = testTemperature(value = 20.0),
+            wind = testWind(speed = 5.0),
+            precipitation = testPrecipitation(amount = 0.0, probability = 0),
+            severeWeatherRisk = SevereWeatherRisk.None,
+            airQuality = AirQuality(6),
+        )
+        val prefs = defaultPreferences.copy(maxAqi = AirQuality(3), aqiEnabled = false)
+        val score = scoreBlock(block, prefs, includeAirQuality = true)
+        score.result shouldBe ScoreResult.Yes
+    }
+
+    @Test
+    fun globalAqiOffOverridesPerActivityAqiEnabled() {
+        val block = testForecastBlock(
+            temperature = testTemperature(value = 20.0),
+            wind = testWind(speed = 5.0),
+            precipitation = testPrecipitation(amount = 0.0, probability = 0),
+            severeWeatherRisk = SevereWeatherRisk.None,
+            airQuality = AirQuality(6),
+        )
+        val prefs = defaultPreferences.copy(maxAqi = AirQuality(3), aqiEnabled = true)
+        val score = scoreBlock(block, prefs, includeAirQuality = false)
+        score.result shouldBe ScoreResult.Yes
+    }
+
+    @Test
+    fun severeWeatherForcesNoEvenWithAllDisabled() {
+        val block = testForecastBlock(
+            severeWeatherRisk = SevereWeatherRisk.Moderate,
+        )
+        val prefs = defaultPreferences.copy(
+            temperatureEnabled = false,
+            windEnabled = false,
+            precipitationEnabled = false,
+            aqiEnabled = false,
+        )
+        val score = scoreBlock(block, prefs, includeAirQuality = true)
+        score.result shouldBe ScoreResult.No
+    }
+
+    @Test
+    fun allDisabledNoSevereReturnsYes() {
+        val block = testForecastBlock(
+            temperature = testTemperature(value = 100.0),
+            wind = testWind(speed = 100.0),
+            precipitation = testPrecipitation(
+                amount = 10.0,
+                probability = 100,
+                types = setOf(PrecipitationType.Rain),
+            ),
+            severeWeatherRisk = SevereWeatherRisk.None,
+            airQuality = AirQuality(10),
+        )
+        val prefs = defaultPreferences.copy(
+            temperatureEnabled = false,
+            windEnabled = false,
+            precipitationEnabled = false,
+            aqiEnabled = false,
+            rain = false,
+        )
+        val score = scoreBlock(block, prefs, includeAirQuality = true)
+        score.result shouldBe ScoreResult.Yes
+    }
 }

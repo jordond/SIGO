@@ -106,6 +106,57 @@ class MapperTest {
     }
 
     @Test
+    fun toModel_preservesAllAlertFields() {
+        val entity = buildForecastEntity(
+            alerts = listOf(
+                AlertEntity(
+                    title = "Storm",
+                    description = "heavy rain",
+                    event = "rainfall",
+                    headline = "yellow warning - rainfall - in effect",
+                    onsetEpoch = 1_700_000_000L,
+                    endsEpoch = 1_700_010_000L,
+                    link = "https://example.com/alert/1",
+                    id = "abc-123",
+                ),
+            ),
+        )
+
+        val result = entity.toModel()
+
+        result.alerts shouldBe listOf(
+            Alert(
+                title = "Storm",
+                description = "heavy rain",
+                event = "rainfall",
+                headline = "yellow warning - rainfall - in effect",
+                onset = Instant.fromEpochSeconds(1_700_000_000L),
+                ends = Instant.fromEpochSeconds(1_700_010_000L),
+                link = "https://example.com/alert/1",
+                id = "abc-123",
+            ),
+        )
+    }
+
+    @Test
+    fun roundTrip_alertWithAllFields_preserved() {
+        val alert = Alert(
+            title = "Storm",
+            description = "heavy rain",
+            event = "rainfall",
+            headline = "yellow warning - rainfall - in effect",
+            onset = Instant.fromEpochSeconds(1_700_000_000L),
+            ends = Instant.fromEpochSeconds(1_700_010_000L),
+            link = "https://example.com/alert/1",
+            id = "abc-123",
+        )
+
+        val forecast = testForecast(alerts = listOf(alert))
+
+        forecast.toEntity().toModel() shouldBe forecast
+    }
+
+    @Test
     fun toModel_preservesLocation() {
         val entity = buildForecastEntity(
             lat = 48.8566,

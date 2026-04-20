@@ -25,12 +25,14 @@ import dev.stateholder.dispatcher.rememberRelayOf
 import dev.stateholder.extensions.collectAsState
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
+import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
-import now.shouldigooutside.core.model.forecast.WeatherWindow
+import now.shouldigooutside.core.model.forecast.WeatherBannerInfo
 import now.shouldigooutside.core.model.forecast.blockForPeriod
+import now.shouldigooutside.core.model.forecast.weatherBannerInfo
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
@@ -46,6 +48,7 @@ import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.Header
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
 import now.shouldigooutside.forecast.ui.components.NoLocation
+import now.shouldigooutside.forecast.ui.components.Severity
 import now.shouldigooutside.forecast.ui.forecast.section.ForecastScoreContent
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
@@ -54,6 +57,8 @@ import kotlin.time.Clock
 internal fun ForecastHomeScreen(
     toViewDetails: () -> Unit,
     toLocationPicker: () -> Unit,
+    toSevereWeatherInfo: (Severity) -> Unit,
+    toAlerts: () -> Unit,
     model: ForecastHomeModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
@@ -62,9 +67,10 @@ internal fun ForecastHomeScreen(
         preferences = state.currentScore?.preferences ?: Preferences.default,
         units = state.units,
         data = state.forecast,
+        alerts = state.alerts,
         currentBlock = state.currentBlock,
         currentPeriodScore = state.currentPeriodScore,
-        goodWindow = state.goodWindow,
+        bannerInfo = state.bannerInfo.takeIf { state.showBanner },
         period = state.period,
         loading = state.loading,
         refreshing = state.refreshing,
@@ -77,6 +83,9 @@ internal fun ForecastHomeScreen(
                 is ForecastHomeAction.ToViewDetails -> toViewDetails()
                 is ForecastHomeAction.OpenLocationSheet -> toLocationPicker()
                 is ForecastHomeAction.ChangeActivity -> model.update(action.activity)
+                is ForecastHomeAction.OpenSevereWeatherInfo -> toSevereWeatherInfo(action.severity)
+                is ForecastHomeAction.OpenAlerts -> toAlerts()
+                is ForecastHomeAction.DismissBanner -> model.dismissBanner()
             }
         },
     )
@@ -90,9 +99,10 @@ internal fun ForecastHomeScreen(
     data: Forecast?,
     dispatcher: Dispatcher<ForecastHomeAction>,
     modifier: Modifier = Modifier,
+    alerts: PersistentList<Alert> = persistentListOf(),
     currentBlock: ForecastBlock? = null,
     currentPeriodScore: Score? = null,
-    goodWindow: WeatherWindow? = null,
+    bannerInfo: WeatherBannerInfo? = null,
     period: ForecastPeriod = ForecastPeriod.Today,
     loading: Boolean = false,
     refreshing: Boolean = false,
@@ -146,8 +156,13 @@ internal fun ForecastHomeScreen(
                             units = units,
                             block = currentBlock,
                             score = currentPeriodScore,
-                            goodWindow = goodWindow,
+                            alerts = alerts,
+                            bannerInfo = bannerInfo,
                             onScoreClick = dispatcher.rememberRelay(ForecastHomeAction.ToViewDetails),
+                            onSevereWeatherClick = dispatcher
+                                .rememberRelayOf(ForecastHomeAction::OpenSevereWeatherInfo),
+                            onAlertsClick = dispatcher.rememberRelay(ForecastHomeAction.OpenAlerts),
+                            onDismissBanner = dispatcher.rememberRelay(ForecastHomeAction.DismissBanner),
                             modifier = Modifier.padding(end = 2.dp),
                         )
                     }
@@ -255,13 +270,23 @@ private fun SevereWeatherHighPreview() {
 private fun GoodWeatherWindowPreview() {
     val forecast = PreviewData.Forecast.createGoodWindowForecast()
     val forecastScore = remember { PreviewData.Forecast.score(forecast) }
+    val periodScore = remember(forecastScore) { forecastScore.scoreForPeriod(ForecastPeriod.Today) }
     AppPreview {
         ForecastHomeScreen(
             location = null,
             data = forecast,
             currentBlock = forecast.blockForPeriod(ForecastPeriod.Today),
-            currentPeriodScore = forecastScore.scoreForPeriod(ForecastPeriod.Today),
-            goodWindow = remember { PreviewData.Forecast.goodWindow(forecast) },
+            currentPeriodScore = periodScore,
+            bannerInfo = remember(forecast, forecastScore, periodScore) {
+                forecast.weatherBannerInfo(
+                    score = forecastScore,
+                    currentResult = periodScore?.result,
+                    activity = Activity.General,
+                    now = forecast.instant,
+                    preferences = Preferences.default,
+                    includeAirQuality = true,
+                )
+            },
             preferences = Preferences.default,
             units = Units.Metric,
             dispatcher = rememberDispatcher { },

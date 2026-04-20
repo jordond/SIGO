@@ -2,9 +2,13 @@ package now.shouldigooutside.core.model.forecast
 
 import androidx.compose.runtime.Immutable
 import now.shouldigooutside.core.model.location.Location
+import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.preferences.enabledMetrics
 import now.shouldigooutside.core.model.score.ForecastScore
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.ScoreResult
+import now.shouldigooutside.core.model.score.dominantReason
 import now.shouldigooutside.core.model.units.Units
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
@@ -62,12 +66,24 @@ public data class WeatherWindow(
  *   or no hours scored `Yes`.
  */
 public fun Forecast.goodWeatherWindows(score: ForecastScore?): List<WeatherWindow> =
+    weatherWindows(score, ScoreResult.Yes)
+
+/**
+ * Finds contiguous time windows where the hourly score equals [result].
+ *
+ * Pairs [today]'s hourly blocks with [score]'s hourly scores (truncated to the shorter list)
+ * and groups consecutive matching results into [WeatherWindow]s.
+ */
+public fun Forecast.weatherWindows(
+    score: ForecastScore?,
+    result: ScoreResult,
+): List<WeatherWindow> =
     buildList {
         if (score == null) return emptyList()
         val paired = today.hours.zip(score.hours)
         var windowStart: Instant? = null
         for ((hour, hourScore) in paired) {
-            if (hourScore.result == ScoreResult.Yes) {
+            if (hourScore.result == result) {
                 if (windowStart == null) windowStart = hour.instant
             } else if (windowStart != null) {
                 add(WeatherWindow(start = windowStart, end = hour.instant))
@@ -78,6 +94,65 @@ public fun Forecast.goodWeatherWindows(score: ForecastScore?): List<WeatherWindo
             add(WeatherWindow(start = windowStart, end = paired.last().first.instant + 1.hours))
         }
     }
+
+/** The banner to show on the forecast home screen, or `null` when inputs are unavailable. */
+public fun Forecast.weatherBannerInfo(
+    score: ForecastScore?,
+    currentResult: ScoreResult?,
+    activity: Activity,
+    now: Instant,
+    preferences: Preferences,
+    includeAirQuality: Boolean,
+): WeatherBannerInfo? {
+    if (score == null || currentResult == null) return null
+
+    return when (currentResult) {
+        ScoreResult.Yes -> goNowBanner(score, activity, now, preferences, includeAirQuality)
+        ScoreResult.No, ScoreResult.Maybe -> nextWindowBanner(score, now)
+    }
+}
+
+private fun Forecast.goNowBanner(
+    score: ForecastScore,
+    activity: Activity,
+    now: Instant,
+    preferences: Preferences,
+    includeAirQuality: Boolean,
+): WeatherBannerInfo.GoNow? {
+    val paired = today.hours.zip(score.hours)
+    if (paired.isEmpty()) return null
+
+    val transition = paired
+        .asSequence()
+        .dropWhile { (hour, _) -> hour.instant < now }
+        .firstOrNull { (_, hourScore) -> hourScore.result != ScoreResult.Yes }
+
+    val endsAt = transition?.first?.instant ?: (paired.last().first.instant + 1.hours)
+    val reason = transition?.second?.reasons?.dominantReason(
+        preferences.enabledMetrics(includeAirQuality),
+    )
+
+    return WeatherBannerInfo.GoNow(endsAt = endsAt, reason = reason, activity = activity)
+}
+
+private val nextWindowPriority = listOf(
+    ScoreResult.Yes to WindowQuality.Good,
+    ScoreResult.Maybe to WindowQuality.Borderline,
+)
+
+private fun Forecast.nextWindowBanner(
+    score: ForecastScore,
+    now: Instant,
+): WeatherBannerInfo =
+    nextWindowPriority.firstNotNullOfOrNull { (result, quality) ->
+        // `it.end > now` (rather than `start > now`) surfaces a window that is currently
+        // ongoing or starts at `now`. Hours from the API are pre-filtered to future-only,
+        // so a window's start instant can be slightly less than `Clock.System.now()` due
+        // to clock drift between fetch and recomputation.
+        weatherWindows(score, result)
+            .firstOrNull { it.end > now }
+            ?.let { WeatherBannerInfo.NextWindow(window = it, quality = quality) }
+    } ?: WeatherBannerInfo.NoWindowToday
 
 public fun Forecast.scoreForBlock(
     block: ForecastBlock,

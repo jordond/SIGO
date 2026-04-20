@@ -1,6 +1,7 @@
 package now.shouldigooutside.forecast.data.source.visualcrossing
 
 import io.kotest.matchers.shouldBe
+import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.PrecipitationType
 import now.shouldigooutside.core.model.forecast.SevereWeatherRisk
 import now.shouldigooutside.test.FakeNowProvider
@@ -201,6 +202,57 @@ class VCForecastResponseTest {
     }
 
     @Test
+    fun alerts_legacyMinimalFields_mappedWithEventAsTitle() {
+        val response = buildResponseWithAlerts(
+            listOf(
+                VCAlert(event = "rainfall", description = "heavy rain"),
+            ),
+        )
+
+        val model = response.toModel(FakeNowProvider(), maxDays = 3)
+
+        model.alerts shouldBe listOf(
+            Alert(
+                title = "rainfall",
+                description = "heavy rain",
+                event = "rainfall",
+            ),
+        )
+    }
+
+    @Test
+    fun alerts_fullFields_mappedWithHeadlineAsTitle() {
+        val response = buildResponseWithAlerts(
+            listOf(
+                VCAlert(
+                    event = "rainfall",
+                    description = "heavy rain expected",
+                    headline = "yellow warning - rainfall - in effect",
+                    onsetEpoch = 1_700_000_000L,
+                    endsEpoch = 1_700_010_000L,
+                    link = "https://example.com/alert/1",
+                    id = "abc-123",
+                ),
+            ),
+        )
+
+        val model = response.toModel(FakeNowProvider(), maxDays = 3)
+
+        model.alerts shouldBe listOf(
+            Alert(
+                title = "yellow warning - rainfall - in effect",
+                description = "heavy rain expected",
+                event = "rainfall",
+                headline = "yellow warning - rainfall - in effect",
+                onset = Instant.fromEpochSeconds(1_700_000_000L),
+                ends = Instant.fromEpochSeconds(1_700_010_000L),
+                link = "https://example.com/alert/1",
+                id = "abc-123",
+            ),
+        )
+    }
+
+    @Test
     fun structure_firstDayBecomesToday() {
         val todayBlock = buildBlock(datetimeEpoch = 1000, temp = 21.0)
         val day2 = buildBlock(datetimeEpoch = 2000, temp = 22.0)
@@ -268,6 +320,19 @@ class VCForecastResponseTest {
             currentConditions = buildBlock(datetimeEpoch = 0L),
         )
     }
+
+    private fun buildResponseWithAlerts(alerts: List<VCAlert>): VCForecastResponse =
+        VCForecastResponse(
+            queryCost = 1,
+            latitude = 43.0,
+            longitude = -79.0,
+            resolvedAddress = "Toronto, ON",
+            address = "Toronto",
+            timezone = "America/Toronto",
+            days = listOf(buildBlock(), buildBlock(datetimeEpoch = 86400)),
+            alerts = alerts,
+            currentConditions = buildBlock(),
+        )
 
     private fun buildResponseWithDays(days: List<VCForecastBlock>): VCForecastResponse =
         VCForecastResponse(

@@ -2,6 +2,7 @@ package now.shouldigooutside.forecast.ui
 
 import now.shouldigooutside.forecast.ui.activities.ActivitiesModel
 import now.shouldigooutside.forecast.ui.activities.add.AddActivityModel
+import now.shouldigooutside.forecast.ui.components.AlertsBottomSheetModel
 import now.shouldigooutside.forecast.ui.forecast.ForecastHomeModel
 import now.shouldigooutside.forecast.ui.forecast.details.ForecastDetailsModel
 import now.shouldigooutside.forecast.ui.location.LocationSearchModel
@@ -16,4 +17,5 @@ public fun forecastUiModule(): Module =
         viewModelOf(::ActivitiesModel)
         viewModelOf(::AddActivityModel)
         viewModelOf(::LocationSearchModel)
+        viewModelOf(::AlertsBottomSheetModel)
     }

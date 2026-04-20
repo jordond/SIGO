@@ -30,6 +30,7 @@ import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.score.ActivityForecastScore
+import now.shouldigooutside.core.model.score.Metric
 import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.score.Reasons
 import now.shouldigooutside.core.model.score.ScoreResult
@@ -55,6 +56,7 @@ import now.shouldigooutside.core.ui.icons.lucide.TriangleAlert
 import now.shouldigooutside.core.ui.icons.lucide.Waves
 import now.shouldigooutside.core.ui.icons.lucide.Wind
 import now.shouldigooutside.core.ui.ktx.get
+import now.shouldigooutside.core.ui.preferences.rememberEnabledMetrics
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
 import now.shouldigooutside.forecast.ui.components.mappers.color
@@ -123,9 +125,11 @@ internal fun ActivityScoreCard(
             }
 
             if (score != null && block != null && score.result != ScoreResult.Yes) {
+                val enabled = rememberEnabledMetrics(data.preferences)
                 HorizontalDivider()
                 LimitingFactors(
                     reasons = score.reasons,
+                    enabled = enabled,
                     temperatureValue = block.temperature.value,
                     maxTemperature = data.preferences.maxTemperature.toDouble(),
                     airQuality = block.airQuality,
@@ -142,6 +146,7 @@ internal fun ActivityScoreCard(
 @Composable
 private fun LimitingFactors(
     reasons: Reasons,
+    enabled: Set<Metric>,
     temperatureValue: Double,
     maxTemperature: Double,
     airQuality: AirQuality,
@@ -152,7 +157,7 @@ private fun LimitingFactors(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier,
     ) {
-        if (reasons.severeWeather != ReasonValue.Inside) {
+        if (Metric.SevereWeather in enabled && reasons.severeWeather != ReasonValue.Inside) {
             WeatherValueCard(
                 icon = AppIcons.Lucide.TriangleAlert,
                 value = reasons.severeWeatherStatus(),
@@ -160,7 +165,7 @@ private fun LimitingFactors(
             )
         }
 
-        if (reasons.temperature != ReasonValue.Inside) {
+        if (Metric.Temperature in enabled && reasons.temperature != ReasonValue.Inside) {
             WeatherValueCard(
                 icon = AppIcons.Lucide.Thermometer,
                 value = reasons.temperatureStatus(temperatureValue, maxTemperature),
@@ -168,7 +173,7 @@ private fun LimitingFactors(
             )
         }
 
-        if (reasons.wind != ReasonValue.Inside) {
+        if (Metric.Wind in enabled && reasons.wind != ReasonValue.Inside) {
             WeatherValueCard(
                 icon = AppIcons.Lucide.Wind,
                 value = reasons.windStatus(),
@@ -176,7 +181,7 @@ private fun LimitingFactors(
             )
         }
 
-        if (reasons.precipitation != ReasonValue.Inside) {
+        if (Metric.Precipitation in enabled && reasons.precipitation != ReasonValue.Inside) {
             WeatherValueCard(
                 icon = AppIcons.Lucide.CloudRain,
                 value = reasons.precipitationStatus(),
@@ -184,7 +189,7 @@ private fun LimitingFactors(
             )
         }
 
-        if (reasons.airQuality != ReasonValue.Inside) {
+        if (Metric.AirQuality in enabled && reasons.airQuality != ReasonValue.Inside) {
             val aqiLevel = AqiLevels.forValue(airQuality)
             WeatherValueCard(
                 icon = AppIcons.Lucide.Waves,

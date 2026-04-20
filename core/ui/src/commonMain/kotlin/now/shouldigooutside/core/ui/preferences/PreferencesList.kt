@@ -13,17 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.units.PrecipitationUnit
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
+import now.shouldigooutside.core.resources.preferences_precipitation_description
 import now.shouldigooutside.core.resources.preferences_precipitation_title
 import now.shouldigooutside.core.resources.rain
 import now.shouldigooutside.core.resources.snow
-import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.LocalAppExperience
-import now.shouldigooutside.core.ui.components.Text
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.Droplet
 import now.shouldigooutside.core.ui.icons.lucide.Snowflake
+import now.shouldigooutside.core.ui.mappers.units.colors
 import now.shouldigooutside.core.ui.preview.AppPreview
 
 @Composable
@@ -62,17 +63,18 @@ public fun PreferencesList(
             )
         }
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.padding(top = 16.dp),
+        PreferenceCard(
+            title = Res.string.preferences_precipitation_title,
+            description = Res.string.preferences_precipitation_description,
+            icon = AppIcons.Lucide.Droplet,
+            colors = PrecipitationUnit.colors(),
+            enabled = preferences.precipitationEnabled,
+            onEnabledChange = { updatePreferences(preferences.copy(precipitationEnabled = it)) },
         ) {
-            Text(
-                text = Res.string.preferences_precipitation_title,
-                style = AppTheme.typography.body1,
-            )
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(16.dp),
             ) {
                 PrecipitationToggle(
                     text = Res.string.rain,

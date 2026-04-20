@@ -2,6 +2,7 @@ package now.shouldigooutside.settings.data.entity
 
 import io.kotest.matchers.shouldBe
 import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.serialization.json.Json
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
@@ -418,6 +419,43 @@ class SettingsEntityMapperTest {
 
         entity.units shouldBe Units.Imperial.toEntity()
         entity.preferences shouldBe null
+    }
+
+    @Test
+    fun legacyJsonWithoutEnabledFieldsDefaultsAllTrue() {
+        val legacyJson =
+            """
+            {
+              "min_temp": 5,
+              "max_temp": 35,
+              "include_apparent_temp": false,
+              "wind_speed": 30,
+              "rain": false,
+              "snow": false,
+              "max_aqi": 3
+            }
+            """.trimIndent()
+
+        val entity = Json.decodeFromString<PreferencesEntity>(legacyJson)
+        val model = entity.toModel()
+
+        model.temperatureEnabled shouldBe true
+        model.windEnabled shouldBe true
+        model.precipitationEnabled shouldBe true
+        model.aqiEnabled shouldBe true
+    }
+
+    @Test
+    fun roundTripWithDisabledFlagsPreservesValues() {
+        val prefs = Preferences.default.copy(
+            windEnabled = false,
+            aqiEnabled = false,
+        )
+
+        val json = Json.encodeToString(PreferencesEntity.serializer(), prefs.toEntity())
+        val decoded = Json.decodeFromString<PreferencesEntity>(json).toModel()
+
+        decoded shouldBe prefs
     }
 
     private fun String.toModel(): Activity = mapActivityEntityToModel(this)

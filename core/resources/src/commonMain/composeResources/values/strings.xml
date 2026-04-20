@@ -185,7 +185,8 @@
     <string name="preferences_temp_max">MAX</string>
     <string name="preferences_wind_description">When is it too windy to go outside?</string>
     <string name="preferences_wind_max">MAXIMUM SPEED</string>
-    <string name="preferences_precipitation_title">Do you want to go outside in the:</string>
+    <string name="preferences_precipitation_title">Precipitation</string>
+    <string name="preferences_precipitation_description">Do you want to go outside in the:</string>
 
     <string name="preferences_location_updates">Enable location updates</string>
 
@@ -230,9 +231,22 @@
     <string name="forecast_period_no_data">There is no data available for this time period, please select a different period.</string>
     <string name="forecast_view_details">View Details</string>
 
-    <string name="weather_window_title">Best Window</string>
-    <string name="weather_window_description">Looks like you're all clear from</string>
-    <string name="weather_window_ranger">%1$s to %2$s</string>
+    <string name="weather_banner_go_now_title">Go %1$s now!</string>
+    <string name="weather_banner_go_now_until_reason">Good until %1$s before %2$s</string>
+    <string name="weather_banner_go_now_until">Good until %1$s</string>
+    <string name="weather_banner_next_window_title">Next good window</string>
+    <string name="weather_banner_next_window_range">Weather improves from %1$s to %2$s</string>
+    <string name="weather_banner_borderline_window_title">Borderline window</string>
+    <string name="weather_banner_borderline_window_range">Conditions ease from %1$s to %2$s</string>
+    <string name="weather_banner_no_window_title">No ideal weather today</string>
+    <string name="weather_banner_no_window_description">Conditions don't look good for the rest of today.</string>
+    <string name="weather_banner_dismiss">Dismiss banner</string>
+
+    <string name="weather_reason_wind">high winds</string>
+    <string name="weather_reason_temperature">temperature changes</string>
+    <string name="weather_reason_precipitation">rain</string>
+    <string name="weather_reason_severe_weather">severe weather</string>
+    <string name="weather_reason_air_quality">poor air quality</string>
 
     <string name="score_yes">Yes</string>
     <string name="score_maybe">Maybe</string>
@@ -264,6 +278,21 @@
     <string name="score_severe_weather_near">Possible severe weather</string>
     <string name="score_severe_weather_status_outside">Severe weather</string>
     <string name="score_severe_weather_status_near">Possible</string>
+
+    <string name="severe_weather_sheet_warning_title">Possible severe weather</string>
+    <string name="severe_weather_sheet_warning_body">Conditions suggest a risk of thunderstorms, strong winds, or heavy rain in the area. Severe weather may develop but is not certain. Stay aware of changing conditions and review any official alerts before heading out.</string>
+    <string name="severe_weather_sheet_danger_title">Severe weather active</string>
+    <string name="severe_weather_sheet_danger_body">Severe weather is affecting this location. Expect dangerous conditions such as high winds, heavy rain, or thunderstorms. Avoid outdoor activity if possible and follow guidance from local authorities.</string>
+    <string name="severe_weather_sheet_close">Close</string>
+
+    <string name="alerts_banner_count_one">1 weather alert</string>
+    <string name="alerts_banner_count_other">%1$d weather alerts</string>
+    <string name="alerts_banner_icon_cd">Weather alert</string>
+    <string name="alerts_sheet_title">Weather alerts</string>
+    <string name="alerts_sheet_active_range">From %1$s to %2$s</string>
+    <string name="alerts_sheet_more_info">More info</string>
+    <string name="alerts_sheet_empty_body">No active alerts for this location.</string>
+    <string name="alerts_sheet_close">Close</string>
 
     <string name="score_air_quality_inside">The air quality is great!</string>
     <string name="score_air_quality_outside">The air quality is poor</string>
@@ -389,6 +418,8 @@
     <string name="whats_new_air_quality_desc">Air quality is now included, so you can make better decisions about when to head outside. When the air is clean, it’s a great sign that conditions are better for getting out for a walk, spending time outdoors, or planning part of your day outside. If you’d rather keep things simpler, you can turn air quality off anytime in Settings.</string>
     <string name="whats_new_weather_window">Best Window</string>
     <string name="whats_new_weather_window_desc">Now you can see the best window to head outside at a glance. We look at the full forecast and highlight the sweet spot where conditions line up, so you know exactly when and how long you have to make your move.</string>
+    <string name="whats_new_weather_metrics">Pick What Matters</string>
+    <string name="whats_new_weather_metrics_desc">Toggle individual weather metrics on or off per activity. If wind doesn’t bother you on a hike, switch it off and it won’t count against your score. Temperature, wind, precipitation, and air quality can each be disabled independently. Severe weather always stays on for safety.</string>
 
     <string name="widget_empty">Open SIGO\nto get started</string>
     <string name="widget_feels_like">Feels like</string>
