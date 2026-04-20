@@ -91,6 +91,16 @@ internal fun ExperienceSection(
         text = Res.string.settings_experience_title,
         colors = CardDefaults.fromColor(AppTheme.colors.secondary),
     ) {
+        Item(isLast = true) {
+            SettingsTextRow(
+                text = Res.string.settings_experience_units,
+                description = Res.string.settings_experience_units_desc,
+                icon = AppIcons.Lucide.Ruler,
+                onClick = unitsClick,
+                trailingContent = trailingContent,
+            )
+        }
+
         Item {
             val icon = remember(settings.enableHaptics) {
                 if (settings.enableHaptics) AppIcons.Lucide.Vibrate else AppIcons.Lucide.VibrateOff
@@ -196,16 +206,6 @@ internal fun ExperienceSection(
                     },
                 )
             }
-        }
-
-        Item(isLast = true) {
-            SettingsTextRow(
-                text = Res.string.settings_experience_units,
-                description = Res.string.settings_experience_units_desc,
-                icon = AppIcons.Lucide.Ruler,
-                onClick = unitsClick,
-                trailingContent = trailingContent,
-            )
         }
     }
 

@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
@@ -17,28 +18,43 @@ import now.shouldigooutside.core.model.units.Units
 
 /**
  * Observes [ForecastStateHolder] and widget-relevant settings, pushing updates into
- * [UpdateWidgetDataUseCase] whenever either changes.
+ * [UpdateWidgetDataUseCase] whenever either changes, and mirroring settings to
+ * [WidgetInputStore] so out-of-process widget runtimes (iOS extension) can refresh on their own.
  */
 public class WidgetForecastObserver(
     private val forecastStateHolder: ForecastStateHolder,
     private val settingsRepo: SettingsRepo,
     private val scoreCalculator: ScoreCalculator,
     private val updateWidgetData: UpdateWidgetDataUseCase,
+    private val widgetInputStore: WidgetInputStore,
 ) {
     private val logger = Logger.withTag("WidgetForecastObserver")
 
     public fun start(scope: CoroutineScope) {
         scope.launch {
-            val widgetSettings = settingsRepo.settings
-                .map { WidgetSettingsKey(it.widgetActivity, it.includeAirQuality, it.units) }
+            settingsRepo.settings
+                .filter { it.loaded }
+                .map(WidgetInputs::from)
                 .distinctUntilChanged()
+                .collect { inputs -> widgetInputStore.save(inputs) }
+        }
 
-            combine(forecastStateHolder.state, widgetSettings) { result, _ -> result }
-                .collect { result ->
-                    if (result is AsyncResult.Success) {
-                        refresh(result.data)
-                    }
+        scope.launch {
+            val widgetSettings = settingsRepo.settings
+                .map {
+                    WidgetSettingsKey(
+                        widgetActivity = it.widgetActivity,
+                        includeAirQuality = it.includeAirQuality,
+                        units = it.units,
+                        preferences = it.activities[it.widgetActivity] ?: Preferences.default,
+                    )
+                }.distinctUntilChanged()
+
+            combine(forecastStateHolder.state, widgetSettings) { result, _ -> result }.collect { result ->
+                if (result is AsyncResult.Success) {
+                    refresh(result.data)
                 }
+            }
         }
     }
 
@@ -64,5 +80,6 @@ public class WidgetForecastObserver(
         val widgetActivity: Activity,
         val includeAirQuality: Boolean,
         val units: Units,
+        val preferences: Preferences,
     )
 }

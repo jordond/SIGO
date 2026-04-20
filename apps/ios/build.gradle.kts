@@ -21,12 +21,15 @@ kotlin {
     targets.withType<KotlinNativeTarget> {
         binaries.withType<Framework> {
             binaryOption("bundleId", name)
+            export(projects.core.app)
+            export(projects.core.widget)
         }
     }
 
     sourceSets {
         iosMain.dependencies {
-            implementation(projects.core.app)
+            api(projects.core.app)
+            api(projects.core.widget)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.firebase.kmp.config)

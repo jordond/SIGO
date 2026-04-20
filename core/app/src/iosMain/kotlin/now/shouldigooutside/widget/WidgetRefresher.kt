@@ -4,11 +4,12 @@ import co.touchlab.kermit.Logger
 import kotlinx.coroutines.withTimeout
 import now.shouldigooutside.core.domain.forecast.GetForecastUseCase
 import now.shouldigooutside.core.domain.forecast.ScoreCalculator
-import now.shouldigooutside.core.domain.settings.SettingsRepo
-import now.shouldigooutside.core.model.preferences.Preferences
 import now.shouldigooutside.core.widget.UpdateWidgetDataUseCase
 import now.shouldigooutside.core.widget.WidgetData
 import now.shouldigooutside.core.widget.WidgetDataStore
+import now.shouldigooutside.core.widget.WidgetInputStore
+import now.shouldigooutside.core.widget.toActivity
+import now.shouldigooutside.core.widget.toModel
 import now.shouldigooutside.di.initKoin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -21,7 +22,7 @@ public object WidgetRefresher : KoinComponent {
 
     private val logger = Logger.withTag("WidgetRefresher")
 
-    private val settingsRepo: SettingsRepo by inject()
+    private val widgetInputStore: WidgetInputStore by inject()
     private val getForecastUseCase: GetForecastUseCase by inject()
     private val scoreCalculator: ScoreCalculator by inject()
     private val updateWidgetData: UpdateWidgetDataUseCase by inject()
@@ -33,6 +34,11 @@ public object WidgetRefresher : KoinComponent {
         }
     }
 
+    public fun loadCached(): WidgetData? {
+        ensureInitialized()
+        return widgetDataStore.load()
+    }
+
     public suspend fun refresh(): WidgetData? =
         try {
             withTimeout(REFRESH_TIMEOUT_MS) {
@@ -40,23 +46,28 @@ public object WidgetRefresher : KoinComponent {
 
                 logger.d { "Starting iOS widget refresh..." }
 
-                val settings = settingsRepo.settings.value
-                val location = settings.location
+                val inputs = widgetInputStore.load()
+                if (inputs == null) {
+                    logger.w { "No widget inputs snapshot available yet" }
+                    return@withTimeout widgetDataStore.load()
+                }
+
+                val location = inputs.location?.toModel()
                 if (location == null) {
                     logger.w { "No cached location for widget refresh" }
                     return@withTimeout widgetDataStore.load()
                 }
 
-                val units = settings.units
+                val units = inputs.units.toModel()
                 val forecast = getForecastUseCase.forecastFor(location, units).getOrNull()
                 if (forecast == null) {
                     logger.w { "Failed to fetch forecast for widget refresh" }
                     return@withTimeout widgetDataStore.load()
                 }
 
-                val widgetActivity = settings.widgetActivity
-                val preferences = settings.activities[widgetActivity] ?: Preferences.default
-                val score = scoreCalculator.calculate(forecast, preferences, settings.includeAirQuality)
+                val widgetActivity = inputs.toActivity()
+                val preferences = inputs.preferences.toModel()
+                val score = scoreCalculator.calculate(forecast, preferences, inputs.includeAirQuality)
                 updateWidgetData.update(
                     forecast = forecast,
                     score = score,

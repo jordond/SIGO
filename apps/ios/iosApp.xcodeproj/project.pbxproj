@@ -18,11 +18,30 @@
 		F7B5B0472F6F14D5001FDA1C /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7B5B0462F6F14D5001FDA1C /* WidgetKit.framework */; };
 		F7B5B0492F6F14D5001FDA1C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7B5B0482F6F14D5001FDA1C /* SwiftUI.framework */; };
 		F7B5B05A2F6F14D6001FDA1C /* SIGOWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F7B5B0452F6F14D5001FDA1C /* SIGOWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F7C100032F6F14D5001FDA1C /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F7C100022F6F14D5001FDA1C /* FirebaseCore */; };
+		F7C100052F6F14D5001FDA1C /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = F7C100042F6F14D5001FDA1C /* FirebaseCrashlytics */; };
+		F7C100072F6F14D5001FDA1C /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = F7C100062F6F14D5001FDA1C /* FirebaseRemoteConfig */; };
+		F7C100092F6F14D5001FDA1C /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = F7C100082F6F14D5001FDA1C /* FirebaseAnalytics */; };
+		F7C1000A2F6F14D5001FDA1C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F73E86D92DDF7C1200E89B14 /* GoogleService-Info.plist */; };
 		F7E230562F64AD4400D9EBFD /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = F7E230552F64AD4400D9EBFD /* FirebaseAnalytics */; };
 		F7E230582F64AD4400D9EBFD /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F7E230572F64AD4400D9EBFD /* FirebaseCore */; };
 		F7E2305A2F64AD4400D9EBFD /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = F7E230592F64AD4400D9EBFD /* FirebaseCrashlytics */; };
 		F7E2305C2F64AD4400D9EBFD /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = F7E2305B2F64AD4400D9EBFD /* FirebaseRemoteConfig */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXAggregateTarget section */
+		F7C200002F6F14D5001FDA1C /* KotlinFramework */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = F7C200022F6F14D5001FDA1C /* Build configuration list for PBXAggregateTarget "KotlinFramework" */;
+			buildPhases = (
+				F7C200012F6F14D5001FDA1C /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = KotlinFramework;
+			productName = KotlinFramework;
+		};
+/* End PBXAggregateTarget section */
 
 /* Begin PBXContainerItemProxy section */
 		F7B5B0582F6F14D6001FDA1C /* PBXContainerItemProxy */ = {
@@ -31,6 +50,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = F7B5B0442F6F14D5001FDA1C;
 			remoteInfo = SIGOWidgetExtension;
+		};
+		F7C200052F6F14D5001FDA1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A93A952F29CC810C00F8E227 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F7C200002F6F14D5001FDA1C;
+			remoteInfo = KotlinFramework;
+		};
+		F7C200072F6F14D5001FDA1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A93A952F29CC810C00F8E227 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F7C200002F6F14D5001FDA1C;
+			remoteInfo = KotlinFramework;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -97,6 +130,10 @@
 			files = (
 				F7B5B0492F6F14D5001FDA1C /* SwiftUI.framework in Frameworks */,
 				F7B5B0472F6F14D5001FDA1C /* WidgetKit.framework in Frameworks */,
+				F7C100032F6F14D5001FDA1C /* FirebaseCore in Frameworks */,
+				F7C100052F6F14D5001FDA1C /* FirebaseCrashlytics in Frameworks */,
+				F7C100072F6F14D5001FDA1C /* FirebaseRemoteConfig in Frameworks */,
+				F7C100092F6F14D5001FDA1C /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,17 +196,17 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A93A954529CC810D00F8E227 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
-				A9D80A052AAB5CDE006C8738 /* ShellScript */,
 				A93A953329CC810C00F8E227 /* Sources */,
 				A93A953429CC810C00F8E227 /* Frameworks */,
 				A93A953529CC810C00F8E227 /* Resources */,
-				F7E2305D2F64AF1E00D9EBFD /* ShellScript */,
 				F7B5B05B2F6F14D6001FDA1C /* Embed Foundation Extensions */,
+				F7E2305D2F64AF1E00D9EBFD /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				F7B5B0592F6F14D6001FDA1C /* PBXTargetDependency */,
+				F7C200062F6F14D5001FDA1C /* PBXTargetDependency */,
 			);
 			name = iosApp;
 			productName = iosApp;
@@ -187,12 +224,17 @@
 			buildRules = (
 			);
 			dependencies = (
+				F7C200082F6F14D5001FDA1C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F7B5B04A2F6F14D5001FDA1C /* SIGOWidget */,
 			);
 			name = SIGOWidgetExtension;
 			packageProductDependencies = (
+				F7C100022F6F14D5001FDA1C /* FirebaseCore */,
+				F7C100042F6F14D5001FDA1C /* FirebaseCrashlytics */,
+				F7C100062F6F14D5001FDA1C /* FirebaseRemoteConfig */,
+				F7C100082F6F14D5001FDA1C /* FirebaseAnalytics */,
 			);
 			productName = SIGOWidgetExtension;
 			productReference = F7B5B0452F6F14D5001FDA1C /* SIGOWidgetExtension.appex */;
@@ -233,6 +275,7 @@
 			targets = (
 				A93A953629CC810C00F8E227 /* iosApp */,
 				F7B5B0442F6F14D5001FDA1C /* SIGOWidgetExtension */,
+				F7C200002F6F14D5001FDA1C /* KotlinFramework */,
 			);
 		};
 /* End PBXProject section */
@@ -252,14 +295,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F7C1000A2F6F14D5001FDA1C /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		A9D80A052AAB5CDE006C8738 /* ShellScript */ = {
+		F7C200012F6F14D5001FDA1C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -270,10 +315,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/iosApp.framework/iosApp",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/../..\"\n./gradlew :apps:ios:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "set -e\ncd \"$SRCROOT/../..\"\n\ncase \"$CONFIGURATION\" in\n  Release) CONFIG=Release; CONFIG_LOWER=release ;;\n  *) CONFIG=Debug; CONFIG_LOWER=debug ;;\nesac\n\ncase \"$SDK_NAME\" in\n  iphonesimulator*) TARGET=IosSimulatorArm64; TARGET_LOWER=iosSimulatorArm64 ;;\n  iphoneos*) TARGET=IosArm64; TARGET_LOWER=iosArm64 ;;\n  *) echo \"Unsupported SDK $SDK_NAME\"; exit 1 ;;\nesac\n\n./gradlew \":apps:ios:link${CONFIG}Framework${TARGET}\" < /dev/null\n\nSRC=\"apps/ios/build/bin/${TARGET_LOWER}/${CONFIG_LOWER}Framework/iosApp.framework\"\nrm -rf \"$BUILT_PRODUCTS_DIR/iosApp.framework\"\ncp -R \"$SRC\" \"$BUILT_PRODUCTS_DIR/iosApp.framework\"\n";
 		};
 		F7E2305D2F64AF1E00D9EBFD /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -323,6 +369,16 @@
 			isa = PBXTargetDependency;
 			target = F7B5B0442F6F14D5001FDA1C /* SIGOWidgetExtension */;
 			targetProxy = F7B5B0582F6F14D6001FDA1C /* PBXContainerItemProxy */;
+		};
+		F7C200062F6F14D5001FDA1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F7C200002F6F14D5001FDA1C /* KotlinFramework */;
+			targetProxy = F7C200052F6F14D5001FDA1C /* PBXContainerItemProxy */;
+		};
+		F7C200082F6F14D5001FDA1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F7C200002F6F14D5001FDA1C /* KotlinFramework */;
+			targetProxy = F7C200072F6F14D5001FDA1C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -516,7 +572,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7YZ4RG7YHP;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SIGOWidget/Info.plist;
@@ -543,6 +600,24 @@
 			};
 			name = Debug;
 		};
+		F7C200032F6F14D5001FDA1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		F7C200042F6F14D5001FDA1C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		F7B5B05D2F6F14D6001FDA1C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -553,7 +628,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7YZ4RG7YHP;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SIGOWidget/Info.plist;
@@ -605,6 +681,15 @@
 			buildConfigurations = (
 				F7B5B05C2F6F14D6001FDA1C /* Debug */,
 				F7B5B05D2F6F14D6001FDA1C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F7C200022F6F14D5001FDA1C /* Build configuration list for PBXAggregateTarget "KotlinFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F7C200032F6F14D5001FDA1C /* Debug */,
+				F7C200042F6F14D5001FDA1C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -670,6 +755,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F7E230542F64AD4400D9EBFD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfig;
+		};
+		F7C100022F6F14D5001FDA1C /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7E230542F64AD4400D9EBFD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		F7C100042F6F14D5001FDA1C /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7E230542F64AD4400D9EBFD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		F7C100062F6F14D5001FDA1C /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7E230542F64AD4400D9EBFD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
+		};
+		F7C100082F6F14D5001FDA1C /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7E230542F64AD4400D9EBFD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

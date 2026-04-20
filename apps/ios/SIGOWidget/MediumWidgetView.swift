@@ -8,9 +8,10 @@ struct MediumWidgetView: View {
     var body: some View {
         if let data = data {
             let colors = widgetColors(scheme: colorScheme)
+            let scoreColor = colors.scoreColor(for: data.scoreResult)
 
             HStack(spacing: 0) {
-                ScoreBadge(data: data, color: colors.scoreColor(for: data.scoreResult))
+                ScoreBadge(data: data)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                 VStack(alignment: .leading, spacing: 4) {
@@ -46,7 +47,14 @@ struct MediumWidgetView: View {
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
-            .containerBackground(colors.surface, for: .widget)
+            .containerBackground(for: .widget) {
+                HStack(spacing: 0) {
+                    scoreColor
+                        .frame(maxWidth: .infinity)
+                    colors.surface
+                        .frame(maxWidth: .infinity)
+                }
+            }
         } else {
             EmptyWidgetView()
         }
@@ -55,12 +63,11 @@ struct MediumWidgetView: View {
 
 private struct ScoreBadge: View {
     let data: WidgetData
-    let color: Color
 
     var body: some View {
         VStack(spacing: 2) {
             Text(data.scoreLabel.uppercased())
-                .font(.system(size: 36, weight: .bold).italic())
+                .font(.system(size: 56, weight: .bold).italic())
                 .foregroundColor(.widgetOnScore)
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
@@ -79,7 +86,6 @@ private struct ScoreBadge: View {
         .padding(.horizontal, 8)
         .padding(.vertical, 10)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(color)
     }
 }
 

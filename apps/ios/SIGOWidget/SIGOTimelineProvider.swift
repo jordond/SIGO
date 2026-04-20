@@ -10,16 +10,13 @@ struct SIGOTimelineProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SIGOWidgetEntry) -> Void) {
-        Task {
-            let data = await loadCached()
-            completion(SIGOWidgetEntry(date: .now, data: data))
-        }
+        completion(SIGOWidgetEntry(date: .now, data: loadCached()))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SIGOWidgetEntry>) -> Void) {
         Task {
             let kotlinData = try? await WidgetRefresher.shared.refresh()
-            let data = kotlinData?.toSwiftWidgetData() ?? (await loadCached())
+            let data = kotlinData?.toSwiftWidgetData() ?? loadCached()
             let entry = SIGOWidgetEntry(date: .now, data: data)
 
             let refreshMinutes = (data?.isStale == true)
@@ -35,8 +32,8 @@ struct SIGOTimelineProvider: TimelineProvider {
         }
     }
 
-    private func loadCached() async -> WidgetData? {
-        IosWidgetDataStore().load()?.toSwiftWidgetData()
+    private func loadCached() -> WidgetData? {
+        WidgetRefresher.shared.loadCached()?.toSwiftWidgetData()
     }
 }
 

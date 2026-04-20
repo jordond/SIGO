@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -46,6 +47,7 @@ import now.shouldigooutside.core.ui.components.IconButton
 import now.shouldigooutside.core.ui.components.IconButtonDefaults
 import now.shouldigooutside.core.ui.components.IconButtonVariant
 import now.shouldigooutside.core.ui.components.Text
+import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.components.card.Card
 import now.shouldigooutside.core.ui.icons.AppIcons
 import now.shouldigooutside.core.ui.icons.lucide.CloudRain
@@ -67,9 +69,12 @@ internal fun WeatherWindowBanner(
 ) {
     Card(modifier = modifier) {
         Row(
-            verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(AppTheme.spacing.standard),
-            modifier = Modifier.padding(AppTheme.spacing.standard),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(
+                    vertical = AppTheme.spacing.standard,
+                    horizontal = AppTheme.spacing.small,
+                ).padding(start = 4.dp),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -86,14 +91,25 @@ internal fun WeatherWindowBanner(
                 )
             }
 
+            Spacer(modifier = Modifier.size(AppTheme.spacing.small))
+
             Column(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
                 modifier = Modifier.weight(1f),
             ) {
                 when (info) {
-                    is WeatherBannerInfo.GoNow -> GoNowContent(info)
-                    is WeatherBannerInfo.NextWindow -> NextWindowContent(info)
-                    WeatherBannerInfo.NoWindowToday -> NoWindowContent()
+                    is WeatherBannerInfo.GoNow -> {
+                        GoNowContent(info)
+                    }
+                    is WeatherBannerInfo.NextWindow -> {
+                        NextWindowContent(info)
+                    }
+                    WeatherBannerInfo.NoWindowToday -> {
+                        WindowContent(
+                            title = Res.string.weather_banner_no_window_title.get(),
+                            body = Res.string.weather_banner_no_window_description.get(),
+                        )
+                    }
                 }
             }
 
@@ -105,7 +121,6 @@ internal fun WeatherWindowBanner(
                 Icon(
                     icon = AppIcons.Lucide.X,
                     contentDescription = Res.string.weather_banner_dismiss.get(),
-                    modifier = Modifier.size(20.dp),
                 )
             }
         }
@@ -118,17 +133,13 @@ private fun GoNowContent(info: WeatherBannerInfo.GoNow) {
     val endTime = info.endsAt.localTime().text()
     val reasonText = info.reason?.rememberDisplayName()
 
-    Text(
-        text = Res.string.weather_banner_go_now_title.get(activityName),
-        style = AppTheme.typography.h3,
-    )
-    Text(
-        text = if (reasonText != null) {
+    WindowContent(
+        title = Res.string.weather_banner_go_now_title.get(activityName),
+        body = if (reasonText != null) {
             Res.string.weather_banner_go_now_until_reason.get(endTime, reasonText)
         } else {
             Res.string.weather_banner_go_now_until.get(endTime)
         },
-        style = AppTheme.typography.body1,
     )
 }
 
@@ -150,24 +161,25 @@ private fun NextWindowContent(info: WeatherBannerInfo.NextWindow) {
         }
     }
 
-    Text(
-        text = titleRes,
-        style = AppTheme.typography.h3,
-    )
-    Text(
-        text = rangeRes.get(startText, endText),
-        style = AppTheme.typography.body1,
+    WindowContent(
+        title = titleRes.get(),
+        body = rangeRes.get(startText, endText),
     )
 }
 
 @Composable
-private fun NoWindowContent() {
+private fun WindowContent(
+    title: String,
+    body: String,
+) {
     Text(
-        text = Res.string.weather_banner_no_window_title,
+        text = title,
         style = AppTheme.typography.h3,
+        autoSize = AppTheme.typography.h3.autoSize(),
+        maxLines = 1,
     )
     Text(
-        text = Res.string.weather_banner_no_window_description,
+        text = body,
         style = AppTheme.typography.body1,
     )
 }

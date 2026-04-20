@@ -9,5 +9,6 @@ public actual fun widgetModule(): Module =
     module {
         includes(commonWidgetModule())
         singleOf(::AndroidWidgetDataStore) bind WidgetDataStore::class
+        single { NoOpWidgetInputStore } bind WidgetInputStore::class
         singleOf(::AndroidWidgetNotifier) bind WidgetNotifier::class
     }

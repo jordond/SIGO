@@ -11,6 +11,7 @@ public actual fun widgetModule(): Module =
     module {
         includes(commonWidgetModule())
         single { NoOpWidgetDataStore } bind WidgetDataStore::class
+        single { NoOpWidgetInputStore } bind WidgetInputStore::class
         single { NoOpWidgetNotifier() } bind WidgetNotifier::class
     }
 
