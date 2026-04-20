@@ -50,7 +50,7 @@ android {
 
     val releaseKeyFile = if (hasSigningConfig) {
         val decoded = Base64.decode(keystoreBase64!!)
-        layout.buildDirectory.file("signing/release.jks").get().asFile.apply {
+        rootProject.layout.projectDirectory.file(".gradle/signing/release.jks").asFile.apply {
             parentFile.mkdirs()
             writeBytes(decoded)
         }
