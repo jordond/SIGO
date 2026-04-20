@@ -2,9 +2,9 @@
 ###### App Variables #######
 app-name = "now.shouldigooutside"
 app-desktop-version = "1.0.0"
-app-ios-version = "1.1.5"
-app-android-version = "1.1.5"
-app-android-code = "22"
+app-ios-version = "1.2.0"
+app-android-version = "1.2.0"
+app-android-code = "23"
 api-server-version = "1.1.0"
 sdk-target = "36"
 sdk-compile = "36"
