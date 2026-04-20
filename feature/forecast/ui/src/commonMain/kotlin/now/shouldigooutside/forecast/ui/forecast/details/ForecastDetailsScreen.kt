@@ -2,7 +2,6 @@ package now.shouldigooutside.forecast.ui.forecast.details
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -65,6 +64,7 @@ internal fun ForecastDetailsScreen(
         when (forecast) {
             null -> {
                 Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .systemBarsPadding()
                         .fillMaxSize(),
