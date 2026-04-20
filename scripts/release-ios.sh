@@ -157,12 +157,13 @@ else
 fi
 
 # Increment build number from pbxproj
-build_values=$(grep "CURRENT_PROJECT_VERSION = " "$PBXPROJ" | sed 's/.*= *\([0-9]*\).*/\1/' | sort -u)
+# Takes max across all targets (app + extensions) then unifies on write.
+# Apple requires extension CFBundleVersion to match host app.
+build_values=$(grep "CURRENT_PROJECT_VERSION = " "$PBXPROJ" | sed 's/.*= *\([0-9]*\).*/\1/' | sort -un)
 if [[ $(echo "$build_values" | wc -l) -gt 1 ]]; then
-    echo "Error: Inconsistent CURRENT_PROJECT_VERSION values in pbxproj: $(echo $build_values | tr '\n' ' ')"
-    exit 1
+    echo "⚠️  Mismatched CURRENT_PROJECT_VERSION across targets: $(echo $build_values | tr '\n' ' ') — unifying to max+1"
 fi
-current_build=$(echo "$build_values" | head -1)
+current_build=$(echo "$build_values" | tail -1)
 new_build=$((current_build + 1))
 
 # --- Summary ---
