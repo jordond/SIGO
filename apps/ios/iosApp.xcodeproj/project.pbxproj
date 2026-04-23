@@ -200,6 +200,7 @@
 				A93A953429CC810C00F8E227 /* Frameworks */,
 				A93A953529CC810C00F8E227 /* Resources */,
 				F7B5B05B2F6F14D6001FDA1C /* Embed Foundation Extensions */,
+				F7D000012F70000001FDA1C /* ShellScript */,
 				F7E2305D2F64AF1E00D9EBFD /* ShellScript */,
 			);
 			buildRules = (
@@ -343,6 +344,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
+		F7D000012F70000001FDA1C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Kotlin Framework + Sync Compose Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/../..\"\n./gradlew :apps:ios:embedAndSignAppleFrameworkForXcode < /dev/null\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
