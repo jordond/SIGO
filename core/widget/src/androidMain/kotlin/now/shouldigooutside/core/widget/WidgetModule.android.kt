@@ -11,4 +11,5 @@ public actual fun widgetModule(): Module =
         singleOf(::AndroidWidgetDataStore) bind WidgetDataStore::class
         single { NoOpWidgetInputStore } bind WidgetInputStore::class
         singleOf(::AndroidWidgetNotifier) bind WidgetNotifier::class
+        singleOf(::AndroidWidgetUpdateObserver)
     }

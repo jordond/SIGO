@@ -25,6 +25,7 @@ class SigoWidgetReceiver : GlanceAppWidgetReceiver() {
 
     companion object {
         private const val WORK_NAME = "sigo_widget_refresh"
+        private const val REFRESH_INTERVAL_MINUTES = 15L
 
         fun scheduleWidgetRefresh(context: Context) {
             val constraints = Constraints
@@ -33,14 +34,14 @@ class SigoWidgetReceiver : GlanceAppWidgetReceiver() {
                 .build()
 
             val request = PeriodicWorkRequestBuilder<WidgetRefreshWorker>(
-                repeatInterval = 30,
+                repeatInterval = REFRESH_INTERVAL_MINUTES,
                 repeatIntervalTimeUnit = TimeUnit.MINUTES,
             ).setConstraints(constraints)
                 .build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
+                ExistingPeriodicWorkPolicy.UPDATE,
                 request,
             )
         }
