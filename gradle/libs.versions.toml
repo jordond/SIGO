@@ -15,7 +15,7 @@ jvmTargetServer = "25"
 
 glance = "1.1.1"
 work = "2.11.2"
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 agp = "9.1.1"
 androidx-activity = "1.13.0"
 androidx-compose-ui-tooling = "1.11.0"
