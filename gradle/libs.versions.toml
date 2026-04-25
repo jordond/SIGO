@@ -64,7 +64,7 @@ lumo = "1.2.5"
 mordant = "3.0.2"
 turbine = "1.2.1"
 play-review = "2.0.2"
-poko = "0.22.0"
+poko = "0.22.1"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
