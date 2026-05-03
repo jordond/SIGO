@@ -61,14 +61,14 @@ class DefaultApp(
         val scopeId = Uuid.random().toString()
         val koinScope = koin.createScope<RequestScope>(scopeId)
 
-        val tokenProvider: ApiTokenProvider = WorkerTokenProvider(parsedEnv.forecastApiKey)
-        koinScope.declare(tokenProvider)
+        koinScope.declare<ApiTokenProvider>(WorkerTokenProvider(parsedEnv.forecastApiKey))
 
         val kvBinding: dynamic = env.FORECAST_CACHE
-        val cacheProvider: CacheProvider = WorkerCacheProvider(
-            cache = if (kvBinding != null) EnvKvCache(kvBinding) else null,
+        koinScope.declare<CacheProvider>(
+            WorkerCacheProvider(
+                cache = if (kvBinding != null) EnvKvCache(kvBinding) else null,
+            ),
         )
-        koinScope.declare(cacheProvider)
 
         val requestScope = koinScope.get<CoroutineScope>()
         val router = koinScope.get<ApiRouter>()

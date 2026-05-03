@@ -25,7 +25,7 @@ public fun ScopeDSL.scopedApiRouterDefinitions() {
 
     scoped<ApiRouter> {
         DefaultApiRouter(
-            routes = getAll(),
+            routes = getAll<ApiRoute>(),
             json = get(),
             cacheProvider = get(),
             rateLimiter = get(),

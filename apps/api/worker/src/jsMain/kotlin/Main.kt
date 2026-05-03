@@ -36,10 +36,12 @@ internal fun initKoin(): Koin =
             jsonModule(),
             jsApiServerModule(),
             foundationModule(),
-            // NOTE: forecastBackendModule() is intentionally omitted — every binding it
-            // declares is shadowed by `scoped<...>` declarations in requestModule(), and
-            // those are the only consumers on the worker. Keeping it would leave dead
-            // root-level factories that future readers must reason about.
+            // NOTE: forecastBackendModule() is intentionally omitted — every type it
+            // provides is declared per-request inside requestModule()'s RequestScope.
+            // Including it would leave dead root-level factories that future readers
+            // must reason about; worse, those root factories cannot resolve the
+            // request-scoped HttpClient / ApiTokenProvider and would fail at runtime
+            // if anything ever invoked them at the root level.
             // NOTE: networkModule() is intentionally omitted — HttpClient is declared
             // inside requestModule()'s RequestScope instead.
             requestModule(),
