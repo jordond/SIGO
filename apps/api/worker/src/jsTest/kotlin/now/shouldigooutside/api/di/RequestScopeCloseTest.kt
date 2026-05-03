@@ -25,7 +25,7 @@ class RequestScopeCloseTest {
     fun setUp() {
         koin = startKoin {
             modules(
-                module { single<Json> { Json } },
+                module { single<Json> { Json.Default } },
                 foundationModule(),
                 requestModule(),
             )
