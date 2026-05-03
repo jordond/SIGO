@@ -2,16 +2,12 @@ import co.touchlab.kermit.Logger
 import co.touchlab.kermit.koin.KermitKoinLogger
 import now.shouldigooutside.api.App
 import now.shouldigooutside.api.DefaultApp
+import now.shouldigooutside.api.di.requestModule
 import now.shouldigooutside.api.provider.ApiVersionProvider
-import now.shouldigooutside.api.provider.KvCacheProvider
-import now.shouldigooutside.api.provider.WorkerTokenProvider
-import now.shouldigooutside.core.api.server.cache.CacheProvider
 import now.shouldigooutside.core.api.server.jsApiServerModule
 import now.shouldigooutside.core.domain.VersionProvider
-import now.shouldigooutside.core.domain.forecast.ApiTokenProvider
 import now.shouldigooutside.core.foundation.di.foundationModule
-import now.shouldigooutside.core.platform.di.networkModule
-import now.shouldigooutside.forecast.forecastBackendModule
+import now.shouldigooutside.core.platform.di.jsonModule
 import org.koin.core.Koin
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
@@ -21,7 +17,8 @@ import org.w3c.fetch.Request
 import org.w3c.fetch.Response
 import kotlin.js.Promise
 
-private val app = initKoin().get<App>()
+private val koin: Koin = initKoin()
+private val app: App = DefaultApp(koin)
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
@@ -36,17 +33,22 @@ internal fun initKoin(): Koin =
 
         modules(
             workerModule(),
+            jsonModule(),
             jsApiServerModule(),
             foundationModule(),
-            forecastBackendModule(),
-            networkModule(),
+            // NOTE: forecastBackendModule() is intentionally omitted — every type it
+            // provides is declared per-request inside requestModule()'s RequestScope.
+            // Including it would leave dead root-level factories that future readers
+            // must reason about; worse, those root factories cannot resolve the
+            // request-scoped HttpClient / ApiTokenProvider and would fail at runtime
+            // if anything ever invoked them at the root level.
+            // NOTE: networkModule() is intentionally omitted — HttpClient is declared
+            // inside requestModule()'s RequestScope instead.
+            requestModule(),
         )
     }.koin
 
 private fun workerModule() =
     module {
-        singleOf(::WorkerTokenProvider) bind ApiTokenProvider::class
         singleOf(::ApiVersionProvider) bind VersionProvider::class
-        single { KvCacheProvider() } bind CacheProvider::class
-        singleOf(::DefaultApp) bind App::class
     }

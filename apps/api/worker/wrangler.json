@@ -3,6 +3,7 @@
   "name": "sigo-api-worker",
   "main": "index.mjs",
   "compatibility_date": "2026-02-25",
+  "compatibility_flags": ["no_handle_cross_request_promise_resolution"],
   "observability": {
     "enabled": true
   },
@@ -22,6 +23,7 @@
   "env": {
     "staging": {
       "name": "sigo-api-staging",
+      "compatibility_flags": ["no_handle_cross_request_promise_resolution"],
       "routes": [
         {
           "pattern": "staging.api.shouldigooutside.now",
@@ -39,6 +41,7 @@
     },
     "dev": {
       "name": "sigo-api-dev",
+      "compatibility_flags": ["no_handle_cross_request_promise_resolution"],
       "routes": [
         {
           "pattern": "dev.api.shouldigooutside.now",
