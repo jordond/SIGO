@@ -70,11 +70,16 @@ class DefaultApp(
             ),
         )
 
-        val requestScope = koinScope.get<CoroutineScope>()
-        val router = koinScope.get<ApiRouter>()
+        val requestScope = try {
+            koinScope.get<CoroutineScope>()
+        } catch (cause: Throwable) {
+            koinScope.close()
+            throw cause
+        }
 
         return requestScope.promise {
             try {
+                val router = koinScope.get<ApiRouter>()
                 router.handle(request.toServerRequest()).toJsResponse()
             } finally {
                 koinScope.close()
