@@ -61,16 +61,19 @@ class DefaultApp(
         val scopeId = Uuid.random().toString()
         val koinScope = koin.createScope<RequestScope>(scopeId)
 
-        koinScope.declare<ApiTokenProvider>(WorkerTokenProvider(parsedEnv.forecastApiKey))
-
-        val kvBinding: dynamic = env.FORECAST_CACHE
-        koinScope.declare<CacheProvider>(
-            WorkerCacheProvider(
-                cache = if (kvBinding != null) EnvKvCache(kvBinding) else null,
-            ),
-        )
-
+        // Any failure between createScope and the returned Promise leaks the scope
+        // unless we close it here — the .then cleanup only fires once the Promise
+        // is in flight.
         val requestScope = try {
+            koinScope.declare<ApiTokenProvider>(WorkerTokenProvider(parsedEnv.forecastApiKey))
+
+            val kvBinding: dynamic = env.FORECAST_CACHE
+            koinScope.declare<CacheProvider>(
+                WorkerCacheProvider(
+                    cache = if (kvBinding != null) EnvKvCache(kvBinding) else null,
+                ),
+            )
+
             koinScope.get<CoroutineScope>()
         } catch (cause: Throwable) {
             koinScope.close()
