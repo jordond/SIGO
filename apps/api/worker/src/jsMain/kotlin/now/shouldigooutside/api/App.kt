@@ -77,13 +77,22 @@ class DefaultApp(
             throw cause
         }
 
-        return requestScope.promise {
-            try {
+        // Close after the Promise settles. Closing cancels requestScope, so doing
+        // it from inside the coroutine would cancel the in-flight deferred and
+        // surface as JobCancellationException to the fetch caller.
+        return requestScope
+            .promise {
                 val router = koinScope.get<ApiRouter>()
                 router.handle(request.toServerRequest()).toJsResponse()
-            } finally {
-                koinScope.close()
-            }
-        }
+            }.then(
+                onFulfilled = { response ->
+                    koinScope.close()
+                    response
+                },
+                onRejected = { cause ->
+                    koinScope.close()
+                    throw cause
+                },
+            )
     }
 }
