@@ -46,11 +46,54 @@ kotlin {
                 implementation(libs.koin.core)
             }
         }
+
+        val jsTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.koin.core)
+                implementation(libs.kotlinx.coroutines.core)
+            }
+        }
     }
 }
 
 tasks.named("compileKotlinJs") {
     dependsOn(versionTask)
+}
+
+// Kotlin/JS ES-modules + skiko: the compile-sync task copies compiled .mjs files into the
+// flat test-package kotlin/ directory, but the skiko/coil companion files that those .mjs
+// files import with a relative `./` path are left behind in packages_imported/.  Copy them
+// manually so that `jsNodeTest` can resolve all imports.
+abstract class CopySkikoCompanionFiles : DefaultTask() {
+    @get:OutputDirectory
+    abstract val testKotlinOutput: DirectoryProperty
+
+    @TaskAction
+    fun copy() {
+        val dst = testKotlinOutput.get().asFile
+        if (!dst.exists()) return
+        // Write a no-op stub that satisfies the `import { api } from './js-reexport-symbols.mjs'`
+        // contract without touching browser-only APIs (window/WebGL/WASM) that don't exist in Node.
+        dst.resolve("js-reexport-symbols.mjs").writeText(
+            "// Node.js stub — skiko WASM not needed for server-side tests\nexport const api = {};\n",
+        )
+        // skiko.mjs is imported by skiko-kjs.mjs; provide a minimal stub.
+        dst.resolve("skiko.mjs").writeText(
+            "// Node.js stub\nexport const skikoApi = {};\n",
+        )
+    }
+}
+
+val copySkikoCompanionFiles by tasks.registering(CopySkikoCompanionFiles::class) {
+    dependsOn("jsTestTestDevelopmentExecutableCompileSync")
+    testKotlinOutput.set(
+        rootProject.layout.buildDirectory.dir("js/packages/index-test/kotlin"),
+    )
+}
+
+tasks.named("jsNodeTest") {
+    dependsOn(copySkikoCompanionFiles)
 }
 
 afterEvaluate {
