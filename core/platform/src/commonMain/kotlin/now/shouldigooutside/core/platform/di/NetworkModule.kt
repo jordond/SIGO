@@ -22,19 +22,20 @@ public val defaultJson: Json = Json {
     ignoreUnknownKeys = true
 }
 
-public fun networkModule(httpClientConfig: HttpClientConfig<*>.() -> Unit = {}): Module =
+public fun jsonModule(): Module =
     module {
         single<Json> { defaultJson }
+    }
+
+public fun networkModule(httpClientConfig: HttpClientConfig<*>.() -> Unit = {}): Module =
+    module {
+        includes(jsonModule())
 
         single {
             val json = get<Json>()
             HttpClient {
                 expectSuccess = true
-
-                install(ContentNegotiation) {
-                    json(json)
-                }
-
+                install(ContentNegotiation) { json(json) }
                 install(Logging) {
                     level = if (isDebug) LogLevel.INFO else LogLevel.NONE
                     logger = object : Logger {
@@ -43,7 +44,6 @@ public fun networkModule(httpClientConfig: HttpClientConfig<*>.() -> Unit = {}):
                         }
                     }
                 }
-
                 httpClientConfig()
             }
         }

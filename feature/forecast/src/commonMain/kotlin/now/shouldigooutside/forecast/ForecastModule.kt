@@ -27,6 +27,7 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.scope.Scope
+import org.koin.dsl.ScopeDSL
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -89,3 +90,22 @@ public fun forecastCliModule(): Module =
         factoryOf(::VisualCrossingForecastSource) bind ForecastSource::class
         factory { DefaultForecastRepo(get(), null) } bind ForecastRepo::class
     }
+
+/**
+ * Registers per-request scoped forecast definitions into the calling [ScopeDSL] block.
+ * Intended for use inside `scope<RequestScope> { scopedForecastDefinitions() }` in
+ * platform-specific DI modules that cannot access the `internal` implementations directly.
+ */
+public fun ScopeDSL.scopedForecastDefinitions() {
+    scoped<QueryCostLogger> {
+        val analytics = get<AnalyticsLogger>()
+        QueryCostLogger { cost ->
+            analytics.log("Query cost", mapOf("cost" to cost.toString()))
+        }
+    }
+    scoped<ScoreCalculator> { DefaultScoreCalculator() }
+    scoped<VisualCrossingApi> { DefaultVisualCrossingApi(get(), get()) }
+    scoped<ForecastSource> { VisualCrossingForecastSource(get(), get(), get()) }
+    scoped<ForecastRepo> { DefaultForecastRepo(get(), null) }
+    scoped<GetForecastUseCase> { DefaultGetForecastUseCase(get()) }
+}
