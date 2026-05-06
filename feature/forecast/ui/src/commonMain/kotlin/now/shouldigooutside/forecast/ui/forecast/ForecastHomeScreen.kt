@@ -40,6 +40,7 @@ import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.ReportFullyDrawnWhen
 import now.shouldigooutside.core.ui.components.LoadingBox
 import now.shouldigooutside.core.ui.components.PullToRefreshBox
 import now.shouldigooutside.core.ui.ktx.conditional
@@ -62,6 +63,9 @@ internal fun ForecastHomeScreen(
     model: ForecastHomeModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
+
+    ReportFullyDrawnWhen { state.forecast != null && !state.loading }
+
     ForecastHomeScreen(
         location = state.location,
         preferences = state.currentScore?.preferences ?: Preferences.default,
