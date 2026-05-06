@@ -46,6 +46,7 @@ import now.shouldigooutside.core.ui.components.PullToRefreshBox
 import now.shouldigooutside.core.ui.ktx.conditional
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
+import now.shouldigooutside.core.ui.uiAutomatorTag
 import now.shouldigooutside.forecast.ui.components.Header
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
 import now.shouldigooutside.forecast.ui.components.NoLocation
@@ -124,7 +125,8 @@ internal fun ForecastHomeScreen(
                 .fillMaxSize()
                 .conditional(!loading) {
                     Modifier.verticalScroll(rememberScrollState())
-                }.height(IntrinsicSize.Max),
+                }.height(IntrinsicSize.Max)
+                .uiAutomatorTag("home_forecast_list"),
         ) {
             val instant = remember(data) { data?.instant ?: Clock.System.now() }
             Header(
@@ -167,7 +169,9 @@ internal fun ForecastHomeScreen(
                                 .rememberRelayOf(ForecastHomeAction::OpenSevereWeatherInfo),
                             onAlertsClick = dispatcher.rememberRelay(ForecastHomeAction.OpenAlerts),
                             onDismissBanner = dispatcher.rememberRelay(ForecastHomeAction.DismissBanner),
-                            modifier = Modifier.padding(end = 2.dp),
+                            modifier = Modifier
+                                .padding(end = 2.dp)
+                                .uiAutomatorTag("forecast_detail_entry"),
                         )
                     }
                 } else {

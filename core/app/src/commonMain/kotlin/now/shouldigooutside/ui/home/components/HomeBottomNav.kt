@@ -23,6 +23,7 @@ import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.components.bottombar.BottomBarScrollBehavior
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
+import now.shouldigooutside.core.ui.uiAutomatorTag
 import now.shouldigooutside.ui.home.navigation.HomeTab
 import now.shouldigooutside.ui.home.navigation.route
 
@@ -47,6 +48,7 @@ internal fun HomeBottomNav(
     ) {
         entries.forEach { entry ->
             NavigationBarItem(
+                modifier = Modifier.uiAutomatorTag("bottom_nav_${entry.name.lowercase()}"),
                 selected = entry == selected,
                 icon = {
                     Icon(icon = entry.icon, contentDescription = entry.title.get())
