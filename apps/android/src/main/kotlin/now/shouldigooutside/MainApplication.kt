@@ -19,9 +19,7 @@ class MainApplication :
     override fun onCreate() {
         super.onCreate()
 
-        if (BuildConfig.IS_BENCHMARK) {
-            BenchmarkSeeder(this).seed()
-        }
+        BenchmarkSeeder(this).seed()
 
         instance = this
 

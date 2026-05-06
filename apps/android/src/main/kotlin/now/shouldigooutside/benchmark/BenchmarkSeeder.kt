@@ -7,9 +7,15 @@ internal class BenchmarkSeeder(
     private val context: Context,
 ) {
     fun seed() {
+        if (!hasFixture()) return
         writeSettings()
         writeForecastCache()
     }
+
+    private fun hasFixture(): Boolean =
+        runCatching {
+            context.assets.list("")?.contains(FIXTURE_FILE) == true
+        }.getOrDefault(false)
 
     private fun writeSettings() {
         val now = System.currentTimeMillis()
@@ -43,8 +49,12 @@ internal class BenchmarkSeeder(
 
     private fun writeForecastCache() {
         val target = File(context.cacheDir, "forecast_cache.json")
-        context.assets.open("forecast_fixture.json").use { input ->
+        context.assets.open(FIXTURE_FILE).use { input ->
             target.outputStream().use { output -> input.copyTo(output) }
         }
+    }
+
+    private companion object {
+        const val FIXTURE_FILE = "forecast_fixture.json"
     }
 }

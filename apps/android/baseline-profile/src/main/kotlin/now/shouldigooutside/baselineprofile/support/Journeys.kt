@@ -12,7 +12,7 @@ internal fun MacrobenchmarkScope.seedBenchmark() {
 }
 
 internal fun MacrobenchmarkScope.seedAndLaunch() {
-    seedBenchmark()
+    pressHome()
     startActivityAndWait()
 }
 
