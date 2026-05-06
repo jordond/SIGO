@@ -36,7 +36,7 @@ jobs:
         run: cp ./.github/ci-app-env.properties ./app-env.properties
 
       - name: AVD cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: avd-cache
         with:
           path: |
