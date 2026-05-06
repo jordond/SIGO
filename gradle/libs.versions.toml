@@ -22,10 +22,10 @@ androidx-compose-ui-tooling = "1.11.0"
 androidx-core = "1.18.0"
 androidx-lifecycle = "2.10.0"
 androidx-navigation = "2.9.2"
-androidx-test-espresso = "3.6.1"
-androidx-test-junit = "1.2.1"
+androidx-test-espresso = "3.7.0"
+androidx-test-junit = "1.3.0"
 androidx-ui-test = "1.11.0"
-benchmark = "1.4.1"
+benchmark = "1.5.0-alpha06"
 buildKonfig = "0.20.0"
 clikt = "5.1.0"
 compose = "1.10.3"
@@ -69,7 +69,7 @@ turbine = "1.2.1"
 play-review = "2.0.2"
 poko = "0.22.1"
 profileinstaller = "1.4.1"
-uiautomator = "2.3.0"
+uiautomator = "2.4.0-beta02"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
@@ -218,7 +218,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 android-test = { id = "com.android.test", version.ref = "agp" }
 androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "benchmark" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
