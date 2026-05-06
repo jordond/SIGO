@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
+    alias(libs.plugins.androidx.baselineprofile)
 }
 
 android {
@@ -87,6 +88,17 @@ android {
         }
     }
 
+    androidComponents {
+        val benchmarkVariants = setOf("nonMinifiedRelease", "benchmarkRelease")
+        onVariants { variant ->
+            if (variant.buildType in benchmarkVariants) {
+                variant.sources.assets?.addStaticSourceDirectory(
+                    project.file("src/benchmark/assets").absolutePath,
+                )
+            }
+        }
+    }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_21
@@ -128,4 +140,14 @@ dependencies {
     implementation(libs.glance.preview)
     implementation(libs.kotlinx.collections)
     implementation(libs.work.runtime)
+    implementation(libs.androidx.profileinstaller)
+
+    "baselineProfile"(projects.apps.android.baselineProfile)
+}
+
+baselineProfile {
+    automaticGenerationDuringBuild = false
+    saveInSrc = true
+    mergeIntoMain = false
+    dexLayoutOptimization = true
 }

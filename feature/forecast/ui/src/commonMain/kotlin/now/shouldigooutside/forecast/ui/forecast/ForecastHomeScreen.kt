@@ -40,11 +40,14 @@ import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.scoreForPeriod
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.AppTheme
+import now.shouldigooutside.core.ui.ReportFullyDrawnWhen
+import now.shouldigooutside.core.ui.UiAutomatorTags
 import now.shouldigooutside.core.ui.components.LoadingBox
 import now.shouldigooutside.core.ui.components.PullToRefreshBox
 import now.shouldigooutside.core.ui.ktx.conditional
 import now.shouldigooutside.core.ui.preview.AppPreview
 import now.shouldigooutside.core.ui.preview.PreviewData
+import now.shouldigooutside.core.ui.uiAutomatorTag
 import now.shouldigooutside.forecast.ui.components.Header
 import now.shouldigooutside.forecast.ui.components.NoDataForPeriod
 import now.shouldigooutside.forecast.ui.components.NoLocation
@@ -62,6 +65,9 @@ internal fun ForecastHomeScreen(
     model: ForecastHomeModel = koinViewModel(),
 ) {
     val state by model.collectAsState()
+
+    ReportFullyDrawnWhen { state.forecast != null && !state.loading }
+
     ForecastHomeScreen(
         location = state.location,
         preferences = state.currentScore?.preferences ?: Preferences.default,
@@ -120,7 +126,8 @@ internal fun ForecastHomeScreen(
                 .fillMaxSize()
                 .conditional(!loading) {
                     Modifier.verticalScroll(rememberScrollState())
-                }.height(IntrinsicSize.Max),
+                }.height(IntrinsicSize.Max)
+                .uiAutomatorTag(UiAutomatorTags.HOME_FORECAST_LIST),
         ) {
             val instant = remember(data) { data?.instant ?: Clock.System.now() }
             Header(
@@ -163,7 +170,9 @@ internal fun ForecastHomeScreen(
                                 .rememberRelayOf(ForecastHomeAction::OpenSevereWeatherInfo),
                             onAlertsClick = dispatcher.rememberRelay(ForecastHomeAction.OpenAlerts),
                             onDismissBanner = dispatcher.rememberRelay(ForecastHomeAction.DismissBanner),
-                            modifier = Modifier.padding(end = 2.dp),
+                            modifier = Modifier
+                                .padding(end = 2.dp)
+                                .uiAutomatorTag(UiAutomatorTags.FORECAST_DETAIL_ENTRY),
                         )
                     }
                 } else {

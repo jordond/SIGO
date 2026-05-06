@@ -14,6 +14,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.LocalTextStyle
+import now.shouldigooutside.core.ui.UiAutomatorTags
 import now.shouldigooutside.core.ui.asDisplay
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.NavigationBar
@@ -23,6 +24,7 @@ import now.shouldigooutside.core.ui.components.autoSize
 import now.shouldigooutside.core.ui.components.bottombar.BottomBarScrollBehavior
 import now.shouldigooutside.core.ui.ktx.get
 import now.shouldigooutside.core.ui.preview.AppPreview
+import now.shouldigooutside.core.ui.uiAutomatorTag
 import now.shouldigooutside.ui.home.navigation.HomeTab
 import now.shouldigooutside.ui.home.navigation.route
 
@@ -47,6 +49,7 @@ internal fun HomeBottomNav(
     ) {
         entries.forEach { entry ->
             NavigationBarItem(
+                modifier = Modifier.uiAutomatorTag(UiAutomatorTags.bottomNav(entry.name)),
                 selected = entry == selected,
                 icon = {
                     Icon(icon = entry.icon, contentDescription = entry.title.get())

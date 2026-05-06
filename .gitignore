@@ -43,6 +43,7 @@ apps/ios/iosApp.xcodeproj/*
 app/build
 *.aab
 release/
+!apps/android/src/release/
 *.apk
 .app
 *.key

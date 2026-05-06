@@ -2,6 +2,7 @@ package now.shouldigooutside
 
 import android.app.Application
 import androidx.glance.appwidget.updateAll
+import now.shouldigooutside.benchmark.BenchmarkSeeder
 import now.shouldigooutside.core.widget.AndroidWidgetUpdateObserver
 import now.shouldigooutside.di.initKoin
 import now.shouldigooutside.widget.SigoWidget
@@ -17,6 +18,8 @@ class MainApplication :
 
     override fun onCreate() {
         super.onCreate()
+
+        BenchmarkSeeder(this).seed()
 
         instance = this
 
