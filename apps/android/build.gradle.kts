@@ -31,6 +31,8 @@ android {
             .toInt()
         versionName = libs.versions.app.android.version
             .get()
+
+        buildConfigField("boolean", "IS_BENCHMARK", "false")
     }
 
     val envProps = Properties().apply {
@@ -85,6 +87,27 @@ android {
                 "proguard-rules.pro",
             )
         }
+
+        create("benchmark") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+            buildConfigField("boolean", "IS_BENCHMARK", "true")
+        }
+    }
+
+    sourceSets {
+        getByName("benchmark") {
+            kotlin.srcDir("src/benchmark/kotlin")
+            assets.srcDir("src/benchmark/assets")
+        }
     }
 
     compileOptions {
@@ -95,6 +118,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
