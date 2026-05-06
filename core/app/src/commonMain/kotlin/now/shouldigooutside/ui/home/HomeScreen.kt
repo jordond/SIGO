@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.stateholder.extensions.HandleEvents
+import now.shouldigooutside.core.ui.UiAutomatorTags
 import now.shouldigooutside.core.ui.components.Scaffold
 import now.shouldigooutside.core.ui.components.bottombar.BottomBarDefaults
 import now.shouldigooutside.core.ui.components.snackbar.LocalSnackbarProvider
@@ -115,7 +116,7 @@ internal fun HomeScreen(
                 .innerPadding(innerPadding, top = false, bottom = false)
                 .nestedScroll(bottomBarScrollBehavior.nestedScrollConnection)
                 .fillMaxSize()
-                .uiAutomatorTag("home_tab_content"),
+                .uiAutomatorTag(UiAutomatorTags.HOME_CONTENT),
         ) {
             CompositionLocalProvider(LocalSnackbarProvider provides snackbarProvider) {
                 tabContent()

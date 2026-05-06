@@ -11,7 +11,7 @@ internal fun MacrobenchmarkScope.seedBenchmark() {
     clearAppData()
 }
 
-internal fun MacrobenchmarkScope.seedAndLaunch() {
+internal fun MacrobenchmarkScope.coldLaunch() {
     pressHome()
     startActivityAndWait()
 }
@@ -22,7 +22,7 @@ internal fun MacrobenchmarkScope.waitForHomeTabLoaded() {
 }
 
 internal fun MacrobenchmarkScope.switchAllTabs() {
-    listOf("forecast", "activities", "preferences", "home").forEach { tab ->
+    BOTTOM_NAV_TABS.forEach { tab ->
         device.findObject(By.res(Tags.bottomNav(tab)))?.click()
         device.waitForIdle()
     }

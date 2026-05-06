@@ -14,6 +14,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import now.shouldigooutside.core.ui.LocalAppExperience
 import now.shouldigooutside.core.ui.LocalTextStyle
+import now.shouldigooutside.core.ui.UiAutomatorTags
 import now.shouldigooutside.core.ui.asDisplay
 import now.shouldigooutside.core.ui.components.Icon
 import now.shouldigooutside.core.ui.components.NavigationBar
@@ -48,7 +49,7 @@ internal fun HomeBottomNav(
     ) {
         entries.forEach { entry ->
             NavigationBarItem(
-                modifier = Modifier.uiAutomatorTag("bottom_nav_${entry.name.lowercase()}"),
+                modifier = Modifier.uiAutomatorTag(UiAutomatorTags.bottomNav(entry.name)),
                 selected = entry == selected,
                 icon = {
                     Icon(icon = entry.icon, contentDescription = entry.title.get())
