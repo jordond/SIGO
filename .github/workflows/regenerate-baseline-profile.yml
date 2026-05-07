@@ -58,7 +58,7 @@ jobs:
             apps/android/src/release/generated/baselineProfiles/startup-prof.txt
 
       - name: Open PR if profile changed
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: bot/regenerate-baseline-profile
           title: "chore: regenerate android baseline profile"
