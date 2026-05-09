@@ -18,6 +18,7 @@ public fun jvmApiServerModule(): Module =
         includes(commonApiServerModule())
 
         single<CacheProvider> { JvmCacheProvider(cache = InMemoryApiCache(scope = get())) }
+        single<ExecutionContext> { ImmediateExecutionContext(scope = get()) }
 
         factoryOf(::VersionRoute) bind ApiRoute::class
         factoryOf(::ForecastRoute) bind ApiRoute::class
@@ -30,6 +31,7 @@ public fun jvmApiServerModule(): Module =
                 cacheProvider = get(),
                 rateLimiter = get(),
                 corsHandler = get(),
+                executionContext = get(),
             )
         }
     }

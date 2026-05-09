@@ -25,7 +25,8 @@ private val app: App = DefaultApp(koin)
 fun fetch(
     request: Request,
     env: dynamic,
-): Promise<Response> = app.handle(request, env)
+    ctx: dynamic,
+): Promise<Response> = app.handle(request, env, ctx)
 
 internal fun initKoin(): Koin =
     startKoin {

@@ -1,9 +1,13 @@
 package now.shouldigooutside.core.api.server.ratelimit
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import now.shouldigooutside.core.api.server.ExecutionContext
 import now.shouldigooutside.core.api.server.cache.ApiCache
+import now.shouldigooutside.core.api.server.putDeferred
 import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
@@ -37,13 +41,31 @@ public class DefaultRateLimiter(
         clientId: Uuid,
         ipAddress: String?,
         cache: ApiCache,
+        executionContext: ExecutionContext,
     ): RateLimiter.RateLimitResult {
         val nowSeconds = clock.now().epochSeconds
-        val clientResult = checkKey("ratelimit:$clientId", maxRequestsPerClient, nowSeconds, cache)
-        val ipResult = if (ipAddress != null) {
-            checkKey("ratelimit:ip:$ipAddress", maxRequestsPerIp, nowSeconds, cache)
-        } else {
-            null
+        val (clientResult, ipResult) = coroutineScope {
+            val client = async {
+                checkKey(
+                    key = "ratelimit:$clientId",
+                    maxRequests = maxRequestsPerClient,
+                    nowSeconds = nowSeconds,
+                    cache = cache,
+                    executionContext = executionContext,
+                )
+            }
+            val ip = ipAddress?.let {
+                async {
+                    checkKey(
+                        key = "ratelimit:ip:$it",
+                        maxRequests = maxRequestsPerIp,
+                        nowSeconds = nowSeconds,
+                        cache = cache,
+                        executionContext = executionContext,
+                    )
+                }
+            }
+            client.await() to ip?.await()
         }
 
         val ipBlocked = ipResult != null && !ipResult.allowed
@@ -60,6 +82,7 @@ public class DefaultRateLimiter(
         maxRequests: Int,
         nowSeconds: Long,
         cache: ApiCache,
+        executionContext: ExecutionContext,
     ): RateLimiter.RateLimitResult {
         val existing = cache.get(key)
         val entry = if (existing != null) {
@@ -86,7 +109,7 @@ public class DefaultRateLimiter(
 
         val updated = currentWindow.copy(count = newCount)
         val ttl = (resetEpoch - nowSeconds).coerceAtLeast(1).seconds
-        cache.put(key, json.encodeToString(updated), ttl)
+        executionContext.putDeferred(cache, key, json.encodeToString(updated), ttl)
 
         return RateLimiter.RateLimitResult(
             allowed = allowed,

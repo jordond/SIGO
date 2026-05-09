@@ -2,8 +2,6 @@ package now.shouldigooutside.api
 
 import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
@@ -16,6 +14,8 @@ import now.shouldigooutside.api.provider.EnvKvCache
 import now.shouldigooutside.api.provider.WorkerCacheProvider
 import now.shouldigooutside.api.provider.WorkerTokenProvider
 import now.shouldigooutside.core.api.server.ApiRouter
+import now.shouldigooutside.core.api.server.ExecutionContext
+import now.shouldigooutside.core.api.server.WorkerExecutionContext
 import now.shouldigooutside.core.api.server.cache.CacheProvider
 import now.shouldigooutside.core.api.server.http.toJsResponse
 import now.shouldigooutside.core.api.server.http.toServerRequest
@@ -32,6 +32,7 @@ interface App {
     fun handle(
         request: Request,
         env: dynamic,
+        ctx: dynamic,
     ): Promise<Response>
 }
 
@@ -41,7 +42,7 @@ data class Env(
     val forecastApiKey: String,
 )
 
-@OptIn(ExperimentalSerializationApi::class, ExperimentalUuidApi::class, DelicateCoroutinesApi::class)
+@OptIn(ExperimentalSerializationApi::class, ExperimentalUuidApi::class)
 class DefaultApp(
     private val koin: Koin,
 ) : App {
@@ -50,16 +51,16 @@ class DefaultApp(
     override fun handle(
         request: Request,
         env: dynamic,
+        ctx: dynamic,
     ): Promise<Response> {
         val parsedEnv = try {
             json.decodeFromDynamic<Env>(env)
         } catch (cause: SerializationException) {
             Logger.e(cause) { "Failed to deserialize the env: $env" }
-            return GlobalScope.promise { serverError(json = json).toJsResponse() }
+            return Promise.resolve(serverError(json = json).toJsResponse())
         }
 
-        val scopeId = Uuid.random().toString()
-        val koinScope = koin.createScope<RequestScope>(scopeId)
+        val koinScope = koin.createScope<RequestScope>(Uuid.random().toString())
 
         // Any failure between createScope and the returned Promise leaks the scope
         // unless we close it here — the .then cleanup only fires once the Promise
@@ -74,6 +75,7 @@ class DefaultApp(
                 ),
             )
 
+            koinScope.declare<ExecutionContext>(WorkerExecutionContext(ctx))
             koinScope.get<CoroutineScope>()
         } catch (cause: Throwable) {
             koinScope.close()

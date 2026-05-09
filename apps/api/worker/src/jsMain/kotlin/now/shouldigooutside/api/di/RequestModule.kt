@@ -23,8 +23,13 @@ private val ktorLogTag = KermitLogger.withTag("Ktor")
 internal fun requestModule(): Module =
     module {
         scope<RequestScope> {
+            // Dispatchers.Unconfined keeps continuations on whatever microtask
+            // resolved the previous suspension. On Cloudflare Workers that is
+            // always the request's I/O context, which avoids the cross-request
+            // promise resolution traps that Dispatchers.Default's setTimeout-
+            // backed scheduling can introduce.
             scoped<CoroutineScope> {
-                CoroutineScope(SupervisorJob() + Dispatchers.Default)
+                CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
             } onClose { it?.cancel() }
 
             scoped<HttpClient> {

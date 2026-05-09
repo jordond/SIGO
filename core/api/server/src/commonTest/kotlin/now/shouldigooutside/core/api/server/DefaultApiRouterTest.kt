@@ -72,6 +72,7 @@ private class FakeRateLimiter(
         clientId: Uuid,
         ipAddress: String?,
         cache: ApiCache,
+        executionContext: ExecutionContext,
     ): RateLimiter.RateLimitResult =
         result ?: RateLimiter.RateLimitResult(
             allowed = true,
@@ -122,6 +123,7 @@ private fun router(
     corsHandler: CorsHandler = PassthroughCorsHandler(),
     cacheProvider: CacheProvider = NoCacheProvider(),
     rateLimiter: RateLimiter = FakeRateLimiter(),
+    executionContext: ExecutionContext = ExecutionContext { },
 ): DefaultApiRouter =
     DefaultApiRouter(
         routes = routes,
@@ -129,6 +131,7 @@ private fun router(
         cacheProvider = cacheProvider,
         rateLimiter = rateLimiter,
         corsHandler = corsHandler,
+        executionContext = executionContext,
     )
 
 class DefaultApiRouterTest {

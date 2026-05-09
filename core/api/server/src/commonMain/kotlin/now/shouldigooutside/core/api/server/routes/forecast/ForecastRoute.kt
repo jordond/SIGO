@@ -5,11 +5,13 @@ import kotlinx.serialization.json.Json
 import now.shouldigooutside.core.api.model.ApiRoutePath
 import now.shouldigooutside.core.api.model.entity.ApiResponse
 import now.shouldigooutside.core.api.server.ApiRoute
+import now.shouldigooutside.core.api.server.ExecutionContext
 import now.shouldigooutside.core.api.server.cache.CacheProvider
 import now.shouldigooutside.core.api.server.cache.FORECAST_CACHE_TTL
 import now.shouldigooutside.core.api.server.http.ServerRequest
 import now.shouldigooutside.core.api.server.http.ServerResponse
 import now.shouldigooutside.core.api.server.http.queryParams
+import now.shouldigooutside.core.api.server.putDeferred
 import now.shouldigooutside.core.api.server.util.cached
 import now.shouldigooutside.core.api.server.util.respondJson
 import now.shouldigooutside.core.api.server.util.roundCoordinate
@@ -24,6 +26,7 @@ public class ForecastRoute(
     private val json: Json,
     private val getForecastUseCase: GetForecastUseCase,
     private val cacheProvider: CacheProvider,
+    private val executionContext: ExecutionContext,
 ) : ApiRoute {
     private val logger = Logger.withTag("ForecastRoute")
     override val path: ApiRoutePath = ApiRoutePath.Forecast
@@ -64,7 +67,7 @@ public class ForecastRoute(
         val responseData = ForecastResponse(forecast = forecast)
         val responseJson = json.encodeToString(ApiResponse(data = responseData))
 
-        cache?.put(cacheKey, responseJson, ttl = FORECAST_CACHE_TTL)
+        executionContext.putDeferred(cache, cacheKey, responseJson, FORECAST_CACHE_TTL)
 
         return cached(FORECAST_CACHE_TTL) {
             respondJson(json = responseJson)
