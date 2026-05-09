@@ -27,10 +27,7 @@ public fun ScopeDSL.scopedApiRouterDefinitions() {
         DefaultApiRouter(
             routes = getAll<ApiRoute>(),
             json = get(),
-            cacheProvider = get(),
-            rateLimiter = get(),
             corsHandler = get(),
-            executionContext = get(),
         )
     }
 }

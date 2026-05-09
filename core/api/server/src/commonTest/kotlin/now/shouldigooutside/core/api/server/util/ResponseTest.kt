@@ -66,13 +66,6 @@ class ResponseTest {
     }
 
     @Test
-    fun tooManyRequestsReturns429() {
-        val result = tooManyRequests()
-
-        result.statusCode shouldBe 429
-    }
-
-    @Test
     fun cachedAddsCacheControlHeader() {
         val result = cached(15.minutes) {
             respondJson(json = """{"data":"test"}""")

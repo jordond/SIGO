@@ -28,10 +28,7 @@ public fun jvmApiServerModule(): Module =
             DefaultApiRouter(
                 routes = getAll(),
                 json = get(),
-                cacheProvider = get(),
-                rateLimiter = get(),
                 corsHandler = get(),
-                executionContext = get(),
             )
         }
     }

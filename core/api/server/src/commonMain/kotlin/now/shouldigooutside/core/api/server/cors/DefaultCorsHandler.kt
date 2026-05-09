@@ -58,10 +58,6 @@ public class DefaultCorsHandler(
                 append(HttpHeaders.AccessControlAllowOrigin, origin)
                 append(HttpHeaders.AccessControlAllowMethods, ALLOWED_METHODS)
                 append(HttpHeaders.AccessControlAllowHeaders, ALLOWED_HEADERS)
-                append(
-                    HttpHeaders.AccessControlExposeHeaders,
-                    "${ApiHeaders.RATE_LIMIT}, ${ApiHeaders.RATE_LIMIT_REMAINING}, ${ApiHeaders.RATE_LIMIT_RESET}",
-                )
                 append(HttpHeaders.Vary, HttpHeaders.Origin)
             }.build()
 
