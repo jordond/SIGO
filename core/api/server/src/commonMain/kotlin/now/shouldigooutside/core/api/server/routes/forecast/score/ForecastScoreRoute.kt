@@ -5,12 +5,14 @@ import kotlinx.serialization.json.Json
 import now.shouldigooutside.core.api.model.ApiRoutePath
 import now.shouldigooutside.core.api.model.entity.ApiResponse
 import now.shouldigooutside.core.api.server.ApiRoute
+import now.shouldigooutside.core.api.server.ExecutionContext
 import now.shouldigooutside.core.api.server.cache.CacheProvider
 import now.shouldigooutside.core.api.server.cache.FORECAST_CACHE_TTL
 import now.shouldigooutside.core.api.server.exception.BadRequestException
 import now.shouldigooutside.core.api.server.http.ServerRequest
 import now.shouldigooutside.core.api.server.http.ServerResponse
 import now.shouldigooutside.core.api.server.http.queryParams
+import now.shouldigooutside.core.api.server.putDeferred
 import now.shouldigooutside.core.api.server.util.cached
 import now.shouldigooutside.core.api.server.util.respondJson
 import now.shouldigooutside.core.api.server.util.roundCoordinate
@@ -29,6 +31,7 @@ public class ForecastScoreRoute(
     private val getForecastUseCase: GetForecastUseCase,
     private val scoreCalculator: ScoreCalculator,
     private val cacheProvider: CacheProvider,
+    private val executionContext: ExecutionContext,
 ) : ApiRoute {
     private val logger = Logger.withTag("ForecastScoreRoute")
     override val path: ApiRoutePath = ApiRoutePath.ForecastScore
@@ -81,7 +84,7 @@ public class ForecastScoreRoute(
         val score = scoreCalculator.calculate(forecast, preferences, query.includeAirQuality).toEntity()
         val responseData = ForecastScoreResponse(forecast = forecast.toEntity(), score = score)
         val responseJson = json.encodeToString(ApiResponse(data = responseData))
-        cache?.put(cacheKey, responseJson, ttl = FORECAST_CACHE_TTL)
+        executionContext.putDeferred(cache, cacheKey, responseJson, FORECAST_CACHE_TTL)
 
         return cached(FORECAST_CACHE_TTL) {
             respondJson(json = responseJson)

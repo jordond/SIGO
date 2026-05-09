@@ -1,5 +1,6 @@
 package now.shouldigooutside.core.api.server.ratelimit
 
+import now.shouldigooutside.core.api.server.ExecutionContext
 import now.shouldigooutside.core.api.server.cache.ApiCache
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
@@ -16,5 +17,6 @@ public interface RateLimiter {
         clientId: Uuid,
         ipAddress: String?,
         cache: ApiCache,
+        executionContext: ExecutionContext,
     ): RateLimitResult
 }

@@ -27,6 +27,7 @@ internal class DefaultApiRouter(
     private val cacheProvider: CacheProvider,
     private val rateLimiter: RateLimiter,
     private val corsHandler: CorsHandler,
+    private val executionContext: ExecutionContext,
 ) : ApiRouter {
     private val logger = Logger.withTag("ApiRouter")
 
@@ -57,7 +58,7 @@ internal class DefaultApiRouter(
         val ipAddress = request.headers[ApiHeaders.CONNECTING_IP]
         val cache = cacheProvider.cache
         val rateLimitResult = if (cache != null) {
-            rateLimiter.check(clientId, ipAddress, cache)
+            rateLimiter.check(clientId, ipAddress, cache, executionContext)
         } else {
             null
         }

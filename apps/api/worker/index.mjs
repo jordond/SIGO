@@ -20,6 +20,6 @@ const lib = await import("./build/compileSync/js/main/productionExecutable/kotli
 
 export default {
     async fetch(request, env, ctx) {
-        return lib.fetch(request, env)
+        return lib.fetch(request, env, ctx)
     }
 }

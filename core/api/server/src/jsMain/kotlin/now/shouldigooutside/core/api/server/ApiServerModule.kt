@@ -20,8 +20,8 @@ public fun jsApiServerModule(): Module =
  */
 public fun ScopeDSL.scopedApiRouterDefinitions() {
     scoped { VersionRoute(get()) } bind ApiRoute::class
-    scoped { ForecastRoute(get(), get(), get()) } bind ApiRoute::class
-    scoped { ForecastScoreRoute(get(), get(), get(), get()) } bind ApiRoute::class
+    scoped { ForecastRoute(get(), get(), get(), get()) } bind ApiRoute::class
+    scoped { ForecastScoreRoute(get(), get(), get(), get(), get()) } bind ApiRoute::class
 
     scoped<ApiRouter> {
         DefaultApiRouter(
@@ -30,6 +30,7 @@ public fun ScopeDSL.scopedApiRouterDefinitions() {
             cacheProvider = get(),
             rateLimiter = get(),
             corsHandler = get(),
+            executionContext = get(),
         )
     }
 }
