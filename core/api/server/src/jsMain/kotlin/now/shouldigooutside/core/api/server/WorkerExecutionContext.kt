@@ -16,6 +16,12 @@ import kotlinx.coroutines.promise
 public class WorkerExecutionContext(
     private val ctx: dynamic,
 ) : ExecutionContext {
+    init {
+        require(ctx != null && ctx != undefined) {
+            "WorkerExecutionContext requires the Cloudflare execution context (ctx)"
+        }
+    }
+
     override fun waitUntil(block: suspend () -> Unit) {
         ctx.waitUntil(workerScope.promise { block() })
     }
