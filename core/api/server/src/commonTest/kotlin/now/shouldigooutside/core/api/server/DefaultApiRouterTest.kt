@@ -7,16 +7,11 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import now.shouldigooutside.core.api.model.ApiRoutePath
 import now.shouldigooutside.core.api.model.http.ApiHeaders
-import now.shouldigooutside.core.api.server.cache.ApiCache
-import now.shouldigooutside.core.api.server.cache.CacheProvider
 import now.shouldigooutside.core.api.server.cors.CorsHandler
 import now.shouldigooutside.core.api.server.exception.BadRequestException
 import now.shouldigooutside.core.api.server.http.ServerRequest
 import now.shouldigooutside.core.api.server.http.ServerResponse
-import now.shouldigooutside.core.api.server.ratelimit.RateLimiter
 import kotlin.test.Test
-import kotlin.time.Duration
-import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 private val testClientId = Uuid.random().toString()
@@ -49,48 +44,6 @@ private class PassthroughCorsHandler : CorsHandler {
     ): ServerResponse = response
 }
 
-private class NoCacheProvider : CacheProvider {
-    override val cache: ApiCache? = null
-}
-
-private class FakeCacheProvider : CacheProvider {
-    override val cache: ApiCache = object : ApiCache {
-        override suspend fun get(key: String): String? = null
-
-        override suspend fun put(
-            key: String,
-            value: String,
-            ttl: Duration,
-        ) {}
-    }
-}
-
-private class FakeRateLimiter(
-    private var result: RateLimiter.RateLimitResult? = null,
-) : RateLimiter {
-    override suspend fun check(
-        clientId: Uuid,
-        ipAddress: String?,
-        cache: ApiCache,
-        executionContext: ExecutionContext,
-    ): RateLimiter.RateLimitResult =
-        result ?: RateLimiter.RateLimitResult(
-            allowed = true,
-            limit = 100,
-            remaining = 99,
-            resetAt = Instant.fromEpochSeconds(9999),
-        )
-
-    fun deny() {
-        result = RateLimiter.RateLimitResult(
-            allowed = false,
-            limit = 100,
-            remaining = 0,
-            resetAt = Instant.fromEpochSeconds(9999),
-        )
-    }
-}
-
 private class FakeRoute(
     override val path: ApiRoutePath = ApiRoutePath.Forecast,
     private val getResponse: ServerResponse? = ServerResponse(statusCode = 200, body = "ok"),
@@ -121,17 +74,11 @@ private class ThrowingRoute(
 private fun router(
     routes: List<ApiRoute> = emptyList(),
     corsHandler: CorsHandler = PassthroughCorsHandler(),
-    cacheProvider: CacheProvider = NoCacheProvider(),
-    rateLimiter: RateLimiter = FakeRateLimiter(),
-    executionContext: ExecutionContext = ExecutionContext { },
 ): DefaultApiRouter =
     DefaultApiRouter(
         routes = routes,
         json = Json { ignoreUnknownKeys = true },
-        cacheProvider = cacheProvider,
-        rateLimiter = rateLimiter,
         corsHandler = corsHandler,
-        executionContext = executionContext,
     )
 
 class DefaultApiRouterTest {
@@ -266,30 +213,6 @@ class DefaultApiRouterTest {
             val result = router.handle(request())
 
             result.statusCode shouldBe 403
-        }
-
-    @Test
-    fun rateLimitExceededReturns429() =
-        runTest {
-            val rateLimiter = FakeRateLimiter()
-            rateLimiter.deny()
-            val router = router(rateLimiter = rateLimiter, cacheProvider = FakeCacheProvider())
-
-            val result = router.handle(request())
-
-            result.statusCode shouldBe 429
-        }
-
-    @Test
-    fun rateLimitHeadersAddedOnSuccess() =
-        runTest {
-            val route = FakeRoute()
-            val router = router(routes = listOf(route), cacheProvider = FakeCacheProvider())
-
-            val result = router.handle(request(url = "https://api.example.com/forecast"))
-
-            result.headers[ApiHeaders.RATE_LIMIT] shouldBe "100"
-            result.headers[ApiHeaders.RATE_LIMIT_REMAINING] shouldBe "99"
         }
 
     @Test

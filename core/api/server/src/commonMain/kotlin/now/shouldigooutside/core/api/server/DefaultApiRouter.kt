@@ -1,33 +1,26 @@
 package now.shouldigooutside.core.api.server
 
 import co.touchlab.kermit.Logger
-import io.ktor.http.HeadersBuilder
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
 import now.shouldigooutside.core.api.model.http.ApiHeaders
-import now.shouldigooutside.core.api.server.cache.CacheProvider
 import now.shouldigooutside.core.api.server.cors.CorsHandler
 import now.shouldigooutside.core.api.server.exception.BadRequestException
 import now.shouldigooutside.core.api.server.http.ServerRequest
 import now.shouldigooutside.core.api.server.http.ServerResponse
-import now.shouldigooutside.core.api.server.ratelimit.RateLimiter
 import now.shouldigooutside.core.api.server.util.badRequest
 import now.shouldigooutside.core.api.server.util.methodNotAllowed
 import now.shouldigooutside.core.api.server.util.noContent
 import now.shouldigooutside.core.api.server.util.notFound
 import now.shouldigooutside.core.api.server.util.serverError
-import now.shouldigooutside.core.api.server.util.tooManyRequests
 import now.shouldigooutside.core.api.server.util.unauthorized
 import kotlin.uuid.Uuid
 
 internal class DefaultApiRouter(
     private val routes: List<ApiRoute>,
     private val json: Json,
-    private val cacheProvider: CacheProvider,
-    private val rateLimiter: RateLimiter,
     private val corsHandler: CorsHandler,
-    private val executionContext: ExecutionContext,
 ) : ApiRouter {
     private val logger = Logger.withTag("ApiRouter")
 
@@ -53,25 +46,6 @@ internal class DefaultApiRouter(
                 ),
                 request = request,
             )
-        }
-
-        val ipAddress = request.headers[ApiHeaders.CONNECTING_IP]
-        val cache = cacheProvider.cache
-        val rateLimitResult = if (cache != null) {
-            rateLimiter.check(clientId, ipAddress, cache, executionContext)
-        } else {
-            null
-        }
-
-        if (rateLimitResult != null && !rateLimitResult.allowed) {
-            val finalResponse = addRateLimitHeaders(
-                response = tooManyRequests(
-                    meta = mapOf("error" to "Rate limit exceeded"),
-                    json = json,
-                ),
-                result = rateLimitResult,
-            )
-            return corsHandler.withCorsHeaders(finalResponse, request)
         }
 
         val path = extractPath(request.url)
@@ -104,24 +78,7 @@ internal class DefaultApiRouter(
             serverError(meta = mapOf("path" to path), json = json)
         }
 
-        val finalResponse =
-            if (rateLimitResult == null) response else addRateLimitHeaders(response, rateLimitResult)
-
-        return corsHandler.withCorsHeaders(finalResponse, request)
-    }
-
-    private fun addRateLimitHeaders(
-        response: ServerResponse,
-        result: RateLimiter.RateLimitResult,
-    ): ServerResponse {
-        val headers = HeadersBuilder()
-            .apply {
-                appendAll(response.headers)
-                append(ApiHeaders.RATE_LIMIT, result.limit.toString())
-                append(ApiHeaders.RATE_LIMIT_REMAINING, result.remaining.toString())
-                append(ApiHeaders.RATE_LIMIT_RESET, result.resetAt.epochSeconds.toString())
-            }.build()
-        return response.copy(headers = headers)
+        return corsHandler.withCorsHeaders(response, request)
     }
 
     private fun extractPath(url: String): String {

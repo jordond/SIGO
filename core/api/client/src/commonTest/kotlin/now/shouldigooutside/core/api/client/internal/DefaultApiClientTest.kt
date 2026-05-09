@@ -14,11 +14,9 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import now.shouldigooutside.core.api.client.ApiUrlProvider
-import now.shouldigooutside.core.api.model.ApiRoutePath
 import now.shouldigooutside.core.api.model.entity.ApiResponse
 import now.shouldigooutside.core.api.model.entity.VersionEntity
 import now.shouldigooutside.core.api.model.entity.VersionResponse
-import now.shouldigooutside.core.api.model.http.ApiHeaders
 import now.shouldigooutside.core.model.location.Location
 import now.shouldigooutside.forecast.data.entity.toEntity
 import now.shouldigooutside.test.testForecast
@@ -61,68 +59,9 @@ class DefaultApiClientTest {
 
             val result = client.version()
 
-            result.data.name shouldBe "1.0.0"
-            result.data.code shouldBe 1
-            result.data.sha shouldBe "abc123"
-        }
-
-    @Test
-    fun versionParsesRateLimitHeaders() =
-        runTest {
-            val versionResponse = ApiResponse(
-                data = VersionResponse(
-                    version = VersionEntity(name = "1.0.0", code = 1, sha = null),
-                ),
-            )
-            val responseJson = testJson.encodeToString(versionResponse)
-
-            val engine = MockEngine { _ ->
-                respond(
-                    content = responseJson,
-                    status = HttpStatusCode.OK,
-                    headers = headersOf(
-                        HttpHeaders.ContentType to listOf(ContentType.Application.Json.toString()),
-                        ApiHeaders.RATE_LIMIT to listOf("100"),
-                        ApiHeaders.RATE_LIMIT_REMAINING to listOf("95"),
-                        ApiHeaders.RATE_LIMIT_RESET to listOf("1700000000"),
-                    ),
-                )
-            }
-            val client = createClient(engine)
-
-            val result = client.version()
-
-            val rateLimit = result.rateLimit
-            rateLimit shouldNotBe null
-            rateLimit!!.limit shouldBe 100
-            rateLimit.remaining shouldBe 95
-        }
-
-    @Test
-    fun versionReturnsNullRateLimitWhenHeadersMissing() =
-        runTest {
-            val versionResponse = ApiResponse(
-                data = VersionResponse(
-                    version = VersionEntity(name = "1.0.0", code = 1, sha = null),
-                ),
-            )
-            val responseJson = testJson.encodeToString(versionResponse)
-
-            val engine = MockEngine { _ ->
-                respond(
-                    content = responseJson,
-                    status = HttpStatusCode.OK,
-                    headers = headersOf(
-                        HttpHeaders.ContentType,
-                        ContentType.Application.Json.toString(),
-                    ),
-                )
-            }
-            val client = createClient(engine)
-
-            val result = client.version()
-
-            result.rateLimit shouldBe null
+            result.name shouldBe "1.0.0"
+            result.code shouldBe 1
+            result.sha shouldBe "abc123"
         }
 
     @Test
@@ -184,8 +123,8 @@ class DefaultApiClientTest {
 
             val result = client.forecast(Location(latitude = 43.65, longitude = -79.38))
 
-            result.data.location.latitude shouldBe forecast.location.latitude
-            result.data.location.longitude shouldBe forecast.location.longitude
+            result.location.latitude shouldBe forecast.location.latitude
+            result.location.longitude shouldBe forecast.location.longitude
         }
 
     @Test
