@@ -20,6 +20,8 @@ internal data class HomeScreenDeps(
     val strings: AutoStrings,
     val onRefresh: () -> Unit,
     val nowProvider: () -> Instant,
+    val hourlyTemplateBuilder: HourlyTemplateBuilder,
+    val alertsTemplateBuilder: AlertsTemplateBuilder,
 )
 
 internal class HomeScreen(
@@ -33,7 +35,25 @@ internal class HomeScreen(
             settings = deps.settings.value,
             scores = deps.activityScores.value,
             onRefresh = deps.onRefresh,
-            onHourly = { /* wired in Task 16 */ },
-            onAlerts = { /* wired in Task 16 */ },
+            onHourly = {
+                screenManager.push(
+                    HourlyScreen(
+                        carContext = carContext,
+                        forecastState = deps.forecastState,
+                        settings = deps.settings,
+                        templateBuilder = deps.hourlyTemplateBuilder,
+                    ),
+                )
+            },
+            onAlerts = {
+                screenManager.push(
+                    AlertsScreen(
+                        carContext = carContext,
+                        forecastState = deps.forecastState,
+                        strings = deps.strings,
+                        templateBuilder = deps.alertsTemplateBuilder,
+                    ),
+                )
+            },
         )
 }
