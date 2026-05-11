@@ -25,9 +25,8 @@ internal class NativeFetchVisualCrossingApi(
         val url = buildUrl(location)
         val response = jsFetch(url).await()
         if (!response.ok) {
-            throw RuntimeException(
-                "VisualCrossing request failed: HTTP ${response.status.toInt()}",
-            )
+            val body = runCatching { response.text().await() }.getOrNull().orEmpty()
+            throw RuntimeException("VisualCrossing HTTP ${response.status.toInt()}: $body")
         }
         val body = response.text().await()
         return json.decodeFromString(VCForecastResponse.serializer(), body)
