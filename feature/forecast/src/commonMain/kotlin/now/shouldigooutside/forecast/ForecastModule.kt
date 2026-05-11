@@ -95,6 +95,9 @@ public fun forecastCliModule(): Module =
  * Registers per-request scoped forecast definitions into the calling [ScopeDSL] block.
  * Intended for use inside `scope<RequestScope> { scopedForecastDefinitions() }` in
  * platform-specific DI modules that cannot access the `internal` implementations directly.
+ *
+ * Does NOT bind [VisualCrossingApi] — callers must register a platform-specific
+ * implementation (e.g. `scopedJsNativeVisualCrossingApi()` on Kotlin/JS).
  */
 public fun ScopeDSL.scopedForecastDefinitions() {
     scoped<QueryCostLogger> {
@@ -104,7 +107,6 @@ public fun ScopeDSL.scopedForecastDefinitions() {
         }
     }
     scoped<ScoreCalculator> { DefaultScoreCalculator() }
-    scoped<VisualCrossingApi> { DefaultVisualCrossingApi(get(), get()) }
     scoped<ForecastSource> { VisualCrossingForecastSource(get(), get(), get()) }
     scoped<ForecastRepo> { DefaultForecastRepo(get(), null) }
     scoped<GetForecastUseCase> { DefaultGetForecastUseCase(get()) }

@@ -19,14 +19,6 @@ internal class DefaultVisualCrossingApi(
     private val httpClient: HttpClient,
     private val tokenProvider: ApiTokenProvider,
 ) : VisualCrossingApi {
-    private val params
-        get() = listOf(
-            "key" to tokenProvider.provide(),
-            "unitGroup" to "base",
-            "include" to "days,hours,alerts,current,events",
-            "elements" to "+aqius,+aqieur",
-        )
-
     override suspend fun forecastFor(
         latitude: Double,
         longitude: Double,
@@ -36,17 +28,12 @@ internal class DefaultVisualCrossingApi(
 
     private suspend fun makeRequest(location: String): VCForecastResponse =
         httpClient
-            .get(BaseUrl) {
+            .get(VisualCrossingApiSpec.BaseUrl) {
                 url {
                     appendPathSegments(location)
-                    params.forEach { (key, value) ->
+                    VisualCrossingApiSpec.params(tokenProvider.provide()).forEach { (key, value) ->
                         parameters.append(key, value)
                     }
                 }
             }.body()
-
-    companion object {
-        private const val BaseUrl =
-            "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"
-    }
 }
