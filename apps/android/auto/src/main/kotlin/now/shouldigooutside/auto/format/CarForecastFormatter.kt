@@ -5,6 +5,8 @@ import androidx.car.app.model.ItemList
 import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Pane
 import androidx.car.app.model.Row
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
@@ -138,7 +140,39 @@ internal class CarForecastFormatter(
         forecast: Forecast,
         units: Units,
         now: Instant,
-    ): ItemList = TODO("Implemented in task 7")
+    ): ItemList {
+        val list = ItemList.Builder()
+        val futureHours = forecast.today.hours
+            .filter { it.instant >= now }
+            .take(HOURLY_ROW_CAP)
+
+        futureHours.forEach { hour ->
+            val timeLabel = formatHour(hour.instant)
+            val title = "$timeLabel · ${formatTemp(hour.temperature.value, units)}"
+            val detailParts = buildList {
+                add(strings.windShort(formatWind(hour.wind.speed, units)))
+                if (hour.precipitation.probability > 0) {
+                    add(strings.precipShort(hour.precipitation.probability))
+                }
+            }
+            val detail = detailParts.joinToString(separator = " · ")
+            list.addItem(
+                Row
+                    .Builder()
+                    .setTitle(title)
+                    .addText(detail)
+                    .build(),
+            )
+        }
+        return list.build()
+    }
+
+    private fun formatHour(instant: Instant): String {
+        val local = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+        val hour12 = ((local.hour + 11) % 12) + 1
+        val suffix = if (local.hour < 12) "AM" else "PM"
+        return "$hour12 $suffix"
+    }
 
     fun alertsList(
         alerts: List<Alert>,
@@ -149,6 +183,7 @@ internal class CarForecastFormatter(
 
     private companion object {
         const val STALE_THRESHOLD_MINUTES = 60
+        const val HOURLY_ROW_CAP = 12
     }
 }
 

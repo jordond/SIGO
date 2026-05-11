@@ -9,11 +9,13 @@ import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.test.testForecast
 import now.shouldigooutside.test.testForecastBlock
+import now.shouldigooutside.test.testForecastDay
 import now.shouldigooutside.test.testLocation
 import now.shouldigooutside.test.testPrecipitation
 import now.shouldigooutside.test.testTemperature
 import now.shouldigooutside.test.testWind
 import kotlin.test.Test
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 class CarForecastFormatterTest {
@@ -138,6 +140,35 @@ class CarForecastFormatterTest {
             .single()
             .title
             .toString() shouldBe "Refresh"
+    }
+
+    @Test
+    fun hourlyList_returnsRowsForFutureHoursOnly() {
+        val baseInstant = now
+        val hours = (0..15).map { offset ->
+            testForecastBlock(
+                instant = baseInstant + offset.hours - 3.hours,
+                temperature = testTemperature(value = 20.0 + offset),
+            )
+        }
+        val forecast = testForecast(today = testForecastDay(hours = hours))
+
+        val list = formatter.hourlyList(forecast, Units.Metric, now)
+
+        list.items.size shouldBe 12
+    }
+
+    @Test
+    fun hourlyList_capsAtTwelveRows() {
+        val baseInstant = now
+        val hours = (0..30).map { offset ->
+            testForecastBlock(instant = baseInstant + offset.hours)
+        }
+        val forecast = testForecast(today = testForecastDay(hours = hours))
+
+        val list = formatter.hourlyList(forecast, Units.Metric, now)
+
+        list.items.size shouldBe 12
     }
 
     private fun baseState(forecast: Forecast) =

@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.collections)
+    implementation(libs.kotlinx.datetime)
 
     testImplementation(libs.androidx.car.app.testing)
     testImplementation(projects.test)
