@@ -38,7 +38,6 @@ dependencies {
 
     implementation(libs.androidx.car.app)
     implementation(libs.androidx.core)
-    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.kermit)
     implementation(libs.koin.core)
     implementation(libs.koin.android)
