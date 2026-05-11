@@ -452,4 +452,7 @@
     <string name="auto_wind_short">Wind %1$s</string>
     <string name="auto_precip_short">Precip %1$d%%</string>
     <string name="auto_retry">Retry</string>
+    <string name="auto_score_symbol_yes">✓</string>
+    <string name="auto_score_symbol_no">✗</string>
+    <string name="auto_score_symbol_maybe">•</string>
 </resources>

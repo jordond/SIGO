@@ -1,11 +1,11 @@
 package now.shouldigooutside.auto.di
 
-import androidx.car.app.CarContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import now.shouldigooutside.auto.format.AutoStrings
 import now.shouldigooutside.auto.location.AndroidCarHardwareLocationSource
 import now.shouldigooutside.auto.location.CarLocationProvider
+import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.auto_alert_single
 import now.shouldigooutside.core.resources.auto_alerts_count
@@ -18,6 +18,9 @@ import now.shouldigooutside.core.resources.auto_open_phone
 import now.shouldigooutside.core.resources.auto_precip_short
 import now.shouldigooutside.core.resources.auto_refresh
 import now.shouldigooutside.core.resources.auto_retry
+import now.shouldigooutside.core.resources.auto_score_symbol_maybe
+import now.shouldigooutside.core.resources.auto_score_symbol_no
+import now.shouldigooutside.core.resources.auto_score_symbol_yes
 import now.shouldigooutside.core.resources.auto_stale_updated_hours
 import now.shouldigooutside.core.resources.auto_stale_updated_minutes
 import now.shouldigooutside.core.resources.auto_wind_short
@@ -55,6 +58,9 @@ private suspend fun resolveAutoStrings(): AutoStrings {
         scoreYes = getString(Res.string.score_yes),
         scoreNo = getString(Res.string.score_no),
         scoreMaybe = getString(Res.string.score_maybe),
+        scoreSymbolYes = getString(Res.string.auto_score_symbol_yes),
+        scoreSymbolNo = getString(Res.string.auto_score_symbol_no),
+        scoreSymbolMaybe = getString(Res.string.auto_score_symbol_maybe),
         staleMinutes = { mins -> staleMinutesFmt.format(mins) },
         staleHours = { hours -> staleHoursFmt.format(hours) },
         feelsLikeShort = { s -> feelsLikeFmt.format(s) },
@@ -73,21 +79,21 @@ private suspend fun resolveAutoStrings(): AutoStrings {
 
 public fun autoModule(): Module =
     module {
-        single<suspend () -> AutoStrings> {
+        single<AutoStringsProvider> {
             val mutex = Mutex()
             var cached: AutoStrings? = null
-            val provider: suspend () -> AutoStrings = {
+            AutoStringsProvider {
                 cached ?: mutex.withLock {
                     cached ?: resolveAutoStrings().also { cached = it }
                 }
             }
-            provider
         }
 
-        factory<(CarContext) -> CarLocationProvider?> {
-            { carContext: CarContext ->
+        factory<CarLocationProviderFactory> {
+            val settingsRepo: SettingsRepo = get()
+            CarLocationProviderFactory { carContext ->
                 CarLocationProvider(
-                    settingsRepo = get(),
+                    settingsRepo = settingsRepo,
                     carHardware = AndroidCarHardwareLocationSource(carContext),
                     nowProvider = { Clock.System.now() },
                 )

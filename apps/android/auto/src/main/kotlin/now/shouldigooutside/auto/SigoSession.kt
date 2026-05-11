@@ -1,7 +1,6 @@
 package now.shouldigooutside.auto
 
 import android.content.Intent
-import androidx.car.app.CarContext
 import androidx.car.app.Screen
 import androidx.car.app.ScreenManager
 import androidx.car.app.Session
@@ -15,10 +14,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.runBlocking
-import now.shouldigooutside.auto.format.AutoStrings
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import now.shouldigooutside.auto.di.AutoStringsProvider
+import now.shouldigooutside.auto.di.CarLocationProviderFactory
 import now.shouldigooutside.auto.format.CarForecastFormatter
-import now.shouldigooutside.auto.location.CarLocationProvider
+import now.shouldigooutside.auto.format.DefaultAutoIconProvider
 import now.shouldigooutside.auto.screens.AlertsTemplateBuilder
 import now.shouldigooutside.auto.screens.HomeScreen
 import now.shouldigooutside.auto.screens.HomeScreenDeps
@@ -34,8 +36,8 @@ internal data class SigoSessionDeps(
     val forecastStateHolder: ForecastStateHolder,
     val settingsRepo: SettingsRepo,
     val getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
-    val carLocationProviderFactory: (CarContext) -> CarLocationProvider?,
-    val stringsProvider: suspend () -> AutoStrings,
+    val carLocationProviderFactory: CarLocationProviderFactory,
+    val stringsProvider: AutoStringsProvider,
 )
 
 internal class SigoSession(
@@ -45,6 +47,9 @@ internal class SigoSession(
     private val logger = Logger.withTag("SigoSession")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val activityScoresFlow = MutableStateFlow(persistentListOf<ActivityForecastScore>())
+    private val renderContextFlow = MutableStateFlow<SessionRenderContext?>(null)
+    private val renderContext = renderContextFlow.asStateFlow()
+    private val nowProvider: () -> kotlin.time.Instant = { Clock.System.now() }
 
     private val orchestrator = SigoSessionOrchestrator(
         forecastStateHolder = deps.forecastStateHolder,
@@ -53,38 +58,33 @@ internal class SigoSession(
         activityScoresSink = activityScoresFlow,
     )
 
-    private lateinit var strings: AutoStrings
-
     init {
         lifecycle.addObserver(this)
     }
 
-    override fun onCreateScreen(intent: Intent): Screen {
-        strings = runBlocking { deps.stringsProvider() }
-        val formatter = CarForecastFormatter(strings)
-        val homeBuilder = HomeTemplateBuilder(formatter, strings, nowProvider = { Clock.System.now() })
-        val hourlyBuilder = HourlyTemplateBuilder(formatter, strings, nowProvider = { Clock.System.now() })
-        val alertsBuilder = AlertsTemplateBuilder(formatter, strings)
-
-        return HomeScreen(
+    override fun onCreateScreen(intent: Intent): Screen =
+        HomeScreen(
             carContext = carContext,
+            renderContext = renderContext,
             deps = HomeScreenDeps(
                 forecastState = deps.forecastStateHolder.state,
                 settings = deps.settingsRepo.settings,
                 activityScores = activityScoresFlow,
-                strings = strings,
                 onRefresh = { deps.forecastStateHolder.fetch() },
-                nowProvider = { Clock.System.now() },
-                hourlyTemplateBuilder = hourlyBuilder,
-                alertsTemplateBuilder = alertsBuilder,
+                nowProvider = nowProvider,
             ),
-            templateBuilder = homeBuilder,
         )
-    }
 
     override fun onStart(owner: LifecycleOwner) {
-        val carLocationProvider = deps.carLocationProviderFactory(carContext)
+        val carLocationProvider = deps.carLocationProviderFactory.invoke(carContext)
         orchestrator.start(scope, carLocationProvider) { invalidateTopScreen() }
+        if (renderContextFlow.value == null) {
+            scope.launch {
+                val ctx = withContext(Dispatchers.Default) { buildRenderContext() }
+                renderContextFlow.value = ctx
+                invalidateTopScreen()
+            }
+        }
     }
 
     override fun onStop(owner: LifecycleOwner) {
@@ -93,6 +93,17 @@ internal class SigoSession(
 
     override fun onDestroy(owner: LifecycleOwner) {
         scope.cancel()
+    }
+
+    private suspend fun buildRenderContext(): SessionRenderContext {
+        val strings = deps.stringsProvider.invoke()
+        val iconProvider = DefaultAutoIconProvider(carContext)
+        val formatter = CarForecastFormatter(strings, iconProvider)
+        return SessionRenderContext(
+            homeBuilder = HomeTemplateBuilder(formatter, strings, nowProvider),
+            hourlyBuilder = HourlyTemplateBuilder(formatter, strings, nowProvider),
+            alertsBuilder = AlertsTemplateBuilder(formatter, strings),
+        )
     }
 
     private fun invalidateTopScreen() {

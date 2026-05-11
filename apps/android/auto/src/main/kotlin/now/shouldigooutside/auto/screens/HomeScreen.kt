@@ -5,7 +5,7 @@ import androidx.car.app.Screen
 import androidx.car.app.model.Template
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.flow.StateFlow
-import now.shouldigooutside.auto.format.AutoStrings
+import now.shouldigooutside.auto.SessionRenderContext
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.score.ActivityForecastScore
@@ -16,20 +16,18 @@ internal data class HomeScreenDeps(
     val forecastState: StateFlow<AsyncResult<Forecast>>,
     val settings: StateFlow<Settings>,
     val activityScores: StateFlow<PersistentList<ActivityForecastScore>>,
-    val strings: AutoStrings,
     val onRefresh: () -> Unit,
     val nowProvider: () -> Instant,
-    val hourlyTemplateBuilder: HourlyTemplateBuilder,
-    val alertsTemplateBuilder: AlertsTemplateBuilder,
 )
 
 internal class HomeScreen(
     carContext: CarContext,
+    private val renderContext: StateFlow<SessionRenderContext?>,
     private val deps: HomeScreenDeps,
-    private val templateBuilder: HomeTemplateBuilder,
 ) : Screen(carContext) {
-    override fun onGetTemplate(): Template =
-        templateBuilder.build(
+    override fun onGetTemplate(): Template {
+        val ctx = renderContext.value ?: return loadingTemplate()
+        return ctx.homeBuilder.build(
             status = deps.forecastState.value,
             settings = deps.settings.value,
             scores = deps.activityScores.value,
@@ -38,9 +36,9 @@ internal class HomeScreen(
                 screenManager.push(
                     HourlyScreen(
                         carContext = carContext,
+                        renderContext = renderContext,
                         forecastState = deps.forecastState,
                         settings = deps.settings,
-                        templateBuilder = deps.hourlyTemplateBuilder,
                     ),
                 )
             },
@@ -48,11 +46,11 @@ internal class HomeScreen(
                 screenManager.push(
                     AlertsScreen(
                         carContext = carContext,
+                        renderContext = renderContext,
                         forecastState = deps.forecastState,
-                        strings = deps.strings,
-                        templateBuilder = deps.alertsTemplateBuilder,
                     ),
                 )
             },
         )
+    }
 }

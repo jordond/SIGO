@@ -21,6 +21,7 @@ import java.util.TimeZone as JavaTimeZone
 
 internal class CarForecastFormatter(
     private val strings: AutoStrings,
+    private val iconProvider: AutoIconProvider,
 ) {
     private val shortTimeFormat: DateFormat = DateFormat
         .getTimeInstance(DateFormat.SHORT, Locale.getDefault())
@@ -39,37 +40,50 @@ internal class CarForecastFormatter(
         var alertsAction: Action? = null
 
         if (forecast != null && current != null) {
+            val staleMinutes = (now - forecast.instant).inWholeMinutes.toInt()
+            val staleLabel: String? = if (staleMinutes >= STALE_THRESHOLD_MINUTES) {
+                if (staleMinutes < 60) {
+                    strings.staleMinutes(staleMinutes)
+                } else {
+                    strings.staleHours(staleMinutes / 60)
+                }
+            } else {
+                null
+            }
+
             val rows = buildList<Row> {
-                if (state.currentScore != null) {
-                    val verdictText =
-                        "${scoreLabel(
-                            state.currentScore,
-                        )} — ${formatTemp(current.temperature.value, state.units)}"
-                    add(Row.Builder().setTitle(verdictText).build())
+                val tempText = formatTemp(current.temperature.value, state.units)
+                val verdictTitle = if (state.currentScore != null) {
+                    "${scoreSymbol(state.currentScore)} ${scoreLabel(state.currentScore)} — $tempText"
+                } else {
+                    tempText
                 }
-
-                add(
-                    Row
-                        .Builder()
-                        .setTitle(
-                            strings.feelsLikeShort(formatTemp(current.temperature.feelsLike, state.units)),
-                        ).addText(strings.windShort(formatWind(current.wind.speed, state.units)))
-                        .addText(strings.precipShort(current.precipitation.probability))
-                        .build(),
-                )
-
-                state.locationName?.let { name ->
-                    add(Row.Builder().setTitle(name).build())
-                }
-
-                val staleMinutes = (now - forecast.instant).inWholeMinutes.toInt()
-                if (staleMinutes >= STALE_THRESHOLD_MINUTES) {
-                    val label = if (staleMinutes < 60) {
-                        strings.staleMinutes(staleMinutes)
+                val conditions = listOfNotNull(
+                    strings.feelsLikeShort(formatTemp(current.temperature.feelsLike, state.units)),
+                    strings.windShort(formatWind(current.wind.speed, state.units)),
+                    if (current.precipitation.probability > 0) {
+                        strings.precipShort(current.precipitation.probability)
                     } else {
-                        strings.staleHours(staleMinutes / 60)
-                    }
-                    add(Row.Builder().setTitle(label).build())
+                        null
+                    },
+                ).joinToString(separator = " · ")
+
+                val verdictRow = Row.Builder().setTitle(verdictTitle).addText(conditions)
+                if (state.currentScore != null) {
+                    verdictRow.setImage(iconProvider.scoreIcon(state.currentScore), Row.IMAGE_TYPE_ICON)
+                }
+                add(verdictRow.build())
+
+                val name = state.locationName
+                if (name != null) {
+                    val locationRow = Row
+                        .Builder()
+                        .setTitle(name)
+                        .setImage(iconProvider.locationIcon(), Row.IMAGE_TYPE_ICON)
+                    staleLabel?.let { locationRow.addText(it) }
+                    add(locationRow.build())
+                } else if (staleLabel != null) {
+                    add(Row.Builder().setTitle(staleLabel).build())
                 }
             }.take(PANE_ROW_CAP)
 
@@ -109,6 +123,13 @@ internal class CarForecastFormatter(
             ScoreResult.Yes -> strings.scoreYes
             ScoreResult.No -> strings.scoreNo
             ScoreResult.Maybe -> strings.scoreMaybe
+        }
+
+    private fun scoreSymbol(result: ScoreResult): String =
+        when (result) {
+            ScoreResult.Yes -> strings.scoreSymbolYes
+            ScoreResult.No -> strings.scoreSymbolNo
+            ScoreResult.Maybe -> strings.scoreSymbolMaybe
         }
 
     private fun formatTemp(
@@ -191,23 +212,23 @@ internal class CarForecastFormatter(
         return list.build()
     }
 
-    fun alertDetail(alert: Alert): MessageTemplate {
-        val message = alert.description
-            .takeIf { it.isNotBlank() }
-            ?: alert.headline?.takeIf { it.isNotBlank() }
-            ?: alert.title
-        return MessageTemplate
-            .Builder(message)
-            .setTitle(alert.title)
-            .setHeaderAction(Action.BACK)
-            .build()
-    }
-
     private companion object {
         const val STALE_THRESHOLD_MINUTES = 60
         const val HOURLY_ROW_CAP = 12
         const val PANE_ROW_CAP = 4
     }
+}
+
+internal fun buildAlertDetail(alert: Alert): MessageTemplate {
+    val message = alert.description
+        .takeIf { it.isNotBlank() }
+        ?: alert.headline?.takeIf { it.isNotBlank() }
+        ?: alert.title
+    return MessageTemplate
+        .Builder(message)
+        .setTitle(alert.title)
+        .setHeaderAction(Action.BACK)
+        .build()
 }
 
 internal data class AutoStrings(
@@ -221,6 +242,9 @@ internal data class AutoStrings(
     val scoreYes: String,
     val scoreNo: String,
     val scoreMaybe: String,
+    val scoreSymbolYes: String,
+    val scoreSymbolNo: String,
+    val scoreSymbolMaybe: String,
     val staleMinutes: (Int) -> String,
     val staleHours: (Int) -> String,
     val feelsLikeShort: (String) -> String,
