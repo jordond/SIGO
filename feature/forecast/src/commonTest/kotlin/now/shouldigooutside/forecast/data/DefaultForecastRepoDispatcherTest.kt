@@ -1,5 +1,6 @@
 package now.shouldigooutside.forecast.data
 
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.test.runTest
@@ -29,6 +30,7 @@ class DefaultForecastRepoDispatcherTest {
 
             DefaultForecastRepo(source).forecastFor(testLocation())
 
+            sourceDispatcher.shouldNotBeNull()
             sourceDispatcher shouldBe callerDispatcher
         }
 
@@ -49,6 +51,7 @@ class DefaultForecastRepoDispatcherTest {
 
             DefaultForecastRepo(source).forecastFor("Toronto")
 
+            sourceDispatcher.shouldNotBeNull()
             sourceDispatcher shouldBe callerDispatcher
         }
 }
