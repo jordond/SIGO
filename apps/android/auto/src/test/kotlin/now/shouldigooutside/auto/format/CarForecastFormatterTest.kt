@@ -171,6 +171,32 @@ class CarForecastFormatterTest {
         list.items.size shouldBe 12
     }
 
+    @Test
+    fun alertsList_returnsRowPerAlert() {
+        val alerts = listOf(
+            Alert(title = "Storm", description = "d", headline = "h1"),
+            Alert(title = "Wind", description = "d", headline = "h2"),
+        )
+
+        val list = formatter.alertsList(alerts, onAlertClick = {})
+
+        list.items.size shouldBe 2
+        (list.items[0] as androidx.car.app.model.Row).title.toString() shouldBe "Storm"
+    }
+
+    @Test
+    fun alertDetail_returnsMessageTemplateWithDescription() {
+        val alert = Alert(
+            title = "Storm",
+            description = "Heavy rain expected this evening.",
+        )
+
+        val template = formatter.alertDetail(alert)
+
+        template.message.toString() shouldBe "Heavy rain expected this evening."
+        template.title.toString() shouldBe "Storm"
+    }
+
     private fun baseState(forecast: Forecast) =
         CarAutoHomeState(
             status = AsyncResult.Success(forecast),

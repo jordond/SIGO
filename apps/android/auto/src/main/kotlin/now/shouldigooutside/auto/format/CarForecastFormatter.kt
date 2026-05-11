@@ -177,9 +177,28 @@ internal class CarForecastFormatter(
     fun alertsList(
         alerts: List<Alert>,
         onAlertClick: (Alert) -> Unit,
-    ): ItemList = TODO("Implemented in task 8")
+    ): ItemList {
+        val list = ItemList.Builder()
+        alerts.forEach { alert ->
+            list.addItem(
+                Row
+                    .Builder()
+                    .setTitle(alert.title)
+                    .also { row -> alert.headline?.let { row.addText(it) } }
+                    .setBrowsable(true)
+                    .setOnClickListener { onAlertClick(alert) }
+                    .build(),
+            )
+        }
+        return list.build()
+    }
 
-    fun alertDetail(alert: Alert): MessageTemplate = TODO("Implemented in task 8")
+    fun alertDetail(alert: Alert): MessageTemplate =
+        MessageTemplate
+            .Builder(alert.description)
+            .setTitle(alert.title)
+            .setHeaderAction(Action.BACK)
+            .build()
 
     private companion object {
         const val STALE_THRESHOLD_MINUTES = 60
