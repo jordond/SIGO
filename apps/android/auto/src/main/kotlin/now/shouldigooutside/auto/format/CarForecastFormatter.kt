@@ -5,8 +5,6 @@ import androidx.car.app.model.ItemList
 import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Pane
 import androidx.car.app.model.Row
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
@@ -14,12 +12,20 @@ import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.TemperatureUnit
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.model.units.WindSpeedUnit
+import java.text.DateFormat
+import java.util.Date
+import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.time.Instant
+import java.util.TimeZone as JavaTimeZone
 
 internal class CarForecastFormatter(
     private val strings: AutoStrings,
 ) {
+    private val shortTimeFormat: DateFormat = DateFormat
+        .getTimeInstance(DateFormat.SHORT, Locale.getDefault())
+        .apply { timeZone = JavaTimeZone.getDefault() }
+
     fun homePane(
         state: CarAutoHomeState,
         now: Instant,
@@ -33,31 +39,41 @@ internal class CarForecastFormatter(
         var alertsAction: Action? = null
 
         if (forecast != null && current != null) {
-            if (state.currentScore != null) {
-                val verdictText =
-                    "${scoreLabel(
-                        state.currentScore,
-                    )} — ${formatTemp(current.temperature.value, state.units)}"
-                builder.addRow(
+            val rows = buildList<Row> {
+                if (state.currentScore != null) {
+                    val verdictText =
+                        "${scoreLabel(
+                            state.currentScore,
+                        )} — ${formatTemp(current.temperature.value, state.units)}"
+                    add(Row.Builder().setTitle(verdictText).build())
+                }
+
+                add(
                     Row
                         .Builder()
-                        .setTitle(verdictText)
+                        .setTitle(
+                            strings.feelsLikeShort(formatTemp(current.temperature.feelsLike, state.units)),
+                        ).addText(strings.windShort(formatWind(current.wind.speed, state.units)))
+                        .addText(strings.precipShort(current.precipitation.probability))
                         .build(),
                 )
-            }
 
-            builder.addRow(
-                Row
-                    .Builder()
-                    .setTitle(strings.feelsLikeShort(formatTemp(current.temperature.feelsLike, state.units)))
-                    .addText(strings.windShort(formatWind(current.wind.speed, state.units)))
-                    .addText(strings.precipShort(current.precipitation.probability))
-                    .build(),
-            )
+                state.locationName?.let { name ->
+                    add(Row.Builder().setTitle(name).build())
+                }
 
-            state.locationName?.let { name ->
-                builder.addRow(Row.Builder().setTitle(name).build())
-            }
+                val staleMinutes = (now - forecast.instant).inWholeMinutes.toInt()
+                if (staleMinutes >= STALE_THRESHOLD_MINUTES) {
+                    val label = if (staleMinutes < 60) {
+                        strings.staleMinutes(staleMinutes)
+                    } else {
+                        strings.staleHours(staleMinutes / 60)
+                    }
+                    add(Row.Builder().setTitle(label).build())
+                }
+            }.take(PANE_ROW_CAP)
+
+            rows.forEach { builder.addRow(it) }
 
             val alertCount = forecast.alerts.size
             if (alertCount > 0) {
@@ -66,21 +82,6 @@ internal class CarForecastFormatter(
                     .setTitle(strings.alertsCount(alertCount))
                     .setOnClickListener { onAlerts() }
                     .build()
-            }
-
-            val staleMinutes = (now - forecast.instant).inWholeMinutes.toInt()
-            if (staleMinutes >= STALE_THRESHOLD_MINUTES) {
-                val label = if (staleMinutes < 60) {
-                    strings.staleMinutes(staleMinutes)
-                } else {
-                    strings.staleHours(staleMinutes / 60)
-                }
-                builder.addRow(
-                    Row
-                        .Builder()
-                        .setTitle(label)
-                        .build(),
-                )
             }
         }
 
@@ -168,12 +169,8 @@ internal class CarForecastFormatter(
         return list.build()
     }
 
-    private fun formatHour(instant: Instant): String {
-        val local = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-        val hour12 = ((local.hour + 11) % 12) + 1
-        val suffix = if (local.hour < 12) "AM" else "PM"
-        return "$hour12 $suffix"
-    }
+    private fun formatHour(instant: Instant): String =
+        shortTimeFormat.format(Date(instant.toEpochMilliseconds()))
 
     fun alertsList(
         alerts: List<Alert>,
@@ -194,20 +191,27 @@ internal class CarForecastFormatter(
         return list.build()
     }
 
-    fun alertDetail(alert: Alert): MessageTemplate =
-        MessageTemplate
-            .Builder(alert.description)
+    fun alertDetail(alert: Alert): MessageTemplate {
+        val message = alert.description
+            .takeIf { it.isNotBlank() }
+            ?: alert.headline?.takeIf { it.isNotBlank() }
+            ?: alert.title
+        return MessageTemplate
+            .Builder(message)
             .setTitle(alert.title)
             .setHeaderAction(Action.BACK)
             .build()
+    }
 
     private companion object {
         const val STALE_THRESHOLD_MINUTES = 60
         const val HOURLY_ROW_CAP = 12
+        const val PANE_ROW_CAP = 4
     }
 }
 
 internal data class AutoStrings(
+    val appName: String,
     val refresh: String,
     val hourlyForecast: String,
     val openPhone: String,

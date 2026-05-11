@@ -35,7 +35,7 @@ internal class HomeTemplateBuilder(
         onAlerts: () -> Unit,
     ): HomePaneResult? {
         if (status is AsyncResult.Success) lastSuccess = status.data
-        val cachedForecast = (status as? AsyncResult.Success)?.data ?: lastSuccess
+        val cachedForecast = lastSuccess
 
         if (status is AsyncResult.Loading && cachedForecast == null) {
             return null
@@ -72,9 +72,7 @@ internal class HomeTemplateBuilder(
         onHourly: () -> Unit,
         onAlerts: () -> Unit,
     ): Template {
-        val cachedForecast = (status as? AsyncResult.Success)?.data ?: lastSuccess
-
-        if (status is AsyncResult.Error && cachedForecast == null) {
+        if (status is AsyncResult.Error && lastSuccess == null) {
             return MessageTemplate
                 .Builder(strings.forecastUnavailable)
                 .setTitle(strings.openPhone)
@@ -107,7 +105,7 @@ internal class HomeTemplateBuilder(
 
         val templateBuilder = PaneTemplate
             .Builder(result.pane)
-            .setTitle(strings.openPhone)
+            .setTitle(strings.appName)
             .setHeaderAction(Action.APP_ICON)
 
         if (result.alertsAction != null) {

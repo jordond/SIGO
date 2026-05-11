@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import now.shouldigooutside.auto.format.AutoStrings
@@ -87,6 +88,10 @@ internal class SigoSession(
     }
 
     override fun onStop(owner: LifecycleOwner) {
+        scope.coroutineContext.cancelChildren()
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
         scope.cancel()
     }
 

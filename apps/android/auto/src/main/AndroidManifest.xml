@@ -13,7 +13,7 @@
             </intent-filter>
             <meta-data
                 android:name="androidx.car.app.minCarApiLevel"
-                android:value="1" />
+                android:value="3" />
         </service>
     </application>
 </manifest>

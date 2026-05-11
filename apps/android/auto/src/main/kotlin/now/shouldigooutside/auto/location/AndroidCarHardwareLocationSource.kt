@@ -11,13 +11,11 @@ import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeoutOrNull
 import now.shouldigooutside.core.model.location.Location
-import java.util.concurrent.Executors
 
 internal class AndroidCarHardwareLocationSource(
     private val carContext: CarContext,
 ) : CarHardwareLocationSource {
     private val logger = Logger.withTag("AndroidCarHardware")
-    private val executor = Executors.newSingleThreadExecutor()
 
     override fun hasPermission(): Boolean =
         carContext.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
@@ -47,7 +45,7 @@ internal class AndroidCarHardwareLocationSource(
             runCatching {
                 manager.carSensors.addCarHardwareLocationListener(
                     CarSensors.UPDATE_RATE_FASTEST,
-                    executor,
+                    carContext.mainExecutor,
                     listener,
                 )
             }.onFailure { error ->

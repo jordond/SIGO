@@ -222,6 +222,7 @@ class CarForecastFormatterTest {
 
 internal fun fakeAutoStrings(): AutoStrings =
     AutoStrings(
+        appName = "Sigo",
         refresh = "Refresh",
         hourlyForecast = "Hourly forecast",
         openPhone = "Open phone",

@@ -79,22 +79,19 @@ class HomeTemplateBuilderTest {
     }
 
     @Test
-    fun build_returnsLoadingTemplate_whenSuccessButNoActivityScores() {
+    fun build_returnsPaneTemplate_whenScoresMissing() {
         val builder = HomeTemplateBuilder(formatter, strings, nowProvider = { now })
         val forecast = testForecast()
 
         val template = builder.build(
             status = AsyncResult.Success(forecast),
             settings = Settings(firstLaunch = Instant.fromEpochSeconds(0)),
-            scores = persistentListOf(), // no scores yet — race window
+            scores = persistentListOf(),
             onRefresh = {},
             onHourly = {},
             onAlerts = {},
         )
 
-        // Without scores, currentScore is null and the verdict row is skipped,
-        // but the conditions row + actions still keep the pane non-empty.
-        // Verify a real PaneTemplate is returned (no crash).
         template.shouldBeInstanceOf<PaneTemplate>()
     }
 

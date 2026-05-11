@@ -1,5 +1,6 @@
 package now.shouldigooutside.auto
 
+import co.touchlab.kermit.Logger
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +18,8 @@ internal class SigoSessionOrchestrator(
     private val getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
     private val activityScoresSink: MutableStateFlow<PersistentList<ActivityForecastScore>>,
 ) {
+    private val logger = Logger.withTag("SigoSessionOrchestrator")
+
     /**
      * Starts collectors inside [scope]. Calls [onInvalidate] every time the forecast state
      * emits a new value. StateFlow already suppresses duplicate emissions.
@@ -33,13 +36,17 @@ internal class SigoSessionOrchestrator(
 
         scope.launch {
             getActivitiesScoreUseCase.scoresFlow().collect { scores ->
-                activityScoresSink.value = scores.toPersistentList()
+                val next = scores.toPersistentList()
+                if (next != activityScoresSink.value) {
+                    activityScoresSink.value = next
+                    onInvalidate()
+                }
             }
         }
 
         scope.launch {
             runCatching { carLocationProvider?.primeLocationRepo() }
-                .onFailure { /* swallow */ }
+                .onFailure { logger.w(it) { "primeLocationRepo failed" } }
             forecastStateHolder.fetch()
         }
     }
