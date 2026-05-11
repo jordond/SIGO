@@ -8,6 +8,7 @@ import androidx.car.app.model.Row
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
+import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.TemperatureUnit
 import now.shouldigooutside.core.model.units.Units
@@ -163,35 +164,50 @@ internal class CarForecastFormatter(
         forecast: Forecast,
         units: Units,
         now: Instant,
+        hourScores: List<ScoreResult>,
     ): ItemList {
         val list = ItemList.Builder()
         val futureHours = forecast.today.hours
+            .asSequence()
             .filter { it.instant >= now }
             .take(HOURLY_ROW_CAP)
+            .toList()
 
-        futureHours.forEach { hour ->
+        futureHours.forEachIndexed { index, hour ->
+            val precipProb = hour.precipitation.probability
             val timeLabel = formatHour(hour.instant)
-            val title = "$timeLabel · ${formatTemp(hour.temperature.value, units)}"
-            val detailParts = buildList {
-                add(strings.windShort(formatWind(hour.wind.speed, units)))
-                if (hour.precipitation.probability > 0) {
-                    add(strings.precipShort(hour.precipitation.probability))
-                }
-            }
-            val detail = detailParts.joinToString(separator = " · ")
-            list.addItem(
-                Row
-                    .Builder()
-                    .setTitle(title)
-                    .addText(detail)
-                    .build(),
+            val tempText = formatTemp(hour.temperature.value, units)
+            val condition = conditionGlyph(precipProb, hour.cloudCoverPercent)
+            val title = "$timeLabel · $tempText · $condition"
+
+            val detailParts = listOfNotNull(
+                strings.windShort(formatWind(hour.wind.speed, units)),
+                if (precipProb > 0) strings.precipShort(precipProb) else null,
             )
+
+            val row = Row.Builder().setTitle(title).addText(detailParts.joinToString(separator = " · "))
+            hourScores.getOrNull(index)?.let { score ->
+                row.setImage(iconProvider.scoreIcon(score), Row.IMAGE_TYPE_ICON)
+            }
+            list.addItem(row.build())
         }
         return list.build()
     }
 
     private fun formatHour(instant: Instant): String =
         shortTimeFormat.format(Date(instant.toEpochMilliseconds()))
+
+    private fun conditionGlyph(
+        precipProbability: Int,
+        cloudCoverPercent: Int,
+    ): String =
+        when {
+            precipProbability >= 70 -> strings.conditionRain
+            precipProbability >= 30 -> strings.conditionShowers
+            cloudCoverPercent >= 70 -> strings.conditionCloudy
+            cloudCoverPercent >= 30 -> strings.conditionPartlyCloudy
+            else -> strings.conditionSunny
+        }
 
     fun alertsList(
         alerts: List<Alert>,
@@ -245,6 +261,11 @@ internal data class AutoStrings(
     val scoreSymbolYes: String,
     val scoreSymbolNo: String,
     val scoreSymbolMaybe: String,
+    val conditionSunny: String,
+    val conditionPartlyCloudy: String,
+    val conditionCloudy: String,
+    val conditionShowers: String,
+    val conditionRain: String,
     val staleMinutes: (Int) -> String,
     val staleHours: (Int) -> String,
     val feelsLikeShort: (String) -> String,

@@ -42,8 +42,7 @@ internal class HomeTemplateBuilder(
         }
 
         val currentScore: ScoreResult? = scores
-            .firstOrNull { it.activity == settings.selectedActivity }
-            ?.score
+            .forecastScoreFor(settings.selectedActivity)
             ?.current
             ?.result
 

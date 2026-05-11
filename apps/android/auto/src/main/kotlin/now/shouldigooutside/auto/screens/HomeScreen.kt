@@ -39,6 +39,7 @@ internal class HomeScreen(
                         renderContext = renderContext,
                         forecastState = deps.forecastState,
                         settings = deps.settings,
+                        activityScores = deps.activityScores,
                     ),
                 )
             },

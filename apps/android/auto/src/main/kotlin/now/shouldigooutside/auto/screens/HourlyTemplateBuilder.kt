@@ -4,10 +4,13 @@ import androidx.car.app.model.Action
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Template
+import kotlinx.collections.immutable.PersistentList
 import now.shouldigooutside.auto.format.AutoStrings
 import now.shouldigooutside.auto.format.CarForecastFormatter
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Forecast
+import now.shouldigooutside.core.model.score.ActivityForecastScore
+import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.settings.Settings
 import kotlin.time.Instant
 
@@ -19,6 +22,7 @@ internal class HourlyTemplateBuilder(
     fun build(
         status: AsyncResult<Forecast>,
         settings: Settings,
+        scores: PersistentList<ActivityForecastScore>,
     ): Template {
         val forecast = (status as? AsyncResult.Success)?.data
             ?: return MessageTemplate
@@ -27,7 +31,13 @@ internal class HourlyTemplateBuilder(
                 .setHeaderAction(Action.BACK)
                 .build()
 
-        val list = formatter.hourlyList(forecast, settings.units, nowProvider())
+        val hourScores: List<ScoreResult> = scores
+            .forecastScoreFor(settings.selectedActivity)
+            ?.hours
+            ?.map { it.result }
+            .orEmpty()
+
+        val list = formatter.hourlyList(forecast, settings.units, nowProvider(), hourScores)
 
         return ListTemplate
             .Builder()

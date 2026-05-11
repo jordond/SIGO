@@ -455,4 +455,9 @@
     <string name="auto_score_symbol_yes">✓</string>
     <string name="auto_score_symbol_no">✗</string>
     <string name="auto_score_symbol_maybe">•</string>
+    <string name="auto_condition_sunny">☀</string>
+    <string name="auto_condition_partly_cloudy">⛅</string>
+    <string name="auto_condition_cloudy">☁</string>
+    <string name="auto_condition_showers">🌦</string>
+    <string name="auto_condition_rain">☔</string>
 </resources>

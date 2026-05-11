@@ -10,6 +10,11 @@ import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.auto_alert_single
 import now.shouldigooutside.core.resources.auto_alerts_count
 import now.shouldigooutside.core.resources.auto_app_name
+import now.shouldigooutside.core.resources.auto_condition_cloudy
+import now.shouldigooutside.core.resources.auto_condition_partly_cloudy
+import now.shouldigooutside.core.resources.auto_condition_rain
+import now.shouldigooutside.core.resources.auto_condition_showers
+import now.shouldigooutside.core.resources.auto_condition_sunny
 import now.shouldigooutside.core.resources.auto_feels_like_short
 import now.shouldigooutside.core.resources.auto_forecast_unavailable
 import now.shouldigooutside.core.resources.auto_hourly_forecast
@@ -61,6 +66,11 @@ private suspend fun resolveAutoStrings(): AutoStrings {
         scoreSymbolYes = getString(Res.string.auto_score_symbol_yes),
         scoreSymbolNo = getString(Res.string.auto_score_symbol_no),
         scoreSymbolMaybe = getString(Res.string.auto_score_symbol_maybe),
+        conditionSunny = getString(Res.string.auto_condition_sunny),
+        conditionPartlyCloudy = getString(Res.string.auto_condition_partly_cloudy),
+        conditionCloudy = getString(Res.string.auto_condition_cloudy),
+        conditionShowers = getString(Res.string.auto_condition_showers),
+        conditionRain = getString(Res.string.auto_condition_rain),
         staleMinutes = { mins -> staleMinutesFmt.format(mins) },
         staleHours = { hours -> staleHoursFmt.format(hours) },
         feelsLikeShort = { s -> feelsLikeFmt.format(s) },
