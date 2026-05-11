@@ -1,6 +1,7 @@
 package now.shouldigooutside.auto.format
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
@@ -36,9 +37,9 @@ class CarForecastFormatterTest {
             locationName = forecast.location.name,
         )
 
-        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+        val result = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
 
-        val verdictRow = pane.rows.first()
+        val verdictRow = result.pane.rows.first()
         verdictRow.title.toString() shouldBe "Yes — 22°C"
     }
 
@@ -53,9 +54,9 @@ class CarForecastFormatterTest {
         )
         val state = baseState(forecast)
 
-        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+        val result = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
 
-        val conditions = pane.rows[1]
+        val conditions = result.pane.rows[1]
         conditions.title.toString() shouldBe "Feels 24°C"
         conditions.texts.map { it.toString() } shouldBe listOf("Wind 12 km/h", "Precip 10%")
     }
@@ -65,14 +66,16 @@ class CarForecastFormatterTest {
         val forecast = testForecast(location = testLocation(name = "Toronto"))
         val state = baseState(forecast).copy(locationName = "Toronto")
 
-        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+        val result = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
 
-        pane.rows[2].title.toString() shouldBe "Toronto"
+        result.pane.rows[2]
+            .title
+            .toString() shouldBe "Toronto"
     }
 
     @Test
-    fun homePane_includesBrowsableHourlyRow() {
-        val pane = formatter.homePane(
+    fun homePane_includesHourlyAction() {
+        val result = formatter.homePane(
             baseState(testForecast()),
             now,
             onRefresh = {},
@@ -80,23 +83,22 @@ class CarForecastFormatterTest {
             onAlerts = {},
         )
 
-        val hourlyRow = pane.rows[3]
-        hourlyRow.title.toString() shouldBe "Hourly forecast"
-        hourlyRow.isBrowsable shouldBe true
+        val hourlyAction = result.pane.actions.firstOrNull { it.title.toString() == "Hourly forecast" }
+        hourlyAction shouldNotBe null
     }
 
     @Test
-    fun homePane_omitsAlertsRow_whenNoAlerts() {
+    fun homePane_omitsAlertsAction_whenNoAlerts() {
         val forecast = testForecast(alerts = kotlinx.collections.immutable.persistentListOf())
         val state = baseState(forecast)
 
-        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+        val result = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
 
-        pane.rows.none { it.title.toString().endsWith("alerts") } shouldBe true
+        result.alertsAction shouldBe null
     }
 
     @Test
-    fun homePane_includesAlertsRow_whenAlertsPresent() {
+    fun homePane_includesAlertsAction_whenAlertsPresent() {
         val forecast = testForecast(
             alerts = kotlinx.collections.immutable.persistentListOf(
                 Alert(title = "Storm", description = "desc"),
@@ -105,11 +107,9 @@ class CarForecastFormatterTest {
         )
         val state = baseState(forecast)
 
-        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+        val result = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
 
-        val alertsRow = pane.rows.last { it.title.toString().endsWith("alerts") }
-        alertsRow.title.toString() shouldBe "2 alerts"
-        alertsRow.isBrowsable shouldBe true
+        result.alertsAction!!.title.toString() shouldBe "2 alerts"
     }
 
     @Test
@@ -118,9 +118,9 @@ class CarForecastFormatterTest {
         val forecast = testForecast(instant = forecastInstant)
         val state = baseState(forecast)
 
-        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+        val result = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
 
-        pane.rows
+        result.pane.rows
             .last()
             .title
             .toString() shouldBe "Updated 3 h ago"
@@ -128,7 +128,7 @@ class CarForecastFormatterTest {
 
     @Test
     fun homePane_addsRefreshAction() {
-        val pane = formatter.homePane(
+        val result = formatter.homePane(
             baseState(testForecast()),
             now,
             onRefresh = {},
@@ -136,10 +136,7 @@ class CarForecastFormatterTest {
             onAlerts = {},
         )
 
-        pane.actions
-            .single()
-            .title
-            .toString() shouldBe "Refresh"
+        result.pane.actions.any { it.title.toString() == "Refresh" } shouldBe true
     }
 
     @Test

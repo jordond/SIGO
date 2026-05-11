@@ -21,10 +21,10 @@ class HomeTemplateBuilderTest {
     private val now = Instant.fromEpochSeconds(1_715_000_000)
 
     @Test
-    fun buildPane_returnsNull_whenStatusLoadingAndNoCache() {
+    fun buildResult_returnsNull_whenStatusLoadingAndNoCache() {
         val builder = HomeTemplateBuilder(formatter, strings, nowProvider = { now })
 
-        val pane = builder.buildPane(
+        val result = builder.buildResult(
             status = AsyncResult.Loading,
             settings = Settings(firstLaunch = Instant.fromEpochSeconds(0)),
             scores = persistentListOf(),
@@ -33,11 +33,11 @@ class HomeTemplateBuilderTest {
             onAlerts = {},
         )
 
-        pane shouldBe null
+        result shouldBe null
     }
 
     @Test
-    fun buildPane_returnsPane_withRows_onSuccess() {
+    fun buildResult_returnsHomePaneResult_withRows_onSuccess() {
         val builder = HomeTemplateBuilder(formatter, strings, nowProvider = { now })
         val forecast = testForecast()
         val score = ActivityForecastScore(
@@ -46,7 +46,7 @@ class HomeTemplateBuilderTest {
             score = testForecastScore(),
         )
 
-        val pane = builder.buildPane(
+        val result = builder.buildResult(
             status = AsyncResult.Success(forecast),
             settings = Settings(firstLaunch = Instant.fromEpochSeconds(0)),
             scores = persistentListOf(score),
@@ -55,7 +55,7 @@ class HomeTemplateBuilderTest {
             onAlerts = {},
         )
 
-        pane shouldNotBe null
-        pane!!.rows.isNotEmpty() shouldBe true
+        result shouldNotBe null
+        result!!.pane.rows.isNotEmpty() shouldBe true
     }
 }

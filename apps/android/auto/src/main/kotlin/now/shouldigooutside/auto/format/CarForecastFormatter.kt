@@ -26,10 +26,11 @@ internal class CarForecastFormatter(
         onRefresh: () -> Unit,
         onHourly: () -> Unit,
         onAlerts: () -> Unit,
-    ): Pane {
+    ): HomePaneResult {
         val builder = Pane.Builder()
         val forecast = (state.status as? AsyncResult.Success)?.data
         val current = forecast?.current
+        var alertsAction: Action? = null
 
         if (current != null && state.currentScore != null) {
             val verdictText =
@@ -54,25 +55,13 @@ internal class CarForecastFormatter(
                 builder.addRow(Row.Builder().setTitle(name).build())
             }
 
-            builder.addRow(
-                Row
-                    .Builder()
-                    .setTitle(strings.hourlyForecast)
-                    .setBrowsable(true)
-                    .setOnClickListener { onHourly() }
-                    .build(),
-            )
-
             val alertCount = forecast.alerts.size
             if (alertCount > 0) {
-                builder.addRow(
-                    Row
-                        .Builder()
-                        .setTitle(strings.alertsCount(alertCount))
-                        .setBrowsable(true)
-                        .setOnClickListener { onAlerts() }
-                        .build(),
-                )
+                alertsAction = Action
+                    .Builder()
+                    .setTitle(strings.alertsCount(alertCount))
+                    .setOnClickListener { onAlerts() }
+                    .build()
             }
 
             val staleMinutes = (now - forecast.instant).inWholeMinutes.toInt()
@@ -99,7 +88,15 @@ internal class CarForecastFormatter(
                 .build(),
         )
 
-        return builder.build()
+        builder.addAction(
+            Action
+                .Builder()
+                .setTitle(strings.hourlyForecast)
+                .setOnClickListener { onHourly() }
+                .build(),
+        )
+
+        return HomePaneResult(pane = builder.build(), alertsAction = alertsAction)
     }
 
     private fun scoreLabel(result: ScoreResult): String =

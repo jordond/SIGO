@@ -1,5 +1,7 @@
 package now.shouldigooutside.auto.format
 
+import androidx.car.app.model.Action
+import androidx.car.app.model.Pane
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.preferences.Activity
@@ -12,4 +14,9 @@ internal data class CarAutoHomeState(
     val selectedActivity: Activity,
     val currentScore: ScoreResult?,
     val locationName: String?,
+)
+
+internal data class HomePaneResult(
+    val pane: Pane,
+    val alertsAction: Action?,
 )
