@@ -31,6 +31,7 @@ android {
 dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.model)
+    implementation(libs.stateHolder)
     implementation(projects.core.foundation)
     implementation(projects.core.platform)
     implementation(projects.core.resources)
