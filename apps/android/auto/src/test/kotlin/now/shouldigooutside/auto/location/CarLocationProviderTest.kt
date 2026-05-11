@@ -29,6 +29,70 @@ class CarLocationProviderTest {
             primed shouldBe false
             carHardware.attemptCount shouldBe 0
         }
+
+    @Test
+    fun primeLocationRepo_writesSettings_onCarHardwareSuccess() =
+        runTest {
+            val settingsRepo = FakeSettingsRepo(
+                initial = Settings(
+                    firstLaunch = kotlin.time.Instant.fromEpochSeconds(0),
+                    useCustomLocation = false,
+                ),
+            )
+            val fakeFix = Location(latitude = 1.0, longitude = 2.0)
+            val carHardware = StubCarHardware(fix = fakeFix, hasPermission = true)
+            val provider = CarLocationProvider(
+                settingsRepo = settingsRepo,
+                carHardware = carHardware,
+                nowProvider = { kotlin.time.Instant.fromEpochSeconds(123) },
+            )
+
+            val primed = provider.primeLocationRepo()
+
+            primed shouldBe true
+            settingsRepo.settings.value.lastLocation shouldBe fakeFix
+            settingsRepo.settings.value.lastLocationUpdate shouldBe kotlin.time.Instant.fromEpochSeconds(123)
+        }
+
+    @Test
+    fun primeLocationRepo_returnsFalse_whenPermissionDenied() =
+        runTest {
+            val settingsRepo = FakeSettingsRepo(
+                initial = Settings(
+                    firstLaunch = kotlin.time.Instant.fromEpochSeconds(0),
+                    useCustomLocation = false,
+                ),
+            )
+            val carHardware = StubCarHardware(fix = null, hasPermission = false)
+            val provider = CarLocationProvider(
+                settingsRepo = settingsRepo,
+                carHardware = carHardware,
+                nowProvider = { kotlin.time.Instant.fromEpochSeconds(0) },
+            )
+
+            provider.primeLocationRepo() shouldBe false
+        }
+
+    @Test
+    fun primeLocationRepo_returnsFalse_onCarHardwareTimeout() =
+        runTest {
+            val settingsRepo = FakeSettingsRepo(
+                initial = Settings(
+                    firstLaunch = kotlin.time.Instant.fromEpochSeconds(0),
+                    useCustomLocation = false,
+                ),
+            )
+            val carHardware = StubCarHardware(fix = null, hasPermission = true)
+            val initialLastLocation = settingsRepo.settings.value.lastLocation
+            val provider = CarLocationProvider(
+                settingsRepo = settingsRepo,
+                carHardware = carHardware,
+                nowProvider = { kotlin.time.Instant.fromEpochSeconds(0) },
+            )
+
+            provider.primeLocationRepo() shouldBe false
+            settingsRepo.settings.value.lastLocation shouldBe initialLastLocation
+        }
 }
 
 internal class NoopCarHardware : CarHardwareLocationSource {
@@ -40,4 +104,13 @@ internal class NoopCarHardware : CarHardwareLocationSource {
     }
 
     override fun hasPermission(): Boolean = false
+}
+
+internal class StubCarHardware(
+    private val fix: Location?,
+    private val hasPermission: Boolean,
+) : CarHardwareLocationSource {
+    override suspend fun requestSingleFix(timeoutMs: Long): Location? = fix
+
+    override fun hasPermission(): Boolean = hasPermission
 }
