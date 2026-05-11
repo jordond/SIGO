@@ -47,6 +47,7 @@ dependencies {
     testImplementation(libs.androidx.car.app.testing)
     testImplementation(projects.test)
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.kotest.assertions)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)

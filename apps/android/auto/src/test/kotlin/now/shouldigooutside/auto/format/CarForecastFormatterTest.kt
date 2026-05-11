@@ -1,0 +1,63 @@
+package now.shouldigooutside.auto.format
+
+import io.kotest.matchers.shouldBe
+import now.shouldigooutside.core.model.AsyncResult
+import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.score.ScoreResult
+import now.shouldigooutside.core.model.units.Units
+import now.shouldigooutside.test.testForecast
+import now.shouldigooutside.test.testForecastBlock
+import now.shouldigooutside.test.testTemperature
+import kotlin.test.Test
+import kotlin.time.Instant
+
+class CarForecastFormatterTest {
+    private val now = Instant.fromEpochSeconds(1_715_000_000) // 2024-05-06
+    private val strings = fakeAutoStrings()
+    private val formatter = CarForecastFormatter(strings)
+
+    @Test
+    fun homePane_showsYesVerdictWithTemperature_inMetric() {
+        val forecast = testForecast(
+            current = testForecastBlock(temperature = testTemperature(value = 22.0)),
+        )
+        val state = CarAutoHomeState(
+            status = AsyncResult.Success(forecast),
+            units = Units.Metric,
+            selectedActivity = Activity.General,
+            currentScore = ScoreResult.Yes,
+            locationName = forecast.location.name,
+        )
+
+        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+
+        val verdictRow = pane.rows.first()
+        verdictRow.title.toString() shouldBe "Yes — 22°C"
+    }
+}
+
+internal fun fakeAutoStrings(): AutoStrings =
+    AutoStrings(
+        refresh = "Refresh",
+        hourlyForecast = "Hourly forecast",
+        openPhone = "Open phone",
+        locationFailed = "Couldn't find your location",
+        forecastUnavailable = "Forecast unavailable",
+        retry = "Retry",
+        scoreYes = "Yes",
+        scoreNo = "No",
+        scoreMaybe = "Maybe",
+        staleMinutes = { "Updated $it min ago" },
+        staleHours = { "Updated $it h ago" },
+        feelsLikeShort = { "Feels $it" },
+        windShort = { "Wind $it" },
+        precipShort = { "Precip $it%" },
+        alertsCount = { "$it alerts" },
+        tempCelsius = "°C",
+        tempFahrenheit = "°F",
+        tempKelvin = "K",
+        windKph = "km/h",
+        windMph = "mph",
+        windMs = "m/s",
+        windKnots = "kn",
+    )

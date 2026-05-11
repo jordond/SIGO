@@ -1,16 +1,19 @@
 package now.shouldigooutside.auto.format
 
-import androidx.car.app.CarContext
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Pane
+import androidx.car.app.model.Row
+import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
+import now.shouldigooutside.core.model.score.ScoreResult
+import now.shouldigooutside.core.model.units.TemperatureUnit
 import now.shouldigooutside.core.model.units.Units
+import kotlin.math.roundToInt
 import kotlin.time.Instant
 
 internal class CarForecastFormatter(
-    private val carContext: CarContext,
     private val strings: AutoStrings,
 ) {
     fun homePane(
@@ -19,7 +22,44 @@ internal class CarForecastFormatter(
         onRefresh: () -> Unit,
         onHourly: () -> Unit,
         onAlerts: () -> Unit,
-    ): Pane = TODO("Implemented in tasks 4-6")
+    ): Pane {
+        val builder = Pane.Builder()
+        val forecast = (state.status as? AsyncResult.Success)?.data
+        val current = forecast?.current
+
+        if (current != null && state.currentScore != null) {
+            val verdictText =
+                "${scoreLabel(state.currentScore)} — ${formatTemp(current.temperature.value, state.units)}"
+            builder.addRow(
+                Row
+                    .Builder()
+                    .setTitle(verdictText)
+                    .build(),
+            )
+        }
+
+        return builder.build()
+    }
+
+    private fun scoreLabel(result: ScoreResult): String =
+        when (result) {
+            ScoreResult.Yes -> strings.scoreYes
+            ScoreResult.No -> strings.scoreNo
+            ScoreResult.Maybe -> strings.scoreMaybe
+        }
+
+    private fun formatTemp(
+        value: Double,
+        units: Units,
+    ): String {
+        val rounded = value.roundToInt()
+        val unit = when (units.temperature) {
+            TemperatureUnit.Celsius -> strings.tempCelsius
+            TemperatureUnit.Fahrenheit -> strings.tempFahrenheit
+            TemperatureUnit.Kelvin -> strings.tempKelvin
+        }
+        return "$rounded$unit"
+    }
 
     fun hourlyList(
         forecast: Forecast,
