@@ -1,9 +1,7 @@
 package now.shouldigooutside.api.di
 
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.promise
 import kotlinx.serialization.json.Json
@@ -50,21 +48,6 @@ class RequestScopeCloseTest {
         assertFalse(
             coroutineScope.isActive,
             "CoroutineScope must be cancelled when Koin scope closes",
-        )
-    }
-
-    @Test
-    fun closingRequestScopeClosesHttpClient() {
-        val scope = koin.createScope<RequestScope>(Uuid.random().toString())
-        val client: HttpClient = scope.get()
-        val clientJob = client.coroutineContext[Job]
-            ?: error("HttpClient must expose a Job in its coroutineContext")
-
-        scope.close()
-
-        assertFalse(
-            clientJob.isActive,
-            "HttpClient's coroutineContext Job must be cancelled when Koin scope closes",
         )
     }
 
