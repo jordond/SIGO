@@ -72,8 +72,6 @@ internal class HomeTemplateBuilder(
         onHourly: () -> Unit,
         onAlerts: () -> Unit,
     ): Template {
-        // Track success for cache retention even when we early-return.
-        if (status is AsyncResult.Success) lastSuccess = status.data
         val cachedForecast = (status as? AsyncResult.Success)?.data ?: lastSuccess
 
         if (status is AsyncResult.Error && cachedForecast == null) {
@@ -99,7 +97,7 @@ internal class HomeTemplateBuilder(
             onAlerts = onAlerts,
         )
 
-        if (result == null) {
+        if (result == null || result.pane.rows.isEmpty()) {
             return PaneTemplate
                 .Builder(Pane.Builder().setLoading(true).build())
                 .setTitle(strings.openPhone)

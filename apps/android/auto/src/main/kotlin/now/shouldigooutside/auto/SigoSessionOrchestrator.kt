@@ -27,20 +27,20 @@ internal class SigoSessionOrchestrator(
         onInvalidate: () -> Unit,
     ) {
         scope.launch {
+            forecastStateHolder.state
+                .collect { onInvalidate() }
+        }
+
+        scope.launch {
+            getActivitiesScoreUseCase.scoresFlow().collect { scores ->
+                activityScoresSink.value = scores.toPersistentList()
+            }
+        }
+
+        scope.launch {
             runCatching { carLocationProvider?.primeLocationRepo() }
                 .onFailure { /* swallow */ }
             forecastStateHolder.fetch()
-
-            launch {
-                forecastStateHolder.state
-                    .collect { onInvalidate() }
-            }
-
-            launch {
-                getActivitiesScoreUseCase.scoresFlow().collect { scores ->
-                    activityScoresSink.value = scores.toPersistentList()
-                }
-            }
         }
     }
 }

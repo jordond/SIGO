@@ -4,7 +4,6 @@ import androidx.car.app.CarContext
 import androidx.car.app.Screen
 import androidx.car.app.model.Template
 import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.StateFlow
 import now.shouldigooutside.auto.format.AutoStrings
 import now.shouldigooutside.core.model.AsyncResult

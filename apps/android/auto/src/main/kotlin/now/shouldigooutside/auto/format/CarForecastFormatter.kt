@@ -32,15 +32,19 @@ internal class CarForecastFormatter(
         val current = forecast?.current
         var alertsAction: Action? = null
 
-        if (current != null && state.currentScore != null) {
-            val verdictText =
-                "${scoreLabel(state.currentScore)} — ${formatTemp(current.temperature.value, state.units)}"
-            builder.addRow(
-                Row
-                    .Builder()
-                    .setTitle(verdictText)
-                    .build(),
-            )
+        if (forecast != null && current != null) {
+            if (state.currentScore != null) {
+                val verdictText =
+                    "${scoreLabel(
+                        state.currentScore,
+                    )} — ${formatTemp(current.temperature.value, state.units)}"
+                builder.addRow(
+                    Row
+                        .Builder()
+                        .setTitle(verdictText)
+                        .build(),
+                )
+            }
 
             builder.addRow(
                 Row

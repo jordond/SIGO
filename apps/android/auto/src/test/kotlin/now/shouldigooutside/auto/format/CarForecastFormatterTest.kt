@@ -140,6 +140,22 @@ class CarForecastFormatterTest {
     }
 
     @Test
+    fun homePane_rendersConditionsRow_evenWhenCurrentScoreIsNull() {
+        val forecast = testForecast(
+            current = testForecastBlock(temperature = testTemperature(value = 22.0, feelsLike = 24.0)),
+        )
+        val state = baseState(forecast).copy(currentScore = null)
+
+        val result = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+
+        result.pane.rows.isEmpty() shouldBe false
+        result.pane.rows
+            .first()
+            .title
+            .toString() shouldBe "Feels 24°C"
+    }
+
+    @Test
     fun hourlyList_returnsRowsForFutureHoursOnly() {
         val baseInstant = now
         val hours = (0..15).map { offset ->
