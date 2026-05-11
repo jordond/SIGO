@@ -10,7 +10,7 @@ import now.shouldigooutside.auto.format.CarForecastFormatter
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.score.ActivityForecastScore
-import now.shouldigooutside.core.model.score.ScoreResult
+import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.settings.Settings
 import kotlin.time.Instant
 
@@ -31,10 +31,9 @@ internal class HourlyTemplateBuilder(
                 .setHeaderAction(Action.BACK)
                 .build()
 
-        val hourScores: List<ScoreResult> = scores
+        val hourScores: List<Score> = scores
             .forecastScoreFor(settings.selectedActivity)
             ?.hours
-            ?.map { it.result }
             .orEmpty()
 
         val list = formatter.hourlyList(forecast, settings.units, nowProvider(), hourScores)

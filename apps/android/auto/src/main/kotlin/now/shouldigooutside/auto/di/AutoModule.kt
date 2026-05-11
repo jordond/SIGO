@@ -21,6 +21,7 @@ import now.shouldigooutside.core.resources.auto_hourly_forecast
 import now.shouldigooutside.core.resources.auto_location_failed
 import now.shouldigooutside.core.resources.auto_open_phone
 import now.shouldigooutside.core.resources.auto_precip_short
+import now.shouldigooutside.core.resources.auto_reason_prefix
 import now.shouldigooutside.core.resources.auto_refresh
 import now.shouldigooutside.core.resources.auto_retry
 import now.shouldigooutside.core.resources.auto_score_symbol_maybe
@@ -39,6 +40,11 @@ import now.shouldigooutside.core.resources.unit_wind_knots
 import now.shouldigooutside.core.resources.unit_wind_kph
 import now.shouldigooutside.core.resources.unit_wind_mph
 import now.shouldigooutside.core.resources.unit_wind_ms
+import now.shouldigooutside.core.resources.weather_reason_air_quality
+import now.shouldigooutside.core.resources.weather_reason_precipitation
+import now.shouldigooutside.core.resources.weather_reason_severe_weather
+import now.shouldigooutside.core.resources.weather_reason_temperature
+import now.shouldigooutside.core.resources.weather_reason_wind
 import org.jetbrains.compose.resources.getString
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -71,6 +77,12 @@ private suspend fun resolveAutoStrings(): AutoStrings {
         conditionCloudy = getString(Res.string.auto_condition_cloudy),
         conditionShowers = getString(Res.string.auto_condition_showers),
         conditionRain = getString(Res.string.auto_condition_rain),
+        reasonPrefix = getString(Res.string.auto_reason_prefix),
+        reasonWind = getString(Res.string.weather_reason_wind),
+        reasonTemperature = getString(Res.string.weather_reason_temperature),
+        reasonPrecipitation = getString(Res.string.weather_reason_precipitation),
+        reasonSevereWeather = getString(Res.string.weather_reason_severe_weather),
+        reasonAirQuality = getString(Res.string.weather_reason_air_quality),
         staleMinutes = { mins -> staleMinutesFmt.format(mins) },
         staleHours = { hours -> staleHoursFmt.format(hours) },
         feelsLikeShort = { s -> feelsLikeFmt.format(s) },

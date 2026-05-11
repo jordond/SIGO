@@ -14,7 +14,7 @@ import now.shouldigooutside.auto.format.HomePaneResult
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.score.ActivityForecastScore
-import now.shouldigooutside.core.model.score.ScoreResult
+import now.shouldigooutside.core.model.score.dominantReason
 import now.shouldigooutside.core.model.settings.Settings
 import kotlin.time.Instant
 
@@ -41,16 +41,14 @@ internal class HomeTemplateBuilder(
             return null
         }
 
-        val currentScore: ScoreResult? = scores
-            .forecastScoreFor(settings.selectedActivity)
-            ?.current
-            ?.result
+        val current = scores.forecastScoreFor(settings.selectedActivity)?.current
 
         val state = CarAutoHomeState(
             status = if (cachedForecast != null) AsyncResult.Success(cachedForecast) else status,
             units = settings.units,
             selectedActivity = settings.selectedActivity,
-            currentScore = currentScore,
+            currentScore = current?.result,
+            currentReason = current?.reasons?.dominantReason(),
             locationName = cachedForecast?.location?.name ?: settings.location?.name,
         )
 

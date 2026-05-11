@@ -460,4 +460,5 @@
     <string name="auto_condition_cloudy">☁</string>
     <string name="auto_condition_showers">🌦</string>
     <string name="auto_condition_rain">☔</string>
+    <string name="auto_reason_prefix">⚠</string>
 </resources>

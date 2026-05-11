@@ -9,7 +9,10 @@ import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.forecast.ForecastBlock
+import now.shouldigooutside.core.model.forecast.WeatherReason
+import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.ScoreResult
+import now.shouldigooutside.core.model.score.dominantReason
 import now.shouldigooutside.core.model.units.TemperatureUnit
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.model.units.WindSpeedUnit
@@ -67,6 +70,7 @@ internal class CarForecastFormatter(
                     } else {
                         null
                     },
+                    reasonTag(state.currentReason.takeIf { state.currentScore != ScoreResult.Yes }),
                 ).joinToString(separator = " · ")
 
                 val verdictRow = Row.Builder().setTitle(verdictTitle).addText(conditions)
@@ -133,6 +137,18 @@ internal class CarForecastFormatter(
             ScoreResult.Maybe -> strings.scoreSymbolMaybe
         }
 
+    private fun reasonLabel(reason: WeatherReason): String =
+        when (reason) {
+            WeatherReason.Wind -> strings.reasonWind
+            WeatherReason.Temperature -> strings.reasonTemperature
+            WeatherReason.Precipitation -> strings.reasonPrecipitation
+            WeatherReason.SevereWeather -> strings.reasonSevereWeather
+            WeatherReason.AirQuality -> strings.reasonAirQuality
+        }
+
+    private fun reasonTag(reason: WeatherReason?): String? =
+        reason?.let { "${strings.reasonPrefix} ${reasonLabel(it)}" }
+
     private fun formatTemp(
         value: Double,
         units: Units,
@@ -164,7 +180,7 @@ internal class CarForecastFormatter(
         forecast: Forecast,
         units: Units,
         now: Instant,
-        hourScores: List<ScoreResult>,
+        hourScores: List<Score>,
     ): ItemList {
         val list = ItemList.Builder()
         val futureHours = forecast.today.hours
@@ -180,15 +196,20 @@ internal class CarForecastFormatter(
             val condition = conditionGlyph(precipProb, hour.cloudCoverPercent)
             val title = "$timeLabel · $tempText · $condition"
 
+            val score = hourScores.getOrNull(index)
+            val hourReason = if (score != null && score.result != ScoreResult.Yes) {
+                score.reasons.dominantReason()
+            } else {
+                null
+            }
             val detailParts = listOfNotNull(
                 strings.windShort(formatWind(hour.wind.speed, units)),
                 if (precipProb > 0) strings.precipShort(precipProb) else null,
+                reasonTag(hourReason),
             )
 
             val row = Row.Builder().setTitle(title).addText(detailParts.joinToString(separator = " · "))
-            hourScores.getOrNull(index)?.let { score ->
-                row.setImage(iconProvider.scoreIcon(score), Row.IMAGE_TYPE_ICON)
-            }
+            score?.let { row.setImage(iconProvider.scoreIcon(it.result), Row.IMAGE_TYPE_ICON) }
             list.addItem(row.build())
         }
         return list.build()
@@ -266,6 +287,12 @@ internal data class AutoStrings(
     val conditionCloudy: String,
     val conditionShowers: String,
     val conditionRain: String,
+    val reasonPrefix: String,
+    val reasonWind: String,
+    val reasonTemperature: String,
+    val reasonPrecipitation: String,
+    val reasonSevereWeather: String,
+    val reasonAirQuality: String,
     val staleMinutes: (Int) -> String,
     val staleHours: (Int) -> String,
     val feelsLikeShort: (String) -> String,
