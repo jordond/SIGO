@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
+    <uses-permission android:name="androidx.car.app.NAVIGATION_TEMPLATES" />
+
+    <application>
+        <service
+            android:name=".SigoCarAppService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.category.WEATHER" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="androidx.car.app.minCarApiLevel"
+            android:value="1" />
+    </application>
+</manifest>

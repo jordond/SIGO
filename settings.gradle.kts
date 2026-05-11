@@ -40,6 +40,7 @@ plugins {
 
 include(":apps:android")
 include(":apps:android:baseline-profile")
+include(":apps:android:auto")
 include(":apps:api:server")
 include(":apps:api:worker")
 include(":apps:cli")
