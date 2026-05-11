@@ -2,6 +2,7 @@ package now.shouldigooutside.auto.screens
 
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
+import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Pane
 import androidx.car.app.model.PaneTemplate
 import androidx.car.app.model.Template
@@ -71,6 +72,24 @@ internal class HomeTemplateBuilder(
         onHourly: () -> Unit,
         onAlerts: () -> Unit,
     ): Template {
+        // Track success for cache retention even when we early-return.
+        if (status is AsyncResult.Success) lastSuccess = status.data
+        val cachedForecast = (status as? AsyncResult.Success)?.data ?: lastSuccess
+
+        if (status is AsyncResult.Error && cachedForecast == null) {
+            return MessageTemplate
+                .Builder(strings.forecastUnavailable)
+                .setTitle(strings.openPhone)
+                .setHeaderAction(Action.APP_ICON)
+                .addAction(
+                    Action
+                        .Builder()
+                        .setTitle(strings.retry)
+                        .setOnClickListener { onRefresh() }
+                        .build(),
+                ).build()
+        }
+
         val result = buildResult(
             status = status,
             settings = settings,
