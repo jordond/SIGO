@@ -7,7 +7,10 @@ import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.test.testForecast
 import now.shouldigooutside.test.testForecastBlock
+import now.shouldigooutside.test.testLocation
+import now.shouldigooutside.test.testPrecipitation
 import now.shouldigooutside.test.testTemperature
+import now.shouldigooutside.test.testWind
 import kotlin.test.Test
 import kotlin.time.Instant
 
@@ -34,6 +37,58 @@ class CarForecastFormatterTest {
         val verdictRow = pane.rows.first()
         verdictRow.title.toString() shouldBe "Yes — 22°C"
     }
+
+    @Test
+    fun homePane_includesConditionsRow_withFeelsLikeWindPrecip() {
+        val forecast = testForecast(
+            current = testForecastBlock(
+                temperature = testTemperature(value = 22.0, feelsLike = 24.0),
+                wind = testWind(speed = 12.0),
+                precipitation = testPrecipitation(probability = 10),
+            ),
+        )
+        val state = baseState(forecast)
+
+        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+
+        val conditions = pane.rows[1]
+        conditions.title.toString() shouldBe "Feels 24°C"
+        conditions.texts.map { it.toString() } shouldBe listOf("Wind 12 km/h", "Precip 10%")
+    }
+
+    @Test
+    fun homePane_includesLocationRow() {
+        val forecast = testForecast(location = testLocation(name = "Toronto"))
+        val state = baseState(forecast).copy(locationName = "Toronto")
+
+        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+
+        pane.rows[2].title.toString() shouldBe "Toronto"
+    }
+
+    @Test
+    fun homePane_includesBrowsableHourlyRow() {
+        val pane = formatter.homePane(
+            baseState(testForecast()),
+            now,
+            onRefresh = {},
+            onHourly = {},
+            onAlerts = {},
+        )
+
+        val hourlyRow = pane.rows[3]
+        hourlyRow.title.toString() shouldBe "Hourly forecast"
+        hourlyRow.isBrowsable shouldBe true
+    }
+
+    private fun baseState(forecast: now.shouldigooutside.core.model.forecast.Forecast) =
+        CarAutoHomeState(
+            status = AsyncResult.Success(forecast),
+            units = Units.Metric,
+            selectedActivity = Activity.General,
+            currentScore = ScoreResult.Yes,
+            locationName = forecast.location.name,
+        )
 }
 
 internal fun fakeAutoStrings(): AutoStrings =

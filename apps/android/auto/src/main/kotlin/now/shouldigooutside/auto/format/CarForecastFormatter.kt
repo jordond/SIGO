@@ -10,6 +10,7 @@ import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.TemperatureUnit
 import now.shouldigooutside.core.model.units.Units
+import now.shouldigooutside.core.model.units.WindSpeedUnit
 import kotlin.math.roundToInt
 import kotlin.time.Instant
 
@@ -36,6 +37,28 @@ internal class CarForecastFormatter(
                     .setTitle(verdictText)
                     .build(),
             )
+
+            builder.addRow(
+                Row
+                    .Builder()
+                    .setTitle(strings.feelsLikeShort(formatTemp(current.temperature.feelsLike, state.units)))
+                    .addText(strings.windShort(formatWind(current.wind.speed, state.units)))
+                    .addText(strings.precipShort(current.precipitation.probability))
+                    .build(),
+            )
+
+            state.locationName?.let { name ->
+                builder.addRow(Row.Builder().setTitle(name).build())
+            }
+
+            builder.addRow(
+                Row
+                    .Builder()
+                    .setTitle(strings.hourlyForecast)
+                    .setBrowsable(true)
+                    .setOnClickListener { onHourly() }
+                    .build(),
+            )
         }
 
         return builder.build()
@@ -59,6 +82,20 @@ internal class CarForecastFormatter(
             TemperatureUnit.Kelvin -> strings.tempKelvin
         }
         return "$rounded$unit"
+    }
+
+    private fun formatWind(
+        value: Double,
+        units: Units,
+    ): String {
+        val rounded = value.roundToInt()
+        val unit = when (units.windSpeed) {
+            WindSpeedUnit.KilometerPerHour -> strings.windKph
+            WindSpeedUnit.MilePerHour -> strings.windMph
+            WindSpeedUnit.MeterPerSecond -> strings.windMs
+            WindSpeedUnit.Knot -> strings.windKnots
+        }
+        return "$rounded $unit"
     }
 
     fun hourlyList(
