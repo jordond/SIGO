@@ -3,6 +3,7 @@ package now.shouldigooutside.core.api.server
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.promise
 
 /**
@@ -22,12 +23,21 @@ public class WorkerExecutionContext(
         }
     }
 
+    // Each waitUntil gets a fresh SupervisorJob+Unconfined scope so completed
+    // coroutines can release their Job/Continuation references immediately.
+    // A shared module-level scope accumulates child Jobs across requests under
+    // burst load, which correlates with workerd dropping new requests at
+    // admission with wallTime=0 ms and no user logs.
     override fun waitUntil(block: suspend () -> Unit) {
-        ctx.waitUntil(workerScope.promise { block() })
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
+        ctx.waitUntil(
+            scope.promise {
+                try {
+                    block()
+                } finally {
+                    scope.cancel()
+                }
+            },
+        )
     }
 }
-
-// Isolate-scoped scope for fire-and-forget waitUntil work. SupervisorJob keeps
-// failures from cascading; Dispatchers.Unconfined avoids cross-request
-// microtask hops on Workers (continuations stay on the resolving Promise).
-private val workerScope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
