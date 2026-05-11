@@ -1,5 +1,6 @@
 package now.shouldigooutside.auto.format
 
+import androidx.car.app.model.Action
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Pane
@@ -59,7 +60,42 @@ internal class CarForecastFormatter(
                     .setOnClickListener { onHourly() }
                     .build(),
             )
+
+            val alertCount = forecast.alerts.size
+            if (alertCount > 0) {
+                builder.addRow(
+                    Row
+                        .Builder()
+                        .setTitle(strings.alertsCount(alertCount))
+                        .setBrowsable(true)
+                        .setOnClickListener { onAlerts() }
+                        .build(),
+                )
+            }
+
+            val staleMinutes = (now - forecast.instant).inWholeMinutes.toInt()
+            if (staleMinutes >= STALE_THRESHOLD_MINUTES) {
+                val label = if (staleMinutes < 60) {
+                    strings.staleMinutes(staleMinutes)
+                } else {
+                    strings.staleHours(staleMinutes / 60)
+                }
+                builder.addRow(
+                    Row
+                        .Builder()
+                        .setTitle(label)
+                        .build(),
+                )
+            }
         }
+
+        builder.addAction(
+            Action
+                .Builder()
+                .setTitle(strings.refresh)
+                .setOnClickListener { onRefresh() }
+                .build(),
+        )
 
         return builder.build()
     }
@@ -110,6 +146,10 @@ internal class CarForecastFormatter(
     ): ItemList = TODO("Implemented in task 8")
 
     fun alertDetail(alert: Alert): MessageTemplate = TODO("Implemented in task 8")
+
+    private companion object {
+        const val STALE_THRESHOLD_MINUTES = 60
+    }
 }
 
 internal data class AutoStrings(

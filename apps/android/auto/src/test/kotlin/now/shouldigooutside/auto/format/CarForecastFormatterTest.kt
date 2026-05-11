@@ -2,6 +2,8 @@ package now.shouldigooutside.auto.format
 
 import io.kotest.matchers.shouldBe
 import now.shouldigooutside.core.model.AsyncResult
+import now.shouldigooutside.core.model.forecast.Alert
+import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.units.Units
@@ -81,7 +83,64 @@ class CarForecastFormatterTest {
         hourlyRow.isBrowsable shouldBe true
     }
 
-    private fun baseState(forecast: now.shouldigooutside.core.model.forecast.Forecast) =
+    @Test
+    fun homePane_omitsAlertsRow_whenNoAlerts() {
+        val forecast = testForecast(alerts = kotlinx.collections.immutable.persistentListOf())
+        val state = baseState(forecast)
+
+        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+
+        pane.rows.none { it.title.toString().endsWith("alerts") } shouldBe true
+    }
+
+    @Test
+    fun homePane_includesAlertsRow_whenAlertsPresent() {
+        val forecast = testForecast(
+            alerts = kotlinx.collections.immutable.persistentListOf(
+                Alert(title = "Storm", description = "desc"),
+                Alert(title = "Wind", description = "desc"),
+            ),
+        )
+        val state = baseState(forecast)
+
+        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+
+        val alertsRow = pane.rows.last { it.title.toString().endsWith("alerts") }
+        alertsRow.title.toString() shouldBe "2 alerts"
+        alertsRow.isBrowsable shouldBe true
+    }
+
+    @Test
+    fun homePane_includesStaleRow_whenForecastOlderThanThreshold() {
+        val forecastInstant = now - kotlin.time.Duration.parse("PT3H")
+        val forecast = testForecast(instant = forecastInstant)
+        val state = baseState(forecast)
+
+        val pane = formatter.homePane(state, now, onRefresh = {}, onHourly = {}, onAlerts = {})
+
+        pane.rows
+            .last()
+            .title
+            .toString() shouldBe "Updated 3 h ago"
+    }
+
+    @Test
+    fun homePane_addsRefreshAction() {
+        val pane = formatter.homePane(
+            baseState(testForecast()),
+            now,
+            onRefresh = {},
+            onHourly = {},
+            onAlerts = {},
+        )
+
+        pane.actions
+            .single()
+            .title
+            .toString() shouldBe "Refresh"
+    }
+
+    private fun baseState(forecast: Forecast) =
         CarAutoHomeState(
             status = AsyncResult.Success(forecast),
             units = Units.Metric,
