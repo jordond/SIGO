@@ -40,6 +40,7 @@ dependencies {
 
     implementation(libs.androidx.car.app)
     implementation(libs.androidx.core)
+    implementation(libs.compose.resources)
     implementation(libs.kermit)
     implementation(libs.koin.core)
     implementation(libs.koin.android)

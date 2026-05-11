@@ -15,7 +15,6 @@ internal class SigoSessionOrchestrator(
     private val forecastStateHolder: ForecastStateHolder,
     private val settingsRepo: SettingsRepo,
     private val getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
-    private val carLocationProvider: CarLocationProvider?,
     private val activityScoresSink: MutableStateFlow<PersistentList<ActivityForecastScore>>,
 ) {
     /**
@@ -24,6 +23,7 @@ internal class SigoSessionOrchestrator(
      */
     fun start(
         scope: CoroutineScope,
+        carLocationProvider: CarLocationProvider?,
         onInvalidate: () -> Unit,
     ) {
         scope.launch {

@@ -28,11 +28,10 @@ class SigoSessionOrchestratorTest {
                 forecastStateHolder = holder,
                 settingsRepo = FakeSettingsRepo(),
                 getActivitiesScoreUseCase = FakeGetActivitiesScoreUseCase(),
-                carLocationProvider = null,
                 activityScoresSink = MutableStateFlow(persistentListOf()),
             )
 
-            orchestrator.start(scope = orchestratorScope) { invalidateCount++ }
+            orchestrator.start(scope = orchestratorScope, carLocationProvider = null) { invalidateCount++ }
             advanceUntilIdle()
 
             holder.fetchCount shouldBe 1
@@ -52,11 +51,10 @@ class SigoSessionOrchestratorTest {
                 forecastStateHolder = holder,
                 settingsRepo = FakeSettingsRepo(),
                 getActivitiesScoreUseCase = FakeGetActivitiesScoreUseCase(),
-                carLocationProvider = null,
                 activityScoresSink = MutableStateFlow(persistentListOf()),
             )
 
-            orchestrator.start(scope = orchestratorScope) { invalidateCount++ }
+            orchestrator.start(scope = orchestratorScope, carLocationProvider = null) { invalidateCount++ }
             advanceUntilIdle()
 
             // Emit a distinct new value
@@ -79,11 +77,10 @@ class SigoSessionOrchestratorTest {
                 forecastStateHolder = holder,
                 settingsRepo = FakeSettingsRepo(),
                 getActivitiesScoreUseCase = FakeGetActivitiesScoreUseCase(),
-                carLocationProvider = null,
                 activityScoresSink = MutableStateFlow(persistentListOf()),
             )
 
-            orchestrator.start(scope = orchestratorScope) { invalidateCount++ }
+            orchestrator.start(scope = orchestratorScope, carLocationProvider = null) { invalidateCount++ }
             advanceUntilIdle()
 
             // Emit the same value again — StateFlow suppresses duplicates
@@ -105,11 +102,10 @@ class SigoSessionOrchestratorTest {
                 forecastStateHolder = holder,
                 settingsRepo = FakeSettingsRepo(),
                 getActivitiesScoreUseCase = FakeGetActivitiesScoreUseCase(),
-                carLocationProvider = null,
                 activityScoresSink = sink,
             )
 
-            orchestrator.start(scope = orchestratorScope) {}
+            orchestrator.start(scope = orchestratorScope, carLocationProvider = null) {}
             advanceUntilIdle()
 
             // FakeGetActivitiesScoreUseCase emits an empty list

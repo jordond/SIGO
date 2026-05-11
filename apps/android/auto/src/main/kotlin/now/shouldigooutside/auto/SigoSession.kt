@@ -1,6 +1,7 @@
 package now.shouldigooutside.auto
 
 import android.content.Intent
+import androidx.car.app.CarContext
 import androidx.car.app.Screen
 import androidx.car.app.ScreenManager
 import androidx.car.app.Session
@@ -32,7 +33,7 @@ internal data class SigoSessionDeps(
     val forecastStateHolder: ForecastStateHolder,
     val settingsRepo: SettingsRepo,
     val getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
-    val carLocationProvider: CarLocationProvider?,
+    val carLocationProviderFactory: (CarContext) -> CarLocationProvider?,
     val stringsProvider: suspend () -> AutoStrings,
 )
 
@@ -48,7 +49,6 @@ internal class SigoSession(
         forecastStateHolder = deps.forecastStateHolder,
         settingsRepo = deps.settingsRepo,
         getActivitiesScoreUseCase = deps.getActivitiesScoreUseCase,
-        carLocationProvider = deps.carLocationProvider,
         activityScoresSink = activityScoresFlow,
     )
 
@@ -82,7 +82,8 @@ internal class SigoSession(
     }
 
     override fun onStart(owner: LifecycleOwner) {
-        orchestrator.start(scope) { invalidateTopScreen() }
+        val carLocationProvider = deps.carLocationProviderFactory(carContext)
+        orchestrator.start(scope, carLocationProvider) { invalidateTopScreen() }
     }
 
     override fun onStop(owner: LifecycleOwner) {
