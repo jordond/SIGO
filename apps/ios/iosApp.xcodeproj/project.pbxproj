@@ -22,6 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		1A51C8AAE551F3F12521E4B9 /* WidgetColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD2FA5876CF9FC4BA2942E1 /* WidgetColors.swift */; };
+		25FF94B9D3EF770D7D7742B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB81115C016B772EA4A5BB62 /* Foundation.framework */; };
 		70C5293AC14A89DADBDA4AB6 /* WidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50AC9991A1D14409C193CE9 /* WidgetData.swift */; };
 		87C5F4E2C796658220F82E23 /* ScoreResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EED54DEFA49BB29458D75E /* ScoreResult.swift */; };
 		A4CF6B13BA581304099817E6 /* ScoreResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EED54DEFA49BB29458D75E /* ScoreResult.swift */; };
@@ -50,6 +51,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		B358B7999A00304E08886B8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A93A952F29CC810C00F8E227 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A93A953629CC810C00F8E227;
+			remoteInfo = iosApp;
+		};
 		F7B5B0582F6F14D6001FDA1C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A93A952F29CC810C00F8E227 /* Project object */;
@@ -94,6 +102,8 @@
 		A93A953A29CC810C00F8E227 /* iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosApp.swift; sourceTree = "<group>"; };
 		A93A953E29CC810D00F8E227 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A93A954129CC810D00F8E227 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		AB81115C016B772EA4A5BB62 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		B36231BABB8B9D4214909E11 /* iosAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B50AC9991A1D14409C193CE9 /* WidgetData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetData.swift; sourceTree = "<group>"; };
 		F73E86D92DDF7C1200E89B14 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "iosApp/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F7B5B0452F6F14D5001FDA1C /* SIGOWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SIGOWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,6 +139,14 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		010B4F87753910AB26FD376E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				25FF94B9D3EF770D7D7742B1 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A93A953429CC810C00F8E227 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -171,6 +189,14 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		5A69179056A09AD09B94FBBC /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				AB81115C016B772EA4A5BB62 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 		A93A952E29CC810C00F8E227 = {
 			isa = PBXGroup;
 			children = (
@@ -180,6 +206,7 @@
 				F7B5B04A2F6F14D5001FDA1C /* SIGOWidget */,
 				A93A953829CC810C00F8E227 /* Products */,
 				C4127409AE3703430489E7BC /* Frameworks */,
+				ECF561F870F2BC0CFD0922A2 /* iosAppTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -188,6 +215,7 @@
 			children = (
 				A93A953729CC810C00F8E227 /* SIGOT.app */,
 				F7B5B0452F6F14D5001FDA1C /* SIGOWidgetExtension.appex */,
+				B36231BABB8B9D4214909E11 /* iosAppTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -212,18 +240,64 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		AC62F53F07DBDCCCAF8B115C /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Intents;
+			path = Intents;
+			sourceTree = "<group>";
+		};
 		C4127409AE3703430489E7BC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				F7B5B0462F6F14D5001FDA1C /* WidgetKit.framework */,
 				F7B5B0482F6F14D5001FDA1C /* SwiftUI.framework */,
+				5A69179056A09AD09B94FBBC /* iOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D8D8DE4DE3F0A5F9475D2058 /* TestSupport */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = TestSupport;
+			path = TestSupport;
+			sourceTree = "<group>";
+		};
+		ECF561F870F2BC0CFD0922A2 /* iosAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				D8D8DE4DE3F0A5F9475D2058 /* TestSupport */,
+				AC62F53F07DBDCCCAF8B115C /* Intents */,
+			);
+			name = iosAppTests;
+			path = iosAppTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1C1EC62FAC0C38EAA403C0A5 /* iosAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDB787EA1113190A53174B06 /* Build configuration list for PBXNativeTarget "iosAppTests" */;
+			buildPhases = (
+				819C866D57487263480C1836 /* Sources */,
+				010B4F87753910AB26FD376E /* Frameworks */,
+				C410532CE5AF29EEC3EFB062 /* Resources */,
+				6F729F220B434049D0DFC68E /* Re-codesign test bundle */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BC21AA1B208732486EA38699 /* PBXTargetDependency */,
+			);
+			name = iosAppTests;
+			productName = iosAppTests;
+			productReference = B36231BABB8B9D4214909E11 /* iosAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		A93A953629CC810C00F8E227 /* iosApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A93A954529CC810D00F8E227 /* Build configuration list for PBXNativeTarget "iosApp" */;
@@ -282,6 +356,11 @@
 				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 1420;
 				TargetAttributes = {
+					1C1EC62FAC0C38EAA403C0A5 = {
+						CreatedOnToolsVersion = 14.2;
+						ProvisioningStyle = Automatic;
+						TestTargetID = A93A953629CC810C00F8E227;
+					};
 					A93A953629CC810C00F8E227 = {
 						CreatedOnToolsVersion = 14.2;
 					};
@@ -309,6 +388,7 @@
 				A93A953629CC810C00F8E227 /* iosApp */,
 				F7B5B0442F6F14D5001FDA1C /* SIGOWidgetExtension */,
 				F7C200002F6F14D5001FDA1C /* KotlinFramework */,
+				1C1EC62FAC0C38EAA403C0A5 /* iosAppTests */,
 			);
 		};
 /* End PBXProject section */
@@ -324,6 +404,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C410532CE5AF29EEC3EFB062 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F7B5B0432F6F14D5001FDA1C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -335,6 +422,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6F729F220B434049D0DFC68E /* Re-codesign test bundle */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Re-codesign test bundle";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\nBUNDLE=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\nXCENT=\"${TEMP_DIR}/${WRAPPER_NAME}.xcent\"\nif [ -f \"$XCENT\" ]; then\n  /usr/bin/codesign --force --sign - --timestamp=none --generate-entitlement-der \\\n    --entitlements \"$XCENT\" \"$BUNDLE\"\nelse\n  /usr/bin/codesign --force --sign - --timestamp=none \"$BUNDLE\"\nfi\n";
+		};
 		F7C200012F6F14D5001FDA1C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -399,6 +505,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		819C866D57487263480C1836 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A93A953329CC810C00F8E227 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -423,6 +536,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		BC21AA1B208732486EA38699 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = iosApp;
+			target = A93A953629CC810C00F8E227 /* iosApp */;
+			targetProxy = B358B7999A00304E08886B8D /* PBXContainerItemProxy */;
+		};
 		F7B5B0592F6F14D6001FDA1C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F7B5B0442F6F14D5001FDA1C /* SIGOWidgetExtension */;
@@ -441,6 +560,32 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		8A25C0C700681C08B59BBB0A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphonesimulator*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7YZ4RG7YHP;
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)/SIGOT.app/PlugIns";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = now.shouldigooutside.iosAppTests;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SIGOT.app/SIGOT";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
 		A93A954329CC810D00F8E227 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -620,6 +765,31 @@
 			};
 			name = Release;
 		};
+		AC1B62C19CEB36B780C883DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphonesimulator*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7YZ4RG7YHP;
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)/SIGOT.app/PlugIns";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = now.shouldigooutside.iosAppTests;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SIGOT.app/SIGOT";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
 		F7B5B05C2F6F14D6001FDA1C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -730,6 +900,15 @@
 			buildConfigurations = (
 				A93A954629CC810D00F8E227 /* Debug */,
 				A93A954729CC810D00F8E227 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EDB787EA1113190A53174B06 /* Build configuration list for PBXNativeTarget "iosAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A25C0C700681C08B59BBB0A /* Release */,
+				AC1B62C19CEB36B780C883DC /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

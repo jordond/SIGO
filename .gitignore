@@ -39,6 +39,8 @@ apps/ios/Pods/*
 apps/ios/iosApp.xcworkspace/*
 apps/ios/iosApp.xcodeproj/*
 !apps/ios/iosApp.xcodeproj/
+!apps/ios/iosApp.xcodeproj/xcshareddata/
+!apps/ios/iosApp.xcodeproj/xcshareddata/**
 *.podspec
 app/build
 *.aab
