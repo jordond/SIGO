@@ -1,9 +1,5 @@
 import Foundation
 
-enum ScoreResult: String {
-    case Yes, Maybe, No
-}
-
 struct WidgetData {
     let scoreResult: ScoreResult
     let scoreLabel: String
