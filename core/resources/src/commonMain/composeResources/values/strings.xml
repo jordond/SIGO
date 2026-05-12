@@ -436,4 +436,29 @@
     </plurals>
     <string name="widget_updated_ago_minutes">%1$dm ago</string>
     <string name="widget_updated_ago_hours">%1$dh ago</string>
+
+    <!-- Android Auto -->
+    <string name="auto_app_name">Should I go outside?</string>
+    <string name="auto_refresh">Refresh</string>
+    <string name="auto_hourly_forecast">Hourly forecast</string>
+    <string name="auto_alerts_count">%1$d alerts</string>
+    <string name="auto_alert_single">1 alert</string>
+    <string name="auto_open_phone">Open SIGO on your phone to get started</string>
+    <string name="auto_location_failed">Couldn\'t find your location</string>
+    <string name="auto_forecast_unavailable">Forecast unavailable. Check your connection.</string>
+    <string name="auto_stale_updated_minutes">Updated %1$d min ago</string>
+    <string name="auto_stale_updated_hours">Updated %1$d h ago</string>
+    <string name="auto_feels_like_short">Feels %1$s</string>
+    <string name="auto_wind_short">Wind %1$s</string>
+    <string name="auto_precip_short">Precip %1$d%%</string>
+    <string name="auto_retry">Retry</string>
+    <string name="auto_score_symbol_yes">✓</string>
+    <string name="auto_score_symbol_no">✗</string>
+    <string name="auto_score_symbol_maybe">•</string>
+    <string name="auto_condition_sunny">☀</string>
+    <string name="auto_condition_partly_cloudy">⛅</string>
+    <string name="auto_condition_cloudy">☁</string>
+    <string name="auto_condition_showers">🌦</string>
+    <string name="auto_condition_rain">☔</string>
+    <string name="auto_reason_prefix">⚠</string>
 </resources>

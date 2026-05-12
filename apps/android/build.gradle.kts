@@ -111,6 +111,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.apps.android.auto)
     implementation(projects.core.app)
     implementation(projects.core.domain)
     implementation(projects.core.model)

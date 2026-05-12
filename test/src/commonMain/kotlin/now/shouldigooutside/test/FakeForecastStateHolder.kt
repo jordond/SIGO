@@ -14,11 +14,16 @@ public class FakeForecastStateHolder(
     private val _state = MutableStateFlow(initial)
     override val state: StateFlow<AsyncResult<Forecast>> = _state.asStateFlow()
 
+    public var fetchCount: Int = 0
+        private set
+
     public fun emit(value: AsyncResult<Forecast>) {
         _state.value = value
     }
 
-    override fun fetch() {}
+    override fun fetch() {
+        fetchCount++
+    }
 
     override fun start(scope: CoroutineScope?) {}
 
