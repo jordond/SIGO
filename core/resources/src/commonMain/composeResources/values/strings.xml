@@ -441,6 +441,7 @@
     <string name="auto_app_name">Should I go outside?</string>
     <string name="auto_refresh">Refresh</string>
     <string name="auto_hourly_forecast">Hourly forecast</string>
+    <string name="auto_alerts_title">Alerts</string>
     <string name="auto_alerts_count">%1$d alerts</string>
     <string name="auto_alert_single">1 alert</string>
     <string name="auto_open_phone">Open SIGO on your phone to get started</string>

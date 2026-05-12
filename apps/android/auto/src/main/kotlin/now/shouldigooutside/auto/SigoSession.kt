@@ -29,6 +29,7 @@ import now.shouldigooutside.auto.screens.HourlyTemplateBuilder
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
+import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.score.ActivityForecastScore
 import kotlin.time.Clock
 
@@ -47,6 +48,7 @@ internal class SigoSession(
     private val logger = Logger.withTag("SigoSession")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val activityScoresFlow = MutableStateFlow(persistentListOf<ActivityForecastScore>())
+    private val cachedForecastFlow = MutableStateFlow<Forecast?>(null)
     private val renderContextFlow = MutableStateFlow<SessionRenderContext?>(null)
     private val renderContext = renderContextFlow.asStateFlow()
     private val nowProvider: () -> kotlin.time.Instant = { Clock.System.now() }
@@ -56,6 +58,7 @@ internal class SigoSession(
         settingsRepo = deps.settingsRepo,
         getActivitiesScoreUseCase = deps.getActivitiesScoreUseCase,
         activityScoresSink = activityScoresFlow,
+        cachedForecastSink = cachedForecastFlow,
     )
 
     init {
@@ -68,6 +71,7 @@ internal class SigoSession(
             renderContext = renderContext,
             deps = HomeScreenDeps(
                 forecastState = deps.forecastStateHolder.state,
+                cachedForecast = cachedForecastFlow,
                 settings = deps.settingsRepo.settings,
                 activityScores = activityScoresFlow,
                 onRefresh = { deps.forecastStateHolder.fetch() },

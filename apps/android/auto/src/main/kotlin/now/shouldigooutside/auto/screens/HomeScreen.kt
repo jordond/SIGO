@@ -14,6 +14,7 @@ import kotlin.time.Instant
 
 internal data class HomeScreenDeps(
     val forecastState: StateFlow<AsyncResult<Forecast>>,
+    val cachedForecast: StateFlow<Forecast?>,
     val settings: StateFlow<Settings>,
     val activityScores: StateFlow<PersistentList<ActivityForecastScore>>,
     val onRefresh: () -> Unit,
@@ -29,6 +30,7 @@ internal class HomeScreen(
         val ctx = renderContext.value ?: return loadingTemplate()
         return ctx.homeBuilder.build(
             status = deps.forecastState.value,
+            cachedForecast = deps.cachedForecast.value,
             settings = deps.settings.value,
             scores = deps.activityScores.value,
             onRefresh = deps.onRefresh,

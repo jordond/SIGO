@@ -8,7 +8,6 @@ import androidx.car.app.model.Row
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Alert
 import now.shouldigooutside.core.model.forecast.Forecast
-import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.WeatherReason
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.ScoreResult
@@ -55,44 +54,40 @@ internal class CarForecastFormatter(
                 null
             }
 
-            val rows = buildList<Row> {
-                val tempText = formatTemp(current.temperature.value, state.units)
-                val verdictTitle = if (state.currentScore != null) {
-                    "${scoreSymbol(state.currentScore)} ${scoreLabel(state.currentScore)} — $tempText"
+            val tempText = formatTemp(current.temperature.value, state.units)
+            val verdictTitle = if (state.currentScore != null) {
+                "${scoreSymbol(state.currentScore)} ${scoreLabel(state.currentScore)} — $tempText"
+            } else {
+                tempText
+            }
+            val conditions = listOfNotNull(
+                strings.feelsLikeShort(formatTemp(current.temperature.feelsLike, state.units)),
+                strings.windShort(formatWind(current.wind.speed, state.units)),
+                if (current.precipitation.probability > 0) {
+                    strings.precipShort(current.precipitation.probability)
                 } else {
-                    tempText
-                }
-                val conditions = listOfNotNull(
-                    strings.feelsLikeShort(formatTemp(current.temperature.feelsLike, state.units)),
-                    strings.windShort(formatWind(current.wind.speed, state.units)),
-                    if (current.precipitation.probability > 0) {
-                        strings.precipShort(current.precipitation.probability)
-                    } else {
-                        null
-                    },
-                    reasonTag(state.currentReason.takeIf { state.currentScore != ScoreResult.Yes }),
-                ).joinToString(separator = " · ")
+                    null
+                },
+                reasonTag(state.currentReason.takeIf { state.currentScore != ScoreResult.Yes }),
+            ).joinToString(separator = " · ")
 
-                val verdictRow = Row.Builder().setTitle(verdictTitle).addText(conditions)
-                if (state.currentScore != null) {
-                    verdictRow.setImage(iconProvider.scoreIcon(state.currentScore), Row.IMAGE_TYPE_ICON)
-                }
-                add(verdictRow.build())
+            val verdictRow = Row.Builder().setTitle(verdictTitle).addText(conditions)
+            if (state.currentScore != null) {
+                verdictRow.setImage(iconProvider.scoreIcon(state.currentScore), Row.IMAGE_TYPE_ICON)
+            }
+            builder.addRow(verdictRow.build())
 
-                val name = state.locationName
-                if (name != null) {
-                    val locationRow = Row
-                        .Builder()
-                        .setTitle(name)
-                        .setImage(iconProvider.locationIcon(), Row.IMAGE_TYPE_ICON)
-                    staleLabel?.let { locationRow.addText(it) }
-                    add(locationRow.build())
-                } else if (staleLabel != null) {
-                    add(Row.Builder().setTitle(staleLabel).build())
-                }
-            }.take(PANE_ROW_CAP)
-
-            rows.forEach { builder.addRow(it) }
+            val name = state.locationName
+            if (name != null) {
+                val locationRow = Row
+                    .Builder()
+                    .setTitle(name)
+                    .setImage(iconProvider.locationIcon(), Row.IMAGE_TYPE_ICON)
+                staleLabel?.let { locationRow.addText(it) }
+                builder.addRow(locationRow.build())
+            } else if (staleLabel != null) {
+                builder.addRow(Row.Builder().setTitle(staleLabel).build())
+            }
 
             val alertCount = forecast.alerts.size
             if (alertCount > 0) {
@@ -185,7 +180,7 @@ internal class CarForecastFormatter(
         val list = ItemList.Builder()
         val futureHours = forecast.today.hours
             .asSequence()
-            .filter { it.instant >= now }
+            .filter { it.instant > now }
             .take(HOURLY_ROW_CAP)
             .toList()
 
@@ -252,7 +247,6 @@ internal class CarForecastFormatter(
     private companion object {
         const val STALE_THRESHOLD_MINUTES = 60
         const val HOURLY_ROW_CAP = 12
-        const val PANE_ROW_CAP = 4
     }
 }
 
@@ -272,6 +266,7 @@ internal data class AutoStrings(
     val appName: String,
     val refresh: String,
     val hourlyForecast: String,
+    val alertsTitle: String,
     val openPhone: String,
     val locationFailed: String,
     val forecastUnavailable: String,

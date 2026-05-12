@@ -10,7 +10,6 @@ import now.shouldigooutside.widget.SigoWidget
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.context.loadKoinModules
 
 class MainApplication :
     Application(),
@@ -27,9 +26,8 @@ class MainApplication :
 
         initKoin {
             androidContext(this@MainApplication)
+            modules(autoModule())
         }
-
-        loadKoinModules(autoModule())
 
         widgetUpdateObserver.start { widget.updateAll(this@MainApplication) }
     }

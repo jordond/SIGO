@@ -21,7 +21,7 @@ internal class AlertsTemplateBuilder(
         val forecast = (status as? AsyncResult.Success)?.data
             ?: return MessageTemplate
                 .Builder(strings.forecastUnavailable)
-                .setTitle(strings.alertsCount(0))
+                .setTitle(strings.alertsTitle)
                 .setHeaderAction(Action.BACK)
                 .build()
 

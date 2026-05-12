@@ -9,6 +9,7 @@ import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.resources.Res
 import now.shouldigooutside.core.resources.auto_alert_single
 import now.shouldigooutside.core.resources.auto_alerts_count
+import now.shouldigooutside.core.resources.auto_alerts_title
 import now.shouldigooutside.core.resources.auto_app_name
 import now.shouldigooutside.core.resources.auto_condition_cloudy
 import now.shouldigooutside.core.resources.auto_condition_partly_cloudy
@@ -62,6 +63,7 @@ private suspend fun resolveAutoStrings(): AutoStrings {
         appName = getString(Res.string.auto_app_name),
         refresh = getString(Res.string.auto_refresh),
         hourlyForecast = getString(Res.string.auto_hourly_forecast),
+        alertsTitle = getString(Res.string.auto_alerts_title),
         openPhone = getString(Res.string.auto_open_phone),
         locationFailed = getString(Res.string.auto_location_failed),
         forecastUnavailable = getString(Res.string.auto_forecast_unavailable),
@@ -99,17 +101,21 @@ private suspend fun resolveAutoStrings(): AutoStrings {
     )
 }
 
+private class CachingAutoStringsProvider : AutoStringsProvider {
+    private val mutex = Mutex()
+
+    @Volatile
+    private var cached: AutoStrings? = null
+
+    override suspend fun invoke(): AutoStrings =
+        cached ?: mutex.withLock {
+            cached ?: resolveAutoStrings().also { cached = it }
+        }
+}
+
 public fun autoModule(): Module =
     module {
-        single<AutoStringsProvider> {
-            val mutex = Mutex()
-            var cached: AutoStrings? = null
-            AutoStringsProvider {
-                cached ?: mutex.withLock {
-                    cached ?: resolveAutoStrings().also { cached = it }
-                }
-            }
-        }
+        single<AutoStringsProvider> { CachingAutoStringsProvider() }
 
         factory<CarLocationProviderFactory> {
             val settingsRepo: SettingsRepo = get()

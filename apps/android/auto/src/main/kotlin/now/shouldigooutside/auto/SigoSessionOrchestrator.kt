@@ -10,6 +10,8 @@ import now.shouldigooutside.auto.location.CarLocationProvider
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
 import now.shouldigooutside.core.domain.settings.SettingsRepo
+import now.shouldigooutside.core.model.AsyncResult
+import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.score.ActivityForecastScore
 
 internal class SigoSessionOrchestrator(
@@ -17,6 +19,7 @@ internal class SigoSessionOrchestrator(
     private val settingsRepo: SettingsRepo,
     private val getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
     private val activityScoresSink: MutableStateFlow<PersistentList<ActivityForecastScore>>,
+    private val cachedForecastSink: MutableStateFlow<Forecast?>,
 ) {
     private val logger = Logger.withTag("SigoSessionOrchestrator")
 
@@ -30,8 +33,12 @@ internal class SigoSessionOrchestrator(
         onInvalidate: () -> Unit,
     ) {
         scope.launch {
-            forecastStateHolder.state
-                .collect { onInvalidate() }
+            forecastStateHolder.state.collect { result ->
+                if (result is AsyncResult.Success) {
+                    cachedForecastSink.value = result.data
+                }
+                onInvalidate()
+            }
         }
 
         scope.launch {

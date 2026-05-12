@@ -44,7 +44,7 @@ internal class AndroidCarHardwareLocationSource(
 
             runCatching {
                 manager.carSensors.addCarHardwareLocationListener(
-                    CarSensors.UPDATE_RATE_FASTEST,
+                    CarSensors.UPDATE_RATE_NORMAL,
                     carContext.mainExecutor,
                     listener,
                 )

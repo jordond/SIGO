@@ -23,20 +23,16 @@ internal class HomeTemplateBuilder(
     private val strings: AutoStrings,
     private val nowProvider: () -> Instant,
 ) {
-    private var lastSuccess: Forecast? = null
-
     /** Returns the home pane result, exposed for unit testing without PaneTemplate constraints. */
     internal fun buildResult(
         status: AsyncResult<Forecast>,
+        cachedForecast: Forecast?,
         settings: Settings,
         scores: PersistentList<ActivityForecastScore>,
         onRefresh: () -> Unit,
         onHourly: () -> Unit,
         onAlerts: () -> Unit,
     ): HomePaneResult? {
-        if (status is AsyncResult.Success) lastSuccess = status.data
-        val cachedForecast = lastSuccess
-
         if (status is AsyncResult.Loading && cachedForecast == null) {
             return null
         }
@@ -63,13 +59,14 @@ internal class HomeTemplateBuilder(
 
     fun build(
         status: AsyncResult<Forecast>,
+        cachedForecast: Forecast?,
         settings: Settings,
         scores: PersistentList<ActivityForecastScore>,
         onRefresh: () -> Unit,
         onHourly: () -> Unit,
         onAlerts: () -> Unit,
     ): Template {
-        if (status is AsyncResult.Error && lastSuccess == null) {
+        if (status is AsyncResult.Error && cachedForecast == null) {
             return MessageTemplate
                 .Builder(strings.forecastUnavailable)
                 .setTitle(strings.openPhone)
@@ -85,6 +82,7 @@ internal class HomeTemplateBuilder(
 
         val result = buildResult(
             status = status,
+            cachedForecast = cachedForecast,
             settings = settings,
             scores = scores,
             onRefresh = onRefresh,

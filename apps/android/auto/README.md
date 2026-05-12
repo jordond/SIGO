@@ -15,9 +15,8 @@ Highlights:
 - `HomeTemplateBuilder`, `HourlyTemplateBuilder`, `AlertsTemplateBuilder` (pure) wrap formatter
   output in templates.
 - `HomeScreen`, `HourlyScreen`, `AlertsScreen`, `AlertDetailScreen` are thin `Screen` subclasses.
-- `CarLocationProvider` opportunistically primes
-  `SettingsRepo.lastLocation`` from car-hardware GPS (`AndroidCarHardwareLocationSource
-  `), falling back to the existing phone `LocationRepo`.
+- `CarLocationProvider` opportunistically primes `SettingsRepo.lastLocation` from car-hardware
+  GPS (`AndroidCarHardwareLocationSource`), falling back to the existing phone `LocationRepo`.
 
 ## Manual smoke test via DHU (Desktop Head Unit)
 
@@ -50,9 +49,10 @@ Verify:
   factors).
 - [ ] Upload AA-specific screenshots (capture via DHU at 1080×1920).
 - [ ] Declare the app as Weather category in the Auto submission form.
-- [ ] Replace `HostValidator.ALLOW_ALL_HOSTS_VALIDATOR` in `SigoCarAppService.createHostValidator`
-  with the official Google AA host allowlist before submitting (look for the
-  `TODO(release-validator)` comment).
+- [ ] Replace the empty `HostValidator.Builder(this).build()` (fail-closed) in
+  `SigoCarAppService.createHostValidator` with the official Google AA host allowlist before
+  submitting. Debug builds use `ALLOW_ALL_HOSTS_VALIDATOR`; release currently rejects every host.
+  Look for the `TODO(release-validator)` comment.
 - [ ] Replace the parameterized-string English fallbacks (`Updated %1$d min ago`, etc.) with
   localized lookups in the future — currently uses `String.format` over the resource template, which
   preserves localization automatically.
