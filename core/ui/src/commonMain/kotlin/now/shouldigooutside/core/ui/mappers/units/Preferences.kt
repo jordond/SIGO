@@ -17,7 +17,7 @@ import kotlin.math.roundToInt
 @Composable
 public fun Preferences.minTemperatureString(temperatureUnit: TemperatureUnit): String {
     val unit = temperatureUnit.rememberUnit()
-    return remember(unit, minTemperature, temperatureUnit) {
+    return remember(unit, minTemperature) {
         "${minTemperatureIn(temperatureUnit).roundToInt()}$unit"
     }
 }
@@ -25,7 +25,7 @@ public fun Preferences.minTemperatureString(temperatureUnit: TemperatureUnit): S
 @Composable
 public fun Preferences.maxTemperatureString(temperatureUnit: TemperatureUnit): String {
     val unit = temperatureUnit.rememberUnit()
-    return remember(unit, maxTemperature, temperatureUnit) {
+    return remember(unit, maxTemperature) {
         "${maxTemperatureIn(temperatureUnit).roundToInt()}$unit"
     }
 }
@@ -33,7 +33,7 @@ public fun Preferences.maxTemperatureString(temperatureUnit: TemperatureUnit): S
 @Composable
 public fun Preferences.maxWindSpeedString(windSpeedUnit: WindSpeedUnit): String {
     val unit = windSpeedUnit.rememberUnit()
-    return remember(unit, windSpeed, windSpeedUnit) {
+    return remember(unit, windSpeed) {
         "${windSpeedIn(windSpeedUnit).roundToInt()} $unit"
     }
 }

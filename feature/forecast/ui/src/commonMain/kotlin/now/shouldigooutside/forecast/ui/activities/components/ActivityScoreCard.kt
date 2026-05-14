@@ -73,9 +73,9 @@ internal fun ActivityScoreCard(
     period: ForecastPeriod,
     data: ActivityForecastScore,
     onClick: () -> Unit,
+    units: Units,
     modifier: Modifier = Modifier,
     block: ForecastBlock? = null,
-    units: Units = Units.Metric,
 ) {
     val colors = data.activity.colors()
     val score = remember(data, period) { data.score.scoreForPeriod(period) }
@@ -254,6 +254,7 @@ private fun Preview(
                 period = ForecastPeriod.Now,
                 data = score,
                 onClick = {},
+                units = Units.Metric,
                 block = forecast.current,
             )
         }

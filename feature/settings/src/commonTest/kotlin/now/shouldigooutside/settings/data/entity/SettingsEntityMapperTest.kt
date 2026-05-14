@@ -446,6 +446,31 @@ class SettingsEntityMapperTest {
     }
 
     @Test
+    fun legacyJsonWithIntegerValuesDecodesIntoDoubleFields() {
+        // Pre-Double migration, min_temp/max_temp/wind_speed were Int.
+        // Existing user data on disk uses bare integer JSON literals like `5`, not `5.0`.
+        // Verify kotlinx.serialization accepts those into the new Double fields without error.
+        val legacyJson =
+            """
+            {
+              "min_temp": 5,
+              "max_temp": 35,
+              "include_apparent_temp": false,
+              "wind_speed": 30,
+              "rain": false,
+              "snow": false,
+              "max_aqi": 3
+            }
+            """.trimIndent()
+
+        val entity = Json.decodeFromString<PreferencesEntity>(legacyJson)
+
+        entity.minTemperature shouldBe 5.0
+        entity.maxTemperature shouldBe 35.0
+        entity.windSpeed shouldBe 30.0
+    }
+
+    @Test
     fun roundTripWithDisabledFlagsPreservesValues() {
         val prefs = Preferences.default.copy(
             windEnabled = false,

@@ -493,7 +493,6 @@ class DefaultScoreCalculatorTest {
 
     @Test
     fun imperialForecastWithMetricPrefsScoresCorrectly() {
-        // Reported bug: Imperial user, prefs 38..87°F (≈3..30°C), actual 68°F (20°C) returned No.
         // Storage is always Metric, so prefs are stored in °C. Verify a Metric-stored pref range
         // correctly accepts an Imperial-origin forecast that converts to 20°C.
         val imperialForecast = testForecast(

@@ -69,9 +69,7 @@ public fun WindRange(
 
         val displayUnit = units.windSpeed
         Slider(
-            value = remember(preferences.windSpeed, displayUnit) {
-                preferences.windSpeedIn(displayUnit).toFloat()
-            },
+            value = preferences.windSpeedIn(displayUnit).toFloat(),
             onValueChange = { update(preferences.withWindSpeed(it.toDouble(), displayUnit)) },
             valueRange = remember(maxWindSpeed) { 0f..maxWindSpeed },
             colors = colors.sliderColors(),

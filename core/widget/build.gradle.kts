@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.Compose, name = "core.widget")
+configureMultiplatform(Platforms.Compose, name = "core.widget", tests = true)
 
 kotlin {
     sourceSets {
