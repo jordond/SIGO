@@ -4,6 +4,8 @@
 <dict>
 	<key>NSWidgetWantsLocation</key>
 	<true/>
+	<key>NSSupportsCarPlay</key>
+	<true/>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>
