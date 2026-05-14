@@ -5,6 +5,5 @@ struct StubIntentDialogTemplates: IntentDialogTemplates {
     var maybeTemplate: String = "M %1$@/%2$@"
     var noTemplate: String    = "N %1$@/%2$@"
     var noLocationDialog: String  = "no-loc"
-    var unreachableDialog: String = "unreachable"
     var staleSuffix: String       = "STALE"
 }

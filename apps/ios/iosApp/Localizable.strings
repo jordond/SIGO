@@ -10,8 +10,5 @@
 /* Spoken when the user has never opened the SIGO app on their phone. */
 "siri_intent_no_location_dialog" = "Open SIGO on your phone first to set a location.";
 
-/* Spoken when the network is unreachable and there is no cached score. */
-"siri_intent_unreachable_dialog" = "I couldn't reach the forecast right now.";
-
 /* Appended after the verdict when the score is from a stale cache. */
 "siri_intent_stale_suffix" = "(cached)";

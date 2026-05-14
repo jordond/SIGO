@@ -44,7 +44,7 @@ Verify:
   clipping.
 - **Airplane mode after a successful fetch** → cached widget retained; Siri verdict appended with
   "(cached)".
-- **Airplane mode with no cache** → Siri replies "I couldn't reach the forecast right now".
+- **Airplane mode with no cache** → Siri replies "Open SIGO on your phone first to set a location." (Both never-set-up and cache-cleared-then-network-failed produce the same prompt; distinguishing them requires a KMP probe not in scope for v1.)
 - **iPhone Home Screen widget gallery** → existing `systemSmall` and `systemMedium` unaffected.
 
 ## App Store submission TODOs
