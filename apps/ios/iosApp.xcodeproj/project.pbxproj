@@ -21,16 +21,19 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		00DE6FD9F6119950BC34AD51 /* IntentDialogBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FF9F345DD8EBD1524F05C4D /* IntentDialogBuilderTests.swift */; };
 		1A51C8AAE551F3F12521E4B9 /* WidgetColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD2FA5876CF9FC4BA2942E1 /* WidgetColors.swift */; };
 		25FF94B9D3EF770D7D7742B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB81115C016B772EA4A5BB62 /* Foundation.framework */; };
 		70C5293AC14A89DADBDA4AB6 /* WidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50AC9991A1D14409C193CE9 /* WidgetData.swift */; };
 		87C5F4E2C796658220F82E23 /* ScoreResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EED54DEFA49BB29458D75E /* ScoreResult.swift */; };
+		A3CEF009EA2F1E246C5060D5 /* StubIntentDialogTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71AC2B664AD8D4E390BD1960 /* StubIntentDialogTemplates.swift */; };
 		A4CF6B13BA581304099817E6 /* ScoreResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EED54DEFA49BB29458D75E /* ScoreResult.swift */; };
 		A93A953B29CC810C00F8E227 /* iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93A953A29CC810C00F8E227 /* iosApp.swift */; };
 		A93A953F29CC810D00F8E227 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A953E29CC810D00F8E227 /* Assets.xcassets */; };
 		A93A954229CC810D00F8E227 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A954129CC810D00F8E227 /* Preview Assets.xcassets */; };
 		AE7B71BD793A80CBBA43400D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BABD77D3350D7961DFED6709 /* Localizable.strings */; };
 		BF281A49FFFE33F3DE4E5919 /* WidgetColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD2FA5876CF9FC4BA2942E1 /* WidgetColors.swift */; };
+		D5CFD83F93281E54412FAC9F /* WidgetDataFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583335D3D5AF404F8B9E3E4E /* WidgetDataFixtures.swift */; };
 		F73E86D22DDF756500E89B14 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F73E86D12DDF756500E89B14 /* FirebaseCore */; };
 		F73E86D42DDF756500E89B14 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = F73E86D32DDF756500E89B14 /* FirebaseCrashlytics */; };
 		F73E86D62DDF756500E89B14 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = F73E86D52DDF756500E89B14 /* FirebaseRemoteConfig */; };
@@ -97,8 +100,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0FF9F345DD8EBD1524F05C4D /* IntentDialogBuilderTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IntentDialogBuilderTests.swift; sourceTree = "<group>"; };
 		1CD2FA5876CF9FC4BA2942E1 /* WidgetColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetColors.swift; sourceTree = "<group>"; };
+		583335D3D5AF404F8B9E3E4E /* WidgetDataFixtures.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetDataFixtures.swift; sourceTree = "<group>"; };
 		70EED54DEFA49BB29458D75E /* ScoreResult.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScoreResult.swift; sourceTree = "<group>"; };
+		71AC2B664AD8D4E390BD1960 /* StubIntentDialogTemplates.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StubIntentDialogTemplates.swift; sourceTree = "<group>"; };
 		A93A953729CC810C00F8E227 /* SIGOT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SIGOT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A93A953A29CC810C00F8E227 /* iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosApp.swift; sourceTree = "<group>"; };
 		A93A953E29CC810D00F8E227 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -246,6 +252,7 @@
 		AC62F53F07DBDCCCAF8B115C /* Intents */ = {
 			isa = PBXGroup;
 			children = (
+				0FF9F345DD8EBD1524F05C4D /* IntentDialogBuilderTests.swift */,
 			);
 			name = Intents;
 			path = Intents;
@@ -264,6 +271,8 @@
 		D8D8DE4DE3F0A5F9475D2058 /* TestSupport */ = {
 			isa = PBXGroup;
 			children = (
+				71AC2B664AD8D4E390BD1960 /* StubIntentDialogTemplates.swift */,
+				583335D3D5AF404F8B9E3E4E /* WidgetDataFixtures.swift */,
 			);
 			name = TestSupport;
 			path = TestSupport;
@@ -513,6 +522,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3CEF009EA2F1E246C5060D5 /* StubIntentDialogTemplates.swift in Sources */,
+				D5CFD83F93281E54412FAC9F /* WidgetDataFixtures.swift in Sources */,
+				00DE6FD9F6119950BC34AD51 /* IntentDialogBuilderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
