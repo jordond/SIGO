@@ -24,6 +24,8 @@
 		00DE6FD9F6119950BC34AD51 /* IntentDialogBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FF9F345DD8EBD1524F05C4D /* IntentDialogBuilderTests.swift */; };
 		1A51C8AAE551F3F12521E4B9 /* WidgetColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD2FA5876CF9FC4BA2942E1 /* WidgetColors.swift */; };
 		25FF94B9D3EF770D7D7742B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB81115C016B772EA4A5BB62 /* Foundation.framework */; };
+		4A570C5F6F484E91DF7AD17A /* IntentDialogTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986F8C9B955275A916EE5D8F /* IntentDialogTemplates.swift */; };
+		56B1B52966B41318CAB7113C /* IntentDialogBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365952F3A67BABE34F52ABA7 /* IntentDialogBuilder.swift */; };
 		70C5293AC14A89DADBDA4AB6 /* WidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50AC9991A1D14409C193CE9 /* WidgetData.swift */; };
 		87C5F4E2C796658220F82E23 /* ScoreResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EED54DEFA49BB29458D75E /* ScoreResult.swift */; };
 		A3CEF009EA2F1E246C5060D5 /* StubIntentDialogTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71AC2B664AD8D4E390BD1960 /* StubIntentDialogTemplates.swift */; };
@@ -102,9 +104,11 @@
 /* Begin PBXFileReference section */
 		0FF9F345DD8EBD1524F05C4D /* IntentDialogBuilderTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IntentDialogBuilderTests.swift; sourceTree = "<group>"; };
 		1CD2FA5876CF9FC4BA2942E1 /* WidgetColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetColors.swift; sourceTree = "<group>"; };
+		365952F3A67BABE34F52ABA7 /* IntentDialogBuilder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IntentDialogBuilder.swift; sourceTree = "<group>"; };
 		583335D3D5AF404F8B9E3E4E /* WidgetDataFixtures.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetDataFixtures.swift; sourceTree = "<group>"; };
 		70EED54DEFA49BB29458D75E /* ScoreResult.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScoreResult.swift; sourceTree = "<group>"; };
 		71AC2B664AD8D4E390BD1960 /* StubIntentDialogTemplates.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StubIntentDialogTemplates.swift; sourceTree = "<group>"; };
+		986F8C9B955275A916EE5D8F /* IntentDialogTemplates.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IntentDialogTemplates.swift; sourceTree = "<group>"; };
 		A93A953729CC810C00F8E227 /* SIGOT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SIGOT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A93A953A29CC810C00F8E227 /* iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosApp.swift; sourceTree = "<group>"; };
 		A93A953E29CC810D00F8E227 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -197,6 +201,16 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		57FA917D711D42FE3A42C1CD /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				986F8C9B955275A916EE5D8F /* IntentDialogTemplates.swift */,
+				365952F3A67BABE34F52ABA7 /* IntentDialogBuilder.swift */,
+			);
+			name = Intents;
+			path = Intents;
+			sourceTree = "<group>";
+		};
 		5A69179056A09AD09B94FBBC /* iOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -237,6 +251,7 @@
 				A93A954029CC810D00F8E227 /* Preview Content */,
 				259975A93B0716AE66F05E99 /* Shared */,
 				BABD77D3350D7961DFED6709 /* Localizable.strings */,
+				57FA917D711D42FE3A42C1CD /* Intents */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -536,6 +551,8 @@
 				FE0C4D0233A73C249D493816 /* WidgetData.swift in Sources */,
 				BF281A49FFFE33F3DE4E5919 /* WidgetColors.swift in Sources */,
 				87C5F4E2C796658220F82E23 /* ScoreResult.swift in Sources */,
+				4A570C5F6F484E91DF7AD17A /* IntentDialogTemplates.swift in Sources */,
+				56B1B52966B41318CAB7113C /* IntentDialogBuilder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
