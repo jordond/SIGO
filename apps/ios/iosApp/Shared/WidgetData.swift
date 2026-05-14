@@ -1,4 +1,5 @@
 import Foundation
+import iosApp
 
 struct WidgetData {
     let scoreResult: ScoreResult
@@ -32,4 +33,25 @@ struct WidgetData {
         updatedAgoLabel: "",
         activityName: nil
     )
+}
+
+extension iosApp.WidgetData {
+    func toSwiftWidgetData() -> WidgetData {
+        WidgetData(
+            scoreResult: ScoreResult(rawValue: scoreResult.name) ?? .Maybe,
+            scoreLabel: scoreLabel,
+            locationName: locationName,
+            formattedTemp: formattedTemp,
+            formattedFeelsLike: formattedFeelsLike,
+            formattedWind: formattedWind,
+            precipChance: Int(precipChance),
+            todayScoreResult: ScoreResult(rawValue: todayScoreResult.name) ?? .Maybe,
+            todayScoreLabel: todayScoreLabel,
+            alertCount: Int(alertCount),
+            updatedAtMillis: updatedAtMillis,
+            isStale: isStale,
+            updatedAgoLabel: updatedAgoLabel,
+            activityName: activityName
+        )
+    }
 }

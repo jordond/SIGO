@@ -24,6 +24,7 @@
 		00DE6FD9F6119950BC34AD51 /* IntentDialogBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FF9F345DD8EBD1524F05C4D /* IntentDialogBuilderTests.swift */; };
 		1A51C8AAE551F3F12521E4B9 /* WidgetColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD2FA5876CF9FC4BA2942E1 /* WidgetColors.swift */; };
 		25FF94B9D3EF770D7D7742B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB81115C016B772EA4A5BB62 /* Foundation.framework */; };
+		4068ADEBF277FBB0BA521115 /* SigoStatusIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A7777EFD76D248B1418967 /* SigoStatusIntent.swift */; };
 		4A570C5F6F484E91DF7AD17A /* IntentDialogTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986F8C9B955275A916EE5D8F /* IntentDialogTemplates.swift */; };
 		56B1B52966B41318CAB7113C /* IntentDialogBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365952F3A67BABE34F52ABA7 /* IntentDialogBuilder.swift */; };
 		70C5293AC14A89DADBDA4AB6 /* WidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50AC9991A1D14409C193CE9 /* WidgetData.swift */; };
@@ -118,6 +119,7 @@
 		AB81115C016B772EA4A5BB62 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		B36231BABB8B9D4214909E11 /* iosAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B50AC9991A1D14409C193CE9 /* WidgetData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetData.swift; sourceTree = "<group>"; };
+		B9A7777EFD76D248B1418967 /* SigoStatusIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SigoStatusIntent.swift; sourceTree = "<group>"; };
 		BABD77D3350D7961DFED6709 /* Localizable.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		F73E86D92DDF7C1200E89B14 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "iosApp/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F7B5B0452F6F14D5001FDA1C /* SIGOWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SIGOWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -209,6 +211,7 @@
 				986F8C9B955275A916EE5D8F /* IntentDialogTemplates.swift */,
 				365952F3A67BABE34F52ABA7 /* IntentDialogBuilder.swift */,
 				0FB09DA040DDCE3FC386F6EF /* SigoIntentSnippetView.swift */,
+				B9A7777EFD76D248B1418967 /* SigoStatusIntent.swift */,
 			);
 			name = Intents;
 			path = Intents;
@@ -557,6 +560,7 @@
 				4A570C5F6F484E91DF7AD17A /* IntentDialogTemplates.swift in Sources */,
 				56B1B52966B41318CAB7113C /* IntentDialogBuilder.swift in Sources */,
 				EE8E19628C4B52867315B8F9 /* SigoIntentSnippetView.swift in Sources */,
+				4068ADEBF277FBB0BA521115 /* SigoStatusIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
