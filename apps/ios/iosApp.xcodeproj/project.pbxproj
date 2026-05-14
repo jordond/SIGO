@@ -36,6 +36,7 @@
 		AE7B71BD793A80CBBA43400D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BABD77D3350D7961DFED6709 /* Localizable.strings */; };
 		BF281A49FFFE33F3DE4E5919 /* WidgetColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD2FA5876CF9FC4BA2942E1 /* WidgetColors.swift */; };
 		D5CFD83F93281E54412FAC9F /* WidgetDataFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583335D3D5AF404F8B9E3E4E /* WidgetDataFixtures.swift */; };
+		EE8E19628C4B52867315B8F9 /* SigoIntentSnippetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FB09DA040DDCE3FC386F6EF /* SigoIntentSnippetView.swift */; };
 		F73E86D22DDF756500E89B14 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F73E86D12DDF756500E89B14 /* FirebaseCore */; };
 		F73E86D42DDF756500E89B14 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = F73E86D32DDF756500E89B14 /* FirebaseCrashlytics */; };
 		F73E86D62DDF756500E89B14 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = F73E86D52DDF756500E89B14 /* FirebaseRemoteConfig */; };
@@ -102,6 +103,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0FB09DA040DDCE3FC386F6EF /* SigoIntentSnippetView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SigoIntentSnippetView.swift; sourceTree = "<group>"; };
 		0FF9F345DD8EBD1524F05C4D /* IntentDialogBuilderTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IntentDialogBuilderTests.swift; sourceTree = "<group>"; };
 		1CD2FA5876CF9FC4BA2942E1 /* WidgetColors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetColors.swift; sourceTree = "<group>"; };
 		365952F3A67BABE34F52ABA7 /* IntentDialogBuilder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IntentDialogBuilder.swift; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 			children = (
 				986F8C9B955275A916EE5D8F /* IntentDialogTemplates.swift */,
 				365952F3A67BABE34F52ABA7 /* IntentDialogBuilder.swift */,
+				0FB09DA040DDCE3FC386F6EF /* SigoIntentSnippetView.swift */,
 			);
 			name = Intents;
 			path = Intents;
@@ -553,6 +556,7 @@
 				87C5F4E2C796658220F82E23 /* ScoreResult.swift in Sources */,
 				4A570C5F6F484E91DF7AD17A /* IntentDialogTemplates.swift in Sources */,
 				56B1B52966B41318CAB7113C /* IntentDialogBuilder.swift in Sources */,
+				EE8E19628C4B52867315B8F9 /* SigoIntentSnippetView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
