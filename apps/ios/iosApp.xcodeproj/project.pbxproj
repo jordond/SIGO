@@ -29,6 +29,7 @@
 		A93A953B29CC810C00F8E227 /* iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93A953A29CC810C00F8E227 /* iosApp.swift */; };
 		A93A953F29CC810D00F8E227 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A953E29CC810D00F8E227 /* Assets.xcassets */; };
 		A93A954229CC810D00F8E227 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A954129CC810D00F8E227 /* Preview Assets.xcassets */; };
+		AE7B71BD793A80CBBA43400D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BABD77D3350D7961DFED6709 /* Localizable.strings */; };
 		BF281A49FFFE33F3DE4E5919 /* WidgetColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD2FA5876CF9FC4BA2942E1 /* WidgetColors.swift */; };
 		F73E86D22DDF756500E89B14 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F73E86D12DDF756500E89B14 /* FirebaseCore */; };
 		F73E86D42DDF756500E89B14 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = F73E86D32DDF756500E89B14 /* FirebaseCrashlytics */; };
@@ -105,6 +106,7 @@
 		AB81115C016B772EA4A5BB62 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		B36231BABB8B9D4214909E11 /* iosAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B50AC9991A1D14409C193CE9 /* WidgetData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetData.swift; sourceTree = "<group>"; };
+		BABD77D3350D7961DFED6709 /* Localizable.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		F73E86D92DDF7C1200E89B14 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "iosApp/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F7B5B0452F6F14D5001FDA1C /* SIGOWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SIGOWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F7B5B0462F6F14D5001FDA1C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -228,6 +230,7 @@
 				A93A953E29CC810D00F8E227 /* Assets.xcassets */,
 				A93A954029CC810D00F8E227 /* Preview Content */,
 				259975A93B0716AE66F05E99 /* Shared */,
+				BABD77D3350D7961DFED6709 /* Localizable.strings */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -401,6 +404,7 @@
 				A93A954229CC810D00F8E227 /* Preview Assets.xcassets in Resources */,
 				F73E86DA2DDF7C1200E89B14 /* GoogleService-Info.plist in Resources */,
 				A93A953F29CC810D00F8E227 /* Assets.xcassets in Resources */,
+				AE7B71BD793A80CBBA43400D /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
