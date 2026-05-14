@@ -19,10 +19,10 @@ import kotlin.test.Test
 
 class DefaultScoreCalculatorTest {
     private val defaultPreferences = Preferences(
-        minTemperature = 10,
-        maxTemperature = 30,
+        minTemperature = 10.0,
+        maxTemperature = 30.0,
         includeApparentTemperature = false,
-        windSpeed = 20,
+        windSpeed = 20.0,
         rain = true,
         snow = true,
         maxAqi = AirQuality(5),
@@ -142,8 +142,8 @@ class DefaultScoreCalculatorTest {
             temperature = testTemperature(value = 20.0, feelsLike = 5.0),
         )
         val prefs = defaultPreferences.copy(
-            minTemperature = 10,
-            maxTemperature = 30,
+            minTemperature = 10.0,
+            maxTemperature = 30.0,
             includeApparentTemperature = true,
         )
         val score = scoreBlock(block, prefs)
@@ -489,6 +489,29 @@ class DefaultScoreCalculatorTest {
         )
         val score = scoreBlock(block, prefs, includeAirQuality = true)
         score.result shouldBe ScoreResult.No
+    }
+
+    @Test
+    fun imperialForecastWithMetricPrefsScoresCorrectly() {
+        // Storage is always Metric, so prefs are stored in °C. Verify a Metric-stored pref range
+        // correctly accepts an Imperial-origin forecast that converts to 20°C.
+        val imperialForecast = testForecast(
+            current = testForecastBlock(temperature = testTemperature(value = 68.0)),
+            today = testForecastDay(
+                block = testForecastBlock(temperature = testTemperature(value = 68.0)),
+            ),
+            units = Units.Imperial,
+        )
+        val prefs = defaultPreferences.copy(
+            minTemperature = 3.333, // 38°F
+            maxTemperature = 30.555, // 87°F
+            windSpeed = 50.0,
+        )
+
+        val result = calculator.calculate(imperialForecast, prefs, includeAirQuality = false)
+
+        result.current.reasons.temperature shouldBe ReasonValue.Inside
+        result.current.result shouldBe ScoreResult.Yes
     }
 
     @Test

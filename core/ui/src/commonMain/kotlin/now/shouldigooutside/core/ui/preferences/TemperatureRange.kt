@@ -13,6 +13,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.preferences.maxTemperatureIn
+import now.shouldigooutside.core.model.preferences.minTemperatureIn
+import now.shouldigooutside.core.model.preferences.withMaxTemperature
+import now.shouldigooutside.core.model.preferences.withMinTemperature
 import now.shouldigooutside.core.model.units.TemperatureUnit
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.resources.Res
@@ -88,16 +92,18 @@ public fun TemperatureRange(
             }
         }
 
-        val range = remember(preferences.minTemperature, preferences.maxTemperature) {
-            preferences.minTemperature.toFloat()..preferences.maxTemperature.toFloat()
+        val displayUnit = units.temperature
+        val range = remember(preferences.minTemperature, preferences.maxTemperature, displayUnit) {
+            val min = preferences.minTemperatureIn(displayUnit).toFloat()
+            val max = preferences.maxTemperatureIn(displayUnit).toFloat()
+            min..max
         }
         RangeSlider(
             value = range,
             onValueChange = { newRange ->
-                val prefs = preferences.copy(
-                    minTemperature = newRange.start.toInt(),
-                    maxTemperature = newRange.endInclusive.toInt(),
-                )
+                val prefs = preferences
+                    .withMinTemperature(newRange.start.toDouble(), displayUnit)
+                    .withMaxTemperature(newRange.endInclusive.toDouble(), displayUnit)
                 update(prefs)
             },
             valueRange = temperatureRange,

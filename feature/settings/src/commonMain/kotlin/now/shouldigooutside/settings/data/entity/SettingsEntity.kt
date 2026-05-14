@@ -64,10 +64,19 @@ internal fun SettingsEntity.toModel(): Settings {
 
     // If the old preferences field is present and activities are empty,
     // we need to migrate it to the new structure.
-    val activities = if (activities.isEmpty() && preferences != null) {
+    val rawActivities = if (activities.isEmpty() && preferences != null) {
         mapOf(ActivityEntity.General to preferences)
     } else {
         activities
+    }
+    // Schema-0 entities wrote preferences in user units with a null per-pref units field.
+    // Convert them to Metric using the effective unit system for this user.
+    val activities = if (internalSettings.schemaVersion < SETTINGS_SCHEMA_VERSION) {
+        rawActivities.mapValues { (_, entity) ->
+            if (entity.units == null) entity.migrateToMetric(from = units) else entity
+        }
+    } else {
+        rawActivities
     }.toModel().toPersistentMap()
 
     val selected = mapActivityEntityToModel(selectedActivity)

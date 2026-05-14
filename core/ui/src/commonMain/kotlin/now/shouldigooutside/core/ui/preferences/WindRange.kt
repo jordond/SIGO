@@ -14,6 +14,8 @@ import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_TYPE_NORMAL
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.preferences.windSpeedIn
+import now.shouldigooutside.core.model.preferences.withWindSpeed
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.model.units.WindSpeedUnit
 import now.shouldigooutside.core.resources.Res
@@ -65,9 +67,10 @@ public fun WindRange(
             )
         }
 
+        val displayUnit = units.windSpeed
         Slider(
-            value = preferences.windSpeed.toFloat(),
-            onValueChange = { update(preferences.copy(windSpeed = it.toInt())) },
+            value = preferences.windSpeedIn(displayUnit).toFloat(),
+            onValueChange = { update(preferences.withWindSpeed(it.toDouble(), displayUnit)) },
             valueRange = remember(maxWindSpeed) { 0f..maxWindSpeed },
             colors = colors.sliderColors(),
             tickLabel = { SliderDefaults.TickLabel(it) },

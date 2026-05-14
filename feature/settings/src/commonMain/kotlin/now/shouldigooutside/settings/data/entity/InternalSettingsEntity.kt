@@ -17,7 +17,17 @@ internal data class InternalSettingsEntity(
     val apiKey: String? = null,
     @SerialName("use_direct_api")
     val useDirectApi: Boolean = false,
+    /**
+     * Tracks one-shot migrations applied to stored settings. Bump and add a branch in
+     * [SettingsEntity.toModel] when introducing a new migration.
+     *
+     * 0: legacy; pre-Metric-storage preferences. 1: preferences stored in Metric.
+     */
+    @SerialName("schema_version")
+    val schemaVersion: Int = 0,
 )
+
+internal const val SETTINGS_SCHEMA_VERSION: Int = 1
 
 internal fun InternalSettingsEntity.toModel() =
     InternalSettings(
@@ -35,4 +45,5 @@ internal fun InternalSettings.toEntity() =
         backendApiUrl = backendApiUrl,
         apiKey = apiKey,
         useDirectApi = useDirectApi,
+        schemaVersion = SETTINGS_SCHEMA_VERSION,
     )

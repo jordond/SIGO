@@ -4,12 +4,16 @@ import androidx.compose.runtime.Immutable
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.score.Metric
 
+/**
+ * Temperature and wind speed values are always stored in Metric (Celsius, km/h).
+ * UI layers convert to/from the user's display units at the boundary.
+ */
 @Immutable
 public data class Preferences(
-    public val minTemperature: Int,
-    public val maxTemperature: Int,
+    public val minTemperature: Double,
+    public val maxTemperature: Double,
     public val includeApparentTemperature: Boolean,
-    public val windSpeed: Int,
+    public val windSpeed: Double,
     public val rain: Boolean,
     public val snow: Boolean,
     public val maxAqi: AirQuality,
@@ -20,10 +24,10 @@ public data class Preferences(
 ) {
     public companion object {
         public val default: Preferences = Preferences(
-            minTemperature = 5,
-            maxTemperature = 35,
+            minTemperature = 5.0,
+            maxTemperature = 35.0,
             includeApparentTemperature = false,
-            windSpeed = 30,
+            windSpeed = 30.0,
             rain = false,
             snow = false,
             maxAqi = AirQuality(3),
@@ -33,41 +37,41 @@ public data class Preferences(
             when (activity) {
                 is Activity.General -> default
                 is Activity.Walking -> default.copy(
-                    minTemperature = -10,
-                    maxTemperature = 30,
-                    windSpeed = 35,
+                    minTemperature = -10.0,
+                    maxTemperature = 30.0,
+                    windSpeed = 35.0,
                     rain = true,
                     snow = true,
                     maxAqi = AirQuality(5),
                 )
                 is Activity.Running -> default.copy(
-                    minTemperature = 10,
-                    maxTemperature = 30,
-                    windSpeed = 25,
+                    minTemperature = 10.0,
+                    maxTemperature = 30.0,
+                    windSpeed = 25.0,
                     rain = false,
                     snow = false,
                     maxAqi = AirQuality(2),
                 )
                 is Activity.Cycling -> default.copy(
-                    minTemperature = 10,
-                    maxTemperature = 30,
-                    windSpeed = 25,
+                    minTemperature = 10.0,
+                    maxTemperature = 30.0,
+                    windSpeed = 25.0,
                     rain = false,
                     snow = false,
                     maxAqi = AirQuality(2),
                 )
                 is Activity.Hiking -> default.copy(
-                    minTemperature = 5,
-                    maxTemperature = 30,
-                    windSpeed = 35,
+                    minTemperature = 5.0,
+                    maxTemperature = 30.0,
+                    windSpeed = 35.0,
                     rain = true,
                     snow = true,
                     maxAqi = AirQuality(3),
                 )
                 is Activity.Swimming -> default.copy(
-                    minTemperature = 20,
-                    maxTemperature = 35,
-                    windSpeed = 30,
+                    minTemperature = 20.0,
+                    maxTemperature = 35.0,
+                    windSpeed = 30.0,
                     rain = false,
                     snow = false,
                     maxAqi = AirQuality(6),

@@ -44,10 +44,10 @@ public data class WidgetInputs(
 
     @Serializable
     public data class StoredPreferences(
-        val minTemperature: Int,
-        val maxTemperature: Int,
+        val minTemperature: Double,
+        val maxTemperature: Double,
         val includeApparentTemperature: Boolean,
-        val windSpeed: Int,
+        val windSpeed: Double,
         val rain: Boolean,
         val snow: Boolean,
         val maxAqi: Int,

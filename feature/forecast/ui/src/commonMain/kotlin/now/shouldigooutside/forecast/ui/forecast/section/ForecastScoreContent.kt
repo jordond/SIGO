@@ -37,6 +37,7 @@ import now.shouldigooutside.core.model.forecast.blockForPeriod
 import now.shouldigooutside.core.model.forecast.weatherBannerInfo
 import now.shouldigooutside.core.model.preferences.Activity
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.preferences.maxTemperatureIn
 import now.shouldigooutside.core.model.score.Metric
 import now.shouldigooutside.core.model.score.Score
 import now.shouldigooutside.core.model.score.scoreForPeriod
@@ -218,7 +219,7 @@ private fun MetricCard(
                 title = Res.string.unit_temperature_short.get(),
                 text = score.reasons.temperatureStatus(
                     value = block.temperature.value,
-                    max = preferences.maxTemperature.toDouble(),
+                    max = preferences.maxTemperatureIn(units.temperature),
                 ),
                 colors = units.temperature.colors(),
                 value = {
