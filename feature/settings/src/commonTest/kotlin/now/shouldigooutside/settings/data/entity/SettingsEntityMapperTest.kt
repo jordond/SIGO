@@ -471,6 +471,78 @@ class SettingsEntityMapperTest {
     }
 
     @Test
+    fun schemaV0ImperialMetricValuesAreNotDoubleConverted() {
+        // Pre-PR-21 Imperial user upgraded through PR-21 and saved settings without
+        // touching temp/wind sliders. On-disk shape: top-level units=Imperial, per-pref
+        // units=null, but values already correctly converted to Metric (Celsius/km-h) by
+        // the PR-21 entity reader before re-save. schemaVersion is absent (defaults to 0).
+        //
+        // The schema-1 migration must NOT treat these Metric values as °F/mph and convert
+        // them again — that would silently shift the user's range way out of bounds.
+        val entity = SettingsEntity(
+            firstLaunch = 0L,
+            theme = "Light",
+            hasCompletedOnboarding = false,
+            units = Units.Imperial.toEntity(),
+            activities = mapOf(
+                ActivityEntity.General to PreferencesEntity(
+                    units = null,
+                    minTemperature = 5.0,
+                    maxTemperature = 35.0,
+                    includeApparentTemperature = false,
+                    windSpeed = 30.0,
+                    rain = false,
+                    snow = false,
+                    maxAqi = 3,
+                ),
+            ),
+            internalSettings = InternalSettingsEntity(schemaVersion = 0),
+        )
+
+        val result = entity.toModel()
+        val prefs = result.activities[Activity.General]!!
+
+        prefs.minTemperature shouldBe 5.0
+        prefs.maxTemperature shouldBe 35.0
+        prefs.windSpeed shouldBe 30.0
+    }
+
+    @Test
+    fun schemaV0ImperialUserUnitValuesAreMigratedToMetric() {
+        // Post-PR-21 Imperial user who DID touch temp/wind sliders. The slider wrote
+        // user-unit values (e.g. 38..87 °F, 20 mph) directly into Preferences, then
+        // Settings.toEntity persisted them with units=null (the bug this PR fixes).
+        // The schema-1 migration must convert them to Metric on first load.
+        val entity = SettingsEntity(
+            firstLaunch = 0L,
+            theme = "Light",
+            hasCompletedOnboarding = false,
+            units = Units.Imperial.toEntity(),
+            activities = mapOf(
+                ActivityEntity.General to PreferencesEntity(
+                    units = null,
+                    minTemperature = 38.0, // °F
+                    maxTemperature = 87.0, // °F
+                    includeApparentTemperature = false,
+                    windSpeed = 20.0, // mph
+                    rain = false,
+                    snow = false,
+                    maxAqi = 3,
+                ),
+            ),
+            internalSettings = InternalSettingsEntity(schemaVersion = 0),
+        )
+
+        val result = entity.toModel()
+        val prefs = result.activities[Activity.General]!!
+
+        // 38°F ≈ 3.33°C, 87°F ≈ 30.56°C, 20 mph ≈ 32.19 km/h
+        prefs.minTemperature shouldBe 3.3333333333333335
+        prefs.maxTemperature shouldBe 30.555555555555557
+        prefs.windSpeed shouldBe 32.1868
+    }
+
+    @Test
     fun roundTripWithDisabledFlagsPreservesValues() {
         val prefs = Preferences.default.copy(
             windEnabled = false,

@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.preferences.Preferences
+import now.shouldigooutside.core.model.units.TemperatureUnit
 import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.model.units.convertTemperature
 import now.shouldigooutside.core.model.units.convertWindSpeed
@@ -107,9 +108,26 @@ internal fun PreferencesEntity.toModel(): Preferences {
     )
 }
 
-internal fun PreferencesEntity.migrateToMetric(from: Units): PreferencesEntity =
-    copy(
+/**
+ * The schema-0 → schema-1 transition is ambiguous: a pre-this-PR entity with `units == null`
+ * could be either (a) post-PR-21 buggy data where the slider wrote raw user-unit values, or
+ * (b) Metric values that the PR-21 entity reader correctly converted from a pre-PR-21
+ * `units != null` entity and then re-saved. Both cases are indistinguishable on disk.
+ *
+ * Use the temperature range as the diagnostic. The Metric slider caps user input at
+ * [-30°C, 40°C] (see `PreferenceRanges`), so any value outside that window must be in user
+ * units. When the temperature range fits inside Metric bounds, the values are assumed
+ * already-Metric and left alone — this protects case (b) from a destructive double-conversion
+ * at the cost of leaving rare mild-Imperial buggy entries unmigrated (recoverable by the user
+ * re-touching the slider, which now writes Metric).
+ */
+internal fun PreferencesEntity.migrateToMetric(from: Units): PreferencesEntity {
+    if (from.temperature == TemperatureUnit.Celsius) return this
+    val withinMetricRange = minTemperature in -30.0..30.0 && maxTemperature in -30.0..40.0
+    if (withinMetricRange) return this
+    return copy(
         minTemperature = convertTemperature(minTemperature, from.temperature, Units.Metric.temperature),
         maxTemperature = convertTemperature(maxTemperature, from.temperature, Units.Metric.temperature),
         windSpeed = convertWindSpeed(windSpeed, from.windSpeed, Units.Metric.windSpeed),
     )
+}
