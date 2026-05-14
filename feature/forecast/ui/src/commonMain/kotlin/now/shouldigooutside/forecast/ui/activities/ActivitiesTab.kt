@@ -154,6 +154,7 @@ internal fun ActivitiesTab(
                     data = score,
                     onClick = { dispatcher.dispatch(ActivitiesTabAction.ActivityClick(score.activity)) },
                     block = block,
+                    units = units,
                     modifier = Modifier
                         .widthIn(max = 500.dp)
                         .animateItem(),

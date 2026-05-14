@@ -29,12 +29,14 @@ import now.shouldigooutside.core.model.forecast.AirQuality
 import now.shouldigooutside.core.model.forecast.ForecastBlock
 import now.shouldigooutside.core.model.forecast.ForecastPeriod
 import now.shouldigooutside.core.model.preferences.Activity
+import now.shouldigooutside.core.model.preferences.maxTemperatureIn
 import now.shouldigooutside.core.model.score.ActivityForecastScore
 import now.shouldigooutside.core.model.score.Metric
 import now.shouldigooutside.core.model.score.ReasonValue
 import now.shouldigooutside.core.model.score.Reasons
 import now.shouldigooutside.core.model.score.ScoreResult
 import now.shouldigooutside.core.model.score.scoreForPeriod
+import now.shouldigooutside.core.model.units.Units
 import now.shouldigooutside.core.ui.AppTheme
 import now.shouldigooutside.core.ui.AqiLevels
 import now.shouldigooutside.core.ui.BrutalColors
@@ -73,6 +75,7 @@ internal fun ActivityScoreCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     block: ForecastBlock? = null,
+    units: Units = Units.Metric,
 ) {
     val colors = data.activity.colors()
     val score = remember(data, period) { data.score.scoreForPeriod(period) }
@@ -131,7 +134,7 @@ internal fun ActivityScoreCard(
                     reasons = score.reasons,
                     enabled = enabled,
                     temperatureValue = block.temperature.value,
-                    maxTemperature = data.preferences.maxTemperature.toDouble(),
+                    maxTemperature = data.preferences.maxTemperatureIn(units.temperature),
                     airQuality = block.airQuality,
                     modifier = Modifier.padding(
                         horizontal = AppTheme.spacing.standard,

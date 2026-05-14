@@ -31,9 +31,9 @@ class ForecastScoreRequestQueryTest {
 
         val (_, prefs) = query.toModels()
 
-        prefs.maxTemperature shouldBe 30
-        prefs.minTemperature shouldBe 5
-        prefs.windSpeed shouldBe 25
+        prefs.maxTemperature shouldBe 30.0
+        prefs.minTemperature shouldBe 5.0
+        prefs.windSpeed shouldBe 25.0
         prefs.rain shouldBe true
         prefs.snow shouldBe false
         prefs.maxAqi shouldBe AirQuality(4)
@@ -50,7 +50,7 @@ class ForecastScoreRequestQueryTest {
 
         val (_, prefs) = query.toModels()
 
-        prefs.maxTemperature shouldBe 28
+        prefs.maxTemperature shouldBe 28.0
         prefs.rain shouldBe true
         prefs.minTemperature shouldBe Preferences.default.minTemperature
         prefs.windSpeed shouldBe Preferences.default.windSpeed

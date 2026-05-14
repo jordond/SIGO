@@ -14,13 +14,13 @@ internal data class PreferencesEntity(
     @SerialName("units")
     val units: UnitsEntity? = null,
     @SerialName("min_temp")
-    val minTemperature: Int,
+    val minTemperature: Double,
     @SerialName("max_temp")
-    val maxTemperature: Int,
+    val maxTemperature: Double,
     @SerialName("include_apparent_temp")
     val includeApparentTemperature: Boolean,
     @SerialName("wind_speed")
-    val windSpeed: Int,
+    val windSpeed: Double,
     @SerialName("rain")
     val rain: Boolean,
     @SerialName("snow")
@@ -55,50 +55,48 @@ internal fun Preferences.toEntity() =
     )
 
 /**
- * Converts stored preferences to the model. If [units] is present (pre-migration data),
- * the values are converted from the stored unit system to Metric. If [units] is null,
- * the values are already in Metric and used as-is.
+ * Converts stored preferences to the model. Storage contract: values are always in Metric.
+ * If [units] is present (pre-migration data), values were stored in those units and are
+ * converted to Metric here. Otherwise the raw Metric values are returned as-is.
+ *
+ * A separate one-shot settings-level migration handles the post-#21 era where values were
+ * incorrectly written in user units with a null [units] field; see [SettingsEntity.toModel].
  */
 @Suppress("DEPRECATION")
 internal fun PreferencesEntity.toModel(): Preferences {
-    val storedUnits = units?.toModel()
-
-    // If no units stored, values are already in Metric — no conversion needed.
-    if (storedUnits == null) {
-        return Preferences(
-            minTemperature = minTemperature,
-            maxTemperature = maxTemperature,
-            includeApparentTemperature = includeApparentTemperature,
-            windSpeed = windSpeed,
-            rain = rain,
-            snow = snow,
-            maxAqi = AirQuality(maxAqi),
-            temperatureEnabled = temperatureEnabled,
-            windEnabled = windEnabled,
-            precipitationEnabled = precipitationEnabled,
-            aqiEnabled = aqiEnabled,
-        )
-    }
+    val storedUnits = units?.toModel() ?: return Preferences(
+        minTemperature = minTemperature,
+        maxTemperature = maxTemperature,
+        includeApparentTemperature = includeApparentTemperature,
+        windSpeed = windSpeed,
+        rain = rain,
+        snow = snow,
+        maxAqi = AirQuality(maxAqi),
+        temperatureEnabled = temperatureEnabled,
+        windEnabled = windEnabled,
+        precipitationEnabled = precipitationEnabled,
+        aqiEnabled = aqiEnabled,
+    )
 
     val metricUnits = Units.Metric
 
     return Preferences(
         minTemperature = convertTemperature(
-            value = minTemperature.toDouble(),
+            value = minTemperature,
             from = storedUnits.temperature,
             target = metricUnits.temperature,
-        ).toInt(),
+        ),
         maxTemperature = convertTemperature(
-            value = maxTemperature.toDouble(),
+            value = maxTemperature,
             from = storedUnits.temperature,
             target = metricUnits.temperature,
-        ).toInt(),
+        ),
         includeApparentTemperature = includeApparentTemperature,
         windSpeed = convertWindSpeed(
-            value = windSpeed.toDouble(),
+            value = windSpeed,
             from = storedUnits.windSpeed,
             target = metricUnits.windSpeed,
-        ).toInt(),
+        ),
         rain = rain,
         snow = snow,
         maxAqi = AirQuality(maxAqi),
@@ -108,3 +106,10 @@ internal fun PreferencesEntity.toModel(): Preferences {
         aqiEnabled = aqiEnabled,
     )
 }
+
+internal fun PreferencesEntity.migrateToMetric(from: Units): PreferencesEntity =
+    copy(
+        minTemperature = convertTemperature(minTemperature, from.temperature, Units.Metric.temperature),
+        maxTemperature = convertTemperature(maxTemperature, from.temperature, Units.Metric.temperature),
+        windSpeed = convertWindSpeed(windSpeed, from.windSpeed, Units.Metric.windSpeed),
+    )

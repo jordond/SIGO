@@ -66,10 +66,10 @@ class SettingsEntityMapperTest {
     fun preferencesWithNoUnitsUsesValuesAsIs() {
         val entity = PreferencesEntity(
             units = null,
-            minTemperature = 5,
-            maxTemperature = 30,
+            minTemperature = 5.0,
+            maxTemperature = 30.0,
             includeApparentTemperature = true,
-            windSpeed = 20,
+            windSpeed = 20.0,
             rain = true,
             snow = false,
             maxAqi = 3,
@@ -77,10 +77,10 @@ class SettingsEntityMapperTest {
 
         val result = entity.toModel()
 
-        result.minTemperature shouldBe 5
-        result.maxTemperature shouldBe 30
+        result.minTemperature shouldBe 5.0
+        result.maxTemperature shouldBe 30.0
         result.includeApparentTemperature shouldBe true
-        result.windSpeed shouldBe 20
+        result.windSpeed shouldBe 20.0
         result.rain shouldBe true
         result.snow shouldBe false
         result.maxAqi shouldBe AirQuality(3)
@@ -92,10 +92,10 @@ class SettingsEntityMapperTest {
         val imperialUnitsEntity = Units.Imperial.toEntity()
         val entity = PreferencesEntity(
             units = imperialUnitsEntity,
-            minTemperature = 32, // 32°F = 0°C
-            maxTemperature = 32,
+            minTemperature = 32.0, // 32°F = 0°C
+            maxTemperature = 32.0,
             includeApparentTemperature = false,
-            windSpeed = 0,
+            windSpeed = 0.0,
             rain = false,
             snow = false,
             maxAqi = 2,
@@ -103,8 +103,8 @@ class SettingsEntityMapperTest {
 
         val result = entity.toModel()
 
-        result.minTemperature shouldBe 0 // converted from Fahrenheit to Celsius
-        result.maxTemperature shouldBe 0
+        result.minTemperature shouldBe 0.0 // converted from Fahrenheit to Celsius
+        result.maxTemperature shouldBe 0.0
     }
 
     @Test
@@ -120,10 +120,10 @@ class SettingsEntityMapperTest {
     fun settingsOldPreferencesMigrated() {
         val oldPreferences = PreferencesEntity(
             units = null,
-            minTemperature = 10,
-            maxTemperature = 28,
+            minTemperature = 10.0,
+            maxTemperature = 28.0,
             includeApparentTemperature = false,
-            windSpeed = 25,
+            windSpeed = 25.0,
             rain = true,
             snow = false,
             maxAqi = 3,
@@ -147,10 +147,10 @@ class SettingsEntityMapperTest {
         val imperialUnitsEntity = Units.Imperial.toEntity()
         val oldPreferences = PreferencesEntity(
             units = imperialUnitsEntity,
-            minTemperature = 32,
-            maxTemperature = 104,
+            minTemperature = 32.0,
+            maxTemperature = 104.0,
             includeApparentTemperature = false,
-            windSpeed = 0,
+            windSpeed = 0.0,
             rain = false,
             snow = false,
             maxAqi = 2,
@@ -175,10 +175,10 @@ class SettingsEntityMapperTest {
         val activities = mapOf(
             ActivityEntity.General to PreferencesEntity(
                 units = null,
-                minTemperature = 5,
-                maxTemperature = 35,
+                minTemperature = 5.0,
+                maxTemperature = 35.0,
                 includeApparentTemperature = false,
-                windSpeed = 30,
+                windSpeed = 30.0,
                 rain = false,
                 snow = false,
                 maxAqi = 3,
@@ -202,10 +202,10 @@ class SettingsEntityMapperTest {
     fun settingsNewFormatUsedDirectly() {
         val walkingPreferences = PreferencesEntity(
             units = null,
-            minTemperature = -10,
-            maxTemperature = 30,
+            minTemperature = -10.0,
+            maxTemperature = 30.0,
             includeApparentTemperature = true,
-            windSpeed = 35,
+            windSpeed = 35.0,
             rain = true,
             snow = true,
             maxAqi = 5,
@@ -213,10 +213,10 @@ class SettingsEntityMapperTest {
         val activities = mapOf(
             ActivityEntity.General to PreferencesEntity(
                 units = null,
-                minTemperature = 5,
-                maxTemperature = 35,
+                minTemperature = 5.0,
+                maxTemperature = 35.0,
                 includeApparentTemperature = false,
-                windSpeed = 30,
+                windSpeed = 30.0,
                 rain = false,
                 snow = false,
                 maxAqi = 3,
@@ -310,10 +310,10 @@ class SettingsEntityMapperTest {
             units = null, // top-level units not set (legacy data)
             preferences = PreferencesEntity(
                 units = Units.Imperial.toEntity(),
-                minTemperature = 32,
-                maxTemperature = 104,
+                minTemperature = 32.0,
+                maxTemperature = 104.0,
                 includeApparentTemperature = false,
-                windSpeed = 0,
+                windSpeed = 0.0,
                 rain = false,
                 snow = false,
                 maxAqi = 2,
@@ -337,10 +337,10 @@ class SettingsEntityMapperTest {
             activities = mapOf(
                 ActivityEntity.General to PreferencesEntity(
                     units = Units.Imperial.toEntity(),
-                    minTemperature = 32,
-                    maxTemperature = 104,
+                    minTemperature = 32.0,
+                    maxTemperature = 104.0,
                     includeApparentTemperature = false,
-                    windSpeed = 0,
+                    windSpeed = 0.0,
                     rain = false,
                     snow = false,
                     maxAqi = 2,
@@ -364,10 +364,10 @@ class SettingsEntityMapperTest {
             activities = mapOf(
                 ActivityEntity.General to PreferencesEntity(
                     units = Units.Metric.toEntity(), // stale legacy value
-                    minTemperature = 5,
-                    maxTemperature = 35,
+                    minTemperature = 5.0,
+                    maxTemperature = 35.0,
                     includeApparentTemperature = false,
-                    windSpeed = 30,
+                    windSpeed = 30.0,
                     rain = false,
                     snow = false,
                     maxAqi = 3,
@@ -391,10 +391,10 @@ class SettingsEntityMapperTest {
             activities = mapOf(
                 ActivityEntity.General to PreferencesEntity(
                     units = null,
-                    minTemperature = 5,
-                    maxTemperature = 35,
+                    minTemperature = 5.0,
+                    maxTemperature = 35.0,
                     includeApparentTemperature = false,
-                    windSpeed = 30,
+                    windSpeed = 30.0,
                     rain = false,
                     snow = false,
                     maxAqi = 3,

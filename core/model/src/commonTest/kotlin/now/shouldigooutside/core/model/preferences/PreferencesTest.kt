@@ -8,17 +8,17 @@ import kotlin.test.Test
 class PreferencesTest {
     @Test
     fun default_minTemperature_is5() {
-        Preferences.default.minTemperature shouldBe 5
+        Preferences.default.minTemperature shouldBe 5.0
     }
 
     @Test
     fun default_maxTemperature_is35() {
-        Preferences.default.maxTemperature shouldBe 35
+        Preferences.default.maxTemperature shouldBe 35.0
     }
 
     @Test
     fun default_windSpeed_is30() {
-        Preferences.default.windSpeed shouldBe 30
+        Preferences.default.windSpeed shouldBe 30.0
     }
 
     @Test
@@ -48,12 +48,12 @@ class PreferencesTest {
 
     @Test
     fun defaultForWalking_hasCorrectMinTemperature() {
-        Preferences.defaultFor(Activity.Walking).minTemperature shouldBe -10
+        Preferences.defaultFor(Activity.Walking).minTemperature shouldBe -10.0
     }
 
     @Test
     fun defaultForWalking_hasCorrectMaxTemperature() {
-        Preferences.defaultFor(Activity.Walking).maxTemperature shouldBe 30
+        Preferences.defaultFor(Activity.Walking).maxTemperature shouldBe 30.0
     }
 
     @Test
@@ -68,7 +68,7 @@ class PreferencesTest {
 
     @Test
     fun defaultForRunning_hasCorrectMinTemperature() {
-        Preferences.defaultFor(Activity.Running).minTemperature shouldBe 10
+        Preferences.defaultFor(Activity.Running).minTemperature shouldBe 10.0
     }
 
     @Test
@@ -100,7 +100,7 @@ class PreferencesTest {
 
     @Test
     fun defaultForSwimming_minTemperature_is20() {
-        Preferences.defaultFor(Activity.Swimming).minTemperature shouldBe 20
+        Preferences.defaultFor(Activity.Swimming).minTemperature shouldBe 20.0
     }
 
     @Test

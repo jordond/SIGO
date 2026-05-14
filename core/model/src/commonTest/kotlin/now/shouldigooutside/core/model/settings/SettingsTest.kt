@@ -60,7 +60,7 @@ class SettingsTest {
     @Test
     fun addOverwritesExistingActivity() {
         val initial = defaultSettings.add(Activity.Running, Preferences.default)
-        val newPrefs = Preferences.default.copy(windSpeed = 99)
+        val newPrefs = Preferences.default.copy(windSpeed = 99.0)
 
         val updated = initial.add(Activity.Running, newPrefs)
 
@@ -122,7 +122,7 @@ class SettingsTest {
 
     @Test
     fun updatePreferencesWithDifferentValueUpdatesMap() {
-        val newPrefs = Preferences.default.copy(windSpeed = 42)
+        val newPrefs = Preferences.default.copy(windSpeed = 42.0)
 
         val result = defaultSettings.updatePreferences(Activity.General, newPrefs)
 
@@ -132,7 +132,7 @@ class SettingsTest {
 
     @Test
     fun updatePreferencesForAbsentActivityAddsIt() {
-        val newPrefs = Preferences.default.copy(windSpeed = 42)
+        val newPrefs = Preferences.default.copy(windSpeed = 42.0)
 
         val result = defaultSettings.updatePreferences(Activity.Running, newPrefs)
 

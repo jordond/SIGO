@@ -51,9 +51,9 @@ public class ForecastScoreRoute(
         val location = Location.create(roundedLat, roundedLon, query.name)
         val defaults = Preferences.default
         val preferences = Preferences(
-            minTemperature = query.minTemp ?: defaults.minTemperature,
-            maxTemperature = query.maxTemp ?: defaults.maxTemperature,
-            windSpeed = query.maxWind ?: defaults.windSpeed,
+            minTemperature = query.minTemp?.toDouble() ?: defaults.minTemperature,
+            maxTemperature = query.maxTemp?.toDouble() ?: defaults.maxTemperature,
+            windSpeed = query.maxWind?.toDouble() ?: defaults.windSpeed,
             rain = query.allowRain ?: defaults.rain,
             snow = query.allowSnow ?: defaults.snow,
             includeApparentTemperature = defaults.includeApparentTemperature,
