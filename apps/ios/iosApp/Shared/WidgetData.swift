@@ -38,14 +38,14 @@ struct WidgetData {
 extension iosApp.WidgetData {
     func toSwiftWidgetData() -> WidgetData {
         WidgetData(
-            scoreResult: ScoreResult(rawValue: scoreResult.name) ?? .Maybe,
+            scoreResult: ScoreResult.from(kmpName: scoreResult.name),
             scoreLabel: scoreLabel,
             locationName: locationName,
             formattedTemp: formattedTemp,
             formattedFeelsLike: formattedFeelsLike,
             formattedWind: formattedWind,
             precipChance: Int(precipChance),
-            todayScoreResult: ScoreResult(rawValue: todayScoreResult.name) ?? .Maybe,
+            todayScoreResult: ScoreResult.from(kmpName: todayScoreResult.name),
             todayScoreLabel: todayScoreLabel,
             alertCount: Int(alertCount),
             updatedAtMillis: updatedAtMillis,

@@ -31,7 +31,7 @@ struct SigoIntentSnippetView: View {
                     Text(data.formattedTemp)
                         .font(.caption)
                     if data.isStale {
-                        Text(NSLocalizedString("siri_intent_stale_suffix", comment: ""))
+                        Text(NSLocalizedString(IntentDialogL10nKey.staleSuffix, comment: ""))
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
@@ -44,7 +44,7 @@ struct SigoIntentSnippetView: View {
     }
 
     private var empty: some View {
-        Text(NSLocalizedString("siri_intent_no_location_dialog", comment: ""))
+        Text(NSLocalizedString(IntentDialogL10nKey.noLocation, comment: ""))
             .font(.caption)
             .padding(12)
             .frame(maxWidth: 220, maxHeight: 60, alignment: .leading)

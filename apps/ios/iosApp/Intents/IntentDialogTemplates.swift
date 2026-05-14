@@ -1,5 +1,13 @@
 import Foundation
 
+enum IntentDialogL10nKey {
+    static let yes         = "siri_intent_yes_dialog"
+    static let maybe       = "siri_intent_maybe_dialog"
+    static let no          = "siri_intent_no_dialog"
+    static let noLocation  = "siri_intent_no_location_dialog"
+    static let staleSuffix = "siri_intent_stale_suffix"
+}
+
 protocol IntentDialogTemplates {
     var yesTemplate: String { get }
     var maybeTemplate: String { get }
@@ -15,11 +23,11 @@ struct BundledIntentDialogTemplates: IntentDialogTemplates {
         self.bundle = bundle
     }
 
-    var yesTemplate: String       { localized("siri_intent_yes_dialog") }
-    var maybeTemplate: String     { localized("siri_intent_maybe_dialog") }
-    var noTemplate: String        { localized("siri_intent_no_dialog") }
-    var noLocationDialog: String  { localized("siri_intent_no_location_dialog") }
-    var staleSuffix: String       { localized("siri_intent_stale_suffix") }
+    var yesTemplate: String       { localized(IntentDialogL10nKey.yes) }
+    var maybeTemplate: String     { localized(IntentDialogL10nKey.maybe) }
+    var noTemplate: String        { localized(IntentDialogL10nKey.no) }
+    var noLocationDialog: String  { localized(IntentDialogL10nKey.noLocation) }
+    var staleSuffix: String       { localized(IntentDialogL10nKey.staleSuffix) }
 
     private func localized(_ key: String) -> String {
         bundle.localizedString(forKey: key, value: key, table: nil)

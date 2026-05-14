@@ -9,6 +9,8 @@ struct SigoStatusIntent: AppIntent {
     )
     static var openAppWhenRun: Bool = false
 
+    private static let refreshBudgetNanos: UInt64 = 5_000_000_000
+
     func perform() async throws -> some ProvidesDialog & ShowsSnippetView {
         let data = await Self.refreshWithBudget()
         let dialog = IntentDialogBuilder.dialog(data: data)
@@ -17,11 +19,8 @@ struct SigoStatusIntent: AppIntent {
         }
     }
 
-    /// Races KMP `WidgetRefresher.refresh()` against a 5s timer. If refresh
-    /// succeeds within budget, use the fresh value. Otherwise (timeout, thrown
-    /// error, or refresh-returns-nil) fall back to `loadCached()` which itself
-    /// may be nil. `perform()` MUST NOT throw — Siri's generic "Sorry, I
-    /// couldn't do that" is unacceptable UX.
+    // `perform()` must never throw — Siri's generic "Sorry, I couldn't do
+    // that" is unacceptable UX. Swallow refresh failures, fall back to cache.
     private static func refreshWithBudget() async -> WidgetData? {
         let raced: iosApp.WidgetData? = await withTaskGroup(
             of: iosApp.WidgetData?.self
@@ -30,7 +29,7 @@ struct SigoStatusIntent: AppIntent {
                 try? await WidgetRefresher.shared.refresh()
             }
             group.addTask {
-                try? await Task.sleep(nanoseconds: 5_000_000_000)
+                try? await Task.sleep(nanoseconds: refreshBudgetNanos)
                 return nil
             }
             defer { group.cancelAll() }
