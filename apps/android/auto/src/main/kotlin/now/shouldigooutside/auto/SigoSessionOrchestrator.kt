@@ -9,14 +9,12 @@ import kotlinx.coroutines.launch
 import now.shouldigooutside.auto.location.CarLocationProvider
 import now.shouldigooutside.core.domain.forecast.ForecastStateHolder
 import now.shouldigooutside.core.domain.forecast.GetActivitiesScoreUseCase
-import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.model.AsyncResult
 import now.shouldigooutside.core.model.forecast.Forecast
 import now.shouldigooutside.core.model.score.ActivityForecastScore
 
 internal class SigoSessionOrchestrator(
     private val forecastStateHolder: ForecastStateHolder,
-    private val settingsRepo: SettingsRepo,
     private val getActivitiesScoreUseCase: GetActivitiesScoreUseCase,
     private val activityScoresSink: MutableStateFlow<PersistentList<ActivityForecastScore>>,
     private val cachedForecastSink: MutableStateFlow<Forecast?>,

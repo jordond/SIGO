@@ -55,7 +55,6 @@ internal class SigoSession(
 
     private val orchestrator = SigoSessionOrchestrator(
         forecastStateHolder = deps.forecastStateHolder,
-        settingsRepo = deps.settingsRepo,
         getActivitiesScoreUseCase = deps.getActivitiesScoreUseCase,
         activityScoresSink = activityScoresFlow,
         cachedForecastSink = cachedForecastFlow,
