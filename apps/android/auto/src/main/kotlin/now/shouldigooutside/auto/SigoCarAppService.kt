@@ -25,10 +25,10 @@ class SigoCarAppService :
         if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
             HostValidator.ALLOW_ALL_HOSTS_VALIDATOR
         } else {
-            // TODO(release-validator): add Google's Android Auto host signature
-            //  allowlist before submitting to Play Console. Empty builder fails
-            //  closed so an unconfigured release cannot accept any host.
-            HostValidator.Builder(this).build()
+            HostValidator
+                .Builder(this)
+                .addAllowedHosts(androidx.car.app.R.array.hosts_allowlist_sample)
+                .build()
         }
 
     override fun onCreateSession(): Session =
