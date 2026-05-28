@@ -258,10 +258,10 @@ private fun WindyPreview() {
 
 @Preview
 @Composable
-private fun SevereWeatherLowPreview() {
+private fun SevereWeatherModeratePreview() {
     ScreenPreview(
         PreviewData.Forecast.createForecastFrom(
-            PreviewData.Forecast.severeWeather(SevereWeatherRisk.Low),
+            PreviewData.Forecast.severeWeather(SevereWeatherRisk.Moderate),
         ),
     )
 }

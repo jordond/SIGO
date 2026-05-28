@@ -50,12 +50,12 @@ class MapperTest {
     }
 
     @Test
-    fun toModel_unknownSevereWeatherRisk_defaultsToLow() {
+    fun toModel_unknownSevereWeatherRisk_defaultsToNone() {
         val entity = buildForecastEntity(severeWeatherRisk = "INVALID_RISK")
 
         val result = entity.toModel()
 
-        result.current.severeWeatherRisk shouldBe SevereWeatherRisk.Low
+        result.current.severeWeatherRisk shouldBe SevereWeatherRisk.None
     }
 
     @Test

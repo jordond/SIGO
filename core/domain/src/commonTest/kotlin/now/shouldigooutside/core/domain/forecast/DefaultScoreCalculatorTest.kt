@@ -294,17 +294,17 @@ class DefaultScoreCalculatorTest {
     }
 
     @Test
-    fun lowReturnsNear() {
+    fun lowReturnsInside() {
         val block = testForecastBlock(severeWeatherRisk = SevereWeatherRisk.Low)
         val score = scoreBlock(block)
-        score.reasons.severeWeather shouldBe ReasonValue.Near
+        score.reasons.severeWeather shouldBe ReasonValue.Inside
     }
 
     @Test
-    fun moderateReturnsOutside() {
+    fun moderateReturnsNear() {
         val block = testForecastBlock(severeWeatherRisk = SevereWeatherRisk.Moderate)
         val score = scoreBlock(block)
-        score.reasons.severeWeather shouldBe ReasonValue.Outside
+        score.reasons.severeWeather shouldBe ReasonValue.Near
     }
 
     @Test
@@ -340,7 +340,7 @@ class DefaultScoreCalculatorTest {
             temperature = testTemperature(value = 20.0),
             wind = testWind(speed = 5.0),
             precipitation = testPrecipitation(amount = 0.0, probability = 0),
-            severeWeatherRisk = SevereWeatherRisk.Low,
+            severeWeatherRisk = SevereWeatherRisk.Moderate,
             airQuality = AirQuality(0),
         )
         val score = scoreBlock(block, includeAirQuality = false)
@@ -479,7 +479,7 @@ class DefaultScoreCalculatorTest {
     @Test
     fun severeWeatherForcesNoEvenWithAllDisabled() {
         val block = testForecastBlock(
-            severeWeatherRisk = SevereWeatherRisk.Moderate,
+            severeWeatherRisk = SevereWeatherRisk.High,
         )
         val prefs = defaultPreferences.copy(
             temperatureEnabled = false,

@@ -76,12 +76,48 @@ class VCForecastResponseTest {
     }
 
     @Test
-    fun severeRisk_30_mapsToLow() {
-        val response = buildResponse(severeRisk = 30.0)
+    fun severeRisk_0_mapsToNone() {
+        val response = buildResponse(severeRisk = 0.0)
+
+        val model = response.toModel(FakeNowProvider(), maxDays = 3)
+
+        model.today.block.severeWeatherRisk shouldBe SevereWeatherRisk.None
+    }
+
+    @Test
+    fun severeRisk_9_mapsToNone() {
+        val response = buildResponse(severeRisk = 9.0)
+
+        val model = response.toModel(FakeNowProvider(), maxDays = 3)
+
+        model.today.block.severeWeatherRisk shouldBe SevereWeatherRisk.None
+    }
+
+    @Test
+    fun severeRisk_10_mapsToLow() {
+        val response = buildResponse(severeRisk = 10.0)
 
         val model = response.toModel(FakeNowProvider(), maxDays = 3)
 
         model.today.block.severeWeatherRisk shouldBe SevereWeatherRisk.Low
+    }
+
+    @Test
+    fun severeRisk_29_mapsToLow() {
+        val response = buildResponse(severeRisk = 29.0)
+
+        val model = response.toModel(FakeNowProvider(), maxDays = 3)
+
+        model.today.block.severeWeatherRisk shouldBe SevereWeatherRisk.Low
+    }
+
+    @Test
+    fun severeRisk_30_mapsToModerate() {
+        val response = buildResponse(severeRisk = 30.0)
+
+        val model = response.toModel(FakeNowProvider(), maxDays = 3)
+
+        model.today.block.severeWeatherRisk shouldBe SevereWeatherRisk.Moderate
     }
 
     @Test

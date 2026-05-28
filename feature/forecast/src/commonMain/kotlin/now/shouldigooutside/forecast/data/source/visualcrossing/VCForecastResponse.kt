@@ -303,8 +303,9 @@ private fun parsePrecipTypes(types: List<String>?) =
 private fun parseSevereWeatherRisk(risk: Double?): SevereWeatherRisk {
     if (risk == null) return SevereWeatherRisk.None
     return when (risk.roundToInt()) {
-        in 0..30 -> SevereWeatherRisk.Low
-        in 31..70 -> SevereWeatherRisk.Moderate
+        in 0..9 -> SevereWeatherRisk.None
+        in 10..29 -> SevereWeatherRisk.Low
+        in 30..70 -> SevereWeatherRisk.Moderate
         else -> SevereWeatherRisk.High
     }
 }
