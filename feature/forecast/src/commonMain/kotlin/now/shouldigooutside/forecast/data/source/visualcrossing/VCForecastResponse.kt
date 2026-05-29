@@ -304,8 +304,8 @@ private fun parseSevereWeatherRisk(risk: Double?): SevereWeatherRisk {
     if (risk == null) return SevereWeatherRisk.None
     return when (risk.roundToInt()) {
         in 0..9 -> SevereWeatherRisk.None
-        in 10..29 -> SevereWeatherRisk.Low
-        in 30..70 -> SevereWeatherRisk.Moderate
+        in 10..39 -> SevereWeatherRisk.Low
+        in 40..80 -> SevereWeatherRisk.Moderate
         else -> SevereWeatherRisk.High
     }
 }
