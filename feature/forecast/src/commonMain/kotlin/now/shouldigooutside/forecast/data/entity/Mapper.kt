@@ -91,7 +91,7 @@ private fun ForecastBlockEntity.toModel(): ForecastBlock =
         uvIndex = uvIndex,
         visibility = visibility,
         severeWeatherRisk = runCatching { SevereWeatherRisk.valueOf(severeWeatherRisk) }
-            .getOrDefault(SevereWeatherRisk.Low),
+            .getOrDefault(SevereWeatherRisk.None),
         airQuality = AirQuality(airQuality),
     )
 

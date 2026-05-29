@@ -301,7 +301,7 @@ internal fun UpdatedAtText(
 private fun SevereWeatherPreview() {
     val forecast = PreviewData.Forecast.createForecastFrom(
         PreviewData.Forecast.severeWeather(
-            level = SevereWeatherRisk.Low,
+            level = SevereWeatherRisk.Moderate,
         ),
     )
     val score = PreviewData.Forecast.score(forecast)

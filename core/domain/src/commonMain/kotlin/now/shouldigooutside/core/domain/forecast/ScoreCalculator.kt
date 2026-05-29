@@ -67,11 +67,11 @@ public class DefaultScoreCalculator(
             temperature = temperatureReason(preferences),
             precipitation = precipitation(preferences),
             severeWeather = when (severeWeatherRisk) {
-                SevereWeatherRisk.None -> ReasonValue.Inside
-                SevereWeatherRisk.Low -> ReasonValue.Near
-                SevereWeatherRisk.Moderate,
-                SevereWeatherRisk.High,
-                -> ReasonValue.Outside
+                SevereWeatherRisk.None,
+                SevereWeatherRisk.Low,
+                -> ReasonValue.Inside
+                SevereWeatherRisk.Moderate -> ReasonValue.Near
+                SevereWeatherRisk.High -> ReasonValue.Outside
             },
             airQuality = airQualityReason(preferences),
         )
