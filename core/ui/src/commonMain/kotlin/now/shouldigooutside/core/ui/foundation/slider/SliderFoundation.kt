@@ -1314,7 +1314,7 @@ public class RangeSliderState(
 
     internal var activeRangeStart: Float
         set(newVal) {
-            val coercedValue = newVal.coerceIn(valueRange.start, activeRangeEnd)
+            val coercedValue = newVal.coerceIn(valueRange.start, maxOf(activeRangeEnd, valueRange.start))
             val snappedValue = snapValueToTick(
                 coercedValue,
                 tickFractions,
@@ -1327,7 +1327,10 @@ public class RangeSliderState(
 
     internal var activeRangeEnd: Float
         set(newVal) {
-            val coercedValue = newVal.coerceIn(activeRangeStart, valueRange.endInclusive)
+            val coercedValue = newVal.coerceIn(
+                minOf(activeRangeStart, valueRange.endInclusive),
+                valueRange.endInclusive,
+            )
             val snappedValue = snapValueToTick(
                 coercedValue,
                 tickFractions,

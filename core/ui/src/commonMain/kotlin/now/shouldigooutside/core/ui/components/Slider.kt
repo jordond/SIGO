@@ -217,8 +217,7 @@ public fun RangeSlider(
 
     state.onValueChangeFinished = onValueChangeFinished
     state.onValueChange = { onValueChange(it.start..it.endInclusive) }
-    state.activeRangeStart = value.start
-    state.activeRangeEnd = value.endInclusive
+    state.updateActiveRange(value)
 
     RangeSlider(
         state = state,
@@ -231,6 +230,35 @@ public fun RangeSlider(
         tickLabel = tickLabel,
     )
 }
+
+internal fun RangeSliderState.updateActiveRange(value: ClosedFloatingPointRange<Float>) {
+    val range = value.coerceWithin(valueRange)
+    if (activeRangeEnd < range.start) {
+        activeRangeEnd = range.endInclusive
+        activeRangeStart = range.start
+    } else {
+        activeRangeStart = range.start
+        activeRangeEnd = range.endInclusive
+    }
+}
+
+private fun ClosedFloatingPointRange<Float>.coerceWithin(
+    valueRange: ClosedFloatingPointRange<Float>,
+): ClosedFloatingPointRange<Float> {
+    require(valueRange.start <= valueRange.endInclusive) {
+        "valueRange start should be <= endInclusive"
+    }
+    val coercedStart = start.coerceWithin(valueRange)
+    val coercedEnd = endInclusive.coerceWithin(valueRange)
+    return minOf(coercedStart, coercedEnd)..maxOf(coercedStart, coercedEnd)
+}
+
+private fun Float.coerceWithin(valueRange: ClosedFloatingPointRange<Float>): Float =
+    if (isNaN()) {
+        valueRange.start
+    } else {
+        coerceIn(valueRange.start, valueRange.endInclusive)
+    }
 
 @Composable
 public fun RangeSlider(

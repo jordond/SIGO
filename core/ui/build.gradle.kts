@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.convention.multiplatform)
 }
 
-configureMultiplatform(Platforms.Compose, name = "core.ui")
+configureMultiplatform(Platforms.Compose, name = "core.ui", tests = true)
 
 kotlin {
     compilerOptions {

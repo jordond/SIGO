@@ -1,5 +1,7 @@
 package now.shouldigooutside.auto.location
 
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeoutOrNull
 import now.shouldigooutside.core.domain.settings.SettingsRepo
 import now.shouldigooutside.core.model.location.Location
 import kotlin.time.Instant
@@ -19,12 +21,21 @@ internal class CarLocationProvider(
         if (settingsRepo.settings.value.useCustomLocation) return false
         if (!carHardware.hasPermission()) return false
         val fix = carHardware.requestSingleFix(timeoutMs = 2_000L) ?: return false
+        val updateTime = nowProvider()
         settingsRepo.update { state ->
             state.copy(
                 lastLocation = fix,
-                lastLocationUpdate = nowProvider(),
+                lastLocationUpdate = updateTime,
             )
         }
-        return true
+        return withTimeoutOrNull(SETTINGS_WRITE_TIMEOUT_MS) {
+            settingsRepo.settings.first { state ->
+                state.lastLocation == fix && state.lastLocationUpdate == updateTime
+            }
+        } != null
+    }
+
+    private companion object {
+        const val SETTINGS_WRITE_TIMEOUT_MS = 2_000L
     }
 }
