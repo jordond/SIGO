@@ -111,7 +111,8 @@ android {
 }
 
 dependencies {
-    implementation(projects.apps.android.auto)
+    // TODO: Android auto is crashing and halting releases, keeps getting rejected
+    // implementation(projects.apps.android.auto)
     implementation(projects.core.app)
     implementation(projects.core.domain)
     implementation(projects.core.model)
@@ -143,7 +144,7 @@ dependencies {
     implementation(libs.work.runtime)
     implementation(libs.androidx.profileinstaller)
 
-    "baselineProfile"(projects.apps.android.baselineProfile)
+    baselineProfile(projects.apps.android.baselineProfile)
 }
 
 baselineProfile {

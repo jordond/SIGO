@@ -2,7 +2,6 @@ package now.shouldigooutside
 
 import android.app.Application
 import androidx.glance.appwidget.updateAll
-import now.shouldigooutside.auto.di.autoModule
 import now.shouldigooutside.benchmark.BenchmarkSeeder
 import now.shouldigooutside.core.widget.AndroidWidgetUpdateObserver
 import now.shouldigooutside.di.initKoin
@@ -26,7 +25,7 @@ class MainApplication :
 
         initKoin {
             androidContext(this@MainApplication)
-            modules(autoModule())
+            // modules(autoModule())
         }
 
         widgetUpdateObserver.start { widget.updateAll(this@MainApplication) }
