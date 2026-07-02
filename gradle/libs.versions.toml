@@ -70,7 +70,7 @@ turbine = "1.2.1"
 play-review = "2.0.2"
 poko = "0.23.1"
 profileinstaller = "1.4.1"
-uiautomator = "2.4.0-beta02"
+uiautomator = "2.4.0"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
