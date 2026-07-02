@@ -28,8 +28,8 @@
     "@coreui/icons": "^3.1.0",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.0",
     "wrangler": "^4.78.0"
   },
-  "packageManager": "pnpm@11.5.2"
+  "packageManager": "pnpm@11.9.0"
 }
