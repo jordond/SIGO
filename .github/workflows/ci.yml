@@ -24,7 +24,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Java
         uses: actions/setup-java@v5
@@ -47,7 +47,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Java
         uses: actions/setup-java@v5
@@ -71,7 +71,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Java
         uses: actions/setup-java@v5
@@ -98,7 +98,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Copy sample app-env
         run: cp ./.github/ci-app-env.properties ./app-env.properties
@@ -113,7 +113,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Java
         uses: actions/setup-java@v5
